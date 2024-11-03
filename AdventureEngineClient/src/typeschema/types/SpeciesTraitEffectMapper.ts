@@ -5,6 +5,6 @@ export type SpeciesTraitEffectMapper = ExtendedSchemaObject<{
     }
     relationships: {
         trait__speciesTraitId: string
-        effect__domainEffectQuantifierId: string
+        effect__effectQuantifierId: string
     }
 }>

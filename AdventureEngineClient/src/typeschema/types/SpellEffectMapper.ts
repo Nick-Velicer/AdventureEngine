@@ -1,10 +1,10 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 
-export type EffectInstanceMapper = ExtendedSchemaObject<{
+export type SpellEffectMapper = ExtendedSchemaObject<{
     attributes: {
     }
     relationships: {
-        character__characterId: string
+        spell__DomainSpellId: string
         effect__effectQuantifierId: string
     }
 }>

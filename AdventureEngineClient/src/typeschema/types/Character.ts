@@ -8,6 +8,7 @@ export type Character = ExtendedSchemaObject<{
         intelligence: number,
         wisdom: number,
         charisma: number,
+        gold: number
     }
     relationships: {
         currentSize__domainSizeId?: string

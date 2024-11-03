@@ -1,6 +1,6 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 
-export type SpeciesTraitMapper = ExtendedSchemaObject<{
+export type DomainSpeciesTrait = ExtendedSchemaObject<{
     attributes: {
     }
     relationships: {
