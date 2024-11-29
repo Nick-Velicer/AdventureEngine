@@ -8,11 +8,16 @@ export type Character = ExtendedSchemaObject<{
         intelligence: number,
         wisdom: number,
         charisma: number,
-        gold: number
+        gold: number,
+        availableActions: number,
+        availableBonusActions: number,
+        baseWalkingSpeed: number,
+        baseSwimmingSpeed: number,
     }
     relationships: {
         currentSize__domainSizeId?: string
         race__domainSpeciesId?: string
+        subclass__domainSubClassId?: string
         campaignId?: string
     }
 }>

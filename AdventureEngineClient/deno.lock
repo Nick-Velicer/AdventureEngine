@@ -2,13 +2,16 @@
   "version": "4",
   "specifiers": {
     "npm:@eslint/js@^9.13.0": "9.13.0",
+    "npm:@types/pathjs@~0.8.39": "0.8.39",
     "npm:@types/react-dom@^18.3.1": "18.3.1",
     "npm:@types/react@^18.3.11": "18.3.12",
     "npm:@vitejs/plugin-react@^4.3.3": "4.3.3_vite@5.4.10_@babel+core@7.26.0",
     "npm:eslint-plugin-react-hooks@5": "5.0.0_eslint@9.13.0",
     "npm:eslint-plugin-react-refresh@~0.4.13": "0.4.14_eslint@9.13.0",
     "npm:eslint@^9.13.0": "9.13.0",
+    "npm:fs@^0.0.1-security": "0.0.1-security",
     "npm:globals@^15.11.0": "15.11.0",
+    "npm:path@~0.12.7": "0.12.7",
     "npm:react-dom@^18.3.1": "18.3.1_react@18.3.1",
     "npm:react@^18.3.1": "18.3.1",
     "npm:type-fest@^4.26.1": "4.26.1",
@@ -457,6 +460,9 @@
         "undici-types@6.19.8"
       ]
     },
+    "@types/pathjs@0.8.39": {
+      "integrity": "sha512-0cFTSMMoz+8toEHqiOqFE5BWvIuTVCB2yogPHDfMNbIXMwrv1eeeryKa/gQLbQOCoy7/yAQtx6d3NUIczaGz2Q=="
+    },
     "@types/prop-types@15.7.13": {
       "integrity": "sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA=="
     },
@@ -880,6 +886,9 @@
     "fs.realpath@1.0.0": {
       "integrity": "sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw=="
     },
+    "fs@0.0.1-security": {
+      "integrity": "sha512-3XY9e1pP0CVEUCdj5BmfIZxRBTSDycnbqhIOGec9QYtmVH2fbLpj86CFWkrNOkt/Fvty4KZG5lTglL9j/gJ87w=="
+    },
     "fsevents@2.3.3": {
       "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="
     },
@@ -906,7 +915,7 @@
       "dependencies": [
         "fs.realpath",
         "inflight",
-        "inherits",
+        "inherits@2.0.4",
         "minimatch@3.1.2",
         "once",
         "path-is-absolute"
@@ -946,6 +955,9 @@
         "once",
         "wrappy"
       ]
+    },
+    "inherits@2.0.3": {
+      "integrity": "sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw=="
     },
     "inherits@2.0.4": {
       "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ=="
@@ -1110,6 +1122,13 @@
     "path-key@3.1.1": {
       "integrity": "sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q=="
     },
+    "path@0.12.7": {
+      "integrity": "sha512-aXXC6s+1w7otVF9UletFkFcDsJeO7lSZBPUQhtb5O0xJe8LtYhj/GxldoL09bBj9+ZmE2hNoHqQSFMN5fikh4Q==",
+      "dependencies": [
+        "process",
+        "util"
+      ]
+    },
     "picocolors@1.1.1": {
       "integrity": "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="
     },
@@ -1126,6 +1145,9 @@
     },
     "prelude-ls@1.2.1": {
       "integrity": "sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g=="
+    },
+    "process@0.11.10": {
+      "integrity": "sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A=="
     },
     "punycode@2.3.1": {
       "integrity": "sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg=="
@@ -1331,6 +1353,12 @@
         "punycode"
       ]
     },
+    "util@0.10.4": {
+      "integrity": "sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==",
+      "dependencies": [
+        "inherits@2.0.3"
+      ]
+    },
     "v8-compile-cache-lib@3.0.1": {
       "integrity": "sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg=="
     },
@@ -1395,13 +1423,16 @@
     "packageJson": {
       "dependencies": [
         "npm:@eslint/js@^9.13.0",
+        "npm:@types/pathjs@~0.8.39",
         "npm:@types/react-dom@^18.3.1",
         "npm:@types/react@^18.3.11",
         "npm:@vitejs/plugin-react@^4.3.3",
         "npm:eslint-plugin-react-hooks@5",
         "npm:eslint-plugin-react-refresh@~0.4.13",
         "npm:eslint@^9.13.0",
+        "npm:fs@^0.0.1-security",
         "npm:globals@^15.11.0",
+        "npm:path@~0.12.7",
         "npm:react-dom@^18.3.1",
         "npm:react@^18.3.1",
         "npm:type-fest@^4.26.1",

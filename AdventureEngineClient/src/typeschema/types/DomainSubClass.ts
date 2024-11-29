@@ -1,10 +1,9 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 
-export type DomainDice = ExtendedSchemaObject<{
+export type DomainSubClass = ExtendedSchemaObject<{
     attributes: {
-        minimum: number
-        maximum: number
     }
     relationships: {
+        parentClass__domainClassId?: string
     }
 }>

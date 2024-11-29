@@ -1,8 +1,9 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 
-export type DomainCondition = ExtendedSchemaObject<{
+export type DomainCharacterSkill = ExtendedSchemaObject<{
     attributes: {
     }
     relationships: {
+        derivesFrom__domainCharacterStatId?: string
     }
 }>

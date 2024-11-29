@@ -1,6 +1,6 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 
-export type DomainCondition = ExtendedSchemaObject<{
+export type DomainDamageType = ExtendedSchemaObject<{
     attributes: {
     }
     relationships: {

@@ -1,10 +1,10 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 
-export type SpeciesTraitEffectMapper = ExtendedSchemaObject<{
+export type SpeciesTraitActionMapper = ExtendedSchemaObject<{
     attributes: {
     }
     relationships: {
         trait__speciesTraitId: string
-        effect__domainEffectId: string
+        action__domainActionId: string
     }
 }>

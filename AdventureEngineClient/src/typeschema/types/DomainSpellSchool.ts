@@ -1,6 +1,6 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 
-export type DomainEffect = ExtendedSchemaObject<{
+export type DomainSpellSchool = ExtendedSchemaObject<{
     attributes: {
     }
     relationships: {
