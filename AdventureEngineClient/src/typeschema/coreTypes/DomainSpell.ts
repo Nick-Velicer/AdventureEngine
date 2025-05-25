@@ -1,4 +1,6 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
+import { DomainDice } from "./DomainDice";
+import { DomainSpellSchool } from "./DomainSpellSchool";
 
 export type DomainSpell = ExtendedSchemaObject<{
     attributes: {
@@ -19,7 +21,7 @@ export type DomainSpell = ExtendedSchemaObject<{
         hourCastTime?: number
     }
     relationships: {
-        school__domainSpellSchoolId?: string
-        damageScaling__domainDice?: string
+        school__domainSpellSchool?: DomainSpellSchool
+        damageScaling__domainDice?: DomainDice
     }
 }>

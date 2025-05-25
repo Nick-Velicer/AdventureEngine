@@ -1,4 +1,9 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
+import { DomainCharacterStat } from "./DomainCharacterStat";
+import { DomainCondition } from "./DomainCondition";
+import { DomainDamageType } from "./DomainDamageType";
+import { DomainSpell } from "./DomainSpell";
+import { DomainStaticEffect } from "./DomainStaticEffect";
 
 export type Quantifier = ExtendedSchemaObject<{
     attributes: {
@@ -25,18 +30,12 @@ export type Quantifier = ExtendedSchemaObject<{
         level9SpellSlots?: number
     }
     relationships: {
-        //If this quantifier is related to some static effect (i.e. having darkvision or a buff from an item)
-        effect__domainEffectId?: string
-        //If this quantifier is related to the player taking an action (which could be reliant on an effect with its own quantifier)
-        action__domainActionId?: string
-        target__domainCharacterSkillId?: string
-        target__domainCharacterStatId?: string
-        addedSpell__domainSpellId?: string
-        condition__domainConditionId?: string
-        damageType__domainDamageTypeId?: string
-        resistanceType__domainDamageTypeId?: string
-        save__domainCharacterStatId?: string
-        item__domainItemId?: string
-        dice__domainDiceId?: string
+        effect__domainStaticEffect?: DomainStaticEffect
+        target__domainCharacterStat?: DomainCharacterStat
+        addedSpell__domainSpell?: DomainSpell
+        condition__domainCondition?: DomainCondition
+        damageType__domainDamageType?: DomainDamageType
+        resistanceType__domainDamageType?: DomainDamageType
+        save__domainCharacterStat?: DomainCharacterStat
     }
 }>

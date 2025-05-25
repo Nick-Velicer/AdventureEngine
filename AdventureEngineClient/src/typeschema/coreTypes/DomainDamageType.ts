@@ -1,10 +1,9 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 
-export type DomainSize = ExtendedSchemaObject<{
+//Slashing, Piercing, Thunder, Fire, etc.
+export type DomainDamageType = ExtendedSchemaObject<{
     attributes: {
-        tileArea: number
-        hexArea: number
-    }
+    },
     relationships: {
     }
 }>

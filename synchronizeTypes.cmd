@@ -1,10 +1,11 @@
 set "baseDir=%cd%"
 
-cd AdventureEngineClient/src/typeschema
-deno run --allow-env --allow-read --allow-write generator.ts
+cd AdventureEngineClient
+call generateTypes.cmd
 cd %baseDir%
 
 cd AdventureEngineServer
 if not exist "./generated" mkdir generated
-go-jsonschema -p main ../AdventureEngineClient/src/typeschema/generated/Quantifier.json > generated/typeTest.go
+for %%f in ("../AdventureEngineClient/src/typeschema/generated/*.json") do go-jsonschema --minimal-names -p main ../AdventureEngineClient/src/typeschema/generated/%%~nf.json > generated/%%~nf.go 
+
 cd %baseDir%
