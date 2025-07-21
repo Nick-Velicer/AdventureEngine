@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated type files
+src/typeschema/generated/
+src/typeschema/flattenedTypes/
