@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -34,24 +35,35 @@ func createDB() {
 	file.Close()
 	log.Println("Successfully created " + dbPath + ".")
 
-	sqliteDatabase, _ := sql.Open("sqlite3", dbPath) // Open the created SQLite File
-	defer sqliteDatabase.Close()                     // Defer Closing the database
+	db, _ := sql.Open("sqlite3", dbPath)
 
-	createTable(sqliteDatabase) // Create Database Tables
+	defer db.Close()
 
-	// INSERT RECORDS
-	insertStudent(sqliteDatabase, "0001", "Liana Kim", "Bachelor")
-	insertStudent(sqliteDatabase, "0002", "Glen Rangel", "Bachelor")
-	insertStudent(sqliteDatabase, "0003", "Martin Martins", "Master")
-	insertStudent(sqliteDatabase, "0004", "Alayna Armitage", "PHD")
-	insertStudent(sqliteDatabase, "0005", "Marni Benson", "Bachelor")
-	insertStudent(sqliteDatabase, "0006", "Derrick Griffiths", "Master")
-	insertStudent(sqliteDatabase, "0007", "Leigh Daly", "Bachelor")
-	insertStudent(sqliteDatabase, "0008", "Marni Benson", "PHD")
-	insertStudent(sqliteDatabase, "0009", "Klay Correa", "Bachelor")
+	executeMigrationFromFile(db, "./testCreates.sql")
+	executeMigrationFromFile(db, "./testInserts.sql")
+}
 
-	// DISPLAY INSERTED RECORDS
-	displayStudents(sqliteDatabase)
+func executeMigrationFromFile(db *sql.DB, filePath string) {
+
+	migration, err := os.ReadFile(filePath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	result, err := db.Exec(string(migration))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Successfully executed " + filePath + ":")
+	log.Println(strconv.FormatInt(rows, 10) + " rows affected")
 }
 
 func createTable(db *sql.DB) {

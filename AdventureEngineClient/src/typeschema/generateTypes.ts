@@ -74,7 +74,7 @@ Promise.all(flattenedTypeFiles.map((fileName) => {
 
 	const schema = TJS.generateSchema(program, typeName, settings);
 
-	const generatedLocation = generatedFilesBasePath + "/" + typeName + ".json";
+	const generatedLocation = generatedFilesBasePath + "/" + typeName.replace("Flattened", "") + ".json";
 
 	return (
 		schema === undefined?
