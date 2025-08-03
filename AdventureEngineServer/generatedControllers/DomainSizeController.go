@@ -6,6 +6,7 @@ package generatedcontrollers
 import (
    "github.com/gin-gonic/gin"
    "gorm.io/gorm"
+   "strconv"
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedTypes"
@@ -14,6 +15,32 @@ import (
 func GetDomainSizes(ctx *gin.Context, db *gorm.DB) {
    var returnBuffer []types.DomainSizeJson
    err := services.GetDomainSizes(db, &returnBuffer)
+   if err != nil {
+      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+}
+
+func GetDomainSizeById(ctx *gin.Context, db *gorm.DB) {
+   id := ctx.Param("id")
+   idNum, err := strconv.Atoi(id)
+   if err != nil {
+      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   var returnBuffer types.DomainSizeJson
+   err = services.GetDomainSizeById(db, idNum, &returnBuffer)
+   if err != nil {
+      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+}
+
+func SaveDomainSize(ctx *gin.Context, db *gorm.DB) {
+   var returnBuffer types.DomainSizeJson
+   err := services.SaveDomainSize(db, &returnBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return

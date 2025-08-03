@@ -6,6 +6,7 @@ package generatedcontrollers
 import (
    "github.com/gin-gonic/gin"
    "gorm.io/gorm"
+   "strconv"
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedTypes"
@@ -14,6 +15,32 @@ import (
 func GetDomainClasss(ctx *gin.Context, db *gorm.DB) {
    var returnBuffer []types.DomainClassJson
    err := services.GetDomainClasss(db, &returnBuffer)
+   if err != nil {
+      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+}
+
+func GetDomainClassById(ctx *gin.Context, db *gorm.DB) {
+   id := ctx.Param("id")
+   idNum, err := strconv.Atoi(id)
+   if err != nil {
+      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   var returnBuffer types.DomainClassJson
+   err = services.GetDomainClassById(db, idNum, &returnBuffer)
+   if err != nil {
+      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+}
+
+func SaveDomainClass(ctx *gin.Context, db *gorm.DB) {
+   var returnBuffer types.DomainClassJson
+   err := services.SaveDomainClass(db, &returnBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return

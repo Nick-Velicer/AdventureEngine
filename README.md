@@ -9,7 +9,7 @@
 
 **Adventure Engine** is a lightweight environment for fully-fledged Dungeons and Dragons 5e book-keeping, with the following highlights:
 
-- **Domain-Driven Quantifiers**: A rather hand-wavey title which means _every aspect of the game_ is tracked and managed in a quantitative, manageable way. Modifier dependencies, static class effects, spell effects, item effects, _all of it_ is processed automatically.
+- **Domain-Driven Quantifiers**: A rather hand-wavey title which means _every aspect of the game_ is tracked and applied in a quantitative, manageable way. Modifier dependencies, static class effects, spell effects, item effects, _all of it_ is processed automatically.
 - **Self-Hostable\***: Containerization pending further development, with functionality owned by **your** local environment and _nothing else_. No accounts, no paywalls, no content restrictions, the only limit is your creativity.
 - **Free and Open Source**: Available for anybody to fork/modify/upgrade, provided further development upholds GPL 3.0 copyleft principles (for more info, see [License](#license)).
 
