@@ -1,12 +1,17 @@
 package main
 
 import (
+	"AdventureEngineServer/endpointManagers"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	createDB()
+	db := createDB()
 	router := gin.Default()
-	//router.GET("/quantifier", getQuantifierTest)
+
+	endpointManagers.ApplyGeneratedEndpoints(router, db)
+	endpointManagers.ApplyCustomEndpoints(router, db)
+
 	router.Run("localhost:8080")
 }

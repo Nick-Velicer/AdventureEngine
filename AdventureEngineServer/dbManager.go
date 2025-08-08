@@ -7,12 +7,15 @@ import (
 	"os"
 	"strconv"
 
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
 const dbPath = "./test-sqlite.db"
 
-func createDB() {
+func createDB() *gorm.DB {
 
 	_, err := os.Stat(dbPath)
 
@@ -37,10 +40,18 @@ func createDB() {
 
 	db, _ := sql.Open("sqlite3", dbPath)
 
-	defer db.Close()
-
 	executeMigrationFromFile(db, "./testCreates.sql")
 	executeMigrationFromFile(db, "./testInserts.sql")
+
+	db.Close()
+
+	returnGormDB, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	return returnGormDB
 }
 
 func executeMigrationFromFile(db *sql.DB, filePath string) {

@@ -2,8 +2,8 @@ import os
 import re
 import pprint
 
-
-baseTypeDir = './generatedTypes'
+goTypeBaseDir = './goTypeBase'
+dbTypeTargetDir = './generatedDatabaseTypes'
 
 goToSqlTypeConversions = {
     'string': 'TEXT',
@@ -25,22 +25,41 @@ def indentLineBlock(lines: list):
 
 
 def main():
-    directory = os.fsencode(baseTypeDir)
+    goTypeBaseDirectory = os.fsencode(goTypeBaseDir)
+
+    dbTargetDir = os.path.dirname(dbTypeTargetDir)
+    if not os.path.exists(dbTargetDir):
+        os.makedirs(dbTargetDir)
+    
+
+    #Eventually this point can also generate the DTO levels
+    for goTypeSeedFile in os.listdir(goTypeBaseDirectory):
+        fileName = os.fsdecode(goTypeSeedFile)
+        if fileName.endswith('.go'): 
+            targetFileName = dbTypeTargetDir + "/" + fileName
+            directory = os.path.dirname(targetFileName)
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+            f = open(targetFileName, "w")
+            f.write(produceDatabaseTargetType(goTypeBaseDir + '/' + fileName))
+            f.close()
+
 
     createStatements = []
     insertStatements = []
     tableNames = []
 
-    for file in os.listdir(directory):
+    for file in os.listdir(dbTypeTargetDir + "/"):
         fileName = os.fsdecode(file)
 
         if fileName.endswith('.go'): 
-            tableName = fileName.replace('.go', '').replace('Flattened', '')
+            tableName = fileName.replace('.go', '')
             tableNames.append(tableName)
             typeMeta = {}
 
             try:
-                typeMeta = produceParsedType(baseTypeDir + '/' + fileName)
+                typeMeta = produceParsedType(dbTypeTargetDir + '/' + fileName)
 
             except Exception as e:
                 raise e
@@ -93,7 +112,7 @@ def produceParsedType(fileName: str):
     
     except Exception as e:
         raise e
-
+    
     if (fileContent == ''):
         raise Exception('Unexpected: could not recieve file content from ' + fileName)
 
@@ -147,6 +166,29 @@ def produceParsedType(fileName: str):
     return fieldTypes
 
 
+def produceDatabaseTargetType(fileName: str):
+    
+    #For now, outputting a new file without the JSON in the name for the db-compatible type
+    #Any additional transformations for the database interfaces can be intialized here
+    fileContent = ''
+
+    try:
+        with open(fileName, 'r', encoding='utf-8') as file:
+            fileContent = file.read()
+
+    except FileNotFoundError:
+        raise FileNotFoundError('Error: The file ' + fileName + ' was not found.')
+    
+    except Exception as e:
+        raise e
+
+    if (fileContent == ''):
+        raise Exception('Unexpected: could not recieve file content from ' + fileName)
+
+
+    return fileContent.replace("Json", "").replace("goTypeBase", "generatedDatabaseTypes")
+
+
 #The following expect a dictionary in the return shape specified for produceParsedTypes
 
 def produceCreateTableStatement(tableName: str, typeMeta: dict):
@@ -186,8 +228,9 @@ def produceTestInsertStatements(tableName: str, typeMeta: dict):
     
     def getTestTypeDefault(columnName: str, goType: str, numberSeed: int):
         testTypeDefaults = {
-            'TEXT': ''' + columnName + ' ' + str(numberSeed) + ''',
-            'NUMBER': numberSeed,
+            'TEXT': "'" + columnName + ' ' + str(numberSeed) + "'",
+            #Number will end up corresponding to booleans (0/1), so we can safely assign this way for test purposes
+            'NUMBER': 1,
             'REAL': float(numberSeed),
         }
 
@@ -226,7 +269,7 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
     def produceServiceSaveMethod(tableName: str):
     
         lines = [
-            'func Save' + tableName + '(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + 'Json) error {',
+            'func Save' + tableName + '(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ') error {',
             *indentLineBlock([
                 'tx := ' + dbArgName + '.Begin()',
                 '',
@@ -262,9 +305,9 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
     def produceServiceGetAllMethod(tableName: str):
     
         lines = [
-            'func Get' + tableName + 's(' + dbArgName + ' *gorm.DB, ' + objectArgName  + 's *[]types.' + tableName + 'Json) error {',
+            'func Get' + tableName + 's(' + dbArgName + ' *gorm.DB, ' + objectArgName  + 's *[]types.' + tableName + ') error {',
             *indentLineBlock([
-	            'result := db.Find(' + objectArgName + 's)',
+	            'result := db.Table("' + tableName + '").Find(' + objectArgName + 's)',
                 'return result.Error',  
             ]),
             '}'
@@ -276,9 +319,9 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
     def produceServiceGetByIdMethod(tableName: str):
     
         lines = [
-            'func Get' + tableName + 'ById(' + dbArgName + ' *gorm.DB, id int, ' + objectArgName  + ' *types.' + tableName + 'Json) error {',
+            'func Get' + tableName + 'ById(' + dbArgName + ' *gorm.DB, id int, ' + objectArgName  + ' *types.' + tableName + ') error {',
             *indentLineBlock([
-	            'result := db.First(' + objectArgName + ', id)',
+	            'result := db.Table("' + tableName + '").First(' + objectArgName + ', id)',
                 'return result.Error',  
             ]),
             '}'
@@ -290,12 +333,12 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
     lines = [
         *autogeneratedWarningMessage,
         '',
-        'package generatedservices',
+        'package generatedServices',
         'import (',
         *indentLineBlock([
             '"errors"',
             '"reflect"',
-            'types "AdventureEngineServer/generatedTypes"',
+            'types "AdventureEngineServer/generatedDatabaseTypes"',
   	        '"gorm.io/gorm"'
         ]),
         ')',
@@ -323,7 +366,7 @@ def produceControllerFileForType(tableName: str):
         lines = [
             'func Get' + tableName + 's(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
             *indentLineBlock([
-                'var returnBuffer []types.' + tableName + "Json",
+                'var returnBuffer []types.' + tableName,
                 'err := services.Get' + tableName + 's(' + dbArgName + ', &returnBuffer)',
                 'if err != nil {',
                 *indentLineBlock([
@@ -354,7 +397,7 @@ def produceControllerFileForType(tableName: str):
                 ]),
                 
                 '}',
-                'var returnBuffer types.' + tableName + "Json",
+                'var returnBuffer types.' + tableName,
                 'err = services.Get' + tableName + 'ById(' + dbArgName + ', idNum, &returnBuffer)',
                 'if err != nil {',
                 *indentLineBlock([
@@ -376,7 +419,7 @@ def produceControllerFileForType(tableName: str):
         lines = [
             'func Save' + tableName + '(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
             *indentLineBlock([
-                'var returnBuffer types.' + tableName + "Json",
+                'var returnBuffer types.' + tableName,
                 'err := services.Save' + tableName + '(' + dbArgName + ', &returnBuffer)',
                 'if err != nil {',
                 *indentLineBlock([
@@ -394,7 +437,7 @@ def produceControllerFileForType(tableName: str):
     lines = [
         *autogeneratedWarningMessage,
         '',
-        'package generatedcontrollers',
+        'package generatedControllers',
         'import (',
         *indentLineBlock([
   	        '"github.com/gin-gonic/gin"',
@@ -402,7 +445,7 @@ def produceControllerFileForType(tableName: str):
             '"strconv"',
             '"net/http"',
             'services "AdventureEngineServer/generatedServices"',
-            'types "AdventureEngineServer/generatedTypes"'
+            'types "AdventureEngineServer/generatedDatabaseTypes"'
         ]),
         ')',
         '',
@@ -423,8 +466,8 @@ def generateEndpointManager(tableNames: list[str]):
 
     def produceEndpointsForTable(tableName: str):
         lines = [
-            'router.GET("/get' + tableName + '", produceDBContextInjectedEndpoint(' + ginContextName + ', ' + dbContextName + ', controllers.Get' + tableName + 's))',
-            'router.GET("/get' + tableName + ':id", produceDBContextInjectedEndpoint(' + ginContextName + ', ' + dbContextName + ', controllers.Get' + tableName + 'ById))',
+            'router.GET("/get' + tableName + 's", produceDBContextInjectedEndpoint(' + ginContextName + ', ' + dbContextName + ', controllers.Get' + tableName + 's))',
+            'router.GET("/get' + tableName + '/:id", produceDBContextInjectedEndpoint(' + ginContextName + ', ' + dbContextName + ', controllers.Get' + tableName + 'ById))',
             'router.POST("/save' + tableName + '", produceDBContextInjectedEndpoint(' + ginContextName + ', ' + dbContextName + ', controllers.Save' + tableName + '))',
         ]
 
