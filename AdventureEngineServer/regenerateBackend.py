@@ -4,6 +4,7 @@ import pprint
 
 goTypeBaseDir = './goTypeBase'
 dbTypeTargetDir = './generatedDatabaseTypes'
+DTOTargetDir = './generatedDTOs'
 
 goToSqlTypeConversions = {
     'string': 'TEXT',
@@ -70,12 +71,24 @@ def main():
             serviceLines = produceServiceFileForType(tableName, typeMeta)
             serviceFilePath = 'generatedServices/' + tableName + 'Service.go'
 
+            DTOLines = produceDTOForType(tableName, typeMeta)
+            DTOFilePath = DTOTargetDir + '/' + tableName + "DTO.go"
+
+            directory = os.path.dirname(DTOFilePath)
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+            f = open(DTOFilePath, 'w')
+            f.writelines([i + '\n' for i in DTOLines])
+            f.close()
+
             directory = os.path.dirname(serviceFilePath)
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
             f = open(serviceFilePath, 'w')
             f.writelines([i + '\n' for i in serviceLines])
+            f.close()
 
             controllerLines = produceControllerFileForType(tableName)
             controllerFilePath = 'generatedControllers/' + tableName + 'Controller.go'
@@ -85,6 +98,7 @@ def main():
 
             f = open(controllerFilePath, 'w')
             f.writelines([i + '\n' for i in controllerLines])
+            f.close()
     
     
     f = open('endpointManagers/generatedEndpointManager.go', 'w')
@@ -144,9 +158,12 @@ def produceParsedType(fileName: str):
         if ( '__' not in field[1]):
             fieldTypes['attributes'][field[0]] = re.sub('`[^`]+`', '', field[1]).strip()
         else:
+            correspondingTableText: str = re.findall(r'(\w*%s\w*)' % '__', field[1])[0].split('__')[1]
+
             fieldTypes['relationships'][field[0]] = {
                 field[0]: re.sub('`[^`]+`', '', field[1]).strip(),
-                'correspondingTable': re.findall(r'(\w*%s\w*)' % '__', field[1])[0].split('__')[1].capitalize()
+                #There's not a convenient way to do this inline, .capitalize() lowercases all the other characters
+                'correspondingTable': correspondingTableText[0].upper() + correspondingTableText[1:]
             }
 
     #resulting dict structure for a type/table:
@@ -190,7 +207,6 @@ def produceDatabaseTargetType(fileName: str):
 
 
 #The following expect a dictionary in the return shape specified for produceParsedTypes
-
 def produceCreateTableStatement(tableName: str, typeMeta: dict):
 
     def generateForeignKeyConstraintSnippet(columnName: str, targetTable: str):
@@ -242,16 +258,23 @@ def produceTestInsertStatements(tableName: str, typeMeta: dict):
 
         columnOrder = list(typeMeta['attributes'].keys())
 
+        relationships = list(typeMeta['relationships'].keys())
+
         for column in columnOrder:
             if (column != 'Id'):
-                baseInsertStatement = baseInsertStatement + column + (', ' if column != columnOrder[-1] else '')
+                baseInsertStatement += column + (', ' if column != columnOrder[-1] else '')
+
+        for relationship in relationships:
+                baseInsertStatement += ', ' + relationship
         
         baseInsertStatement += ') VALUES('
 
         for column in columnOrder:
             if (column != 'Id'):
                 baseInsertStatement += getTestTypeDefault(column, typeMeta['attributes'][column], insertSeed) + (', ' if column != columnOrder[-1] else '')
-                insertSeed += 1
+
+        for relationship in relationships:
+                baseInsertStatement += ', 1'
 
         baseInsertStatement += ');'
 
@@ -260,6 +283,93 @@ def produceTestInsertStatements(tableName: str, typeMeta: dict):
 
     return [generateInsertStatement(i) for i in range(3)]
 
+#Currently assuming full levels of relationship includes
+def produceDTOForType(tableName: str, typeMeta: dict):
+
+    dbArgName = 'db'
+    objectArgName = tableName[0].lower() + tableName[1:]
+
+    def produceConvertToTableTypeMethod(tableName: str, typeMeta: dict):
+        lines = [
+            'func ' + tableName + 'DTOTo' + tableName + '(' + objectArgName + ' *' + tableName + 'DTO) types.' + tableName + ' {',
+            *indentLineBlock([
+                'return types.' + tableName + '{',
+                *indentLineBlock([
+                    'Id: ' + objectArgName + '.Id,',
+                    *[(attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.Attributes.' + attribute + ',' if attribute != 'Id' else '') for attribute in typeMeta['attributes']],
+                    *[relationship[0].upper() + relationship[1:] + ': ' + objectArgName + '.Relationships.' + relationship + '.Id,' for relationship in typeMeta["relationships"]],
+                ]),
+                '}',
+            ]),
+            '}'
+        ]
+
+        return lines
+    
+
+    def produceConvertToDTOMethod(tableName: str, typeMeta: dict):
+        lines = [
+            'func ' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ') ' + tableName + 'DTO {',
+            *indentLineBlock([
+                *['var included' + relationship + ' types.' + typeMeta['relationships'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]],
+
+                *['services.Get' + typeMeta['relationships'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), &included' + relationship + ')' for relationship in typeMeta["relationships"]],
+
+                'return ' + tableName + 'DTO{',
+                *indentLineBlock([
+                    'Id: ' + objectArgName + '.Id,',
+                    'Attributes: ' + tableName + 'DTOAttributes{',
+                    *indentLineBlock([(attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.' + attribute + ',' if attribute != 'Id' else '') for attribute in typeMeta['attributes']]),
+                    '},',
+                    'Relationships: ' + tableName + 'DTORelationships{',
+                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': ' + typeMeta['relationships'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + '),' for relationship in typeMeta["relationships"]]),
+                    '},',
+                ]),
+                '}',
+            ]),
+            '}'
+        ]
+
+        return lines
+
+    lines = [
+        *autogeneratedWarningMessage,
+        '',
+        'package generatedDTOs',
+        '',
+        'import (',
+        *indentLineBlock([
+            'types "AdventureEngineServer/generatedDatabaseTypes"',
+            'services "AdventureEngineServer/generatedServices"' if len(typeMeta["relationships"]) > 0 else '',
+  	        '"gorm.io/gorm"'
+        ]),
+        ')',
+        '',
+        'type ' + tableName + 'DTOAttributes struct {',
+        *indentLineBlock([attribute[0].upper() + attribute[1:] + ' ' + typeMeta['attributes'][attribute] if attribute != 'Id' else '' for attribute in typeMeta['attributes']]),
+        '}',
+        '',
+        'type ' + tableName + 'DTORelationships struct {',
+        *indentLineBlock([relationship[0].upper() + relationship[1:] + ' ' + typeMeta['relationships'][relationship]["correspondingTable"] + "DTO" for relationship in typeMeta['relationships']]),
+        '}',
+        '',
+        'type ' + tableName + 'DTO struct {',
+        *indentLineBlock([
+            'Id *float64',
+            '',
+            'Attributes ' + tableName + 'DTOAttributes',
+            '',
+            'Relationships ' + tableName + 'DTORelationships',
+        ]),
+        '}',
+        '',
+        *produceConvertToDTOMethod(tableName, typeMeta),
+        '',
+        *produceConvertToTableTypeMethod(tableName, typeMeta)
+    ]
+
+    return lines
+
 
 def produceServiceFileForType(tableName: str, typeMeta: dict):
 
@@ -267,7 +377,6 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
     objectArgName = tableName[0].lower() + tableName[1:]
 
     def produceServiceSaveMethod(tableName: str):
-    
         lines = [
             'func Save' + tableName + '(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ') error {',
             *indentLineBlock([
@@ -366,12 +475,19 @@ def produceControllerFileForType(tableName: str):
         lines = [
             'func Get' + tableName + 's(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
             *indentLineBlock([
-                'var returnBuffer []types.' + tableName,
-                'err := services.Get' + tableName + 's(' + dbArgName + ', &returnBuffer)',
+                'var serviceBuffer []types.' + tableName,
+                'err := services.Get' + tableName + 's(' + dbArgName + ', &serviceBuffer)',
                 'if err != nil {',
                 *indentLineBlock([
                     'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
                     'return'
+                ]),
+                '}',
+                '',
+                'var returnBuffer []dtos.' + tableName + 'DTO',
+                'for _, dbTypeInstance := range serviceBuffer {',
+                *indentLineBlock([
+                    'returnBuffer = append(returnBuffer, dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &dbTypeInstance))'
                 ]),
                 '}',
                 'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
@@ -397,14 +513,16 @@ def produceControllerFileForType(tableName: str):
                 ]),
                 
                 '}',
-                'var returnBuffer types.' + tableName,
-                'err = services.Get' + tableName + 'ById(' + dbArgName + ', idNum, &returnBuffer)',
+                'var serviceBuffer types.' + tableName,
+                'err = services.Get' + tableName + 'ById(' + dbArgName + ', idNum, &serviceBuffer)',
                 'if err != nil {',
                 *indentLineBlock([
                     contextArgName + '.IndentedJSON(http.StatusInternalServerError, err.Error())',
                     'return'
                 ]),
                 '}',
+                '',
+                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer)',
                 'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
 	        ]),
             '}'
@@ -419,14 +537,16 @@ def produceControllerFileForType(tableName: str):
         lines = [
             'func Save' + tableName + '(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
             *indentLineBlock([
-                'var returnBuffer types.' + tableName,
-                'err := services.Save' + tableName + '(' + dbArgName + ', &returnBuffer)',
+                'var serviceBuffer types.' + tableName,
+                'err := services.Save' + tableName + '(' + dbArgName + ', &serviceBuffer)',
                 'if err != nil {',
                 *indentLineBlock([
                     'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
                     'return'
                 ]),
                 '}',
+                '',
+                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer)',
                 'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
 	        ]),
             '}'
@@ -445,7 +565,8 @@ def produceControllerFileForType(tableName: str):
             '"strconv"',
             '"net/http"',
             'services "AdventureEngineServer/generatedServices"',
-            'types "AdventureEngineServer/generatedDatabaseTypes"'
+            'types "AdventureEngineServer/generatedDatabaseTypes"',
+            'dtos "AdventureEngineServer/generatedDTOs"'
         ]),
         ')',
         '',

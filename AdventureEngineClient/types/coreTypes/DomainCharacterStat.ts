@@ -16,10 +16,10 @@ baseSwimmingSpeed: number,
 */
 
 export type DomainCharacterStat = ExtendedSchemaObject<{
-    attributes: {
-        usesAction?: boolean,
-        usesBonusAction?: boolean,
+    Attributes: {
+        UsesAction?: boolean,
+        UsesBonusAction?: boolean,
     },
-    relationships: {
+    Relationships: {
     }
 }>

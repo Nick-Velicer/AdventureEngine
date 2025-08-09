@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainSpells(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainSpell
-   err := services.GetDomainSpells(db, &returnBuffer)
+   var serviceBuffer []types.DomainSpell
+   err := services.GetDomainSpells(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainSpellDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainSpellToDomainSpellDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainSpellById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainSpell
-   err = services.GetDomainSpellById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainSpell
+   err = services.GetDomainSpellById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSpellToDomainSpellDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainSpell(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainSpell
-   err := services.SaveDomainSpell(db, &returnBuffer)
+   var serviceBuffer types.DomainSpell
+   err := services.SaveDomainSpell(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSpellToDomainSpellDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

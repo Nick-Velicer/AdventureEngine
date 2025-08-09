@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainItems(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainItem
-   err := services.GetDomainItems(db, &returnBuffer)
+   var serviceBuffer []types.DomainItem
+   err := services.GetDomainItems(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainItemDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainItemToDomainItemDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainItemById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainItem
-   err = services.GetDomainItemById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainItem
+   err = services.GetDomainItemById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainItemToDomainItemDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainItem(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainItem
-   err := services.SaveDomainItem(db, &returnBuffer)
+   var serviceBuffer types.DomainItem
+   err := services.SaveDomainItem(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainItemToDomainItemDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

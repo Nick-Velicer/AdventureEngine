@@ -3,12 +3,12 @@ import { Quantifier } from "./Quantifier";
 
 //any in-game items
 export type DomainItem = ExtendedSchemaObject<{
-    attributes: {
-        customEffectText?: string
+    Attributes: {
+        CustomEffectText?: string
 
     },
-    relationships: {
-        oneHandedQuantifier: Quantifier,
-        twoHandedQuantifier: Quantifier,
+    Relationships: {
+        OneHandedQuantifier: Quantifier,
+        TwoHandedQuantifier: Quantifier,
     }
 }>

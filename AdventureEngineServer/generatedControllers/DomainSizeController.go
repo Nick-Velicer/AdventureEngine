@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainSizes(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainSize
-   err := services.GetDomainSizes(db, &returnBuffer)
+   var serviceBuffer []types.DomainSize
+   err := services.GetDomainSizes(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainSizeDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainSizeToDomainSizeDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainSizeById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainSize
-   err = services.GetDomainSizeById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainSize
+   err = services.GetDomainSizeById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSizeToDomainSizeDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainSize(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainSize
-   err := services.SaveDomainSize(db, &returnBuffer)
+   var serviceBuffer types.DomainSize
+   err := services.SaveDomainSize(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSizeToDomainSizeDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

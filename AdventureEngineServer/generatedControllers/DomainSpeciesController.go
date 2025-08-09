@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainSpeciess(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainSpecies
-   err := services.GetDomainSpeciess(db, &returnBuffer)
+   var serviceBuffer []types.DomainSpecies
+   err := services.GetDomainSpeciess(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainSpeciesDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainSpeciesToDomainSpeciesDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainSpeciesById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainSpecies
-   err = services.GetDomainSpeciesById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainSpecies
+   err = services.GetDomainSpeciesById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSpeciesToDomainSpeciesDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainSpecies(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainSpecies
-   err := services.SaveDomainSpecies(db, &returnBuffer)
+   var serviceBuffer types.DomainSpecies
+   err := services.SaveDomainSpecies(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSpeciesToDomainSpeciesDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

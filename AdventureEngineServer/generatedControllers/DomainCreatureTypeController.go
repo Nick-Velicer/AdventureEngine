@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainCreatureTypes(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainCreatureType
-   err := services.GetDomainCreatureTypes(db, &returnBuffer)
+   var serviceBuffer []types.DomainCreatureType
+   err := services.GetDomainCreatureTypes(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainCreatureTypeDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainCreatureTypeById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainCreatureType
-   err = services.GetDomainCreatureTypeById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainCreatureType
+   err = services.GetDomainCreatureTypeById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainCreatureType(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainCreatureType
-   err := services.SaveDomainCreatureType(db, &returnBuffer)
+   var serviceBuffer types.DomainCreatureType
+   err := services.SaveDomainCreatureType(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

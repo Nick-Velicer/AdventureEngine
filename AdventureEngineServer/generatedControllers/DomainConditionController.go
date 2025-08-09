@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainConditions(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainCondition
-   err := services.GetDomainConditions(db, &returnBuffer)
+   var serviceBuffer []types.DomainCondition
+   err := services.GetDomainConditions(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainConditionDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainConditionToDomainConditionDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainConditionById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainCondition
-   err = services.GetDomainConditionById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainCondition
+   err = services.GetDomainConditionById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainConditionToDomainConditionDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainCondition(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainCondition
-   err := services.SaveDomainCondition(db, &returnBuffer)
+   var serviceBuffer types.DomainCondition
+   err := services.SaveDomainCondition(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainConditionToDomainConditionDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

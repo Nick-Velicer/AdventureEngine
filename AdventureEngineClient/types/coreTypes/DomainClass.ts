@@ -4,10 +4,10 @@ import { DomainDice } from "./DomainDice";
 
 //Cleric, Barbarian, Ranger, etc.
 export type DomainClass = ExtendedSchemaObject<{
-    attributes: {
+    Attributes: {
     },
-    relationships: {
-        hitDie__domainDice: DomainDice,
-        spellcastingStat__domainCharacterStat: DomainCharacterStat,
+    Relationships: {
+        HitDie__domainDice: DomainDice,
+        SpellcastingStat__domainCharacterStat: DomainCharacterStat,
     }
 }>

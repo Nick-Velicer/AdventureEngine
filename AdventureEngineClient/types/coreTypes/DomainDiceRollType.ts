@@ -13,8 +13,8 @@ import { ExtendedSchemaObject } from "../SchemaObject";
 //Ability checks/saves
 
 export type DomainDiceRollType = ExtendedSchemaObject<{
-    attributes: {
+    Attributes: {
     },
-    relationships: {
+    Relationships: {
     }
 }>

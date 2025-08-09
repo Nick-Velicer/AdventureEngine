@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
 import { useQuery } from '@pinia/colada'
-import { getCampaigns } from '../../../services/generated/CampaignService'
+import { getCharacters } from '../../../services/generated/CharacterService'
 
-const { data: campaigns, isPending } = useQuery({
-  	key: () => ['campaigns'],
-  	query: () => getCampaigns(),
+const { data: characters, isPending } = useQuery({
+  	key: () => ['testkey'],
+  	query: () => getCharacters(),
 });
 
 </script>
@@ -21,16 +21,13 @@ const { data: campaigns, isPending } = useQuery({
 			</div>
 			<div v-bind:style="{display: 'flex', gap: '2rem'}">
 				<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
-					<!-- @vue-ignore -->
-					<div v-for="item in campaigns" v-text="item.id"></div>
+					<div v-for="item in characters" v-text="item.Id"></div>
 				</div>
 				<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
-					<!-- @vue-ignore -->
-					<div v-for="item in campaigns" v-text="item.title"></div>
+					<div v-for="item in characters" v-text="item.Attributes.Title"></div>
 				</div>
 				<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
-					<!-- @vue-ignore -->
-					<div v-for="item in campaigns" v-text="item.isActive? 'Active' : 'Inactive'"></div>
+					<div v-for="item in characters" v-text="item.Attributes.IsActive? 'Active' : 'Inactive'"></div>
 				</div>
 			</div>
 			

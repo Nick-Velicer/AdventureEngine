@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainSpellSchools(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainSpellSchool
-   err := services.GetDomainSpellSchools(db, &returnBuffer)
+   var serviceBuffer []types.DomainSpellSchool
+   err := services.GetDomainSpellSchools(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainSpellSchoolDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainSpellSchoolToDomainSpellSchoolDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainSpellSchoolById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainSpellSchool
-   err = services.GetDomainSpellSchoolById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainSpellSchool
+   err = services.GetDomainSpellSchoolById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSpellSchoolToDomainSpellSchoolDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainSpellSchool(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainSpellSchool
-   err := services.SaveDomainSpellSchool(db, &returnBuffer)
+   var serviceBuffer types.DomainSpellSchool
+   err := services.SaveDomainSpellSchool(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSpellSchoolToDomainSpellSchoolDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

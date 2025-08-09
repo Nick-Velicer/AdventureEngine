@@ -6,36 +6,36 @@ import { DomainSpell } from "./DomainSpell";
 import { DomainStaticEffect } from "./DomainStaticEffect";
 
 export type Quantifier = ExtendedSchemaObject<{
-    attributes: {
-        quantity?: number
-        delta?: number
-        refreshOnShortRest?: boolean
-        refreshOnLongRest?: boolean
-        untilShortRest?: boolean
-        untilLongRest?: boolean
-        levelMinimumRequirement?: number
-        levelMaximumRequirement?: number
-        impactsSelf?: boolean
-        intoInventory?: boolean
-        isAction?: boolean
-        isBonusAction?: boolean
-        level1SpellSlots?: number
-        level2SpellSlots?: number
-        level3SpellSlots?: number
-        level4SpellSlots?: number
-        level5SpellSlots?: number
-        level6SpellSlots?: number
-        level7SpellSlots?: number
-        level8SpellSlots?: number
-        level9SpellSlots?: number
+    Attributes: {
+        Quantity?: number
+        Delta?: number
+        RefreshOnShortRest?: boolean
+        RefreshOnLongRest?: boolean
+        UntilShortRest?: boolean
+        UntilLongRest?: boolean
+        LevelMinimumRequirement?: number
+        LevelMaximumRequirement?: number
+        ImpactsSelf?: boolean
+        IntoInventory?: boolean
+        IsAction?: boolean
+        IsBonusAction?: boolean
+        Level1SpellSlots?: number
+        Level2SpellSlots?: number
+        Level3SpellSlots?: number
+        Level4SpellSlots?: number
+        Level5SpellSlots?: number
+        Level6SpellSlots?: number
+        Level7SpellSlots?: number
+        Level8SpellSlots?: number
+        Level9SpellSlots?: number
     }
-    relationships: {
-        effect__domainStaticEffect?: DomainStaticEffect
-        target__domainCharacterStat?: DomainCharacterStat
-        addedSpell__domainSpell?: DomainSpell
-        condition__domainCondition?: DomainCondition
-        damageType__domainDamageType?: DomainDamageType
-        resistanceType__domainDamageType?: DomainDamageType
-        save__domainCharacterStat?: DomainCharacterStat
+    Relationships: {
+        Effect__domainStaticEffect?: DomainStaticEffect
+        Target__domainCharacterStat?: DomainCharacterStat
+        AddedSpell__domainSpell?: DomainSpell
+        Condition__domainCondition?: DomainCondition
+        DamageType__domainDamageType?: DomainDamageType
+        ResistanceType__domainDamageType?: DomainDamageType
+        Save__domainCharacterStat?: DomainCharacterStat
     }
 }>

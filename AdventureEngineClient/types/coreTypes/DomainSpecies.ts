@@ -2,9 +2,9 @@ import { ExtendedSchemaObject } from "../SchemaObject";
 import { DomainCreatureType } from "./DomainCreatureType";
 
 export type DomainSpecies = ExtendedSchemaObject<{
-    attributes: {
+    Attributes: {
     },
-    relationships: {
-        creatureType__DomainCreatureType: DomainCreatureType
+    Relationships: {
+        CreatureType__DomainCreatureType: DomainCreatureType
     }
 }>

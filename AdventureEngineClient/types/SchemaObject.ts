@@ -2,26 +2,26 @@ import { MergeDeep } from "type-fest"
 
 
 export type BaseAttributes = {
-    title?: string
-    description?: string
-    isActive?: boolean
+    Title?: string
+    Description?: string
+    IsActive?: boolean
 }
 
 type SchemaObject = {
-    id: number | undefined,
-    attributes: Record<string, any>,
-    relationships: Record<string, SchemaObject>,
+    Id: number | undefined,
+    Attributes: Record<string, any>,
+    Relationships: Record<string, SchemaObject>,
 }
 
 //For extension for the core object types to recieve common fields
 export type ExtendedSchemaObject<T extends {
-    attributes: Record<string, any>
-    relationships: Record<string, SchemaObject>
+    Attributes: Record<string, any>
+    Relationships: Record<string, SchemaObject>
 }> = {
-    id: number | undefined,
-    attributes: BaseAttributes & T["attributes"],
-    relationships: T["relationships"],
+    Id: number | undefined,
+    Attributes: BaseAttributes & T["Attributes"],
+    Relationships: T["Relationships"],
 }
 
 //MergeDeep is used here since a regular object union will result in the schemas being unions of properties, instead of one single property list
-export type FlattenedSchemaObject<T extends SchemaObject> = MergeDeep<MergeDeep<{ id: T["id"] }, T["attributes"]>, {[key in keyof T["relationships"]]: number | undefined}>
+export type FlattenedSchemaObject<T extends SchemaObject> = MergeDeep<MergeDeep<{ id: T["Id"] }, T["Attributes"]>, {[key in keyof T["Relationships"]]: number | undefined}>

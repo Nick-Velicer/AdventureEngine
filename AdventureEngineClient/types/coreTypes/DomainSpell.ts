@@ -3,25 +3,25 @@ import { DomainDice } from "./DomainDice";
 import { DomainSpellSchool } from "./DomainSpellSchool";
 
 export type DomainSpell = ExtendedSchemaObject<{
-    attributes: {
-        materialComponent?: string
-        somaticComponent?: string
-        verbalComponent?: string
-        isRanged?: boolean
-        isMelee?: boolean
-        isRitual?: boolean
-        concentrationRequired?: boolean
-        roundDuration?: number
-        hourDuration?: number
-        isCantrip?: boolean
-        level?: number
-        isAction?: boolean
-        isBonusAction?: boolean
-        minuteCastTime?: number
-        hourCastTime?: number
+    Attributes: {
+        MaterialComponent?: string
+        SomaticComponent?: string
+        VerbalComponent?: string
+        IsRanged?: boolean
+        IsMelee?: boolean
+        IsRitual?: boolean
+        ConcentrationRequired?: boolean
+        RoundDuration?: number
+        HourDuration?: number
+        IsCantrip?: boolean
+        Level?: number
+        IsAction?: boolean
+        IsBonusAction?: boolean
+        MinuteCastTime?: number
+        HourCastTime?: number
     }
-    relationships: {
-        school__domainSpellSchool?: DomainSpellSchool
-        damageScaling__domainDice?: DomainDice
+    Relationships: {
+        School__domainSpellSchool?: DomainSpellSchool
+        DamageScaling__domainDice?: DomainDice
     }
 }>

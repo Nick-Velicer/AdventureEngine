@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetCharacters(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.Character
-   err := services.GetCharacters(db, &returnBuffer)
+   var serviceBuffer []types.Character
+   err := services.GetCharacters(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.CharacterDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.CharacterToCharacterDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetCharacterById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.Character
-   err = services.GetCharacterById(db, idNum, &returnBuffer)
+   var serviceBuffer types.Character
+   err = services.GetCharacterById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.CharacterToCharacterDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveCharacter(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.Character
-   err := services.SaveCharacter(db, &returnBuffer)
+   var serviceBuffer types.Character
+   err := services.SaveCharacter(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.CharacterToCharacterDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

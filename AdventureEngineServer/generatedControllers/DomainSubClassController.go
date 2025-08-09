@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainSubClasss(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainSubClass
-   err := services.GetDomainSubClasss(db, &returnBuffer)
+   var serviceBuffer []types.DomainSubClass
+   err := services.GetDomainSubClasss(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainSubClassDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainSubClassToDomainSubClassDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainSubClassById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainSubClass
-   err = services.GetDomainSubClassById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainSubClass
+   err = services.GetDomainSubClassById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSubClassToDomainSubClassDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainSubClass(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainSubClass
-   err := services.SaveDomainSubClass(db, &returnBuffer)
+   var serviceBuffer types.DomainSubClass
+   err := services.SaveDomainSubClass(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainSubClassToDomainSubClassDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

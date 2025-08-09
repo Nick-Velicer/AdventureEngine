@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainDices(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainDice
-   err := services.GetDomainDices(db, &returnBuffer)
+   var serviceBuffer []types.DomainDice
+   err := services.GetDomainDices(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainDiceDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainDiceToDomainDiceDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainDiceById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainDice
-   err = services.GetDomainDiceById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainDice
+   err = services.GetDomainDiceById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainDiceToDomainDiceDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainDice(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainDice
-   err := services.SaveDomainDice(db, &returnBuffer)
+   var serviceBuffer types.DomainDice
+   err := services.SaveDomainDice(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainDiceToDomainDiceDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

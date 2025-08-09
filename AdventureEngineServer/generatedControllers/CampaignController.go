@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetCampaigns(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.Campaign
-   err := services.GetCampaigns(db, &returnBuffer)
+   var serviceBuffer []types.Campaign
+   err := services.GetCampaigns(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.CampaignDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.CampaignToCampaignDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetCampaignById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.Campaign
-   err = services.GetCampaignById(db, idNum, &returnBuffer)
+   var serviceBuffer types.Campaign
+   err = services.GetCampaignById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.CampaignToCampaignDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveCampaign(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.Campaign
-   err := services.SaveCampaign(db, &returnBuffer)
+   var serviceBuffer types.Campaign
+   err := services.SaveCampaign(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.CampaignToCampaignDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

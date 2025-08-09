@@ -2,8 +2,8 @@ import { ExtendedSchemaObject } from "../SchemaObject";
 
 //Abjuration, Conjuration, Divination, Enchantment, Evocation, Illusion, Necromancy, and Transmutation
 export type DomainSpellSchool = ExtendedSchemaObject<{
-    attributes: {
+    Attributes: {
     }
-    relationships: {
+    Relationships: {
     }
 }>

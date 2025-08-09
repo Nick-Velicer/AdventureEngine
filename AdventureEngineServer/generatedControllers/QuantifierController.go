@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetQuantifiers(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.Quantifier
-   err := services.GetQuantifiers(db, &returnBuffer)
+   var serviceBuffer []types.Quantifier
+   err := services.GetQuantifiers(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.QuantifierDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.QuantifierToQuantifierDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetQuantifierById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.Quantifier
-   err = services.GetQuantifierById(db, idNum, &returnBuffer)
+   var serviceBuffer types.Quantifier
+   err = services.GetQuantifierById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.QuantifierToQuantifierDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveQuantifier(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.Quantifier
-   err := services.SaveQuantifier(db, &returnBuffer)
+   var serviceBuffer types.Quantifier
+   err := services.SaveQuantifier(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.QuantifierToQuantifierDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

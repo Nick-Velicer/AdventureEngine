@@ -5,12 +5,12 @@ import { DomainSpecies } from "./DomainSpecies";
 import { DomainSubClass } from "./DomainSubClass";
 
 export type Character = ExtendedSchemaObject<{
-    attributes: {
+    Attributes: {
     },
-    relationships: {
-        currentSize__domainSize?: DomainSize,
-        species__domainSpecies?: DomainSpecies,
-        subclass__domainSubClass?: DomainSubClass,
-        campaign__Campaign?: Campaign,
+    Relationships: {
+        CurrentSize__domainSize?: DomainSize,
+        Species__domainSpecies?: DomainSpecies,
+        Subclass__domainSubClass?: DomainSubClass,
+        Campaign__Campaign?: Campaign,
     }
 }>

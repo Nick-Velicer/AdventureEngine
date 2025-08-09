@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainCharacterStats(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainCharacterStat
-   err := services.GetDomainCharacterStats(db, &returnBuffer)
+   var serviceBuffer []types.DomainCharacterStat
+   err := services.GetDomainCharacterStats(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainCharacterStatDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainCharacterStatById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainCharacterStat
-   err = services.GetDomainCharacterStatById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainCharacterStat
+   err = services.GetDomainCharacterStatById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainCharacterStat(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainCharacterStat
-   err := services.SaveDomainCharacterStat(db, &returnBuffer)
+   var serviceBuffer types.DomainCharacterStat
+   err := services.SaveDomainCharacterStat(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainActions(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainAction
-   err := services.GetDomainActions(db, &returnBuffer)
+   var serviceBuffer []types.DomainAction
+   err := services.GetDomainActions(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainActionDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainActionToDomainActionDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainActionById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainAction
-   err = services.GetDomainActionById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainAction
+   err = services.GetDomainActionById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainActionToDomainActionDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainAction(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainAction
-   err := services.SaveDomainAction(db, &returnBuffer)
+   var serviceBuffer types.DomainAction
+   err := services.SaveDomainAction(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainActionToDomainActionDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

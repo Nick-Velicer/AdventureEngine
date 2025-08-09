@@ -1,10 +1,10 @@
 import { ExtendedSchemaObject} from "../SchemaObject";
   
 export type Campaign = ExtendedSchemaObject<{
-    attributes: {
+    Attributes: {
         
     },
-    relationships: {
+    Relationships: {
         
     }
 }>

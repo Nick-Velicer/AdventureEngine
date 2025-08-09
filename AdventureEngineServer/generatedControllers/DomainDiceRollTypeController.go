@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainDiceRollTypes(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainDiceRollType
-   err := services.GetDomainDiceRollTypes(db, &returnBuffer)
+   var serviceBuffer []types.DomainDiceRollType
+   err := services.GetDomainDiceRollTypes(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainDiceRollTypeDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainDiceRollTypeById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainDiceRollType
-   err = services.GetDomainDiceRollTypeById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainDiceRollType
+   err = services.GetDomainDiceRollTypeById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainDiceRollType(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainDiceRollType
-   err := services.SaveDomainDiceRollType(db, &returnBuffer)
+   var serviceBuffer types.DomainDiceRollType
+   err := services.SaveDomainDiceRollType(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

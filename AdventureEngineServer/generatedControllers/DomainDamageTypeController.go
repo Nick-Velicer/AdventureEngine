@@ -10,14 +10,20 @@ import (
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
 )
 
 func GetDomainDamageTypes(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer []types.DomainDamageType
-   err := services.GetDomainDamageTypes(db, &returnBuffer)
+   var serviceBuffer []types.DomainDamageType
+   err := services.GetDomainDamageTypes(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
+   }
+   
+   var returnBuffer []dtos.DomainDamageTypeDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      returnBuffer = append(returnBuffer, dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &dbTypeInstance))
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -29,21 +35,25 @@ func GetDomainDamageTypeById(ctx *gin.Context, db *gorm.DB) {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var returnBuffer types.DomainDamageType
-   err = services.GetDomainDamageTypeById(db, idNum, &returnBuffer)
+   var serviceBuffer types.DomainDamageType
+   err = services.GetDomainDamageTypeById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveDomainDamageType(ctx *gin.Context, db *gorm.DB) {
-   var returnBuffer types.DomainDamageType
-   err := services.SaveDomainDamageType(db, &returnBuffer)
+   var serviceBuffer types.DomainDamageType
+   err := services.SaveDomainDamageType(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
+   
+   returnBuffer := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &serviceBuffer)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
