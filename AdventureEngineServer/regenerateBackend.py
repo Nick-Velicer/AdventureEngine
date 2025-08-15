@@ -257,20 +257,19 @@ def produceTestInsertStatements(tableName: str, typeMeta: dict):
         baseInsertStatement = 'INSERT INTO  ' + tableName + '(' 
 
         columnOrder = list(typeMeta['attributes'].keys())
+        columnOrder.remove("Id")
 
         relationships = list(typeMeta['relationships'].keys())
 
         for column in columnOrder:
-            if (column != 'Id'):
-                baseInsertStatement += column + (', ' if column != columnOrder[-1] else '')
+            baseInsertStatement += column + (', ' if column != columnOrder[-1] else '')
 
         for relationship in relationships:
-                baseInsertStatement += ', ' + relationship
+            baseInsertStatement += ', ' + relationship
         
         baseInsertStatement += ') VALUES('
 
         for column in columnOrder:
-            if (column != 'Id'):
                 baseInsertStatement += getTestTypeDefault(column, typeMeta['attributes'][column], insertSeed) + (', ' if column != columnOrder[-1] else '')
 
         for relationship in relationships:
