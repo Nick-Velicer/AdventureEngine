@@ -12,9 +12,9 @@ import (
 
 type DomainStaticEffectDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Title *string
+   
 }
 
 type DomainStaticEffectDTORelationships struct {
@@ -33,9 +33,9 @@ func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *
       Id: domainStaticEffect.Id,
       Attributes: DomainStaticEffectDTOAttributes{
          Description: domainStaticEffect.Description,
-         
          IsActive: domainStaticEffect.IsActive,
          Title: domainStaticEffect.Title,
+         
       },
       Relationships: DomainStaticEffectDTORelationships{
       },
@@ -46,8 +46,8 @@ func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticE
    return types.DomainStaticEffect{
       Id: domainStaticEffect.Id,
       Description: domainStaticEffect.Attributes.Description,
-      
       IsActive: domainStaticEffect.Attributes.IsActive,
       Title: domainStaticEffect.Attributes.Title,
+      
    }
 }

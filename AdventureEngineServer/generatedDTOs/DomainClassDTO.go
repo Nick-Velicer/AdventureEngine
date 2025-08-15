@@ -12,9 +12,9 @@ import (
 
 type DomainClassDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Title *string
+   
 }
 
 type DomainClassDTORelationships struct {
@@ -39,9 +39,9 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass) Do
       Id: domainClass.Id,
       Attributes: DomainClassDTOAttributes{
          Description: domainClass.Description,
-         
          IsActive: domainClass.IsActive,
          Title: domainClass.Title,
+         
       },
       Relationships: DomainClassDTORelationships{
          HitDieDomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDieDomainDice),
@@ -54,9 +54,9 @@ func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) types.DomainClass 
    return types.DomainClass{
       Id: domainClass.Id,
       Description: domainClass.Attributes.Description,
-      
       IsActive: domainClass.Attributes.IsActive,
       Title: domainClass.Attributes.Title,
+      
       HitDieDomainDice: domainClass.Relationships.HitDieDomainDice.Id,
       SpellcastingStatDomainCharacterStat: domainClass.Relationships.SpellcastingStatDomainCharacterStat.Id,
    }

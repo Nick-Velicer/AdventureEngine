@@ -12,9 +12,9 @@ import (
 
 type DomainConditionDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Title *string
+   
 }
 
 type DomainConditionDTORelationships struct {
@@ -33,9 +33,9 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
       Id: domainCondition.Id,
       Attributes: DomainConditionDTOAttributes{
          Description: domainCondition.Description,
-         
          IsActive: domainCondition.IsActive,
          Title: domainCondition.Title,
+         
       },
       Relationships: DomainConditionDTORelationships{
       },
@@ -46,8 +46,8 @@ func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) ty
    return types.DomainCondition{
       Id: domainCondition.Id,
       Description: domainCondition.Attributes.Description,
-      
       IsActive: domainCondition.Attributes.IsActive,
       Title: domainCondition.Attributes.Title,
+      
    }
 }

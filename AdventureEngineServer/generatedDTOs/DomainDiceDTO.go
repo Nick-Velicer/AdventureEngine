@@ -12,11 +12,11 @@ import (
 
 type DomainDiceDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Maximum float64
    Minimum float64
    Title *string
+   
 }
 
 type DomainDiceDTORelationships struct {
@@ -35,11 +35,11 @@ func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice) Domain
       Id: domainDice.Id,
       Attributes: DomainDiceDTOAttributes{
          Description: domainDice.Description,
-         
          IsActive: domainDice.IsActive,
          Maximum: domainDice.Maximum,
          Minimum: domainDice.Minimum,
          Title: domainDice.Title,
+         
       },
       Relationships: DomainDiceDTORelationships{
       },
@@ -50,10 +50,10 @@ func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) types.DomainDice {
    return types.DomainDice{
       Id: domainDice.Id,
       Description: domainDice.Attributes.Description,
-      
       IsActive: domainDice.Attributes.IsActive,
       Maximum: domainDice.Attributes.Maximum,
       Minimum: domainDice.Attributes.Minimum,
       Title: domainDice.Attributes.Title,
+      
    }
 }

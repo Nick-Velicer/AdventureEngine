@@ -12,9 +12,9 @@ import (
 
 type DomainCreatureTypeDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Title *string
+   
 }
 
 type DomainCreatureTypeDTORelationships struct {
@@ -33,9 +33,9 @@ func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *
       Id: domainCreatureType.Id,
       Attributes: DomainCreatureTypeDTOAttributes{
          Description: domainCreatureType.Description,
-         
          IsActive: domainCreatureType.IsActive,
          Title: domainCreatureType.Title,
+         
       },
       Relationships: DomainCreatureTypeDTORelationships{
       },
@@ -46,8 +46,8 @@ func DomainCreatureTypeDTOToDomainCreatureType(domainCreatureType *DomainCreatur
    return types.DomainCreatureType{
       Id: domainCreatureType.Id,
       Description: domainCreatureType.Attributes.Description,
-      
       IsActive: domainCreatureType.Attributes.IsActive,
       Title: domainCreatureType.Attributes.Title,
+      
    }
 }

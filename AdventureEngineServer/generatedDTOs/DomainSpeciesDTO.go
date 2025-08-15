@@ -12,9 +12,9 @@ import (
 
 type DomainSpeciesDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Title *string
+   
 }
 
 type DomainSpeciesDTORelationships struct {
@@ -36,9 +36,9 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
       Id: domainSpecies.Id,
       Attributes: DomainSpeciesDTOAttributes{
          Description: domainSpecies.Description,
-         
          IsActive: domainSpecies.IsActive,
          Title: domainSpecies.Title,
+         
       },
       Relationships: DomainSpeciesDTORelationships{
          CreatureTypeDomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureTypeDomainCreatureType),
@@ -50,9 +50,9 @@ func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) types.Doma
    return types.DomainSpecies{
       Id: domainSpecies.Id,
       Description: domainSpecies.Attributes.Description,
-      
       IsActive: domainSpecies.Attributes.IsActive,
       Title: domainSpecies.Attributes.Title,
+      
       CreatureTypeDomainCreatureType: domainSpecies.Relationships.CreatureTypeDomainCreatureType.Id,
    }
 }

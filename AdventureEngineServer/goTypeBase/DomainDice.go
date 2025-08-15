@@ -6,40 +6,40 @@ import "encoding/json"
 import "fmt"
 
 type DomainDiceJson struct {
-	// Description corresponds to the JSON schema field "description".
-	Description *string `json:"description,omitempty" yaml:"description,omitempty" mapstructure:"description,omitempty"`
+	// Description corresponds to the JSON schema field "Description".
+	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+
+	// IsActive corresponds to the JSON schema field "IsActive".
+	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+
+	// Maximum corresponds to the JSON schema field "Maximum".
+	Maximum float64 `json:"Maximum" yaml:"Maximum" mapstructure:"Maximum"`
+
+	// Minimum corresponds to the JSON schema field "Minimum".
+	Minimum float64 `json:"Minimum" yaml:"Minimum" mapstructure:"Minimum"`
+
+	// Title corresponds to the JSON schema field "Title".
+	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-
-	// IsActive corresponds to the JSON schema field "isActive".
-	IsActive *bool `json:"isActive,omitempty" yaml:"isActive,omitempty" mapstructure:"isActive,omitempty"`
-
-	// Maximum corresponds to the JSON schema field "maximum".
-	Maximum float64 `json:"maximum" yaml:"maximum" mapstructure:"maximum"`
-
-	// Minimum corresponds to the JSON schema field "minimum".
-	Minimum float64 `json:"minimum" yaml:"minimum" mapstructure:"minimum"`
-
-	// Title corresponds to the JSON schema field "title".
-	Title *string `json:"title,omitempty" yaml:"title,omitempty" mapstructure:"title,omitempty"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *DomainDiceJson) UnmarshalJSON(value []byte) error {
+func (j *DomainDiceJson) UnmarshalJSON(b []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(value, &raw); err != nil {
+	if err := json.Unmarshal(b, &raw); err != nil {
 		return err
 	}
-	if _, ok := raw["maximum"]; raw != nil && !ok {
-		return fmt.Errorf("field maximum in DomainDiceJson: required")
+	if _, ok := raw["Maximum"]; raw != nil && !ok {
+		return fmt.Errorf("field Maximum in DomainDiceJson: required")
 	}
-	if _, ok := raw["minimum"]; raw != nil && !ok {
-		return fmt.Errorf("field minimum in DomainDiceJson: required")
+	if _, ok := raw["Minimum"]; raw != nil && !ok {
+		return fmt.Errorf("field Minimum in DomainDiceJson: required")
 	}
 	type Plain DomainDiceJson
 	var plain Plain
-	if err := json.Unmarshal(value, &plain); err != nil {
+	if err := json.Unmarshal(b, &plain); err != nil {
 		return err
 	}
 	*j = DomainDiceJson(plain)

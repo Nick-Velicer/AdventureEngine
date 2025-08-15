@@ -4,68 +4,68 @@ package goTypeBase
 
 type DomainSpellJson struct {
 	// ConcentrationRequired corresponds to the JSON schema field
-	// "concentrationRequired".
-	ConcentrationRequired *bool `json:"concentrationRequired,omitempty" yaml:"concentrationRequired,omitempty" mapstructure:"concentrationRequired,omitempty"`
+	// "ConcentrationRequired".
+	ConcentrationRequired *bool `json:"ConcentrationRequired,omitempty" yaml:"ConcentrationRequired,omitempty" mapstructure:"ConcentrationRequired,omitempty"`
 
 	// DamageScalingDomainDice corresponds to the JSON schema field
-	// "damageScaling__domainDice".
-	DamageScalingDomainDice *float64 `json:"damageScaling__domainDice,omitempty" yaml:"damageScaling__domainDice,omitempty" mapstructure:"damageScaling__domainDice,omitempty"`
+	// "DamageScaling__domainDice".
+	DamageScalingDomainDice *float64 `json:"DamageScaling__domainDice,omitempty" yaml:"DamageScaling__domainDice,omitempty" mapstructure:"DamageScaling__domainDice,omitempty"`
 
-	// Description corresponds to the JSON schema field "description".
-	Description *string `json:"description,omitempty" yaml:"description,omitempty" mapstructure:"description,omitempty"`
+	// Description corresponds to the JSON schema field "Description".
+	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
-	// HourCastTime corresponds to the JSON schema field "hourCastTime".
-	HourCastTime *float64 `json:"hourCastTime,omitempty" yaml:"hourCastTime,omitempty" mapstructure:"hourCastTime,omitempty"`
+	// HourCastTime corresponds to the JSON schema field "HourCastTime".
+	HourCastTime *float64 `json:"HourCastTime,omitempty" yaml:"HourCastTime,omitempty" mapstructure:"HourCastTime,omitempty"`
 
-	// HourDuration corresponds to the JSON schema field "hourDuration".
-	HourDuration *float64 `json:"hourDuration,omitempty" yaml:"hourDuration,omitempty" mapstructure:"hourDuration,omitempty"`
+	// HourDuration corresponds to the JSON schema field "HourDuration".
+	HourDuration *float64 `json:"HourDuration,omitempty" yaml:"HourDuration,omitempty" mapstructure:"HourDuration,omitempty"`
+
+	// IsAction corresponds to the JSON schema field "IsAction".
+	IsAction *bool `json:"IsAction,omitempty" yaml:"IsAction,omitempty" mapstructure:"IsAction,omitempty"`
+
+	// IsActive corresponds to the JSON schema field "IsActive".
+	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+
+	// IsBonusAction corresponds to the JSON schema field "IsBonusAction".
+	IsBonusAction *bool `json:"IsBonusAction,omitempty" yaml:"IsBonusAction,omitempty" mapstructure:"IsBonusAction,omitempty"`
+
+	// IsCantrip corresponds to the JSON schema field "IsCantrip".
+	IsCantrip *bool `json:"IsCantrip,omitempty" yaml:"IsCantrip,omitempty" mapstructure:"IsCantrip,omitempty"`
+
+	// IsMelee corresponds to the JSON schema field "IsMelee".
+	IsMelee *bool `json:"IsMelee,omitempty" yaml:"IsMelee,omitempty" mapstructure:"IsMelee,omitempty"`
+
+	// IsRanged corresponds to the JSON schema field "IsRanged".
+	IsRanged *bool `json:"IsRanged,omitempty" yaml:"IsRanged,omitempty" mapstructure:"IsRanged,omitempty"`
+
+	// IsRitual corresponds to the JSON schema field "IsRitual".
+	IsRitual *bool `json:"IsRitual,omitempty" yaml:"IsRitual,omitempty" mapstructure:"IsRitual,omitempty"`
+
+	// Level corresponds to the JSON schema field "Level".
+	Level *float64 `json:"Level,omitempty" yaml:"Level,omitempty" mapstructure:"Level,omitempty"`
+
+	// MaterialComponent corresponds to the JSON schema field "MaterialComponent".
+	MaterialComponent *string `json:"MaterialComponent,omitempty" yaml:"MaterialComponent,omitempty" mapstructure:"MaterialComponent,omitempty"`
+
+	// MinuteCastTime corresponds to the JSON schema field "MinuteCastTime".
+	MinuteCastTime *float64 `json:"MinuteCastTime,omitempty" yaml:"MinuteCastTime,omitempty" mapstructure:"MinuteCastTime,omitempty"`
+
+	// RoundDuration corresponds to the JSON schema field "RoundDuration".
+	RoundDuration *float64 `json:"RoundDuration,omitempty" yaml:"RoundDuration,omitempty" mapstructure:"RoundDuration,omitempty"`
+
+	// SchoolDomainSpellSchool corresponds to the JSON schema field
+	// "School__domainSpellSchool".
+	SchoolDomainSpellSchool *float64 `json:"School__domainSpellSchool,omitempty" yaml:"School__domainSpellSchool,omitempty" mapstructure:"School__domainSpellSchool,omitempty"`
+
+	// SomaticComponent corresponds to the JSON schema field "SomaticComponent".
+	SomaticComponent *string `json:"SomaticComponent,omitempty" yaml:"SomaticComponent,omitempty" mapstructure:"SomaticComponent,omitempty"`
+
+	// Title corresponds to the JSON schema field "Title".
+	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// VerbalComponent corresponds to the JSON schema field "VerbalComponent".
+	VerbalComponent *string `json:"VerbalComponent,omitempty" yaml:"VerbalComponent,omitempty" mapstructure:"VerbalComponent,omitempty"`
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-
-	// IsAction corresponds to the JSON schema field "isAction".
-	IsAction *bool `json:"isAction,omitempty" yaml:"isAction,omitempty" mapstructure:"isAction,omitempty"`
-
-	// IsActive corresponds to the JSON schema field "isActive".
-	IsActive *bool `json:"isActive,omitempty" yaml:"isActive,omitempty" mapstructure:"isActive,omitempty"`
-
-	// IsBonusAction corresponds to the JSON schema field "isBonusAction".
-	IsBonusAction *bool `json:"isBonusAction,omitempty" yaml:"isBonusAction,omitempty" mapstructure:"isBonusAction,omitempty"`
-
-	// IsCantrip corresponds to the JSON schema field "isCantrip".
-	IsCantrip *bool `json:"isCantrip,omitempty" yaml:"isCantrip,omitempty" mapstructure:"isCantrip,omitempty"`
-
-	// IsMelee corresponds to the JSON schema field "isMelee".
-	IsMelee *bool `json:"isMelee,omitempty" yaml:"isMelee,omitempty" mapstructure:"isMelee,omitempty"`
-
-	// IsRanged corresponds to the JSON schema field "isRanged".
-	IsRanged *bool `json:"isRanged,omitempty" yaml:"isRanged,omitempty" mapstructure:"isRanged,omitempty"`
-
-	// IsRitual corresponds to the JSON schema field "isRitual".
-	IsRitual *bool `json:"isRitual,omitempty" yaml:"isRitual,omitempty" mapstructure:"isRitual,omitempty"`
-
-	// Level corresponds to the JSON schema field "level".
-	Level *float64 `json:"level,omitempty" yaml:"level,omitempty" mapstructure:"level,omitempty"`
-
-	// MaterialComponent corresponds to the JSON schema field "materialComponent".
-	MaterialComponent *string `json:"materialComponent,omitempty" yaml:"materialComponent,omitempty" mapstructure:"materialComponent,omitempty"`
-
-	// MinuteCastTime corresponds to the JSON schema field "minuteCastTime".
-	MinuteCastTime *float64 `json:"minuteCastTime,omitempty" yaml:"minuteCastTime,omitempty" mapstructure:"minuteCastTime,omitempty"`
-
-	// RoundDuration corresponds to the JSON schema field "roundDuration".
-	RoundDuration *float64 `json:"roundDuration,omitempty" yaml:"roundDuration,omitempty" mapstructure:"roundDuration,omitempty"`
-
-	// SchoolDomainSpellSchool corresponds to the JSON schema field
-	// "school__domainSpellSchool".
-	SchoolDomainSpellSchool *float64 `json:"school__domainSpellSchool,omitempty" yaml:"school__domainSpellSchool,omitempty" mapstructure:"school__domainSpellSchool,omitempty"`
-
-	// SomaticComponent corresponds to the JSON schema field "somaticComponent".
-	SomaticComponent *string `json:"somaticComponent,omitempty" yaml:"somaticComponent,omitempty" mapstructure:"somaticComponent,omitempty"`
-
-	// Title corresponds to the JSON schema field "title".
-	Title *string `json:"title,omitempty" yaml:"title,omitempty" mapstructure:"title,omitempty"`
-
-	// VerbalComponent corresponds to the JSON schema field "verbalComponent".
-	VerbalComponent *string `json:"verbalComponent,omitempty" yaml:"verbalComponent,omitempty" mapstructure:"verbalComponent,omitempty"`
 }

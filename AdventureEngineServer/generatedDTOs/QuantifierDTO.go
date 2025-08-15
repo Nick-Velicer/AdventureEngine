@@ -13,7 +13,6 @@ import (
 type QuantifierDTOAttributes struct {
    Delta *float64
    Description *string
-   
    ImpactsSelf *bool
    IntoInventory *bool
    IsAction *bool
@@ -36,6 +35,7 @@ type QuantifierDTOAttributes struct {
    Title *string
    UntilLongRest *bool
    UntilShortRest *bool
+   
 }
 
 type QuantifierDTORelationships struct {
@@ -76,7 +76,6 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier) Quanti
       Attributes: QuantifierDTOAttributes{
          Delta: quantifier.Delta,
          Description: quantifier.Description,
-         
          ImpactsSelf: quantifier.ImpactsSelf,
          IntoInventory: quantifier.IntoInventory,
          IsAction: quantifier.IsAction,
@@ -99,6 +98,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier) Quanti
          Title: quantifier.Title,
          UntilLongRest: quantifier.UntilLongRest,
          UntilShortRest: quantifier.UntilShortRest,
+         
       },
       Relationships: QuantifierDTORelationships{
          AddedSpellDomainSpell: DomainSpellToDomainSpellDTO(db, &includedAddedSpellDomainSpell),
@@ -117,7 +117,6 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) types.Quantifier {
       Id: quantifier.Id,
       Delta: quantifier.Attributes.Delta,
       Description: quantifier.Attributes.Description,
-      
       ImpactsSelf: quantifier.Attributes.ImpactsSelf,
       IntoInventory: quantifier.Attributes.IntoInventory,
       IsAction: quantifier.Attributes.IsAction,
@@ -140,6 +139,7 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) types.Quantifier {
       Title: quantifier.Attributes.Title,
       UntilLongRest: quantifier.Attributes.UntilLongRest,
       UntilShortRest: quantifier.Attributes.UntilShortRest,
+      
       AddedSpellDomainSpell: quantifier.Relationships.AddedSpellDomainSpell.Id,
       ConditionDomainCondition: quantifier.Relationships.ConditionDomainCondition.Id,
       DamageTypeDomainDamageType: quantifier.Relationships.DamageTypeDomainDamageType.Id,

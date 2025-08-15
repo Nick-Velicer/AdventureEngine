@@ -3,24 +3,24 @@
 package goTypeBase
 
 type DomainItemJson struct {
-	// CustomEffectText corresponds to the JSON schema field "customEffectText".
-	CustomEffectText *string `json:"customEffectText,omitempty" yaml:"customEffectText,omitempty" mapstructure:"customEffectText,omitempty"`
+	// CustomEffectText corresponds to the JSON schema field "CustomEffectText".
+	CustomEffectText *string `json:"CustomEffectText,omitempty" yaml:"CustomEffectText,omitempty" mapstructure:"CustomEffectText,omitempty"`
 
-	// Description corresponds to the JSON schema field "description".
-	Description *string `json:"description,omitempty" yaml:"description,omitempty" mapstructure:"description,omitempty"`
+	// Description corresponds to the JSON schema field "Description".
+	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+
+	// IsActive corresponds to the JSON schema field "IsActive".
+	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+
+	// OneHandedQuantifier corresponds to the JSON schema field "OneHandedQuantifier".
+	OneHandedQuantifier *float64 `json:"OneHandedQuantifier,omitempty" yaml:"OneHandedQuantifier,omitempty" mapstructure:"OneHandedQuantifier,omitempty"`
+
+	// Title corresponds to the JSON schema field "Title".
+	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// TwoHandedQuantifier corresponds to the JSON schema field "TwoHandedQuantifier".
+	TwoHandedQuantifier *float64 `json:"TwoHandedQuantifier,omitempty" yaml:"TwoHandedQuantifier,omitempty" mapstructure:"TwoHandedQuantifier,omitempty"`
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-
-	// IsActive corresponds to the JSON schema field "isActive".
-	IsActive *bool `json:"isActive,omitempty" yaml:"isActive,omitempty" mapstructure:"isActive,omitempty"`
-
-	// OneHandedQuantifier corresponds to the JSON schema field "oneHandedQuantifier".
-	OneHandedQuantifier *float64 `json:"oneHandedQuantifier,omitempty" yaml:"oneHandedQuantifier,omitempty" mapstructure:"oneHandedQuantifier,omitempty"`
-
-	// Title corresponds to the JSON schema field "title".
-	Title *string `json:"title,omitempty" yaml:"title,omitempty" mapstructure:"title,omitempty"`
-
-	// TwoHandedQuantifier corresponds to the JSON schema field "twoHandedQuantifier".
-	TwoHandedQuantifier *float64 `json:"twoHandedQuantifier,omitempty" yaml:"twoHandedQuantifier,omitempty" mapstructure:"twoHandedQuantifier,omitempty"`
 }

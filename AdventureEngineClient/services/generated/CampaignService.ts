@@ -8,7 +8,6 @@ export async function getCampaigns(): Promise<Array<Campaign>> {
    try {
       const response = await fetch("http://localhost:8080/getCampaigns");
       const returnObj = await response.json() as unknown as Array<Campaign>;
-      console.log(returnObj);
       return returnObj;
    }
    catch (errors) {

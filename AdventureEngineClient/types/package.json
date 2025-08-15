@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
-    "@types/node": "^22.15.21",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
     "react": "^18.3.1",
@@ -13,6 +12,7 @@
     "typescript-json-schema": "^0.65.1"
   },
   "devDependencies": {
+    "@types/node": "^24.3.0",
     "typescript": "~5.8.3"
   }
 }

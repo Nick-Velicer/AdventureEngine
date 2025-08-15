@@ -12,9 +12,9 @@ import (
 
 type DomainDiceRollTypeDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Title *string
+   
 }
 
 type DomainDiceRollTypeDTORelationships struct {
@@ -33,9 +33,9 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
       Id: domainDiceRollType.Id,
       Attributes: DomainDiceRollTypeDTOAttributes{
          Description: domainDiceRollType.Description,
-         
          IsActive: domainDiceRollType.IsActive,
          Title: domainDiceRollType.Title,
+         
       },
       Relationships: DomainDiceRollTypeDTORelationships{
       },
@@ -46,8 +46,8 @@ func DomainDiceRollTypeDTOToDomainDiceRollType(domainDiceRollType *DomainDiceRol
    return types.DomainDiceRollType{
       Id: domainDiceRollType.Id,
       Description: domainDiceRollType.Attributes.Description,
-      
       IsActive: domainDiceRollType.Attributes.IsActive,
       Title: domainDiceRollType.Attributes.Title,
+      
    }
 }

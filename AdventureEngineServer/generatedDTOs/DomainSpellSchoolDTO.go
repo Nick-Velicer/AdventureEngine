@@ -12,9 +12,9 @@ import (
 
 type DomainSpellSchoolDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Title *string
+   
 }
 
 type DomainSpellSchoolDTORelationships struct {
@@ -33,9 +33,9 @@ func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *typ
       Id: domainSpellSchool.Id,
       Attributes: DomainSpellSchoolDTOAttributes{
          Description: domainSpellSchool.Description,
-         
          IsActive: domainSpellSchool.IsActive,
          Title: domainSpellSchool.Title,
+         
       },
       Relationships: DomainSpellSchoolDTORelationships{
       },
@@ -46,8 +46,8 @@ func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoo
    return types.DomainSpellSchool{
       Id: domainSpellSchool.Id,
       Description: domainSpellSchool.Attributes.Description,
-      
       IsActive: domainSpellSchool.Attributes.IsActive,
       Title: domainSpellSchool.Attributes.Title,
+      
    }
 }

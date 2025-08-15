@@ -4,107 +4,107 @@ package generatedDatabaseTypes
 
 type Quantifier struct {
 	// AddedSpellDomainSpell corresponds to the JSON schema field
-	// "addedSpell__domainSpell".
-	AddedSpellDomainSpell *float64 `json:"addedSpell__domainSpell,omitempty" yaml:"addedSpell__domainSpell,omitempty" mapstructure:"addedSpell__domainSpell,omitempty"`
+	// "AddedSpell__domainSpell".
+	AddedSpellDomainSpell *float64 `json:"AddedSpell__domainSpell,omitempty" yaml:"AddedSpell__domainSpell,omitempty" mapstructure:"AddedSpell__domainSpell,omitempty"`
 
 	// ConditionDomainCondition corresponds to the JSON schema field
-	// "condition__domainCondition".
-	ConditionDomainCondition *float64 `json:"condition__domainCondition,omitempty" yaml:"condition__domainCondition,omitempty" mapstructure:"condition__domainCondition,omitempty"`
+	// "Condition__domainCondition".
+	ConditionDomainCondition *float64 `json:"Condition__domainCondition,omitempty" yaml:"Condition__domainCondition,omitempty" mapstructure:"Condition__domainCondition,omitempty"`
 
 	// DamageTypeDomainDamageType corresponds to the JSON schema field
-	// "damageType__domainDamageType".
-	DamageTypeDomainDamageType *float64 `json:"damageType__domainDamageType,omitempty" yaml:"damageType__domainDamageType,omitempty" mapstructure:"damageType__domainDamageType,omitempty"`
+	// "DamageType__domainDamageType".
+	DamageTypeDomainDamageType *float64 `json:"DamageType__domainDamageType,omitempty" yaml:"DamageType__domainDamageType,omitempty" mapstructure:"DamageType__domainDamageType,omitempty"`
 
-	// Delta corresponds to the JSON schema field "delta".
-	Delta *float64 `json:"delta,omitempty" yaml:"delta,omitempty" mapstructure:"delta,omitempty"`
+	// Delta corresponds to the JSON schema field "Delta".
+	Delta *float64 `json:"Delta,omitempty" yaml:"Delta,omitempty" mapstructure:"Delta,omitempty"`
 
-	// Description corresponds to the JSON schema field "description".
-	Description *string `json:"description,omitempty" yaml:"description,omitempty" mapstructure:"description,omitempty"`
+	// Description corresponds to the JSON schema field "Description".
+	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
 	// EffectDomainStaticEffect corresponds to the JSON schema field
-	// "effect__domainStaticEffect".
-	EffectDomainStaticEffect *float64 `json:"effect__domainStaticEffect,omitempty" yaml:"effect__domainStaticEffect,omitempty" mapstructure:"effect__domainStaticEffect,omitempty"`
+	// "Effect__domainStaticEffect".
+	EffectDomainStaticEffect *float64 `json:"Effect__domainStaticEffect,omitempty" yaml:"Effect__domainStaticEffect,omitempty" mapstructure:"Effect__domainStaticEffect,omitempty"`
+
+	// ImpactsSelf corresponds to the JSON schema field "ImpactsSelf".
+	ImpactsSelf *bool `json:"ImpactsSelf,omitempty" yaml:"ImpactsSelf,omitempty" mapstructure:"ImpactsSelf,omitempty"`
+
+	// IntoInventory corresponds to the JSON schema field "IntoInventory".
+	IntoInventory *bool `json:"IntoInventory,omitempty" yaml:"IntoInventory,omitempty" mapstructure:"IntoInventory,omitempty"`
+
+	// IsAction corresponds to the JSON schema field "IsAction".
+	IsAction *bool `json:"IsAction,omitempty" yaml:"IsAction,omitempty" mapstructure:"IsAction,omitempty"`
+
+	// IsActive corresponds to the JSON schema field "IsActive".
+	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+
+	// IsBonusAction corresponds to the JSON schema field "IsBonusAction".
+	IsBonusAction *bool `json:"IsBonusAction,omitempty" yaml:"IsBonusAction,omitempty" mapstructure:"IsBonusAction,omitempty"`
+
+	// Level1SpellSlots corresponds to the JSON schema field "Level1SpellSlots".
+	Level1SpellSlots *float64 `json:"Level1SpellSlots,omitempty" yaml:"Level1SpellSlots,omitempty" mapstructure:"Level1SpellSlots,omitempty"`
+
+	// Level2SpellSlots corresponds to the JSON schema field "Level2SpellSlots".
+	Level2SpellSlots *float64 `json:"Level2SpellSlots,omitempty" yaml:"Level2SpellSlots,omitempty" mapstructure:"Level2SpellSlots,omitempty"`
+
+	// Level3SpellSlots corresponds to the JSON schema field "Level3SpellSlots".
+	Level3SpellSlots *float64 `json:"Level3SpellSlots,omitempty" yaml:"Level3SpellSlots,omitempty" mapstructure:"Level3SpellSlots,omitempty"`
+
+	// Level4SpellSlots corresponds to the JSON schema field "Level4SpellSlots".
+	Level4SpellSlots *float64 `json:"Level4SpellSlots,omitempty" yaml:"Level4SpellSlots,omitempty" mapstructure:"Level4SpellSlots,omitempty"`
+
+	// Level5SpellSlots corresponds to the JSON schema field "Level5SpellSlots".
+	Level5SpellSlots *float64 `json:"Level5SpellSlots,omitempty" yaml:"Level5SpellSlots,omitempty" mapstructure:"Level5SpellSlots,omitempty"`
+
+	// Level6SpellSlots corresponds to the JSON schema field "Level6SpellSlots".
+	Level6SpellSlots *float64 `json:"Level6SpellSlots,omitempty" yaml:"Level6SpellSlots,omitempty" mapstructure:"Level6SpellSlots,omitempty"`
+
+	// Level7SpellSlots corresponds to the JSON schema field "Level7SpellSlots".
+	Level7SpellSlots *float64 `json:"Level7SpellSlots,omitempty" yaml:"Level7SpellSlots,omitempty" mapstructure:"Level7SpellSlots,omitempty"`
+
+	// Level8SpellSlots corresponds to the JSON schema field "Level8SpellSlots".
+	Level8SpellSlots *float64 `json:"Level8SpellSlots,omitempty" yaml:"Level8SpellSlots,omitempty" mapstructure:"Level8SpellSlots,omitempty"`
+
+	// Level9SpellSlots corresponds to the JSON schema field "Level9SpellSlots".
+	Level9SpellSlots *float64 `json:"Level9SpellSlots,omitempty" yaml:"Level9SpellSlots,omitempty" mapstructure:"Level9SpellSlots,omitempty"`
+
+	// LevelMaximumRequirement corresponds to the JSON schema field
+	// "LevelMaximumRequirement".
+	LevelMaximumRequirement *float64 `json:"LevelMaximumRequirement,omitempty" yaml:"LevelMaximumRequirement,omitempty" mapstructure:"LevelMaximumRequirement,omitempty"`
+
+	// LevelMinimumRequirement corresponds to the JSON schema field
+	// "LevelMinimumRequirement".
+	LevelMinimumRequirement *float64 `json:"LevelMinimumRequirement,omitempty" yaml:"LevelMinimumRequirement,omitempty" mapstructure:"LevelMinimumRequirement,omitempty"`
+
+	// Quantity corresponds to the JSON schema field "Quantity".
+	Quantity *float64 `json:"Quantity,omitempty" yaml:"Quantity,omitempty" mapstructure:"Quantity,omitempty"`
+
+	// RefreshOnLongRest corresponds to the JSON schema field "RefreshOnLongRest".
+	RefreshOnLongRest *bool `json:"RefreshOnLongRest,omitempty" yaml:"RefreshOnLongRest,omitempty" mapstructure:"RefreshOnLongRest,omitempty"`
+
+	// RefreshOnShortRest corresponds to the JSON schema field "RefreshOnShortRest".
+	RefreshOnShortRest *bool `json:"RefreshOnShortRest,omitempty" yaml:"RefreshOnShortRest,omitempty" mapstructure:"RefreshOnShortRest,omitempty"`
+
+	// ResistanceTypeDomainDamageType corresponds to the JSON schema field
+	// "ResistanceType__domainDamageType".
+	ResistanceTypeDomainDamageType *float64 `json:"ResistanceType__domainDamageType,omitempty" yaml:"ResistanceType__domainDamageType,omitempty" mapstructure:"ResistanceType__domainDamageType,omitempty"`
+
+	// SaveDomainCharacterStat corresponds to the JSON schema field
+	// "Save__domainCharacterStat".
+	SaveDomainCharacterStat *float64 `json:"Save__domainCharacterStat,omitempty" yaml:"Save__domainCharacterStat,omitempty" mapstructure:"Save__domainCharacterStat,omitempty"`
+
+	// TargetDomainCharacterStat corresponds to the JSON schema field
+	// "Target__domainCharacterStat".
+	TargetDomainCharacterStat *float64 `json:"Target__domainCharacterStat,omitempty" yaml:"Target__domainCharacterStat,omitempty" mapstructure:"Target__domainCharacterStat,omitempty"`
+
+	// Title corresponds to the JSON schema field "Title".
+	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// UntilLongRest corresponds to the JSON schema field "UntilLongRest".
+	UntilLongRest *bool `json:"UntilLongRest,omitempty" yaml:"UntilLongRest,omitempty" mapstructure:"UntilLongRest,omitempty"`
+
+	// UntilShortRest corresponds to the JSON schema field "UntilShortRest".
+	UntilShortRest *bool `json:"UntilShortRest,omitempty" yaml:"UntilShortRest,omitempty" mapstructure:"UntilShortRest,omitempty"`
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-
-	// ImpactsSelf corresponds to the JSON schema field "impactsSelf".
-	ImpactsSelf *bool `json:"impactsSelf,omitempty" yaml:"impactsSelf,omitempty" mapstructure:"impactsSelf,omitempty"`
-
-	// IntoInventory corresponds to the JSON schema field "intoInventory".
-	IntoInventory *bool `json:"intoInventory,omitempty" yaml:"intoInventory,omitempty" mapstructure:"intoInventory,omitempty"`
-
-	// IsAction corresponds to the JSON schema field "isAction".
-	IsAction *bool `json:"isAction,omitempty" yaml:"isAction,omitempty" mapstructure:"isAction,omitempty"`
-
-	// IsActive corresponds to the JSON schema field "isActive".
-	IsActive *bool `json:"isActive,omitempty" yaml:"isActive,omitempty" mapstructure:"isActive,omitempty"`
-
-	// IsBonusAction corresponds to the JSON schema field "isBonusAction".
-	IsBonusAction *bool `json:"isBonusAction,omitempty" yaml:"isBonusAction,omitempty" mapstructure:"isBonusAction,omitempty"`
-
-	// Level1SpellSlots corresponds to the JSON schema field "level1SpellSlots".
-	Level1SpellSlots *float64 `json:"level1SpellSlots,omitempty" yaml:"level1SpellSlots,omitempty" mapstructure:"level1SpellSlots,omitempty"`
-
-	// Level2SpellSlots corresponds to the JSON schema field "level2SpellSlots".
-	Level2SpellSlots *float64 `json:"level2SpellSlots,omitempty" yaml:"level2SpellSlots,omitempty" mapstructure:"level2SpellSlots,omitempty"`
-
-	// Level3SpellSlots corresponds to the JSON schema field "level3SpellSlots".
-	Level3SpellSlots *float64 `json:"level3SpellSlots,omitempty" yaml:"level3SpellSlots,omitempty" mapstructure:"level3SpellSlots,omitempty"`
-
-	// Level4SpellSlots corresponds to the JSON schema field "level4SpellSlots".
-	Level4SpellSlots *float64 `json:"level4SpellSlots,omitempty" yaml:"level4SpellSlots,omitempty" mapstructure:"level4SpellSlots,omitempty"`
-
-	// Level5SpellSlots corresponds to the JSON schema field "level5SpellSlots".
-	Level5SpellSlots *float64 `json:"level5SpellSlots,omitempty" yaml:"level5SpellSlots,omitempty" mapstructure:"level5SpellSlots,omitempty"`
-
-	// Level6SpellSlots corresponds to the JSON schema field "level6SpellSlots".
-	Level6SpellSlots *float64 `json:"level6SpellSlots,omitempty" yaml:"level6SpellSlots,omitempty" mapstructure:"level6SpellSlots,omitempty"`
-
-	// Level7SpellSlots corresponds to the JSON schema field "level7SpellSlots".
-	Level7SpellSlots *float64 `json:"level7SpellSlots,omitempty" yaml:"level7SpellSlots,omitempty" mapstructure:"level7SpellSlots,omitempty"`
-
-	// Level8SpellSlots corresponds to the JSON schema field "level8SpellSlots".
-	Level8SpellSlots *float64 `json:"level8SpellSlots,omitempty" yaml:"level8SpellSlots,omitempty" mapstructure:"level8SpellSlots,omitempty"`
-
-	// Level9SpellSlots corresponds to the JSON schema field "level9SpellSlots".
-	Level9SpellSlots *float64 `json:"level9SpellSlots,omitempty" yaml:"level9SpellSlots,omitempty" mapstructure:"level9SpellSlots,omitempty"`
-
-	// LevelMaximumRequirement corresponds to the JSON schema field
-	// "levelMaximumRequirement".
-	LevelMaximumRequirement *float64 `json:"levelMaximumRequirement,omitempty" yaml:"levelMaximumRequirement,omitempty" mapstructure:"levelMaximumRequirement,omitempty"`
-
-	// LevelMinimumRequirement corresponds to the JSON schema field
-	// "levelMinimumRequirement".
-	LevelMinimumRequirement *float64 `json:"levelMinimumRequirement,omitempty" yaml:"levelMinimumRequirement,omitempty" mapstructure:"levelMinimumRequirement,omitempty"`
-
-	// Quantity corresponds to the JSON schema field "quantity".
-	Quantity *float64 `json:"quantity,omitempty" yaml:"quantity,omitempty" mapstructure:"quantity,omitempty"`
-
-	// RefreshOnLongRest corresponds to the JSON schema field "refreshOnLongRest".
-	RefreshOnLongRest *bool `json:"refreshOnLongRest,omitempty" yaml:"refreshOnLongRest,omitempty" mapstructure:"refreshOnLongRest,omitempty"`
-
-	// RefreshOnShortRest corresponds to the JSON schema field "refreshOnShortRest".
-	RefreshOnShortRest *bool `json:"refreshOnShortRest,omitempty" yaml:"refreshOnShortRest,omitempty" mapstructure:"refreshOnShortRest,omitempty"`
-
-	// ResistanceTypeDomainDamageType corresponds to the JSON schema field
-	// "resistanceType__domainDamageType".
-	ResistanceTypeDomainDamageType *float64 `json:"resistanceType__domainDamageType,omitempty" yaml:"resistanceType__domainDamageType,omitempty" mapstructure:"resistanceType__domainDamageType,omitempty"`
-
-	// SaveDomainCharacterStat corresponds to the JSON schema field
-	// "save__domainCharacterStat".
-	SaveDomainCharacterStat *float64 `json:"save__domainCharacterStat,omitempty" yaml:"save__domainCharacterStat,omitempty" mapstructure:"save__domainCharacterStat,omitempty"`
-
-	// TargetDomainCharacterStat corresponds to the JSON schema field
-	// "target__domainCharacterStat".
-	TargetDomainCharacterStat *float64 `json:"target__domainCharacterStat,omitempty" yaml:"target__domainCharacterStat,omitempty" mapstructure:"target__domainCharacterStat,omitempty"`
-
-	// Title corresponds to the JSON schema field "title".
-	Title *string `json:"title,omitempty" yaml:"title,omitempty" mapstructure:"title,omitempty"`
-
-	// UntilLongRest corresponds to the JSON schema field "untilLongRest".
-	UntilLongRest *bool `json:"untilLongRest,omitempty" yaml:"untilLongRest,omitempty" mapstructure:"untilLongRest,omitempty"`
-
-	// UntilShortRest corresponds to the JSON schema field "untilShortRest".
-	UntilShortRest *bool `json:"untilShortRest,omitempty" yaml:"untilShortRest,omitempty" mapstructure:"untilShortRest,omitempty"`
 }

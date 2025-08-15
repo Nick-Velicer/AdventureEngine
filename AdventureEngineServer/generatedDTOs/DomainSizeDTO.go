@@ -14,10 +14,10 @@ type DomainSizeDTOAttributes struct {
    BaseHexArea float64
    BaseTileArea float64
    Description *string
-   
    IsActive *bool
    SizeOrder float64
    Title *string
+   
 }
 
 type DomainSizeDTORelationships struct {
@@ -38,10 +38,10 @@ func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize) Domain
          BaseHexArea: domainSize.BaseHexArea,
          BaseTileArea: domainSize.BaseTileArea,
          Description: domainSize.Description,
-         
          IsActive: domainSize.IsActive,
          SizeOrder: domainSize.SizeOrder,
          Title: domainSize.Title,
+         
       },
       Relationships: DomainSizeDTORelationships{
       },
@@ -54,9 +54,9 @@ func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) types.DomainSize {
       BaseHexArea: domainSize.Attributes.BaseHexArea,
       BaseTileArea: domainSize.Attributes.BaseTileArea,
       Description: domainSize.Attributes.Description,
-      
       IsActive: domainSize.Attributes.IsActive,
       SizeOrder: domainSize.Attributes.SizeOrder,
       Title: domainSize.Attributes.Title,
+      
    }
 }

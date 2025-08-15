@@ -3,19 +3,19 @@
 package goTypeBase
 
 type DomainSubClassJson struct {
-	// Description corresponds to the JSON schema field "description".
-	Description *string `json:"description,omitempty" yaml:"description,omitempty" mapstructure:"description,omitempty"`
+	// Description corresponds to the JSON schema field "Description".
+	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+
+	// IsActive corresponds to the JSON schema field "IsActive".
+	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+
+	// ParentClassDomainClass corresponds to the JSON schema field
+	// "ParentClass__domainClass".
+	ParentClassDomainClass *float64 `json:"ParentClass__domainClass,omitempty" yaml:"ParentClass__domainClass,omitempty" mapstructure:"ParentClass__domainClass,omitempty"`
+
+	// Title corresponds to the JSON schema field "Title".
+	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-
-	// IsActive corresponds to the JSON schema field "isActive".
-	IsActive *bool `json:"isActive,omitempty" yaml:"isActive,omitempty" mapstructure:"isActive,omitempty"`
-
-	// ParentClassDomainClass corresponds to the JSON schema field
-	// "parentClass__domainClass".
-	ParentClassDomainClass *float64 `json:"parentClass__domainClass,omitempty" yaml:"parentClass__domainClass,omitempty" mapstructure:"parentClass__domainClass,omitempty"`
-
-	// Title corresponds to the JSON schema field "title".
-	Title *string `json:"title,omitempty" yaml:"title,omitempty" mapstructure:"title,omitempty"`
 }

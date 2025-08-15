@@ -13,11 +13,11 @@ import (
 type DomainItemDTOAttributes struct {
    CustomEffectText *string
    Description *string
-   
    IsActive *bool
    OneHandedQuantifier *float64
    Title *string
    TwoHandedQuantifier *float64
+   
 }
 
 type DomainItemDTORelationships struct {
@@ -37,11 +37,11 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem) Domain
       Attributes: DomainItemDTOAttributes{
          CustomEffectText: domainItem.CustomEffectText,
          Description: domainItem.Description,
-         
          IsActive: domainItem.IsActive,
          OneHandedQuantifier: domainItem.OneHandedQuantifier,
          Title: domainItem.Title,
          TwoHandedQuantifier: domainItem.TwoHandedQuantifier,
+         
       },
       Relationships: DomainItemDTORelationships{
       },
@@ -53,10 +53,10 @@ func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) types.DomainItem {
       Id: domainItem.Id,
       CustomEffectText: domainItem.Attributes.CustomEffectText,
       Description: domainItem.Attributes.Description,
-      
       IsActive: domainItem.Attributes.IsActive,
       OneHandedQuantifier: domainItem.Attributes.OneHandedQuantifier,
       Title: domainItem.Attributes.Title,
       TwoHandedQuantifier: domainItem.Attributes.TwoHandedQuantifier,
+      
    }
 }

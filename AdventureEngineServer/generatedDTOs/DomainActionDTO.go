@@ -12,11 +12,11 @@ import (
 
 type DomainActionDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Title *string
    UsesAction *bool
    UsesBonusAction *bool
+   
 }
 
 type DomainActionDTORelationships struct {
@@ -35,11 +35,11 @@ func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction
       Id: domainAction.Id,
       Attributes: DomainActionDTOAttributes{
          Description: domainAction.Description,
-         
          IsActive: domainAction.IsActive,
          Title: domainAction.Title,
          UsesAction: domainAction.UsesAction,
          UsesBonusAction: domainAction.UsesBonusAction,
+         
       },
       Relationships: DomainActionDTORelationships{
       },
@@ -50,10 +50,10 @@ func DomainActionDTOToDomainAction(domainAction *DomainActionDTO) types.DomainAc
    return types.DomainAction{
       Id: domainAction.Id,
       Description: domainAction.Attributes.Description,
-      
       IsActive: domainAction.Attributes.IsActive,
       Title: domainAction.Attributes.Title,
       UsesAction: domainAction.Attributes.UsesAction,
       UsesBonusAction: domainAction.Attributes.UsesBonusAction,
+      
    }
 }

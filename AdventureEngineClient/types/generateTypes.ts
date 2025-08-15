@@ -1,4 +1,4 @@
-import { existsSync, mkdir, readdirSync, writeFile } from "node:fs";
+import { existsSync, mkdir, readdirSync, writeFile, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import * as TJS from "typescript-json-schema";
 
@@ -8,15 +8,6 @@ const corePath = "./coreTypes";
 const flattenedPath = "./flattenedTypes";
 
 const coreTypeFileNames = readdirSync(resolve(corePath));
-
-const flattenedTypeFileContents = (typeName: string) => {
-	const lines = [
-		'import { ' + typeName + ' } from "../coreTypes/' + typeName + '";',
-		'import { FlattenedSchemaObject } from "../SchemaObject";',
-		'export type Flattened' + typeName + ' = FlattenedSchemaObject<' + typeName + '>;' 
-	]
-	return lines.join("\n");
-}
 
 if (!existsSync(flattenedPath)) {
 	mkdir(flattenedPath, (err) => {
@@ -31,10 +22,21 @@ else {
 	console.log(flattenedPath + " already created.");
 }
 
-await Promise.all(coreTypeFileNames.map((fileName) => writeFile(flattenedPath + "/" + "Flattened" + fileName, flattenedTypeFileContents(fileName.replace(".ts", "")), (err) => {
-	if (err) throw err;
-	console.log("Flattened " + fileName);
-})))
+const flattenedTypeImports = (typeNames: Array<string>) => {
+	return [
+		'import { FlattenedSchemaObject } from "../SchemaObject";'
+	].concat(typeNames.map((typeName) => {
+		return 'import { ' + typeName + ' } from "../coreTypes/' + typeName + '";'
+	})).join("\n");
+}
+
+const flattenedTypes = (typeNames: Array<string>) => {
+	return typeNames.map((typeName) => 'export type Flattened' + typeName + ' = FlattenedSchemaObject<' + typeName + '>;' ).join("\n");
+}
+
+const typeNames: Array<string> = coreTypeFileNames.map((fileName) => fileName.replace(".ts", ""));
+
+writeFileSync(flattenedPath + "/flattenedTypes.ts", flattenedTypeImports(typeNames) + "\n\n" + flattenedTypes(typeNames))
 
 //Generating json schemas from the flattened types
 
@@ -48,44 +50,47 @@ const compilerOptions: TJS.CompilerOptions = {
 	strictNullChecks: true,
 };
 
-const flattenedTypeFiles = readdirSync(resolve(flattenedPath));
-console.log(flattenedTypeFiles);
-
-
 if (!existsSync(generatedFilesBasePath)) {
 	mkdir(generatedFilesBasePath, (err) => {
 		if (err) {
-			console.error("Error creating " + generatedFilesBasePath + ":", err);
-		} else {
-			console.log("Created " + generatedFilesBasePath);
+			throw new Error("Error creating " + generatedFilesBasePath + ":");
 		}
 	});
 }
-else {
-	console.log(generatedFilesBasePath + " already created.");
+console.log(generatedFilesBasePath + " path verified.");
+
+const flattenedFileTarget = "flattenedTypes.ts"
+
+const program = TJS.getProgramFromFiles([resolve(flattenedPath + "/" + flattenedFileTarget)], compilerOptions);
+
+console.log("TJS program initialized.");
+
+const generator = TJS.buildGenerator(program, settings);
+
+console.log("TJS schema generator initialized");
+
+if (generator == null) {
+	throw new Error("Error creating TJS generator for program " + flattenedPath + "/" + flattenedFileTarget);
 }
 
-Promise.all(flattenedTypeFiles.map((fileName) => {
+const schemas = Object.fromEntries(typeNames.map((type) => "Flattened" + type).map((flattenedTypeName) => {
+	console.log("Successfully translated " + flattenedTypeName + " schema.")
+	return ([
+		flattenedTypeName,
+		TJS.generateSchema(program!, flattenedTypeName, settings, [], generator)
+	]);
+}));
 
-	const program = TJS.getProgramFromFiles([resolve("flattenedTypes/" + fileName)], compilerOptions);
-	const typeName = fileName.split(".")[0];
 
-	console.log(typeName);
 
-	const schema = TJS.generateSchema(program, typeName, settings);
-
-	const generatedLocation = generatedFilesBasePath + "/" + typeName.replace("Flattened", "") + ".json";
-
-	return (
-		schema === undefined?
-			Promise.reject("Failure writing to " + generatedLocation)
-			:
-			writeFile(generatedLocation, JSON.stringify(schema, null, 4)!, () => console.log("Wrote " + generatedLocation))
+Object.keys(schemas).forEach((schemaName) => {
+	writeFile(
+		generatedFilesBasePath + "/" + schemaName.replace("Flattened", "") + ".json", 
+		JSON.stringify(schemas[schemaName], null, 4),
+		() => {
+			console.log("Successfully generated " + schemaName + " schema.")
+		}
 	);
-}))
-	.then(() => {})
-	.catch((error) => {
-		console.log("Could not complete JSON Schema Generation:");
-		console.log(error);
-	});
+})
+
 

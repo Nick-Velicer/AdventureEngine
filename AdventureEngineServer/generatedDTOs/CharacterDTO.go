@@ -12,9 +12,9 @@ import (
 
 type CharacterDTOAttributes struct {
    Description *string
-   
    IsActive *bool
    Title *string
+   
 }
 
 type CharacterDTORelationships struct {
@@ -45,9 +45,9 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character) CharacterD
       Id: character.Id,
       Attributes: CharacterDTOAttributes{
          Description: character.Description,
-         
          IsActive: character.IsActive,
          Title: character.Title,
+         
       },
       Relationships: CharacterDTORelationships{
          CampaignCampaign: CampaignToCampaignDTO(db, &includedCampaignCampaign),
@@ -62,9 +62,9 @@ func CharacterDTOToCharacter(character *CharacterDTO) types.Character {
    return types.Character{
       Id: character.Id,
       Description: character.Attributes.Description,
-      
       IsActive: character.Attributes.IsActive,
       Title: character.Attributes.Title,
+      
       CampaignCampaign: character.Relationships.CampaignCampaign.Id,
       CurrentSizeDomainSize: character.Relationships.CurrentSizeDomainSize.Id,
       SpeciesDomainSpecies: character.Relationships.SpeciesDomainSpecies.Id,

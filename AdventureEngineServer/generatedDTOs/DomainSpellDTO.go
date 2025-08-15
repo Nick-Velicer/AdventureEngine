@@ -15,7 +15,6 @@ type DomainSpellDTOAttributes struct {
    Description *string
    HourCastTime *float64
    HourDuration *float64
-   
    IsAction *bool
    IsActive *bool
    IsBonusAction *bool
@@ -30,6 +29,7 @@ type DomainSpellDTOAttributes struct {
    SomaticComponent *string
    Title *string
    VerbalComponent *string
+   
 }
 
 type DomainSpellDTORelationships struct {
@@ -57,7 +57,6 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell) Do
          Description: domainSpell.Description,
          HourCastTime: domainSpell.HourCastTime,
          HourDuration: domainSpell.HourDuration,
-         
          IsAction: domainSpell.IsAction,
          IsActive: domainSpell.IsActive,
          IsBonusAction: domainSpell.IsBonusAction,
@@ -72,6 +71,7 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell) Do
          SomaticComponent: domainSpell.SomaticComponent,
          Title: domainSpell.Title,
          VerbalComponent: domainSpell.VerbalComponent,
+         
       },
       Relationships: DomainSpellDTORelationships{
          DamageScalingDomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice),
@@ -87,7 +87,6 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
       Description: domainSpell.Attributes.Description,
       HourCastTime: domainSpell.Attributes.HourCastTime,
       HourDuration: domainSpell.Attributes.HourDuration,
-      
       IsAction: domainSpell.Attributes.IsAction,
       IsActive: domainSpell.Attributes.IsActive,
       IsBonusAction: domainSpell.Attributes.IsBonusAction,
@@ -102,6 +101,7 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
       SomaticComponent: domainSpell.Attributes.SomaticComponent,
       Title: domainSpell.Attributes.Title,
       VerbalComponent: domainSpell.Attributes.VerbalComponent,
+      
       DamageScalingDomainDice: domainSpell.Relationships.DamageScalingDomainDice.Id,
       SchoolDomainSpellSchool: domainSpell.Relationships.SchoolDomainSpellSchool.Id,
    }

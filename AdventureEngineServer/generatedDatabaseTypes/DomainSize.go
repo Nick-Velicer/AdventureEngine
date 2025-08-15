@@ -6,46 +6,46 @@ import "encoding/json"
 import "fmt"
 
 type DomainSize struct {
-	// BaseHexArea corresponds to the JSON schema field "baseHexArea".
-	BaseHexArea float64 `json:"baseHexArea" yaml:"baseHexArea" mapstructure:"baseHexArea"`
+	// BaseHexArea corresponds to the JSON schema field "BaseHexArea".
+	BaseHexArea float64 `json:"BaseHexArea" yaml:"BaseHexArea" mapstructure:"BaseHexArea"`
 
-	// BaseTileArea corresponds to the JSON schema field "baseTileArea".
-	BaseTileArea float64 `json:"baseTileArea" yaml:"baseTileArea" mapstructure:"baseTileArea"`
+	// BaseTileArea corresponds to the JSON schema field "BaseTileArea".
+	BaseTileArea float64 `json:"BaseTileArea" yaml:"BaseTileArea" mapstructure:"BaseTileArea"`
 
-	// Description corresponds to the JSON schema field "description".
-	Description *string `json:"description,omitempty" yaml:"description,omitempty" mapstructure:"description,omitempty"`
+	// Description corresponds to the JSON schema field "Description".
+	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+
+	// IsActive corresponds to the JSON schema field "IsActive".
+	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+
+	// SizeOrder corresponds to the JSON schema field "SizeOrder".
+	SizeOrder float64 `json:"SizeOrder" yaml:"SizeOrder" mapstructure:"SizeOrder"`
+
+	// Title corresponds to the JSON schema field "Title".
+	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-
-	// IsActive corresponds to the JSON schema field "isActive".
-	IsActive *bool `json:"isActive,omitempty" yaml:"isActive,omitempty" mapstructure:"isActive,omitempty"`
-
-	// SizeOrder corresponds to the JSON schema field "sizeOrder".
-	SizeOrder float64 `json:"sizeOrder" yaml:"sizeOrder" mapstructure:"sizeOrder"`
-
-	// Title corresponds to the JSON schema field "title".
-	Title *string `json:"title,omitempty" yaml:"title,omitempty" mapstructure:"title,omitempty"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *DomainSize) UnmarshalJSON(value []byte) error {
+func (j *DomainSize) UnmarshalJSON(b []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(value, &raw); err != nil {
+	if err := json.Unmarshal(b, &raw); err != nil {
 		return err
 	}
-	if _, ok := raw["baseHexArea"]; raw != nil && !ok {
-		return fmt.Errorf("field baseHexArea in DomainSize: required")
+	if _, ok := raw["BaseHexArea"]; raw != nil && !ok {
+		return fmt.Errorf("field BaseHexArea in DomainSize: required")
 	}
-	if _, ok := raw["baseTileArea"]; raw != nil && !ok {
-		return fmt.Errorf("field baseTileArea in DomainSize: required")
+	if _, ok := raw["BaseTileArea"]; raw != nil && !ok {
+		return fmt.Errorf("field BaseTileArea in DomainSize: required")
 	}
-	if _, ok := raw["sizeOrder"]; raw != nil && !ok {
-		return fmt.Errorf("field sizeOrder in DomainSize: required")
+	if _, ok := raw["SizeOrder"]; raw != nil && !ok {
+		return fmt.Errorf("field SizeOrder in DomainSize: required")
 	}
 	type Plain DomainSize
 	var plain Plain
-	if err := json.Unmarshal(value, &plain); err != nil {
+	if err := json.Unmarshal(b, &plain); err != nil {
 		return err
 	}
 	*j = DomainSize(plain)

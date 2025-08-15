@@ -3,30 +3,30 @@
 package generatedDatabaseTypes
 
 type Character struct {
-	// CampaignCampaign corresponds to the JSON schema field "campaign__Campaign".
-	CampaignCampaign *float64 `json:"campaign__Campaign,omitempty" yaml:"campaign__Campaign,omitempty" mapstructure:"campaign__Campaign,omitempty"`
+	// CampaignCampaign corresponds to the JSON schema field "Campaign__Campaign".
+	CampaignCampaign *float64 `json:"Campaign__Campaign,omitempty" yaml:"Campaign__Campaign,omitempty" mapstructure:"Campaign__Campaign,omitempty"`
 
 	// CurrentSizeDomainSize corresponds to the JSON schema field
-	// "currentSize__domainSize".
-	CurrentSizeDomainSize *float64 `json:"currentSize__domainSize,omitempty" yaml:"currentSize__domainSize,omitempty" mapstructure:"currentSize__domainSize,omitempty"`
+	// "CurrentSize__domainSize".
+	CurrentSizeDomainSize *float64 `json:"CurrentSize__domainSize,omitempty" yaml:"CurrentSize__domainSize,omitempty" mapstructure:"CurrentSize__domainSize,omitempty"`
 
-	// Description corresponds to the JSON schema field "description".
-	Description *string `json:"description,omitempty" yaml:"description,omitempty" mapstructure:"description,omitempty"`
+	// Description corresponds to the JSON schema field "Description".
+	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+
+	// IsActive corresponds to the JSON schema field "IsActive".
+	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+
+	// SpeciesDomainSpecies corresponds to the JSON schema field
+	// "Species__domainSpecies".
+	SpeciesDomainSpecies *float64 `json:"Species__domainSpecies,omitempty" yaml:"Species__domainSpecies,omitempty" mapstructure:"Species__domainSpecies,omitempty"`
+
+	// SubclassDomainSubClass corresponds to the JSON schema field
+	// "Subclass__domainSubClass".
+	SubclassDomainSubClass *float64 `json:"Subclass__domainSubClass,omitempty" yaml:"Subclass__domainSubClass,omitempty" mapstructure:"Subclass__domainSubClass,omitempty"`
+
+	// Title corresponds to the JSON schema field "Title".
+	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-
-	// IsActive corresponds to the JSON schema field "isActive".
-	IsActive *bool `json:"isActive,omitempty" yaml:"isActive,omitempty" mapstructure:"isActive,omitempty"`
-
-	// SpeciesDomainSpecies corresponds to the JSON schema field
-	// "species__domainSpecies".
-	SpeciesDomainSpecies *float64 `json:"species__domainSpecies,omitempty" yaml:"species__domainSpecies,omitempty" mapstructure:"species__domainSpecies,omitempty"`
-
-	// SubclassDomainSubClass corresponds to the JSON schema field
-	// "subclass__domainSubClass".
-	SubclassDomainSubClass *float64 `json:"subclass__domainSubClass,omitempty" yaml:"subclass__domainSubClass,omitempty" mapstructure:"subclass__domainSubClass,omitempty"`
-
-	// Title corresponds to the JSON schema field "title".
-	Title *string `json:"title,omitempty" yaml:"title,omitempty" mapstructure:"title,omitempty"`
 }
