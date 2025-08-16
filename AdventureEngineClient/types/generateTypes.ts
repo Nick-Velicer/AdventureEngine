@@ -88,7 +88,7 @@ Object.keys(schemas).forEach((schemaName) => {
 		generatedFilesBasePath + "/" + schemaName.replace("Flattened", "") + ".json", 
 		JSON.stringify(schemas[schemaName], null, 4),
 		() => {
-			console.log("Successfully generated " + schemaName + " schema.")
+			console.log("Successfully generated " + schemaName.replace("Flattened", "") + " schema.")
 		}
 	);
 })

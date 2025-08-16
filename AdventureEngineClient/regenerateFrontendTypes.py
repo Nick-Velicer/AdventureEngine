@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 def main():
-    baseDir = os.fsencode("src/typeschema")
+    baseDir = os.fsencode("types")
     try:
         subprocess.run(["deno", "run",  "--allow-env", "--allow-read", "--allow-write", "generateTypes.ts"], cwd=baseDir, shell=True)
 
