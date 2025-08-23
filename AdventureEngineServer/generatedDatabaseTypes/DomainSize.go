@@ -29,9 +29,9 @@ type DomainSize struct {
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *DomainSize) UnmarshalJSON(b []byte) error {
+func (j *DomainSize) UnmarshalJSON(value []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
+	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
 	}
 	if _, ok := raw["BaseHexArea"]; raw != nil && !ok {
@@ -45,7 +45,7 @@ func (j *DomainSize) UnmarshalJSON(b []byte) error {
 	}
 	type Plain DomainSize
 	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
+	if err := json.Unmarshal(value, &plain); err != nil {
 		return err
 	}
 	*j = DomainSize(plain)

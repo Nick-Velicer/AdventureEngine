@@ -26,9 +26,9 @@ type DomainDice struct {
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *DomainDice) UnmarshalJSON(b []byte) error {
+func (j *DomainDice) UnmarshalJSON(value []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
+	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
 	}
 	if _, ok := raw["Maximum"]; raw != nil && !ok {
@@ -39,7 +39,7 @@ func (j *DomainDice) UnmarshalJSON(b []byte) error {
 	}
 	type Plain DomainDice
 	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
+	if err := json.Unmarshal(value, &plain); err != nil {
 		return err
 	}
 	*j = DomainDice(plain)

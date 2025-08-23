@@ -2,9 +2,6 @@
 
 package goTypeBase
 
-import "encoding/json"
-import "fmt"
-
 type DomainDiceJson struct {
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
@@ -23,25 +20,4 @@ type DomainDiceJson struct {
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *DomainDiceJson) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if _, ok := raw["Maximum"]; raw != nil && !ok {
-		return fmt.Errorf("field Maximum in DomainDiceJson: required")
-	}
-	if _, ok := raw["Minimum"]; raw != nil && !ok {
-		return fmt.Errorf("field Minimum in DomainDiceJson: required")
-	}
-	type Plain DomainDiceJson
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = DomainDiceJson(plain)
-	return nil
 }

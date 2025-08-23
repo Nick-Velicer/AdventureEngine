@@ -1,28 +1,56 @@
-import { useQuery } from '@pinia/colada'
+import { useQuery, type UseQueryReturn } from '@pinia/colada'
 import { getCharacterbyId } from '../services/generated/CharacterService'
+import type { Character } from '../types/coreTypes/Character'
 
-//Separated typed values and actions for some generic store to be coupled to a context externally
-//If needed, this can be broken out to smaller store slices and composed, or be kept as separate configs/stores
+//This needs to be wrapped in a function context to prevent Pinia interactions
+//before it is initialized by the app, this also lets some DI happen just in case we need
+//alternate service handlers for testing or migrating implementations
 
-type StoreShape = typeof stateDefault
-
-export const stateDefault = {
-    character: useQuery({
-  	    key: () => ['characters'],
-  	    query: () => getCharacterbyId(1),
-    }),
-
+type ServiceInterface<T> = {
+    getAllItems: () => Promise<T>
+    getItemById: (id: number) => Promise<T>
+    saveItem: (item: T) => Promise<T>
 }
 
-export const computedGetters = {
+export function composeStateConfig<
+    //Type templating
+    QueryHandlerType extends <T>(opts: {
+        key: string[] | ((...args : any[]) => string[]), 
+        query: (...args : any[]) => Promise<T>
+    }) => UseQueryReturn<T>
+>(
+    //Arguments/dependencies
+    queryHandler: QueryHandlerType, 
+    characterService: ServiceInterface<Character>
+) {
 
-} satisfies Record<string, (arg0: StoreShape) => any>
+    type StoreShape = typeof stateDefault
 
-
-const stateActions = {
-    increment: (store) => {
-        store.characters
+    const stateDefault = {
+        character: queryHandler({
+            key: ['character'],
+            query: () => characterService.getItemById(1),
+        }),
+        count: 0
     }
-} satisfies Record<string, (arg0: StoreShape) => void>
 
-export const actionsWithInjectedThisContext = Object.keys(stateActions).map(actionName => stateActions[actionName](this))
+    const stateGetters = {
+        doubleCount: (state) => state.count * 2,
+    } satisfies Record<string, (arg0: StoreShape) => any>
+
+
+    const stateActions = {
+        increment: () => {
+            this.count++
+        }
+
+    } satisfies Record<string, (arg0: StoreShape) => void>
+
+    //const actionsWithInjectedThisContext = Object.keys(stateActions).map(actionName => stateActions[actionName](this))
+
+    return {
+        default: stateDefault,
+        getters: stateGetters,
+        actions: stateActions
+    }
+}

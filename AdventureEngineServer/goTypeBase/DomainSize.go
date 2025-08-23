@@ -2,9 +2,6 @@
 
 package goTypeBase
 
-import "encoding/json"
-import "fmt"
-
 type DomainSizeJson struct {
 	// BaseHexArea corresponds to the JSON schema field "BaseHexArea".
 	BaseHexArea float64 `json:"BaseHexArea" yaml:"BaseHexArea" mapstructure:"BaseHexArea"`
@@ -26,28 +23,4 @@ type DomainSizeJson struct {
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *DomainSizeJson) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if _, ok := raw["BaseHexArea"]; raw != nil && !ok {
-		return fmt.Errorf("field BaseHexArea in DomainSizeJson: required")
-	}
-	if _, ok := raw["BaseTileArea"]; raw != nil && !ok {
-		return fmt.Errorf("field BaseTileArea in DomainSizeJson: required")
-	}
-	if _, ok := raw["SizeOrder"]; raw != nil && !ok {
-		return fmt.Errorf("field SizeOrder in DomainSizeJson: required")
-	}
-	type Plain DomainSizeJson
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = DomainSizeJson(plain)
-	return nil
 }
