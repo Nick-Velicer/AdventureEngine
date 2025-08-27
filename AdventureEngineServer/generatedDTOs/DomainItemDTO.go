@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -31,8 +32,11 @@ type DomainItemDTO struct {
    Relationships DomainItemDTORelationships
 }
 
-func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem) DomainItemDTO {
-   return DomainItemDTO{
+func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, originTable *string) *DomainItemDTO {
+   
+   
+   
+   return &DomainItemDTO{
       Id: domainItem.Id,
       Attributes: DomainItemDTOAttributes{
          CustomEffectText: domainItem.CustomEffectText,

@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -28,8 +29,11 @@ type DomainDiceRollTypeDTO struct {
    Relationships DomainDiceRollTypeDTORelationships
 }
 
-func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType) DomainDiceRollTypeDTO {
-   return DomainDiceRollTypeDTO{
+func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType, originTable *string) *DomainDiceRollTypeDTO {
+   
+   
+   
+   return &DomainDiceRollTypeDTO{
       Id: domainDiceRollType.Id,
       Attributes: DomainDiceRollTypeDTOAttributes{
          Description: domainDiceRollType.Description,

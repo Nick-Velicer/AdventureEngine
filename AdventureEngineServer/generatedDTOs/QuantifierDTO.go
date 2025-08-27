@@ -6,6 +6,7 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
 )
@@ -39,13 +40,13 @@ type QuantifierDTOAttributes struct {
 }
 
 type QuantifierDTORelationships struct {
-   AddedSpellDomainSpell DomainSpellDTO
-   ConditionDomainCondition DomainConditionDTO
-   DamageTypeDomainDamageType DomainDamageTypeDTO
-   EffectDomainStaticEffect DomainStaticEffectDTO
-   ResistanceTypeDomainDamageType DomainDamageTypeDTO
-   SaveDomainCharacterStat DomainCharacterStatDTO
-   TargetDomainCharacterStat DomainCharacterStatDTO
+   AddedSpellDomainSpell *DomainSpellDTO
+   ConditionDomainCondition *DomainConditionDTO
+   DamageTypeDomainDamageType *DomainDamageTypeDTO
+   EffectDomainStaticEffect *DomainStaticEffectDTO
+   ResistanceTypeDomainDamageType *DomainDamageTypeDTO
+   SaveDomainCharacterStat *DomainCharacterStatDTO
+   TargetDomainCharacterStat *DomainCharacterStatDTO
 }
 
 type QuantifierDTO struct {
@@ -56,7 +57,8 @@ type QuantifierDTO struct {
    Relationships QuantifierDTORelationships
 }
 
-func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier) QuantifierDTO {
+func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, originTable *string) *QuantifierDTO {
+   
    var includedAddedSpellDomainSpell types.DomainSpell
    var includedConditionDomainCondition types.DomainCondition
    var includedDamageTypeDomainDamageType types.DomainDamageType
@@ -64,6 +66,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier) Quanti
    var includedResistanceTypeDomainDamageType types.DomainDamageType
    var includedSaveDomainCharacterStat types.DomainCharacterStat
    var includedTargetDomainCharacterStat types.DomainCharacterStat
+   
    services.GetDomainSpellById(db, int(*quantifier.AddedSpellDomainSpell), &includedAddedSpellDomainSpell)
    services.GetDomainConditionById(db, int(*quantifier.ConditionDomainCondition), &includedConditionDomainCondition)
    services.GetDomainDamageTypeById(db, int(*quantifier.DamageTypeDomainDamageType), &includedDamageTypeDomainDamageType)
@@ -71,7 +74,8 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier) Quanti
    services.GetDomainDamageTypeById(db, int(*quantifier.ResistanceTypeDomainDamageType), &includedResistanceTypeDomainDamageType)
    services.GetDomainCharacterStatById(db, int(*quantifier.SaveDomainCharacterStat), &includedSaveDomainCharacterStat)
    services.GetDomainCharacterStatById(db, int(*quantifier.TargetDomainCharacterStat), &includedTargetDomainCharacterStat)
-   return QuantifierDTO{
+   
+   return &QuantifierDTO{
       Id: quantifier.Id,
       Attributes: QuantifierDTOAttributes{
          Delta: quantifier.Delta,
@@ -101,13 +105,13 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier) Quanti
          
       },
       Relationships: QuantifierDTORelationships{
-         AddedSpellDomainSpell: DomainSpellToDomainSpellDTO(db, &includedAddedSpellDomainSpell),
-         ConditionDomainCondition: DomainConditionToDomainConditionDTO(db, &includedConditionDomainCondition),
-         DamageTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedDamageTypeDomainDamageType),
-         EffectDomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedEffectDomainStaticEffect),
-         ResistanceTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedResistanceTypeDomainDamageType),
-         SaveDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSaveDomainCharacterStat),
-         TargetDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedTargetDomainCharacterStat),
+         AddedSpellDomainSpell: utils.GetDTOPointer(func(param *types.DomainSpell) *DomainSpellDTO { return DomainSpellToDomainSpellDTO(db, param , originTable) }, &includedAddedSpellDomainSpell, *originTable),
+         ConditionDomainCondition: utils.GetDTOPointer(func(param *types.DomainCondition) *DomainConditionDTO { return DomainConditionToDomainConditionDTO(db, param , originTable) }, &includedConditionDomainCondition, *originTable),
+         DamageTypeDomainDamageType: utils.GetDTOPointer(func(param *types.DomainDamageType) *DomainDamageTypeDTO { return DomainDamageTypeToDomainDamageTypeDTO(db, param , originTable) }, &includedDamageTypeDomainDamageType, *originTable),
+         EffectDomainStaticEffect: utils.GetDTOPointer(func(param *types.DomainStaticEffect) *DomainStaticEffectDTO { return DomainStaticEffectToDomainStaticEffectDTO(db, param , originTable) }, &includedEffectDomainStaticEffect, *originTable),
+         ResistanceTypeDomainDamageType: utils.GetDTOPointer(func(param *types.DomainDamageType) *DomainDamageTypeDTO { return DomainDamageTypeToDomainDamageTypeDTO(db, param , originTable) }, &includedResistanceTypeDomainDamageType, *originTable),
+         SaveDomainCharacterStat: utils.GetDTOPointer(func(param *types.DomainCharacterStat) *DomainCharacterStatDTO { return DomainCharacterStatToDomainCharacterStatDTO(db, param , originTable) }, &includedSaveDomainCharacterStat, *originTable),
+         TargetDomainCharacterStat: utils.GetDTOPointer(func(param *types.DomainCharacterStat) *DomainCharacterStatDTO { return DomainCharacterStatToDomainCharacterStatDTO(db, param , originTable) }, &includedTargetDomainCharacterStat, *originTable),
       },
    }
 }

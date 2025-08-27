@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -30,8 +31,11 @@ type DomainDiceDTO struct {
    Relationships DomainDiceDTORelationships
 }
 
-func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice) DomainDiceDTO {
-   return DomainDiceDTO{
+func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, originTable *string) *DomainDiceDTO {
+   
+   
+   
+   return &DomainDiceDTO{
       Id: domainDice.Id,
       Attributes: DomainDiceDTOAttributes{
          Description: domainDice.Description,

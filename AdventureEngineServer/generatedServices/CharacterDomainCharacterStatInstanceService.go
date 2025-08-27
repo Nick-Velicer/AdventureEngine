@@ -44,3 +44,4 @@ func SaveCharacterDomainCharacterStatInstance(db *gorm.DB, characterDomainCharac
    
    return tx.Commit().Error
 }
+

@@ -6,6 +6,7 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
 )
@@ -18,10 +19,11 @@ type CharacterDTOAttributes struct {
 }
 
 type CharacterDTORelationships struct {
-   CampaignCampaign CampaignDTO
-   CurrentSizeDomainSize DomainSizeDTO
-   SpeciesDomainSpecies DomainSpeciesDTO
-   SubclassDomainSubClass DomainSubClassDTO
+   CampaignCampaign *CampaignDTO
+   CurrentSizeDomainSize *DomainSizeDTO
+   SpeciesDomainSpecies *DomainSpeciesDTO
+   SubclassDomainSubClass *DomainSubClassDTO
+   StatsCharacterDomainCharacterStatInstance []*CharacterDomainCharacterStatInstanceDTO
 }
 
 type CharacterDTO struct {
@@ -32,16 +34,21 @@ type CharacterDTO struct {
    Relationships CharacterDTORelationships
 }
 
-func CharacterToCharacterDTO(db *gorm.DB, character *types.Character) CharacterDTO {
+func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, originTable *string) *CharacterDTO {
+   
    var includedCampaignCampaign types.Campaign
    var includedCurrentSizeDomainSize types.DomainSize
    var includedSpeciesDomainSpecies types.DomainSpecies
    var includedSubclassDomainSubClass types.DomainSubClass
+   var includedStatsCharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
+   
    services.GetCampaignById(db, int(*character.CampaignCampaign), &includedCampaignCampaign)
    services.GetDomainSizeById(db, int(*character.CurrentSizeDomainSize), &includedCurrentSizeDomainSize)
    services.GetDomainSpeciesById(db, int(*character.SpeciesDomainSpecies), &includedSpeciesDomainSpecies)
    services.GetDomainSubClassById(db, int(*character.SubclassDomainSubClass), &includedSubclassDomainSubClass)
-   return CharacterDTO{
+   services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStatsCharacterDomainCharacterStatInstances)
+   
+   return &CharacterDTO{
       Id: character.Id,
       Attributes: CharacterDTOAttributes{
          Description: character.Description,
@@ -50,10 +57,11 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character) CharacterD
          
       },
       Relationships: CharacterDTORelationships{
-         CampaignCampaign: CampaignToCampaignDTO(db, &includedCampaignCampaign),
-         CurrentSizeDomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSizeDomainSize),
-         SpeciesDomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpeciesDomainSpecies),
-         SubclassDomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubclassDomainSubClass),
+         CampaignCampaign: utils.GetDTOPointer(func(param *types.Campaign) *CampaignDTO { return CampaignToCampaignDTO(db, param , originTable) }, &includedCampaignCampaign, *originTable),
+         CurrentSizeDomainSize: utils.GetDTOPointer(func(param *types.DomainSize) *DomainSizeDTO { return DomainSizeToDomainSizeDTO(db, param , originTable) }, &includedCurrentSizeDomainSize, *originTable),
+         SpeciesDomainSpecies: utils.GetDTOPointer(func(param *types.DomainSpecies) *DomainSpeciesDTO { return DomainSpeciesToDomainSpeciesDTO(db, param , originTable) }, &includedSpeciesDomainSpecies, *originTable),
+         SubclassDomainSubClass: utils.GetDTOPointer(func(param *types.DomainSubClass) *DomainSubClassDTO { return DomainSubClassToDomainSubClassDTO(db, param , originTable) }, &includedSubclassDomainSubClass, *originTable),
+         StatsCharacterDomainCharacterStatInstance: utils.Map(includedStatsCharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return utils.GetDTOPointer(func(param *types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, param , originTable) }, &relationshipElement, *originTable) }),
       },
    }
 }

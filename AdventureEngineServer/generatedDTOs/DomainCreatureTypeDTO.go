@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -28,8 +29,11 @@ type DomainCreatureTypeDTO struct {
    Relationships DomainCreatureTypeDTORelationships
 }
 
-func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *types.DomainCreatureType) DomainCreatureTypeDTO {
-   return DomainCreatureTypeDTO{
+func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *types.DomainCreatureType, originTable *string) *DomainCreatureTypeDTO {
+   
+   
+   
+   return &DomainCreatureTypeDTO{
       Id: domainCreatureType.Id,
       Attributes: DomainCreatureTypeDTOAttributes{
          Description: domainCreatureType.Description,

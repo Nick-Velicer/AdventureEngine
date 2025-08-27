@@ -6,6 +6,7 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
 )
@@ -18,8 +19,8 @@ type DomainClassDTOAttributes struct {
 }
 
 type DomainClassDTORelationships struct {
-   HitDieDomainDice DomainDiceDTO
-   SpellcastingStatDomainCharacterStat DomainCharacterStatDTO
+   HitDieDomainDice *DomainDiceDTO
+   SpellcastingStatDomainCharacterStat *DomainCharacterStatDTO
 }
 
 type DomainClassDTO struct {
@@ -30,12 +31,15 @@ type DomainClassDTO struct {
    Relationships DomainClassDTORelationships
 }
 
-func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass) DomainClassDTO {
+func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, originTable *string) *DomainClassDTO {
+   
    var includedHitDieDomainDice types.DomainDice
    var includedSpellcastingStatDomainCharacterStat types.DomainCharacterStat
+   
    services.GetDomainDiceById(db, int(*domainClass.HitDieDomainDice), &includedHitDieDomainDice)
    services.GetDomainCharacterStatById(db, int(*domainClass.SpellcastingStatDomainCharacterStat), &includedSpellcastingStatDomainCharacterStat)
-   return DomainClassDTO{
+   
+   return &DomainClassDTO{
       Id: domainClass.Id,
       Attributes: DomainClassDTOAttributes{
          Description: domainClass.Description,
@@ -44,8 +48,8 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass) Do
          
       },
       Relationships: DomainClassDTORelationships{
-         HitDieDomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDieDomainDice),
-         SpellcastingStatDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStatDomainCharacterStat),
+         HitDieDomainDice: utils.GetDTOPointer(func(param *types.DomainDice) *DomainDiceDTO { return DomainDiceToDomainDiceDTO(db, param , originTable) }, &includedHitDieDomainDice, *originTable),
+         SpellcastingStatDomainCharacterStat: utils.GetDTOPointer(func(param *types.DomainCharacterStat) *DomainCharacterStatDTO { return DomainCharacterStatToDomainCharacterStatDTO(db, param , originTable) }, &includedSpellcastingStatDomainCharacterStat, *originTable),
       },
    }
 }

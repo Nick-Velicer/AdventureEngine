@@ -22,8 +22,12 @@ func GetCharacters(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.CharacterDTO
+   tableName := "Character"
    for _, dbTypeInstance := range serviceBuffer {
-      returnBuffer = append(returnBuffer, dtos.CharacterToCharacterDTO(db, &dbTypeInstance))
+      pointerToDTO := dtos.CharacterToCharacterDTO(db, &dbTypeInstance, &tableName)
+      if (pointerToDTO != nil) {
+         returnBuffer = append(returnBuffer, *pointerToDTO)
+      }
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -42,7 +46,8 @@ func GetCharacterById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.CharacterToCharacterDTO(db, &serviceBuffer)
+   tableName := "Character"
+   returnBuffer := dtos.CharacterToCharacterDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -54,6 +59,7 @@ func SaveCharacter(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.CharacterToCharacterDTO(db, &serviceBuffer)
+   tableName := "Character"
+   returnBuffer := dtos.CharacterToCharacterDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

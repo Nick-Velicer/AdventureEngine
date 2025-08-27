@@ -44,3 +44,4 @@ func SaveDomainDice(db *gorm.DB, domainDice *types.DomainDice) error {
    
    return tx.Commit().Error
 }
+

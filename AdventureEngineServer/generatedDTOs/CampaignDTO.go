@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -28,8 +29,11 @@ type CampaignDTO struct {
    Relationships CampaignDTORelationships
 }
 
-func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign) CampaignDTO {
-   return CampaignDTO{
+func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, originTable *string) *CampaignDTO {
+   
+   
+   
+   return &CampaignDTO{
       Id: campaign.Id,
       Attributes: CampaignDTOAttributes{
          Description: campaign.Description,

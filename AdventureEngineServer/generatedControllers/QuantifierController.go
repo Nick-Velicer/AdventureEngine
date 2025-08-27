@@ -22,8 +22,12 @@ func GetQuantifiers(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.QuantifierDTO
+   tableName := "Quantifier"
    for _, dbTypeInstance := range serviceBuffer {
-      returnBuffer = append(returnBuffer, dtos.QuantifierToQuantifierDTO(db, &dbTypeInstance))
+      pointerToDTO := dtos.QuantifierToQuantifierDTO(db, &dbTypeInstance, &tableName)
+      if (pointerToDTO != nil) {
+         returnBuffer = append(returnBuffer, *pointerToDTO)
+      }
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -42,7 +46,8 @@ func GetQuantifierById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.QuantifierToQuantifierDTO(db, &serviceBuffer)
+   tableName := "Quantifier"
+   returnBuffer := dtos.QuantifierToQuantifierDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -54,6 +59,7 @@ func SaveQuantifier(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.QuantifierToQuantifierDTO(db, &serviceBuffer)
+   tableName := "Quantifier"
+   returnBuffer := dtos.QuantifierToQuantifierDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

@@ -44,3 +44,4 @@ func SaveDomainCreatureType(db *gorm.DB, domainCreatureType *types.DomainCreatur
    
    return tx.Commit().Error
 }
+

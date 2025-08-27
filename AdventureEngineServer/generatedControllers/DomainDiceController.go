@@ -22,8 +22,12 @@ func GetDomainDices(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.DomainDiceDTO
+   tableName := "DomainDice"
    for _, dbTypeInstance := range serviceBuffer {
-      returnBuffer = append(returnBuffer, dtos.DomainDiceToDomainDiceDTO(db, &dbTypeInstance))
+      pointerToDTO := dtos.DomainDiceToDomainDiceDTO(db, &dbTypeInstance, &tableName)
+      if (pointerToDTO != nil) {
+         returnBuffer = append(returnBuffer, *pointerToDTO)
+      }
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -42,7 +46,8 @@ func GetDomainDiceById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainDiceToDomainDiceDTO(db, &serviceBuffer)
+   tableName := "DomainDice"
+   returnBuffer := dtos.DomainDiceToDomainDiceDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -54,6 +59,7 @@ func SaveDomainDice(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainDiceToDomainDiceDTO(db, &serviceBuffer)
+   tableName := "DomainDice"
+   returnBuffer := dtos.DomainDiceToDomainDiceDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

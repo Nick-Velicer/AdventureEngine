@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -28,8 +29,11 @@ type DomainStaticEffectDTO struct {
    Relationships DomainStaticEffectDTORelationships
 }
 
-func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect) DomainStaticEffectDTO {
-   return DomainStaticEffectDTO{
+func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect, originTable *string) *DomainStaticEffectDTO {
+   
+   
+   
+   return &DomainStaticEffectDTO{
       Id: domainStaticEffect.Id,
       Attributes: DomainStaticEffectDTOAttributes{
          Description: domainStaticEffect.Description,

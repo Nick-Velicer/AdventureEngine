@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -31,8 +32,11 @@ type DomainSizeDTO struct {
    Relationships DomainSizeDTORelationships
 }
 
-func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize) DomainSizeDTO {
-   return DomainSizeDTO{
+func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, originTable *string) *DomainSizeDTO {
+   
+   
+   
+   return &DomainSizeDTO{
       Id: domainSize.Id,
       Attributes: DomainSizeDTOAttributes{
          BaseHexArea: domainSize.BaseHexArea,

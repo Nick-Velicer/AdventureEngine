@@ -44,3 +44,4 @@ func SaveDomainSize(db *gorm.DB, domainSize *types.DomainSize) error {
    
    return tx.Commit().Error
 }
+

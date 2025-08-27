@@ -44,3 +44,4 @@ func SaveDomainStaticEffect(db *gorm.DB, domainStaticEffect *types.DomainStaticE
    
    return tx.Commit().Error
 }
+

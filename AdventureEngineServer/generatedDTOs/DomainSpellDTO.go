@@ -6,6 +6,7 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
 )
@@ -33,8 +34,8 @@ type DomainSpellDTOAttributes struct {
 }
 
 type DomainSpellDTORelationships struct {
-   DamageScalingDomainDice DomainDiceDTO
-   SchoolDomainSpellSchool DomainSpellSchoolDTO
+   DamageScalingDomainDice *DomainDiceDTO
+   SchoolDomainSpellSchool *DomainSpellSchoolDTO
 }
 
 type DomainSpellDTO struct {
@@ -45,12 +46,15 @@ type DomainSpellDTO struct {
    Relationships DomainSpellDTORelationships
 }
 
-func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell) DomainSpellDTO {
+func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, originTable *string) *DomainSpellDTO {
+   
    var includedDamageScalingDomainDice types.DomainDice
    var includedSchoolDomainSpellSchool types.DomainSpellSchool
+   
    services.GetDomainDiceById(db, int(*domainSpell.DamageScalingDomainDice), &includedDamageScalingDomainDice)
    services.GetDomainSpellSchoolById(db, int(*domainSpell.SchoolDomainSpellSchool), &includedSchoolDomainSpellSchool)
-   return DomainSpellDTO{
+   
+   return &DomainSpellDTO{
       Id: domainSpell.Id,
       Attributes: DomainSpellDTOAttributes{
          ConcentrationRequired: domainSpell.ConcentrationRequired,
@@ -74,8 +78,8 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell) Do
          
       },
       Relationships: DomainSpellDTORelationships{
-         DamageScalingDomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice),
-         SchoolDomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchoolDomainSpellSchool),
+         DamageScalingDomainDice: utils.GetDTOPointer(func(param *types.DomainDice) *DomainDiceDTO { return DomainDiceToDomainDiceDTO(db, param , originTable) }, &includedDamageScalingDomainDice, *originTable),
+         SchoolDomainSpellSchool: utils.GetDTOPointer(func(param *types.DomainSpellSchool) *DomainSpellSchoolDTO { return DomainSpellSchoolToDomainSpellSchoolDTO(db, param , originTable) }, &includedSchoolDomainSpellSchool, *originTable),
       },
    }
 }

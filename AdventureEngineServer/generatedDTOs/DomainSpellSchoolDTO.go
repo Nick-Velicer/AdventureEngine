@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -28,8 +29,11 @@ type DomainSpellSchoolDTO struct {
    Relationships DomainSpellSchoolDTORelationships
 }
 
-func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *types.DomainSpellSchool) DomainSpellSchoolDTO {
-   return DomainSpellSchoolDTO{
+func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *types.DomainSpellSchool, originTable *string) *DomainSpellSchoolDTO {
+   
+   
+   
+   return &DomainSpellSchoolDTO{
       Id: domainSpellSchool.Id,
       Attributes: DomainSpellSchoolDTOAttributes{
          Description: domainSpellSchool.Description,

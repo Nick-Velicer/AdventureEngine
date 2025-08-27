@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -30,8 +31,11 @@ type DomainCharacterStatDTO struct {
    Relationships DomainCharacterStatDTORelationships
 }
 
-func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterStat *types.DomainCharacterStat) DomainCharacterStatDTO {
-   return DomainCharacterStatDTO{
+func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterStat *types.DomainCharacterStat, originTable *string) *DomainCharacterStatDTO {
+   
+   
+   
+   return &DomainCharacterStatDTO{
       Id: domainCharacterStat.Id,
       Attributes: DomainCharacterStatDTOAttributes{
          Description: domainCharacterStat.Description,

@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -28,8 +29,11 @@ type DomainDamageTypeDTO struct {
    Relationships DomainDamageTypeDTORelationships
 }
 
-func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.DomainDamageType) DomainDamageTypeDTO {
-   return DomainDamageTypeDTO{
+func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.DomainDamageType, originTable *string) *DomainDamageTypeDTO {
+   
+   
+   
+   return &DomainDamageTypeDTO{
       Id: domainDamageType.Id,
       Attributes: DomainDamageTypeDTOAttributes{
          Description: domainDamageType.Description,

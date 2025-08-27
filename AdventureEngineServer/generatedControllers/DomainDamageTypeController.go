@@ -22,8 +22,12 @@ func GetDomainDamageTypes(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.DomainDamageTypeDTO
+   tableName := "DomainDamageType"
    for _, dbTypeInstance := range serviceBuffer {
-      returnBuffer = append(returnBuffer, dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &dbTypeInstance))
+      pointerToDTO := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &dbTypeInstance, &tableName)
+      if (pointerToDTO != nil) {
+         returnBuffer = append(returnBuffer, *pointerToDTO)
+      }
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -42,7 +46,8 @@ func GetDomainDamageTypeById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &serviceBuffer)
+   tableName := "DomainDamageType"
+   returnBuffer := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -54,6 +59,7 @@ func SaveDomainDamageType(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &serviceBuffer)
+   tableName := "DomainDamageType"
+   returnBuffer := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

@@ -44,3 +44,4 @@ func SaveDomainSpell(db *gorm.DB, domainSpell *types.DomainSpell) error {
    
    return tx.Commit().Error
 }
+

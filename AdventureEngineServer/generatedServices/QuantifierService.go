@@ -44,3 +44,4 @@ func SaveQuantifier(db *gorm.DB, quantifier *types.Quantifier) error {
    
    return tx.Commit().Error
 }
+

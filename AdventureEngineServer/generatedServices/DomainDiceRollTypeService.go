@@ -44,3 +44,4 @@ func SaveDomainDiceRollType(db *gorm.DB, domainDiceRollType *types.DomainDiceRol
    
    return tx.Commit().Error
 }
+

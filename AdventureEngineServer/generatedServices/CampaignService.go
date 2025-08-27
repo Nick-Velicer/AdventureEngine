@@ -44,3 +44,4 @@ func SaveCampaign(db *gorm.DB, campaign *types.Campaign) error {
    
    return tx.Commit().Error
 }
+

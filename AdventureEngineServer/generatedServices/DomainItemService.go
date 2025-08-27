@@ -44,3 +44,4 @@ func SaveDomainItem(db *gorm.DB, domainItem *types.DomainItem) error {
    
    return tx.Commit().Error
 }
+

@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -30,8 +31,11 @@ type DomainActionDTO struct {
    Relationships DomainActionDTORelationships
 }
 
-func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction) DomainActionDTO {
-   return DomainActionDTO{
+func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction, originTable *string) *DomainActionDTO {
+   
+   
+   
+   return &DomainActionDTO{
       Id: domainAction.Id,
       Attributes: DomainActionDTOAttributes{
          Description: domainAction.Description,

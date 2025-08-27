@@ -44,3 +44,4 @@ func SaveDomainDamageType(db *gorm.DB, domainDamageType *types.DomainDamageType)
    
    return tx.Commit().Error
 }
+

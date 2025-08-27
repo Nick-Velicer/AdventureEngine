@@ -22,8 +22,12 @@ func GetDomainActions(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.DomainActionDTO
+   tableName := "DomainAction"
    for _, dbTypeInstance := range serviceBuffer {
-      returnBuffer = append(returnBuffer, dtos.DomainActionToDomainActionDTO(db, &dbTypeInstance))
+      pointerToDTO := dtos.DomainActionToDomainActionDTO(db, &dbTypeInstance, &tableName)
+      if (pointerToDTO != nil) {
+         returnBuffer = append(returnBuffer, *pointerToDTO)
+      }
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -42,7 +46,8 @@ func GetDomainActionById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainActionToDomainActionDTO(db, &serviceBuffer)
+   tableName := "DomainAction"
+   returnBuffer := dtos.DomainActionToDomainActionDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -54,6 +59,7 @@ func SaveDomainAction(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainActionToDomainActionDTO(db, &serviceBuffer)
+   tableName := "DomainAction"
+   returnBuffer := dtos.DomainActionToDomainActionDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

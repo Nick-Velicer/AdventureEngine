@@ -7,6 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
+   
    "gorm.io/gorm"
 )
 
@@ -28,8 +29,11 @@ type DomainConditionDTO struct {
    Relationships DomainConditionDTORelationships
 }
 
-func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.DomainCondition) DomainConditionDTO {
-   return DomainConditionDTO{
+func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.DomainCondition, originTable *string) *DomainConditionDTO {
+   
+   
+   
+   return &DomainConditionDTO{
       Id: domainCondition.Id,
       Attributes: DomainConditionDTOAttributes{
          Description: domainCondition.Description,

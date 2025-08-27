@@ -44,3 +44,8 @@ func SaveCharacter(db *gorm.DB, character *types.Character) error {
    
    return tx.Commit().Error
 }
+
+func GetCharacterDomainCharacterStatInstancesByCharacterId(db *gorm.DB, id int, CharacterDomainCharacterStatInstances *[]types.CharacterDomainCharacterStatInstance) error {
+   result := db.Table("CharacterDomainCharacterStatInstance").Where("CharacterCharacter = id").Find(&CharacterDomainCharacterStatInstances)
+   return result.Error
+}

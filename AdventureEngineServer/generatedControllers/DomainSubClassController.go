@@ -22,8 +22,12 @@ func GetDomainSubClasss(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.DomainSubClassDTO
+   tableName := "DomainSubClass"
    for _, dbTypeInstance := range serviceBuffer {
-      returnBuffer = append(returnBuffer, dtos.DomainSubClassToDomainSubClassDTO(db, &dbTypeInstance))
+      pointerToDTO := dtos.DomainSubClassToDomainSubClassDTO(db, &dbTypeInstance, &tableName)
+      if (pointerToDTO != nil) {
+         returnBuffer = append(returnBuffer, *pointerToDTO)
+      }
    }
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
@@ -42,7 +46,8 @@ func GetDomainSubClassById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainSubClassToDomainSubClassDTO(db, &serviceBuffer)
+   tableName := "DomainSubClass"
+   returnBuffer := dtos.DomainSubClassToDomainSubClassDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -54,6 +59,7 @@ func SaveDomainSubClass(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainSubClassToDomainSubClassDTO(db, &serviceBuffer)
+   tableName := "DomainSubClass"
+   returnBuffer := dtos.DomainSubClassToDomainSubClassDTO(db, &serviceBuffer, &tableName)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

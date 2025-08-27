@@ -6,6 +6,7 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
 )
@@ -18,8 +19,8 @@ type CharacterDomainCharacterStatInstanceDTOAttributes struct {
 }
 
 type CharacterDomainCharacterStatInstanceDTORelationships struct {
-   CharacterCharacter CharacterDTO
-   StatInstanceDomainCharacterStat DomainCharacterStatDTO
+   CharacterCharacter *CharacterDTO
+   StatInstanceDomainCharacterStat *DomainCharacterStatDTO
 }
 
 type CharacterDomainCharacterStatInstanceDTO struct {
@@ -30,12 +31,15 @@ type CharacterDomainCharacterStatInstanceDTO struct {
    Relationships CharacterDomainCharacterStatInstanceDTORelationships
 }
 
-func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance) CharacterDomainCharacterStatInstanceDTO {
+func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance, originTable *string) *CharacterDomainCharacterStatInstanceDTO {
+   
    var includedCharacterCharacter types.Character
    var includedStatInstanceDomainCharacterStat types.DomainCharacterStat
+   
    services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.CharacterCharacter), &includedCharacterCharacter)
    services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.StatInstanceDomainCharacterStat), &includedStatInstanceDomainCharacterStat)
-   return CharacterDomainCharacterStatInstanceDTO{
+   
+   return &CharacterDomainCharacterStatInstanceDTO{
       Id: characterDomainCharacterStatInstance.Id,
       Attributes: CharacterDomainCharacterStatInstanceDTOAttributes{
          Description: characterDomainCharacterStatInstance.Description,
@@ -44,8 +48,8 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
          
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
-         CharacterCharacter: CharacterToCharacterDTO(db, &includedCharacterCharacter),
-         StatInstanceDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstanceDomainCharacterStat),
+         CharacterCharacter: utils.GetDTOPointer(func(param *types.Character) *CharacterDTO { return CharacterToCharacterDTO(db, param , originTable) }, &includedCharacterCharacter, *originTable),
+         StatInstanceDomainCharacterStat: utils.GetDTOPointer(func(param *types.DomainCharacterStat) *DomainCharacterStatDTO { return DomainCharacterStatToDomainCharacterStatDTO(db, param , originTable) }, &includedStatInstanceDomainCharacterStat, *originTable),
       },
    }
 }

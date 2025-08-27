@@ -6,6 +6,7 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
 )
@@ -18,7 +19,7 @@ type DomainSpeciesDTOAttributes struct {
 }
 
 type DomainSpeciesDTORelationships struct {
-   CreatureTypeDomainCreatureType DomainCreatureTypeDTO
+   CreatureTypeDomainCreatureType *DomainCreatureTypeDTO
 }
 
 type DomainSpeciesDTO struct {
@@ -29,10 +30,13 @@ type DomainSpeciesDTO struct {
    Relationships DomainSpeciesDTORelationships
 }
 
-func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies) DomainSpeciesDTO {
+func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies, originTable *string) *DomainSpeciesDTO {
+   
    var includedCreatureTypeDomainCreatureType types.DomainCreatureType
+   
    services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureTypeDomainCreatureType), &includedCreatureTypeDomainCreatureType)
-   return DomainSpeciesDTO{
+   
+   return &DomainSpeciesDTO{
       Id: domainSpecies.Id,
       Attributes: DomainSpeciesDTOAttributes{
          Description: domainSpecies.Description,
@@ -41,7 +45,7 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
          
       },
       Relationships: DomainSpeciesDTORelationships{
-         CreatureTypeDomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureTypeDomainCreatureType),
+         CreatureTypeDomainCreatureType: utils.GetDTOPointer(func(param *types.DomainCreatureType) *DomainCreatureTypeDTO { return DomainCreatureTypeToDomainCreatureTypeDTO(db, param , originTable) }, &includedCreatureTypeDomainCreatureType, *originTable),
       },
    }
 }

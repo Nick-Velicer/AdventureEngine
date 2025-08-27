@@ -6,6 +6,7 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
 )
@@ -18,7 +19,7 @@ type DomainSubClassDTOAttributes struct {
 }
 
 type DomainSubClassDTORelationships struct {
-   ParentClassDomainClass DomainClassDTO
+   ParentClassDomainClass *DomainClassDTO
 }
 
 type DomainSubClassDTO struct {
@@ -29,10 +30,13 @@ type DomainSubClassDTO struct {
    Relationships DomainSubClassDTORelationships
 }
 
-func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass) DomainSubClassDTO {
+func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass, originTable *string) *DomainSubClassDTO {
+   
    var includedParentClassDomainClass types.DomainClass
+   
    services.GetDomainClassById(db, int(*domainSubClass.ParentClassDomainClass), &includedParentClassDomainClass)
-   return DomainSubClassDTO{
+   
+   return &DomainSubClassDTO{
       Id: domainSubClass.Id,
       Attributes: DomainSubClassDTOAttributes{
          Description: domainSubClass.Description,
@@ -41,7 +45,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
          
       },
       Relationships: DomainSubClassDTORelationships{
-         ParentClassDomainClass: DomainClassToDomainClassDTO(db, &includedParentClassDomainClass),
+         ParentClassDomainClass: utils.GetDTOPointer(func(param *types.DomainClass) *DomainClassDTO { return DomainClassToDomainClassDTO(db, param , originTable) }, &includedParentClassDomainClass, *originTable),
       },
    }
 }

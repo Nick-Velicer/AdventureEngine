@@ -44,3 +44,4 @@ func SaveDomainCondition(db *gorm.DB, domainCondition *types.DomainCondition) er
    
    return tx.Commit().Error
 }
+

@@ -44,3 +44,4 @@ func SaveDomainCharacterStat(db *gorm.DB, domainCharacterStat *types.DomainChara
    
    return tx.Commit().Error
 }
+
