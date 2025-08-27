@@ -32,8 +32,6 @@ def main():
     if not os.path.exists(dbTargetDir):
         os.makedirs(dbTargetDir)
     
-
-    #Eventually this point can also generate the DTO levels
     for goTypeSeedFile in os.listdir(goTypeBaseDirectory):
         fileName = os.fsdecode(goTypeSeedFile)
         if fileName.endswith('.go'): 
@@ -149,37 +147,58 @@ def produceParsedType(fileName: str):
 
     fieldTypes = {
         'attributes': {}, 
-        'relationships': {}
+        'relationships': {
+            'manyToOne': {},
+            'oneToMany': {}
+        }
     }
 
     #Checking for relationship-specific delimiters to know which fields are foreign keys
     #and removing the `json annotation` containing said delimiter afterwards
     for field in fileContent:
         if ( '__' not in field[1]):
-            fieldTypes['attributes'][field[0]] = re.sub('`[^`]+`', '', field[1]).strip()
+            fieldTypes['attributes'][field[0]] = {'type': re.sub('`[^`]+`', '', field[1]).strip()}
         else:
-            correspondingTableText: str = re.findall(r'(\w*%s\w*)' % '__', field[1])[0].split('__')[1]
+            if ('[]' in field[1]):
+                correspondingTableText: str = re.findall(r'(\w*%s\w*)' % '__', field[1])[0].split('__')[1]
 
-            fieldTypes['relationships'][field[0]] = {
-                field[0]: re.sub('`[^`]+`', '', field[1]).strip(),
-                #There's not a convenient way to do this inline, .capitalize() lowercases all the other characters
-                'correspondingTable': correspondingTableText[0].upper() + correspondingTableText[1:]
-            }
+                fieldTypes['relationships']['oneToMany'][field[0]] = {
+                    'type': re.sub('`[^`]+`', '', field[1]).strip(),
+                    #There's not a convenient way to do this any more inline, .capitalize() lowercases all the other characters
+                    'correspondingTable': correspondingTableText[0].upper() + correspondingTableText[1:]
+                }
+            else:
+                correspondingTableText: str = re.findall(r'(\w*%s\w*)' % '__', field[1])[0].split('__')[1]
+
+                fieldTypes['relationships']['manyToOne'][field[0]] = {
+                    'type': re.sub('`[^`]+`', '', field[1]).strip(),
+                    'correspondingTable': correspondingTableText[0].upper() + correspondingTableText[1:]
+                }
 
     #resulting dict structure for a type/table:
     #{
     #   'attributes': {
-    #       'field': 'type'
+    #       'field': {
+    #           'type': 'type'
+    #       }
     #   }
     #
     #   'relationships': {
-    #       'field': {
-    #           'field': 'type'
-    #           'correspondingTable': 'tableName'
+    #       'oneToMany': {
+    #           'field': {
+    #             'type': 'type'
+    #             'correspondingTable': 'tableName'
+    #            }
     #       }
+    #       'manyToOne': {
+    #           'field': {
+    #             'type': 'type'
+    #             'correspondingTable': 'tableName'
+    #            }
+    #       }
+    #       
     #   }
     #}
-
     return fieldTypes
 
 
@@ -201,6 +220,8 @@ def produceDatabaseTargetType(fileName: str):
 
     if (fileContent == ''):
         raise Exception('Unexpected: could not recieve file content from ' + fileName)
+    
+    fileContent = "\n".join([line for line in fileContent.split("\n") if not ('[]' in line)])
 
 
     return fileContent.replace("Json", "").replace("goTypeBase", "generatedDatabaseTypes")
@@ -225,11 +246,11 @@ def produceCreateTableStatement(tableName: str, typeMeta: dict):
     for attribute in list(typeMeta['attributes'].keys()):
         if (attribute != 'Id'):
             #Id is already added at the front as a special case
-            columnSnippets.append(generateColumnSnippet(attribute, typeMeta['attributes'][attribute]))
+            columnSnippets.append(generateColumnSnippet(attribute, typeMeta['attributes'][attribute]['type']))
 
-    for relationship in list(typeMeta['relationships'].keys()):
-        columnSnippets.append(generateColumnSnippet(relationship, typeMeta['relationships'][relationship][relationship]))
-        constraintSnippets.append(generateForeignKeyConstraintSnippet(relationship, typeMeta['relationships'][relationship]['correspondingTable']))
+    for relationship in list(typeMeta['relationships']['manyToOne'].keys()):
+        columnSnippets.append(generateColumnSnippet(relationship, typeMeta['relationships']['manyToOne'][relationship]['type']))
+        constraintSnippets.append(generateForeignKeyConstraintSnippet(relationship, typeMeta['relationships']['manyToOne'][relationship]['correspondingTable']))
 
     for snippet in columnSnippets:
         createTableStatement = createTableStatement + ', ' + snippet
@@ -270,7 +291,7 @@ def produceTestInsertStatements(tableName: str, typeMeta: dict):
         baseInsertStatement += ') VALUES('
 
         for column in columnOrder:
-                baseInsertStatement += getTestTypeDefault(column, typeMeta['attributes'][column], insertSeed) + (', ' if column != columnOrder[-1] else '')
+                baseInsertStatement += getTestTypeDefault(column, typeMeta['attributes'][column]['type'], insertSeed) + (', ' if column != columnOrder[-1] else '')
 
         for relationship in relationships:
                 baseInsertStatement += ', 1'
@@ -296,7 +317,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                 *indentLineBlock([
                     'Id: ' + objectArgName + '.Id,',
                     *[(attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.Attributes.' + attribute + ',' if attribute != 'Id' else '') for attribute in typeMeta['attributes']],
-                    *[relationship[0].upper() + relationship[1:] + ': ' + objectArgName + '.Relationships.' + relationship + '.Id,' for relationship in typeMeta["relationships"]],
+                    *[relationship[0].upper() + relationship[1:] + ': ' + objectArgName + '.Relationships.' + relationship + '.Id,' for relationship in typeMeta["relationships"]['manyToOne']],
                 ]),
                 '}',
             ]),
@@ -310,9 +331,9 @@ def produceDTOForType(tableName: str, typeMeta: dict):
         lines = [
             'func ' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ') ' + tableName + 'DTO {',
             *indentLineBlock([
-                *['var included' + relationship + ' types.' + typeMeta['relationships'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]],
+                *['var included' + relationship + ' types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
 
-                *['services.Get' + typeMeta['relationships'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), &included' + relationship + ')' for relationship in typeMeta["relationships"]],
+                *['services.Get' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), &included' + relationship + ')' for relationship in typeMeta["relationships"]['manyToOne']],
 
                 'return ' + tableName + 'DTO{',
                 *indentLineBlock([
@@ -321,7 +342,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                     *indentLineBlock([(attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.' + attribute + ',' if attribute != 'Id' else '') for attribute in typeMeta['attributes']]),
                     '},',
                     'Relationships: ' + tableName + 'DTORelationships{',
-                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': ' + typeMeta['relationships'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + '),' for relationship in typeMeta["relationships"]]),
+                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + '),' for relationship in typeMeta["relationships"]['manyToOne']]),
                     '},',
                 ]),
                 '}',
@@ -339,17 +360,17 @@ def produceDTOForType(tableName: str, typeMeta: dict):
         'import (',
         *indentLineBlock([
             'types "AdventureEngineServer/generatedDatabaseTypes"',
-            'services "AdventureEngineServer/generatedServices"' if len(typeMeta["relationships"]) > 0 else '',
+            'services "AdventureEngineServer/generatedServices"' if len(typeMeta["relationships"]["manyToOne"]) > 0 else '',
   	        '"gorm.io/gorm"'
         ]),
         ')',
         '',
         'type ' + tableName + 'DTOAttributes struct {',
-        *indentLineBlock([attribute[0].upper() + attribute[1:] + ' ' + typeMeta['attributes'][attribute] if attribute != 'Id' else '' for attribute in typeMeta['attributes']]),
+        *indentLineBlock([attribute[0].upper() + attribute[1:] + ' ' + typeMeta['attributes'][attribute]['type'] if attribute != 'Id' else '' for attribute in typeMeta['attributes']]),
         '}',
         '',
         'type ' + tableName + 'DTORelationships struct {',
-        *indentLineBlock([relationship[0].upper() + relationship[1:] + ' ' + typeMeta['relationships'][relationship]["correspondingTable"] + "DTO" for relationship in typeMeta['relationships']]),
+        *indentLineBlock([relationship[0].upper() + relationship[1:] + ' ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + "DTO" for relationship in typeMeta['relationships']['manyToOne']]),
         '}',
         '',
         'type ' + tableName + 'DTO struct {',

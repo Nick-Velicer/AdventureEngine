@@ -21,7 +21,9 @@ export type DomainSpell = ExtendedSchemaObject<{
         HourCastTime?: number
     }
     Relationships: {
-        School__domainSpellSchool?: DomainSpellSchool
-        DamageScaling__domainDice?: DomainDice
+        ManyToOne: {
+            School__domainSpellSchool?: DomainSpellSchool
+            DamageScaling__domainDice?: DomainDice
+        }
     }
 }>

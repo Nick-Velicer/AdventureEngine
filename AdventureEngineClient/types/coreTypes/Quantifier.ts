@@ -30,12 +30,14 @@ export type Quantifier = ExtendedSchemaObject<{
         Level9SpellSlots?: number
     }
     Relationships: {
-        Effect__domainStaticEffect?: DomainStaticEffect
-        Target__domainCharacterStat?: DomainCharacterStat
-        AddedSpell__domainSpell?: DomainSpell
-        Condition__domainCondition?: DomainCondition
-        DamageType__domainDamageType?: DomainDamageType
-        ResistanceType__domainDamageType?: DomainDamageType
-        Save__domainCharacterStat?: DomainCharacterStat
+        ManyToOne: {
+            Effect__domainStaticEffect?: DomainStaticEffect
+            Target__domainCharacterStat?: DomainCharacterStat
+            AddedSpell__domainSpell?: DomainSpell
+            Condition__domainCondition?: DomainCondition
+            DamageType__domainDamageType?: DomainDamageType
+            ResistanceType__domainDamageType?: DomainDamageType
+            Save__domainCharacterStat?: DomainCharacterStat
+        }
     }
 }>

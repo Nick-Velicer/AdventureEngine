@@ -27,11 +27,13 @@ const flattenedTypeImports = (typeNames: Array<string>) => {
 		'import { FlattenedSchemaObject } from "../SchemaObject";'
 	].concat(typeNames.map((typeName) => {
 		return 'import { ' + typeName + ' } from "../coreTypes/' + typeName + '";'
-	})).join("\n");
+	})).concat([
+		'import { Simplify } from "type-fest";'
+	]).join("\n");
 }
 
 const flattenedTypes = (typeNames: Array<string>) => {
-	return typeNames.map((typeName) => 'export type Flattened' + typeName + ' = FlattenedSchemaObject<' + typeName + '>;' ).join("\n");
+	return typeNames.map((typeName) => 'export type Flattened' + typeName + ' = Simplify<FlattenedSchemaObject<' + typeName + '>>;' ).join("\n");
 }
 
 const typeNames: Array<string> = coreTypeFileNames.map((fileName) => fileName.replace(".ts", ""));

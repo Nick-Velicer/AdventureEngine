@@ -7,7 +7,9 @@ export type DomainClass = ExtendedSchemaObject<{
     Attributes: {
     },
     Relationships: {
-        HitDie__domainDice: DomainDice,
-        SpellcastingStat__domainCharacterStat: DomainCharacterStat,
+        ManyToOne: {
+            HitDie__domainDice: DomainDice,
+            SpellcastingStat__domainCharacterStat: DomainCharacterStat,
+        }
     }
 }>

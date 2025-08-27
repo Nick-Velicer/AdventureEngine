@@ -2,9 +2,6 @@
 
 package generatedDatabaseTypes
 
-import "encoding/json"
-import "fmt"
-
 type DomainDice struct {
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
@@ -23,25 +20,4 @@ type DomainDice struct {
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *DomainDice) UnmarshalJSON(value []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(value, &raw); err != nil {
-		return err
-	}
-	if _, ok := raw["Maximum"]; raw != nil && !ok {
-		return fmt.Errorf("field Maximum in DomainDice: required")
-	}
-	if _, ok := raw["Minimum"]; raw != nil && !ok {
-		return fmt.Errorf("field Minimum in DomainDice: required")
-	}
-	type Plain DomainDice
-	var plain Plain
-	if err := json.Unmarshal(value, &plain); err != nil {
-		return err
-	}
-	*j = DomainDice(plain)
-	return nil
 }

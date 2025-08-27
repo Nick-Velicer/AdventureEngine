@@ -7,7 +7,9 @@ export type CharacterDomainCharacterStatInstance = ExtendedSchemaObject<{
         
     },
     Relationships: {
-        Character__Character?: Character,
-        StatInstance__DomainCharacterStat?: DomainCharacterStat
+        ManyToOne: {
+            Character__Character: Character,
+            StatInstance__DomainCharacterStat: DomainCharacterStat
+        }
     }
 }>

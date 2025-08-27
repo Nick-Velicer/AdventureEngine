@@ -5,6 +5,8 @@ export type DomainSpecies = ExtendedSchemaObject<{
     Attributes: {
     },
     Relationships: {
-        CreatureType__DomainCreatureType: DomainCreatureType
+        ManyToOne: {  
+            CreatureType__DomainCreatureType: DomainCreatureType
+        }
     }
 }>

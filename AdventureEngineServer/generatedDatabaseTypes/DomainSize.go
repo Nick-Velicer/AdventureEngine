@@ -2,9 +2,6 @@
 
 package generatedDatabaseTypes
 
-import "encoding/json"
-import "fmt"
-
 type DomainSize struct {
 	// BaseHexArea corresponds to the JSON schema field "BaseHexArea".
 	BaseHexArea float64 `json:"BaseHexArea" yaml:"BaseHexArea" mapstructure:"BaseHexArea"`
@@ -26,28 +23,4 @@ type DomainSize struct {
 
 	// Id corresponds to the JSON schema field "id".
 	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *DomainSize) UnmarshalJSON(value []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(value, &raw); err != nil {
-		return err
-	}
-	if _, ok := raw["BaseHexArea"]; raw != nil && !ok {
-		return fmt.Errorf("field BaseHexArea in DomainSize: required")
-	}
-	if _, ok := raw["BaseTileArea"]; raw != nil && !ok {
-		return fmt.Errorf("field BaseTileArea in DomainSize: required")
-	}
-	if _, ok := raw["SizeOrder"]; raw != nil && !ok {
-		return fmt.Errorf("field SizeOrder in DomainSize: required")
-	}
-	type Plain DomainSize
-	var plain Plain
-	if err := json.Unmarshal(value, &plain); err != nil {
-		return err
-	}
-	*j = DomainSize(plain)
-	return nil
 }
