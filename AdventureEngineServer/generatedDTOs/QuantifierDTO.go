@@ -6,9 +6,10 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   utils "AdventureEngineServer/utils"
+   
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "reflect"
 )
 
 type QuantifierDTOAttributes struct {
@@ -59,6 +60,14 @@ type QuantifierDTO struct {
 
 func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, originTable *string) *QuantifierDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*quantifier).Name()) {
+      print("Hit circular catch case for table Quantifier\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*quantifier).Name()
+      originTable = &tableName
+   }
    var includedAddedSpellDomainSpell types.DomainSpell
    var includedConditionDomainCondition types.DomainCondition
    var includedDamageTypeDomainDamageType types.DomainDamageType
@@ -105,13 +114,13 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, origin
          
       },
       Relationships: QuantifierDTORelationships{
-         AddedSpellDomainSpell: utils.GetDTOPointer(func(param *types.DomainSpell) *DomainSpellDTO { return DomainSpellToDomainSpellDTO(db, param , originTable) }, &includedAddedSpellDomainSpell, *originTable),
-         ConditionDomainCondition: utils.GetDTOPointer(func(param *types.DomainCondition) *DomainConditionDTO { return DomainConditionToDomainConditionDTO(db, param , originTable) }, &includedConditionDomainCondition, *originTable),
-         DamageTypeDomainDamageType: utils.GetDTOPointer(func(param *types.DomainDamageType) *DomainDamageTypeDTO { return DomainDamageTypeToDomainDamageTypeDTO(db, param , originTable) }, &includedDamageTypeDomainDamageType, *originTable),
-         EffectDomainStaticEffect: utils.GetDTOPointer(func(param *types.DomainStaticEffect) *DomainStaticEffectDTO { return DomainStaticEffectToDomainStaticEffectDTO(db, param , originTable) }, &includedEffectDomainStaticEffect, *originTable),
-         ResistanceTypeDomainDamageType: utils.GetDTOPointer(func(param *types.DomainDamageType) *DomainDamageTypeDTO { return DomainDamageTypeToDomainDamageTypeDTO(db, param , originTable) }, &includedResistanceTypeDomainDamageType, *originTable),
-         SaveDomainCharacterStat: utils.GetDTOPointer(func(param *types.DomainCharacterStat) *DomainCharacterStatDTO { return DomainCharacterStatToDomainCharacterStatDTO(db, param , originTable) }, &includedSaveDomainCharacterStat, *originTable),
-         TargetDomainCharacterStat: utils.GetDTOPointer(func(param *types.DomainCharacterStat) *DomainCharacterStatDTO { return DomainCharacterStatToDomainCharacterStatDTO(db, param , originTable) }, &includedTargetDomainCharacterStat, *originTable),
+         AddedSpellDomainSpell: DomainSpellToDomainSpellDTO(db, &includedAddedSpellDomainSpell, originTable),
+         ConditionDomainCondition: DomainConditionToDomainConditionDTO(db, &includedConditionDomainCondition, originTable),
+         DamageTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedDamageTypeDomainDamageType, originTable),
+         EffectDomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedEffectDomainStaticEffect, originTable),
+         ResistanceTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedResistanceTypeDomainDamageType, originTable),
+         SaveDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSaveDomainCharacterStat, originTable),
+         TargetDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedTargetDomainCharacterStat, originTable),
       },
    }
 }

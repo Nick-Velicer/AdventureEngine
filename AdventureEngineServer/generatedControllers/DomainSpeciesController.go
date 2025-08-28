@@ -22,9 +22,8 @@ func GetDomainSpeciess(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.DomainSpeciesDTO
-   tableName := "DomainSpecies"
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainSpeciesToDomainSpeciesDTO(db, &dbTypeInstance, &tableName)
+      pointerToDTO := dtos.DomainSpeciesToDomainSpeciesDTO(db, &dbTypeInstance, nil)
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -46,8 +45,7 @@ func GetDomainSpeciesById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainSpecies"
-   returnBuffer := dtos.DomainSpeciesToDomainSpeciesDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainSpeciesToDomainSpeciesDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -59,7 +57,6 @@ func SaveDomainSpecies(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainSpecies"
-   returnBuffer := dtos.DomainSpeciesToDomainSpeciesDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainSpeciesToDomainSpeciesDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

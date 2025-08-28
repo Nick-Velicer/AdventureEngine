@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainSizeDTOAttributes struct {
@@ -34,6 +35,14 @@ type DomainSizeDTO struct {
 
 func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, originTable *string) *DomainSizeDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainSize).Name()) {
+      print("Hit circular catch case for table DomainSize\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainSize).Name()
+      originTable = &tableName
+   }
    
    
    return &DomainSizeDTO{

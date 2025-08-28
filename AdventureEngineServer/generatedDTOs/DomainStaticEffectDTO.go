@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainStaticEffectDTOAttributes struct {
@@ -31,6 +32,14 @@ type DomainStaticEffectDTO struct {
 
 func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect, originTable *string) *DomainStaticEffectDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainStaticEffect).Name()) {
+      print("Hit circular catch case for table DomainStaticEffect\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainStaticEffect).Name()
+      originTable = &tableName
+   }
    
    
    return &DomainStaticEffectDTO{

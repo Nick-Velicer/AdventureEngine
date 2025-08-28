@@ -351,6 +351,19 @@ def produceDTOForType(tableName: str, typeMeta: dict):
             'func ' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ', originTable *string) *' + tableName + 'DTO {',
             *indentLineBlock([
                 '',
+                'if (originTable != nil && *originTable == reflect.TypeOf(*' + objectArgName + ').Name()) {',
+                *indentLineBlock([
+                    'print("Hit circular catch case for table ' + tableName + '\\n")',
+                    'return nil'
+                ]),
+                '}',
+                
+                'if (originTable == nil) {',
+                *indentLineBlock([
+                    'var tableName string = reflect.TypeOf(*' + objectArgName + ').Name()',
+                    'originTable = &tableName'
+                ]),
+                '}',
                 *['var included' + relationship + ' types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
                 *['var included' + relationship + 's []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['oneToMany']],
                 '',
@@ -364,8 +377,8 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                     *indentLineBlock([(attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.' + attribute + ',' if attribute != 'Id' else '') for attribute in typeMeta['attributes']]),
                     '},',
                     'Relationships: ' + tableName + 'DTORelationships{',
-                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': utils.GetDTOPointer(func(param *types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', param , originTable) }, &included' + relationship + ', *originTable),' for relationship in typeMeta["relationships"]['manyToOne']]),
-                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': utils.Map(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return utils.GetDTOPointer(func(param *types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', param , originTable) }, &relationshipElement, *originTable) }),' for relationship in typeMeta["relationships"]['oneToMany']]),
+                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + ', originTable),' for relationship in typeMeta["relationships"]['manyToOne']]),
+                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': utils.Map(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &relationshipElement, originTable) }),' for relationship in typeMeta["relationships"]['oneToMany']]),
                     '},',
                 ]),
                 '}',
@@ -383,9 +396,10 @@ def produceDTOForType(tableName: str, typeMeta: dict):
         'import (',
         *indentLineBlock([
             'types "AdventureEngineServer/generatedDatabaseTypes"',
-            'utils "AdventureEngineServer/utils"' if len(typeMeta["relationships"]["manyToOne"]) > 0 else '',
+            'utils "AdventureEngineServer/utils"' if len(typeMeta["relationships"]["oneToMany"]) > 0 else '',
             'services "AdventureEngineServer/generatedServices"' if len(typeMeta["relationships"]["manyToOne"]) > 0 else '',
-  	        '"gorm.io/gorm"'
+  	        '"gorm.io/gorm"',
+            '"reflect"'
         ]),
         ')',
         '',
@@ -550,10 +564,9 @@ def produceControllerFileForType(tableName: str):
                 '}',
                 '',
                 'var returnBuffer []dtos.' + tableName + 'DTO',
-                'tableName := "' + tableName + '"',
                 'for _, dbTypeInstance := range serviceBuffer {',
                 *indentLineBlock([
-                    'pointerToDTO := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &dbTypeInstance, &tableName)',
+                    'pointerToDTO := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &dbTypeInstance, nil)',
                     'if (pointerToDTO != nil) {',
                     *indentLineBlock([
                         'returnBuffer = append(returnBuffer, *pointerToDTO)'
@@ -593,8 +606,7 @@ def produceControllerFileForType(tableName: str):
                 ]),
                 '}',
                 '',
-                'tableName := "' + tableName + '"',
-                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, &tableName)',
+                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, nil)',
                 'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
 	        ]),
             '}'
@@ -618,8 +630,7 @@ def produceControllerFileForType(tableName: str):
                 ]),
                 '}',
                 '',
-                'tableName := "' + tableName + '"',
-                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, &tableName)',
+                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, nil)',
                 'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
 	        ]),
             '}'

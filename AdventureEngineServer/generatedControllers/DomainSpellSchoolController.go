@@ -22,9 +22,8 @@ func GetDomainSpellSchools(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.DomainSpellSchoolDTO
-   tableName := "DomainSpellSchool"
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainSpellSchoolToDomainSpellSchoolDTO(db, &dbTypeInstance, &tableName)
+      pointerToDTO := dtos.DomainSpellSchoolToDomainSpellSchoolDTO(db, &dbTypeInstance, nil)
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -46,8 +45,7 @@ func GetDomainSpellSchoolById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainSpellSchool"
-   returnBuffer := dtos.DomainSpellSchoolToDomainSpellSchoolDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainSpellSchoolToDomainSpellSchoolDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -59,7 +57,6 @@ func SaveDomainSpellSchool(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainSpellSchool"
-   returnBuffer := dtos.DomainSpellSchoolToDomainSpellSchoolDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainSpellSchoolToDomainSpellSchoolDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

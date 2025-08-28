@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainItemDTOAttributes struct {
@@ -34,6 +35,14 @@ type DomainItemDTO struct {
 
 func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, originTable *string) *DomainItemDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainItem).Name()) {
+      print("Hit circular catch case for table DomainItem\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainItem).Name()
+      originTable = &tableName
+   }
    
    
    return &DomainItemDTO{

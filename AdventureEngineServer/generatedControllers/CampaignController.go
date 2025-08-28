@@ -22,9 +22,8 @@ func GetCampaigns(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.CampaignDTO
-   tableName := "Campaign"
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.CampaignToCampaignDTO(db, &dbTypeInstance, &tableName)
+      pointerToDTO := dtos.CampaignToCampaignDTO(db, &dbTypeInstance, nil)
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -46,8 +45,7 @@ func GetCampaignById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "Campaign"
-   returnBuffer := dtos.CampaignToCampaignDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.CampaignToCampaignDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -59,7 +57,6 @@ func SaveCampaign(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "Campaign"
-   returnBuffer := dtos.CampaignToCampaignDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.CampaignToCampaignDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

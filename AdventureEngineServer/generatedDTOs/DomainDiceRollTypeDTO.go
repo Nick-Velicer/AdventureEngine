@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainDiceRollTypeDTOAttributes struct {
@@ -31,6 +32,14 @@ type DomainDiceRollTypeDTO struct {
 
 func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType, originTable *string) *DomainDiceRollTypeDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainDiceRollType).Name()) {
+      print("Hit circular catch case for table DomainDiceRollType\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainDiceRollType).Name()
+      originTable = &tableName
+   }
    
    
    return &DomainDiceRollTypeDTO{

@@ -6,9 +6,10 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   utils "AdventureEngineServer/utils"
+   
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "reflect"
 )
 
 type CharacterDomainCharacterStatInstanceDTOAttributes struct {
@@ -33,6 +34,14 @@ type CharacterDomainCharacterStatInstanceDTO struct {
 
 func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance, originTable *string) *CharacterDomainCharacterStatInstanceDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*characterDomainCharacterStatInstance).Name()) {
+      print("Hit circular catch case for table CharacterDomainCharacterStatInstance\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*characterDomainCharacterStatInstance).Name()
+      originTable = &tableName
+   }
    var includedCharacterCharacter types.Character
    var includedStatInstanceDomainCharacterStat types.DomainCharacterStat
    
@@ -48,8 +57,8 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
          
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
-         CharacterCharacter: utils.GetDTOPointer(func(param *types.Character) *CharacterDTO { return CharacterToCharacterDTO(db, param , originTable) }, &includedCharacterCharacter, *originTable),
-         StatInstanceDomainCharacterStat: utils.GetDTOPointer(func(param *types.DomainCharacterStat) *DomainCharacterStatDTO { return DomainCharacterStatToDomainCharacterStatDTO(db, param , originTable) }, &includedStatInstanceDomainCharacterStat, *originTable),
+         CharacterCharacter: CharacterToCharacterDTO(db, &includedCharacterCharacter, originTable),
+         StatInstanceDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstanceDomainCharacterStat, originTable),
       },
    }
 }

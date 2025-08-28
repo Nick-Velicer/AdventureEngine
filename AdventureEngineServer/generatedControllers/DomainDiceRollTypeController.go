@@ -22,9 +22,8 @@ func GetDomainDiceRollTypes(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.DomainDiceRollTypeDTO
-   tableName := "DomainDiceRollType"
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &dbTypeInstance, &tableName)
+      pointerToDTO := dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &dbTypeInstance, nil)
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -46,8 +45,7 @@ func GetDomainDiceRollTypeById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainDiceRollType"
-   returnBuffer := dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -59,7 +57,6 @@ func SaveDomainDiceRollType(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainDiceRollType"
-   returnBuffer := dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

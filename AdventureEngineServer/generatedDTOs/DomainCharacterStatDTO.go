@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainCharacterStatDTOAttributes struct {
@@ -33,6 +34,14 @@ type DomainCharacterStatDTO struct {
 
 func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterStat *types.DomainCharacterStat, originTable *string) *DomainCharacterStatDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainCharacterStat).Name()) {
+      print("Hit circular catch case for table DomainCharacterStat\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainCharacterStat).Name()
+      originTable = &tableName
+   }
    
    
    return &DomainCharacterStatDTO{

@@ -22,9 +22,8 @@ func GetDomainCharacterStats(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.DomainCharacterStatDTO
-   tableName := "DomainCharacterStat"
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &dbTypeInstance, &tableName)
+      pointerToDTO := dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &dbTypeInstance, nil)
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -46,8 +45,7 @@ func GetDomainCharacterStatById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainCharacterStat"
-   returnBuffer := dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -59,7 +57,6 @@ func SaveDomainCharacterStat(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainCharacterStat"
-   returnBuffer := dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

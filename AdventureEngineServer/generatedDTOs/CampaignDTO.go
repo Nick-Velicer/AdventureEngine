@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "reflect"
 )
 
 type CampaignDTOAttributes struct {
@@ -31,6 +32,14 @@ type CampaignDTO struct {
 
 func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, originTable *string) *CampaignDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*campaign).Name()) {
+      print("Hit circular catch case for table Campaign\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*campaign).Name()
+      originTable = &tableName
+   }
    
    
    return &CampaignDTO{

@@ -9,6 +9,7 @@ import (
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "reflect"
 )
 
 type CharacterDTOAttributes struct {
@@ -36,6 +37,14 @@ type CharacterDTO struct {
 
 func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, originTable *string) *CharacterDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*character).Name()) {
+      print("Hit circular catch case for table Character\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*character).Name()
+      originTable = &tableName
+   }
    var includedCampaignCampaign types.Campaign
    var includedCurrentSizeDomainSize types.DomainSize
    var includedSpeciesDomainSpecies types.DomainSpecies
@@ -57,11 +66,11 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, originTabl
          
       },
       Relationships: CharacterDTORelationships{
-         CampaignCampaign: utils.GetDTOPointer(func(param *types.Campaign) *CampaignDTO { return CampaignToCampaignDTO(db, param , originTable) }, &includedCampaignCampaign, *originTable),
-         CurrentSizeDomainSize: utils.GetDTOPointer(func(param *types.DomainSize) *DomainSizeDTO { return DomainSizeToDomainSizeDTO(db, param , originTable) }, &includedCurrentSizeDomainSize, *originTable),
-         SpeciesDomainSpecies: utils.GetDTOPointer(func(param *types.DomainSpecies) *DomainSpeciesDTO { return DomainSpeciesToDomainSpeciesDTO(db, param , originTable) }, &includedSpeciesDomainSpecies, *originTable),
-         SubclassDomainSubClass: utils.GetDTOPointer(func(param *types.DomainSubClass) *DomainSubClassDTO { return DomainSubClassToDomainSubClassDTO(db, param , originTable) }, &includedSubclassDomainSubClass, *originTable),
-         StatsCharacterDomainCharacterStatInstance: utils.Map(includedStatsCharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return utils.GetDTOPointer(func(param *types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, param , originTable) }, &relationshipElement, *originTable) }),
+         CampaignCampaign: CampaignToCampaignDTO(db, &includedCampaignCampaign, originTable),
+         CurrentSizeDomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSizeDomainSize, originTable),
+         SpeciesDomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpeciesDomainSpecies, originTable),
+         SubclassDomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubclassDomainSubClass, originTable),
+         StatsCharacterDomainCharacterStatInstance: utils.Map(includedStatsCharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, originTable) }),
       },
    }
 }

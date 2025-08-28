@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainSpellSchoolDTOAttributes struct {
@@ -31,6 +32,14 @@ type DomainSpellSchoolDTO struct {
 
 func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *types.DomainSpellSchool, originTable *string) *DomainSpellSchoolDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainSpellSchool).Name()) {
+      print("Hit circular catch case for table DomainSpellSchool\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainSpellSchool).Name()
+      originTable = &tableName
+   }
    
    
    return &DomainSpellSchoolDTO{

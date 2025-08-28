@@ -6,9 +6,10 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   utils "AdventureEngineServer/utils"
+   
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainClassDTOAttributes struct {
@@ -33,6 +34,14 @@ type DomainClassDTO struct {
 
 func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, originTable *string) *DomainClassDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainClass).Name()) {
+      print("Hit circular catch case for table DomainClass\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainClass).Name()
+      originTable = &tableName
+   }
    var includedHitDieDomainDice types.DomainDice
    var includedSpellcastingStatDomainCharacterStat types.DomainCharacterStat
    
@@ -48,8 +57,8 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, or
          
       },
       Relationships: DomainClassDTORelationships{
-         HitDieDomainDice: utils.GetDTOPointer(func(param *types.DomainDice) *DomainDiceDTO { return DomainDiceToDomainDiceDTO(db, param , originTable) }, &includedHitDieDomainDice, *originTable),
-         SpellcastingStatDomainCharacterStat: utils.GetDTOPointer(func(param *types.DomainCharacterStat) *DomainCharacterStatDTO { return DomainCharacterStatToDomainCharacterStatDTO(db, param , originTable) }, &includedSpellcastingStatDomainCharacterStat, *originTable),
+         HitDieDomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDieDomainDice, originTable),
+         SpellcastingStatDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStatDomainCharacterStat, originTable),
       },
    }
 }

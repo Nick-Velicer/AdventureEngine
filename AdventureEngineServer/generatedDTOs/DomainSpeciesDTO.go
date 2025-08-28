@@ -6,9 +6,10 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   utils "AdventureEngineServer/utils"
+   
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainSpeciesDTOAttributes struct {
@@ -32,6 +33,14 @@ type DomainSpeciesDTO struct {
 
 func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies, originTable *string) *DomainSpeciesDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainSpecies).Name()) {
+      print("Hit circular catch case for table DomainSpecies\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainSpecies).Name()
+      originTable = &tableName
+   }
    var includedCreatureTypeDomainCreatureType types.DomainCreatureType
    
    services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureTypeDomainCreatureType), &includedCreatureTypeDomainCreatureType)
@@ -45,7 +54,7 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
          
       },
       Relationships: DomainSpeciesDTORelationships{
-         CreatureTypeDomainCreatureType: utils.GetDTOPointer(func(param *types.DomainCreatureType) *DomainCreatureTypeDTO { return DomainCreatureTypeToDomainCreatureTypeDTO(db, param , originTable) }, &includedCreatureTypeDomainCreatureType, *originTable),
+         CreatureTypeDomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureTypeDomainCreatureType, originTable),
       },
    }
 }

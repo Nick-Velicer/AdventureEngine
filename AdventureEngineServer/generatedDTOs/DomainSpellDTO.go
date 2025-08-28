@@ -6,9 +6,10 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   utils "AdventureEngineServer/utils"
+   
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainSpellDTOAttributes struct {
@@ -48,6 +49,14 @@ type DomainSpellDTO struct {
 
 func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, originTable *string) *DomainSpellDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainSpell).Name()) {
+      print("Hit circular catch case for table DomainSpell\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainSpell).Name()
+      originTable = &tableName
+   }
    var includedDamageScalingDomainDice types.DomainDice
    var includedSchoolDomainSpellSchool types.DomainSpellSchool
    
@@ -78,8 +87,8 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, or
          
       },
       Relationships: DomainSpellDTORelationships{
-         DamageScalingDomainDice: utils.GetDTOPointer(func(param *types.DomainDice) *DomainDiceDTO { return DomainDiceToDomainDiceDTO(db, param , originTable) }, &includedDamageScalingDomainDice, *originTable),
-         SchoolDomainSpellSchool: utils.GetDTOPointer(func(param *types.DomainSpellSchool) *DomainSpellSchoolDTO { return DomainSpellSchoolToDomainSpellSchoolDTO(db, param , originTable) }, &includedSchoolDomainSpellSchool, *originTable),
+         DamageScalingDomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice, originTable),
+         SchoolDomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchoolDomainSpellSchool, originTable),
       },
    }
 }

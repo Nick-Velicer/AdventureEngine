@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainConditionDTOAttributes struct {
@@ -31,6 +32,14 @@ type DomainConditionDTO struct {
 
 func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.DomainCondition, originTable *string) *DomainConditionDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainCondition).Name()) {
+      print("Hit circular catch case for table DomainCondition\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainCondition).Name()
+      originTable = &tableName
+   }
    
    
    return &DomainConditionDTO{

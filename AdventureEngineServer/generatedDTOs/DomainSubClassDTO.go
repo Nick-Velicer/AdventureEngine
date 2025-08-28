@@ -6,9 +6,10 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   utils "AdventureEngineServer/utils"
+   
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "reflect"
 )
 
 type DomainSubClassDTOAttributes struct {
@@ -32,6 +33,14 @@ type DomainSubClassDTO struct {
 
 func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass, originTable *string) *DomainSubClassDTO {
    
+   if (originTable != nil && *originTable == reflect.TypeOf(*domainSubClass).Name()) {
+      print("Hit circular catch case for table DomainSubClass\n")
+      return nil
+   }
+   if (originTable == nil) {
+      var tableName string = reflect.TypeOf(*domainSubClass).Name()
+      originTable = &tableName
+   }
    var includedParentClassDomainClass types.DomainClass
    
    services.GetDomainClassById(db, int(*domainSubClass.ParentClassDomainClass), &includedParentClassDomainClass)
@@ -45,7 +54,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
          
       },
       Relationships: DomainSubClassDTORelationships{
-         ParentClassDomainClass: utils.GetDTOPointer(func(param *types.DomainClass) *DomainClassDTO { return DomainClassToDomainClassDTO(db, param , originTable) }, &includedParentClassDomainClass, *originTable),
+         ParentClassDomainClass: DomainClassToDomainClassDTO(db, &includedParentClassDomainClass, originTable),
       },
    }
 }

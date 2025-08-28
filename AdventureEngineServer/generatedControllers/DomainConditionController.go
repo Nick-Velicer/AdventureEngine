@@ -22,9 +22,8 @@ func GetDomainConditions(ctx *gin.Context, db *gorm.DB) {
    }
    
    var returnBuffer []dtos.DomainConditionDTO
-   tableName := "DomainCondition"
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainConditionToDomainConditionDTO(db, &dbTypeInstance, &tableName)
+      pointerToDTO := dtos.DomainConditionToDomainConditionDTO(db, &dbTypeInstance, nil)
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -46,8 +45,7 @@ func GetDomainConditionById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainCondition"
-   returnBuffer := dtos.DomainConditionToDomainConditionDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainConditionToDomainConditionDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -59,7 +57,6 @@ func SaveDomainCondition(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   tableName := "DomainCondition"
-   returnBuffer := dtos.DomainConditionToDomainConditionDTO(db, &serviceBuffer, &tableName)
+   returnBuffer := dtos.DomainConditionToDomainConditionDTO(db, &serviceBuffer, nil)
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
