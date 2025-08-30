@@ -10,13 +10,14 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type CampaignDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type CampaignDTORelationships struct {
@@ -30,25 +31,24 @@ type CampaignDTO struct {
    Relationships CampaignDTORelationships
 }
 
-func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, originTable *string) *CampaignDTO {
+func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTables []string) *CampaignDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*campaign).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*campaign).Name())) {
       print("Hit circular catch case for table Campaign\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*campaign).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*campaign).Name())
+   
    
    
    return &CampaignDTO{
       Id: campaign.Id,
       Attributes: CampaignDTOAttributes{
          Description: campaign.Description,
+         
          IsActive: campaign.IsActive,
          Title: campaign.Title,
-         
       },
       Relationships: CampaignDTORelationships{
       },
@@ -59,8 +59,8 @@ func CampaignDTOToCampaign(campaign *CampaignDTO) types.Campaign {
    return types.Campaign{
       Id: campaign.Id,
       Description: campaign.Attributes.Description,
+      
       IsActive: campaign.Attributes.IsActive,
       Title: campaign.Attributes.Title,
-      
    }
 }

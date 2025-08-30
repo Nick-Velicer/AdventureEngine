@@ -10,15 +10,16 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainCharacterStatDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
    UsesAction *bool
    UsesBonusAction *bool
-   
 }
 
 type DomainCharacterStatDTORelationships struct {
@@ -32,27 +33,26 @@ type DomainCharacterStatDTO struct {
    Relationships DomainCharacterStatDTORelationships
 }
 
-func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterStat *types.DomainCharacterStat, originTable *string) *DomainCharacterStatDTO {
+func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterStat *types.DomainCharacterStat, traversedTables []string) *DomainCharacterStatDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainCharacterStat).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainCharacterStat).Name())) {
       print("Hit circular catch case for table DomainCharacterStat\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainCharacterStat).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainCharacterStat).Name())
+   
    
    
    return &DomainCharacterStatDTO{
       Id: domainCharacterStat.Id,
       Attributes: DomainCharacterStatDTOAttributes{
          Description: domainCharacterStat.Description,
+         
          IsActive: domainCharacterStat.IsActive,
          Title: domainCharacterStat.Title,
          UsesAction: domainCharacterStat.UsesAction,
          UsesBonusAction: domainCharacterStat.UsesBonusAction,
-         
       },
       Relationships: DomainCharacterStatDTORelationships{
       },
@@ -63,10 +63,10 @@ func DomainCharacterStatDTOToDomainCharacterStat(domainCharacterStat *DomainChar
    return types.DomainCharacterStat{
       Id: domainCharacterStat.Id,
       Description: domainCharacterStat.Attributes.Description,
+      
       IsActive: domainCharacterStat.Attributes.IsActive,
       Title: domainCharacterStat.Attributes.Title,
       UsesAction: domainCharacterStat.Attributes.UsesAction,
       UsesBonusAction: domainCharacterStat.Attributes.UsesBonusAction,
-      
    }
 }

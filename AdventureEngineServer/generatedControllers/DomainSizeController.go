@@ -23,7 +23,7 @@ func GetDomainSizes(ctx *gin.Context, db *gorm.DB) {
    
    var returnBuffer []dtos.DomainSizeDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainSizeToDomainSizeDTO(db, &dbTypeInstance, nil)
+      pointerToDTO := dtos.DomainSizeToDomainSizeDTO(db, &dbTypeInstance, []string{})
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -45,7 +45,7 @@ func GetDomainSizeById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainSizeToDomainSizeDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainSizeToDomainSizeDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -57,6 +57,6 @@ func SaveDomainSize(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainSizeToDomainSizeDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainSizeToDomainSizeDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

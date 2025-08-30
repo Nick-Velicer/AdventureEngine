@@ -10,13 +10,14 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainDiceRollTypeDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type DomainDiceRollTypeDTORelationships struct {
@@ -30,25 +31,24 @@ type DomainDiceRollTypeDTO struct {
    Relationships DomainDiceRollTypeDTORelationships
 }
 
-func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType, originTable *string) *DomainDiceRollTypeDTO {
+func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType, traversedTables []string) *DomainDiceRollTypeDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainDiceRollType).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainDiceRollType).Name())) {
       print("Hit circular catch case for table DomainDiceRollType\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainDiceRollType).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainDiceRollType).Name())
+   
    
    
    return &DomainDiceRollTypeDTO{
       Id: domainDiceRollType.Id,
       Attributes: DomainDiceRollTypeDTOAttributes{
          Description: domainDiceRollType.Description,
+         
          IsActive: domainDiceRollType.IsActive,
          Title: domainDiceRollType.Title,
-         
       },
       Relationships: DomainDiceRollTypeDTORelationships{
       },
@@ -59,8 +59,8 @@ func DomainDiceRollTypeDTOToDomainDiceRollType(domainDiceRollType *DomainDiceRol
    return types.DomainDiceRollType{
       Id: domainDiceRollType.Id,
       Description: domainDiceRollType.Attributes.Description,
+      
       IsActive: domainDiceRollType.Attributes.IsActive,
       Title: domainDiceRollType.Attributes.Title,
-      
    }
 }

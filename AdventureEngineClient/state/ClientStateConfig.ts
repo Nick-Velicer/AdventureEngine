@@ -1,6 +1,6 @@
 import { useQuery, type UseQueryReturn } from '@pinia/colada'
 import { getCharacterbyId } from '../services/generated/CharacterService'
-import type { Character } from '../types/coreTypes/Character'
+import type { Character } from '../types/appTypes/appTypes'
 
 //This needs to be wrapped in a function context to prevent Pinia interactions
 //before it is initialized by the app, this also lets some DI happen just in case we need

@@ -23,7 +23,7 @@ func GetDomainStaticEffects(ctx *gin.Context, db *gorm.DB) {
    
    var returnBuffer []dtos.DomainStaticEffectDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainStaticEffectToDomainStaticEffectDTO(db, &dbTypeInstance, nil)
+      pointerToDTO := dtos.DomainStaticEffectToDomainStaticEffectDTO(db, &dbTypeInstance, []string{})
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -45,7 +45,7 @@ func GetDomainStaticEffectById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainStaticEffectToDomainStaticEffectDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainStaticEffectToDomainStaticEffectDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -57,6 +57,6 @@ func SaveDomainStaticEffect(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainStaticEffectToDomainStaticEffectDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainStaticEffectToDomainStaticEffectDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

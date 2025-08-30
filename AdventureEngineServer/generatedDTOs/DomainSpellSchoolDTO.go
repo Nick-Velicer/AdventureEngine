@@ -10,13 +10,14 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainSpellSchoolDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type DomainSpellSchoolDTORelationships struct {
@@ -30,25 +31,24 @@ type DomainSpellSchoolDTO struct {
    Relationships DomainSpellSchoolDTORelationships
 }
 
-func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *types.DomainSpellSchool, originTable *string) *DomainSpellSchoolDTO {
+func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *types.DomainSpellSchool, traversedTables []string) *DomainSpellSchoolDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainSpellSchool).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpellSchool).Name())) {
       print("Hit circular catch case for table DomainSpellSchool\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainSpellSchool).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainSpellSchool).Name())
+   
    
    
    return &DomainSpellSchoolDTO{
       Id: domainSpellSchool.Id,
       Attributes: DomainSpellSchoolDTOAttributes{
          Description: domainSpellSchool.Description,
+         
          IsActive: domainSpellSchool.IsActive,
          Title: domainSpellSchool.Title,
-         
       },
       Relationships: DomainSpellSchoolDTORelationships{
       },
@@ -59,8 +59,8 @@ func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoo
    return types.DomainSpellSchool{
       Id: domainSpellSchool.Id,
       Description: domainSpellSchool.Attributes.Description,
+      
       IsActive: domainSpellSchool.Attributes.IsActive,
       Title: domainSpellSchool.Attributes.Title,
-      
    }
 }

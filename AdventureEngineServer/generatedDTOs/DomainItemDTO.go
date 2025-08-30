@@ -10,16 +10,17 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainItemDTOAttributes struct {
    CustomEffectText *string
    Description *string
+   
    IsActive *bool
    OneHandedQuantifier *float64
    Title *string
    TwoHandedQuantifier *float64
-   
 }
 
 type DomainItemDTORelationships struct {
@@ -33,16 +34,15 @@ type DomainItemDTO struct {
    Relationships DomainItemDTORelationships
 }
 
-func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, originTable *string) *DomainItemDTO {
+func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traversedTables []string) *DomainItemDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainItem).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainItem).Name())) {
       print("Hit circular catch case for table DomainItem\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainItem).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainItem).Name())
+   
    
    
    return &DomainItemDTO{
@@ -50,11 +50,11 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, origin
       Attributes: DomainItemDTOAttributes{
          CustomEffectText: domainItem.CustomEffectText,
          Description: domainItem.Description,
+         
          IsActive: domainItem.IsActive,
          OneHandedQuantifier: domainItem.OneHandedQuantifier,
          Title: domainItem.Title,
          TwoHandedQuantifier: domainItem.TwoHandedQuantifier,
-         
       },
       Relationships: DomainItemDTORelationships{
       },
@@ -66,10 +66,10 @@ func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) types.DomainItem {
       Id: domainItem.Id,
       CustomEffectText: domainItem.Attributes.CustomEffectText,
       Description: domainItem.Attributes.Description,
+      
       IsActive: domainItem.Attributes.IsActive,
       OneHandedQuantifier: domainItem.Attributes.OneHandedQuantifier,
       Title: domainItem.Attributes.Title,
       TwoHandedQuantifier: domainItem.Attributes.TwoHandedQuantifier,
-      
    }
 }

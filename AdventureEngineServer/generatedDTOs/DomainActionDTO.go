@@ -10,15 +10,16 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainActionDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
    UsesAction *bool
    UsesBonusAction *bool
-   
 }
 
 type DomainActionDTORelationships struct {
@@ -32,27 +33,26 @@ type DomainActionDTO struct {
    Relationships DomainActionDTORelationships
 }
 
-func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction, originTable *string) *DomainActionDTO {
+func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction, traversedTables []string) *DomainActionDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainAction).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainAction).Name())) {
       print("Hit circular catch case for table DomainAction\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainAction).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainAction).Name())
+   
    
    
    return &DomainActionDTO{
       Id: domainAction.Id,
       Attributes: DomainActionDTOAttributes{
          Description: domainAction.Description,
+         
          IsActive: domainAction.IsActive,
          Title: domainAction.Title,
          UsesAction: domainAction.UsesAction,
          UsesBonusAction: domainAction.UsesBonusAction,
-         
       },
       Relationships: DomainActionDTORelationships{
       },
@@ -63,10 +63,10 @@ func DomainActionDTOToDomainAction(domainAction *DomainActionDTO) types.DomainAc
    return types.DomainAction{
       Id: domainAction.Id,
       Description: domainAction.Attributes.Description,
+      
       IsActive: domainAction.Attributes.IsActive,
       Title: domainAction.Attributes.Title,
       UsesAction: domainAction.Attributes.UsesAction,
       UsesBonusAction: domainAction.Attributes.UsesBonusAction,
-      
    }
 }

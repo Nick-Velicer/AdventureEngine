@@ -9,6 +9,9 @@ type DomainItem struct {
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
+	// Id corresponds to the JSON schema field "Id".
+	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
@@ -20,7 +23,4 @@ type DomainItem struct {
 
 	// TwoHandedQuantifier corresponds to the JSON schema field "TwoHandedQuantifier".
 	TwoHandedQuantifier *float64 `json:"TwoHandedQuantifier,omitempty" yaml:"TwoHandedQuantifier,omitempty" mapstructure:"TwoHandedQuantifier,omitempty"`
-
-	// Id corresponds to the JSON schema field "id".
-	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
 }

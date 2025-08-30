@@ -10,16 +10,17 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainSizeDTOAttributes struct {
    BaseHexArea float64
    BaseTileArea float64
    Description *string
+   
    IsActive *bool
    SizeOrder float64
    Title *string
-   
 }
 
 type DomainSizeDTORelationships struct {
@@ -33,16 +34,15 @@ type DomainSizeDTO struct {
    Relationships DomainSizeDTORelationships
 }
 
-func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, originTable *string) *DomainSizeDTO {
+func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traversedTables []string) *DomainSizeDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainSize).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainSize).Name())) {
       print("Hit circular catch case for table DomainSize\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainSize).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainSize).Name())
+   
    
    
    return &DomainSizeDTO{
@@ -51,10 +51,10 @@ func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, origin
          BaseHexArea: domainSize.BaseHexArea,
          BaseTileArea: domainSize.BaseTileArea,
          Description: domainSize.Description,
+         
          IsActive: domainSize.IsActive,
          SizeOrder: domainSize.SizeOrder,
          Title: domainSize.Title,
-         
       },
       Relationships: DomainSizeDTORelationships{
       },
@@ -67,9 +67,9 @@ func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) types.DomainSize {
       BaseHexArea: domainSize.Attributes.BaseHexArea,
       BaseTileArea: domainSize.Attributes.BaseTileArea,
       Description: domainSize.Attributes.Description,
+      
       IsActive: domainSize.Attributes.IsActive,
       SizeOrder: domainSize.Attributes.SizeOrder,
       Title: domainSize.Attributes.Title,
-      
    }
 }

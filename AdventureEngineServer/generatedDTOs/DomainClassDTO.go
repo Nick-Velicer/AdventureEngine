@@ -10,13 +10,14 @@ import (
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainClassDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type DomainClassDTORelationships struct {
@@ -32,16 +33,15 @@ type DomainClassDTO struct {
    Relationships DomainClassDTORelationships
 }
 
-func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, originTable *string) *DomainClassDTO {
+func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, traversedTables []string) *DomainClassDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainClass).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainClass).Name())) {
       print("Hit circular catch case for table DomainClass\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainClass).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainClass).Name())
+   
    var includedHitDieDomainDice types.DomainDice
    var includedSpellcastingStatDomainCharacterStat types.DomainCharacterStat
    
@@ -52,13 +52,13 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, or
       Id: domainClass.Id,
       Attributes: DomainClassDTOAttributes{
          Description: domainClass.Description,
+         
          IsActive: domainClass.IsActive,
          Title: domainClass.Title,
-         
       },
       Relationships: DomainClassDTORelationships{
-         HitDieDomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDieDomainDice, originTable),
-         SpellcastingStatDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStatDomainCharacterStat, originTable),
+         HitDieDomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDieDomainDice, traversedTables),
+         SpellcastingStatDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStatDomainCharacterStat, traversedTables),
       },
    }
 }
@@ -67,9 +67,9 @@ func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) types.DomainClass 
    return types.DomainClass{
       Id: domainClass.Id,
       Description: domainClass.Attributes.Description,
+      
       IsActive: domainClass.Attributes.IsActive,
       Title: domainClass.Attributes.Title,
-      
       HitDieDomainDice: domainClass.Relationships.HitDieDomainDice.Id,
       SpellcastingStatDomainCharacterStat: domainClass.Relationships.SpellcastingStatDomainCharacterStat.Id,
    }

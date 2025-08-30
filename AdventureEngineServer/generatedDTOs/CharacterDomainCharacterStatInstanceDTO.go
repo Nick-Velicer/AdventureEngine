@@ -10,13 +10,14 @@ import (
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type CharacterDomainCharacterStatInstanceDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type CharacterDomainCharacterStatInstanceDTORelationships struct {
@@ -32,16 +33,15 @@ type CharacterDomainCharacterStatInstanceDTO struct {
    Relationships CharacterDomainCharacterStatInstanceDTORelationships
 }
 
-func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance, originTable *string) *CharacterDomainCharacterStatInstanceDTO {
+func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance, traversedTables []string) *CharacterDomainCharacterStatInstanceDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*characterDomainCharacterStatInstance).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())) {
       print("Hit circular catch case for table CharacterDomainCharacterStatInstance\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*characterDomainCharacterStatInstance).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())
+   
    var includedCharacterCharacter types.Character
    var includedStatInstanceDomainCharacterStat types.DomainCharacterStat
    
@@ -52,13 +52,13 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
       Id: characterDomainCharacterStatInstance.Id,
       Attributes: CharacterDomainCharacterStatInstanceDTOAttributes{
          Description: characterDomainCharacterStatInstance.Description,
+         
          IsActive: characterDomainCharacterStatInstance.IsActive,
          Title: characterDomainCharacterStatInstance.Title,
-         
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
-         CharacterCharacter: CharacterToCharacterDTO(db, &includedCharacterCharacter, originTable),
-         StatInstanceDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstanceDomainCharacterStat, originTable),
+         CharacterCharacter: CharacterToCharacterDTO(db, &includedCharacterCharacter, traversedTables),
+         StatInstanceDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstanceDomainCharacterStat, traversedTables),
       },
    }
 }
@@ -67,9 +67,9 @@ func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstan
    return types.CharacterDomainCharacterStatInstance{
       Id: characterDomainCharacterStatInstance.Id,
       Description: characterDomainCharacterStatInstance.Attributes.Description,
+      
       IsActive: characterDomainCharacterStatInstance.Attributes.IsActive,
       Title: characterDomainCharacterStatInstance.Attributes.Title,
-      
       CharacterCharacter: characterDomainCharacterStatInstance.Relationships.CharacterCharacter.Id,
       StatInstanceDomainCharacterStat: characterDomainCharacterStatInstance.Relationships.StatInstanceDomainCharacterStat.Id,
    }

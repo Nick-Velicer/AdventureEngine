@@ -48,6 +48,7 @@ def main():
             f.write(produceDatabaseTargetType(goTypeBaseDir + '/' + fileName))
             f.close()
 
+    print("Go types successfully parsed.")
 
     #Parsing types and adding results to the global context
     for file in os.listdir(goTypeBaseDirectory):
@@ -115,11 +116,15 @@ def main():
             f = open(controllerFilePath, 'w')
             f.writelines([i + '\n' for i in controllerLines])
             f.close()
+
+            print("Generated backend dependencies for " + tableName + ".")
     
     
     f = open('endpointManagers/generatedEndpointManager.go', 'w')
     f.writelines([i + '\n' for i in generateEndpointManager(tableNames)])
     f.close()
+
+    print("Successfully initialized API endpoints.")
 
     f = open('testCreates.sql', 'w')
     f.writelines([i + '\n' for i in createStatements])
@@ -128,6 +133,8 @@ def main():
     f = open('testInserts.sql', 'w')
     f.writelines([i + '\n' for i in insertStatements])
     f.close()
+
+    print("Successfully initialized test SQL.")
 
 
 def produceParsedType(fileName: str):
@@ -348,22 +355,18 @@ def produceDTOForType(tableName: str, typeMeta: dict):
 
     def produceConvertToDTOMethod(tableName: str, typeMeta: dict):
         lines = [
-            'func ' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ', originTable *string) *' + tableName + 'DTO {',
+            'func ' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ', traversedTables []string) *' + tableName + 'DTO {',
             *indentLineBlock([
                 '',
-                'if (originTable != nil && *originTable == reflect.TypeOf(*' + objectArgName + ').Name()) {',
+                'if (slices.Contains(traversedTables, reflect.TypeOf(*' + objectArgName + ').Name())) {',
                 *indentLineBlock([
                     'print("Hit circular catch case for table ' + tableName + '\\n")',
                     'return nil'
                 ]),
                 '}',
-                
-                'if (originTable == nil) {',
-                *indentLineBlock([
-                    'var tableName string = reflect.TypeOf(*' + objectArgName + ').Name()',
-                    'originTable = &tableName'
-                ]),
-                '}',
+                '',
+                'traversedTables = append(traversedTables, reflect.TypeOf(*' + objectArgName + ').Name())',
+                '',
                 *['var included' + relationship + ' types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
                 *['var included' + relationship + 's []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['oneToMany']],
                 '',
@@ -377,8 +380,8 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                     *indentLineBlock([(attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.' + attribute + ',' if attribute != 'Id' else '') for attribute in typeMeta['attributes']]),
                     '},',
                     'Relationships: ' + tableName + 'DTORelationships{',
-                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + ', originTable),' for relationship in typeMeta["relationships"]['manyToOne']]),
-                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': utils.Map(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &relationshipElement, originTable) }),' for relationship in typeMeta["relationships"]['oneToMany']]),
+                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + ', traversedTables),' for relationship in typeMeta["relationships"]['manyToOne']]),
+                    *indentLineBlock([relationship[0].upper() + relationship[1:] + ': utils.Map(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &relationshipElement, traversedTables) }),' for relationship in typeMeta["relationships"]['oneToMany']]),
                     '},',
                 ]),
                 '}',
@@ -399,7 +402,8 @@ def produceDTOForType(tableName: str, typeMeta: dict):
             'utils "AdventureEngineServer/utils"' if len(typeMeta["relationships"]["oneToMany"]) > 0 else '',
             'services "AdventureEngineServer/generatedServices"' if len(typeMeta["relationships"]["manyToOne"]) > 0 else '',
   	        '"gorm.io/gorm"',
-            '"reflect"'
+            '"reflect"',
+            '"slices"'
         ]),
         ')',
         '',
@@ -566,7 +570,7 @@ def produceControllerFileForType(tableName: str):
                 'var returnBuffer []dtos.' + tableName + 'DTO',
                 'for _, dbTypeInstance := range serviceBuffer {',
                 *indentLineBlock([
-                    'pointerToDTO := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &dbTypeInstance, nil)',
+                    'pointerToDTO := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &dbTypeInstance, []string{})',
                     'if (pointerToDTO != nil) {',
                     *indentLineBlock([
                         'returnBuffer = append(returnBuffer, *pointerToDTO)'
@@ -606,7 +610,7 @@ def produceControllerFileForType(tableName: str):
                 ]),
                 '}',
                 '',
-                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, nil)',
+                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, []string{})',
                 'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
 	        ]),
             '}'
@@ -630,7 +634,7 @@ def produceControllerFileForType(tableName: str):
                 ]),
                 '}',
                 '',
-                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, nil)',
+                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, []string{})',
                 'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
 	        ]),
             '}'

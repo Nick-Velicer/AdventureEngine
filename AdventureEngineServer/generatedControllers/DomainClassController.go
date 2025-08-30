@@ -23,7 +23,7 @@ func GetDomainClasss(ctx *gin.Context, db *gorm.DB) {
    
    var returnBuffer []dtos.DomainClassDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainClassToDomainClassDTO(db, &dbTypeInstance, nil)
+      pointerToDTO := dtos.DomainClassToDomainClassDTO(db, &dbTypeInstance, []string{})
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -45,7 +45,7 @@ func GetDomainClassById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainClassToDomainClassDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainClassToDomainClassDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -57,6 +57,6 @@ func SaveDomainClass(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainClassToDomainClassDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainClassToDomainClassDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

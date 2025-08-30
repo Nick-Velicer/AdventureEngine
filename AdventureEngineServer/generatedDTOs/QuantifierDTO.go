@@ -10,11 +10,13 @@ import (
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type QuantifierDTOAttributes struct {
    Delta *float64
    Description *string
+   
    ImpactsSelf *bool
    IntoInventory *bool
    IsAction *bool
@@ -37,7 +39,6 @@ type QuantifierDTOAttributes struct {
    Title *string
    UntilLongRest *bool
    UntilShortRest *bool
-   
 }
 
 type QuantifierDTORelationships struct {
@@ -58,16 +59,15 @@ type QuantifierDTO struct {
    Relationships QuantifierDTORelationships
 }
 
-func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, originTable *string) *QuantifierDTO {
+func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traversedTables []string) *QuantifierDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*quantifier).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*quantifier).Name())) {
       print("Hit circular catch case for table Quantifier\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*quantifier).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*quantifier).Name())
+   
    var includedAddedSpellDomainSpell types.DomainSpell
    var includedConditionDomainCondition types.DomainCondition
    var includedDamageTypeDomainDamageType types.DomainDamageType
@@ -89,6 +89,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, origin
       Attributes: QuantifierDTOAttributes{
          Delta: quantifier.Delta,
          Description: quantifier.Description,
+         
          ImpactsSelf: quantifier.ImpactsSelf,
          IntoInventory: quantifier.IntoInventory,
          IsAction: quantifier.IsAction,
@@ -111,16 +112,15 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, origin
          Title: quantifier.Title,
          UntilLongRest: quantifier.UntilLongRest,
          UntilShortRest: quantifier.UntilShortRest,
-         
       },
       Relationships: QuantifierDTORelationships{
-         AddedSpellDomainSpell: DomainSpellToDomainSpellDTO(db, &includedAddedSpellDomainSpell, originTable),
-         ConditionDomainCondition: DomainConditionToDomainConditionDTO(db, &includedConditionDomainCondition, originTable),
-         DamageTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedDamageTypeDomainDamageType, originTable),
-         EffectDomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedEffectDomainStaticEffect, originTable),
-         ResistanceTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedResistanceTypeDomainDamageType, originTable),
-         SaveDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSaveDomainCharacterStat, originTable),
-         TargetDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedTargetDomainCharacterStat, originTable),
+         AddedSpellDomainSpell: DomainSpellToDomainSpellDTO(db, &includedAddedSpellDomainSpell, traversedTables),
+         ConditionDomainCondition: DomainConditionToDomainConditionDTO(db, &includedConditionDomainCondition, traversedTables),
+         DamageTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedDamageTypeDomainDamageType, traversedTables),
+         EffectDomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedEffectDomainStaticEffect, traversedTables),
+         ResistanceTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedResistanceTypeDomainDamageType, traversedTables),
+         SaveDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSaveDomainCharacterStat, traversedTables),
+         TargetDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedTargetDomainCharacterStat, traversedTables),
       },
    }
 }
@@ -130,6 +130,7 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) types.Quantifier {
       Id: quantifier.Id,
       Delta: quantifier.Attributes.Delta,
       Description: quantifier.Attributes.Description,
+      
       ImpactsSelf: quantifier.Attributes.ImpactsSelf,
       IntoInventory: quantifier.Attributes.IntoInventory,
       IsAction: quantifier.Attributes.IsAction,
@@ -152,7 +153,6 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) types.Quantifier {
       Title: quantifier.Attributes.Title,
       UntilLongRest: quantifier.Attributes.UntilLongRest,
       UntilShortRest: quantifier.Attributes.UntilShortRest,
-      
       AddedSpellDomainSpell: quantifier.Relationships.AddedSpellDomainSpell.Id,
       ConditionDomainCondition: quantifier.Relationships.ConditionDomainCondition.Id,
       DamageTypeDomainDamageType: quantifier.Relationships.DamageTypeDomainDamageType.Id,

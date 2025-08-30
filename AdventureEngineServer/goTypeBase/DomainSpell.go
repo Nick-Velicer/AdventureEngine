@@ -20,6 +20,9 @@ type DomainSpellJson struct {
 	// HourDuration corresponds to the JSON schema field "HourDuration".
 	HourDuration *float64 `json:"HourDuration,omitempty" yaml:"HourDuration,omitempty" mapstructure:"HourDuration,omitempty"`
 
+	// Id corresponds to the JSON schema field "Id".
+	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+
 	// IsAction corresponds to the JSON schema field "IsAction".
 	IsAction *bool `json:"IsAction,omitempty" yaml:"IsAction,omitempty" mapstructure:"IsAction,omitempty"`
 
@@ -65,7 +68,4 @@ type DomainSpellJson struct {
 
 	// VerbalComponent corresponds to the JSON schema field "VerbalComponent".
 	VerbalComponent *string `json:"VerbalComponent,omitempty" yaml:"VerbalComponent,omitempty" mapstructure:"VerbalComponent,omitempty"`
-
-	// Id corresponds to the JSON schema field "id".
-	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
 }

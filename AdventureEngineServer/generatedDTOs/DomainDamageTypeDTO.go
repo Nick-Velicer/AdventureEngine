@@ -10,13 +10,14 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainDamageTypeDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type DomainDamageTypeDTORelationships struct {
@@ -30,25 +31,24 @@ type DomainDamageTypeDTO struct {
    Relationships DomainDamageTypeDTORelationships
 }
 
-func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.DomainDamageType, originTable *string) *DomainDamageTypeDTO {
+func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.DomainDamageType, traversedTables []string) *DomainDamageTypeDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainDamageType).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainDamageType).Name())) {
       print("Hit circular catch case for table DomainDamageType\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainDamageType).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainDamageType).Name())
+   
    
    
    return &DomainDamageTypeDTO{
       Id: domainDamageType.Id,
       Attributes: DomainDamageTypeDTOAttributes{
          Description: domainDamageType.Description,
+         
          IsActive: domainDamageType.IsActive,
          Title: domainDamageType.Title,
-         
       },
       Relationships: DomainDamageTypeDTORelationships{
       },
@@ -59,8 +59,8 @@ func DomainDamageTypeDTOToDomainDamageType(domainDamageType *DomainDamageTypeDTO
    return types.DomainDamageType{
       Id: domainDamageType.Id,
       Description: domainDamageType.Attributes.Description,
+      
       IsActive: domainDamageType.Attributes.IsActive,
       Title: domainDamageType.Attributes.Title,
-      
    }
 }

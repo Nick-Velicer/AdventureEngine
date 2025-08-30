@@ -10,6 +10,7 @@ import (
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainSpellDTOAttributes struct {
@@ -17,6 +18,7 @@ type DomainSpellDTOAttributes struct {
    Description *string
    HourCastTime *float64
    HourDuration *float64
+   
    IsAction *bool
    IsActive *bool
    IsBonusAction *bool
@@ -31,7 +33,6 @@ type DomainSpellDTOAttributes struct {
    SomaticComponent *string
    Title *string
    VerbalComponent *string
-   
 }
 
 type DomainSpellDTORelationships struct {
@@ -47,16 +48,15 @@ type DomainSpellDTO struct {
    Relationships DomainSpellDTORelationships
 }
 
-func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, originTable *string) *DomainSpellDTO {
+func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, traversedTables []string) *DomainSpellDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainSpell).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpell).Name())) {
       print("Hit circular catch case for table DomainSpell\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainSpell).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainSpell).Name())
+   
    var includedDamageScalingDomainDice types.DomainDice
    var includedSchoolDomainSpellSchool types.DomainSpellSchool
    
@@ -70,6 +70,7 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, or
          Description: domainSpell.Description,
          HourCastTime: domainSpell.HourCastTime,
          HourDuration: domainSpell.HourDuration,
+         
          IsAction: domainSpell.IsAction,
          IsActive: domainSpell.IsActive,
          IsBonusAction: domainSpell.IsBonusAction,
@@ -84,11 +85,10 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, or
          SomaticComponent: domainSpell.SomaticComponent,
          Title: domainSpell.Title,
          VerbalComponent: domainSpell.VerbalComponent,
-         
       },
       Relationships: DomainSpellDTORelationships{
-         DamageScalingDomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice, originTable),
-         SchoolDomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchoolDomainSpellSchool, originTable),
+         DamageScalingDomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice, traversedTables),
+         SchoolDomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchoolDomainSpellSchool, traversedTables),
       },
    }
 }
@@ -100,6 +100,7 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
       Description: domainSpell.Attributes.Description,
       HourCastTime: domainSpell.Attributes.HourCastTime,
       HourDuration: domainSpell.Attributes.HourDuration,
+      
       IsAction: domainSpell.Attributes.IsAction,
       IsActive: domainSpell.Attributes.IsActive,
       IsBonusAction: domainSpell.Attributes.IsBonusAction,
@@ -114,7 +115,6 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
       SomaticComponent: domainSpell.Attributes.SomaticComponent,
       Title: domainSpell.Attributes.Title,
       VerbalComponent: domainSpell.Attributes.VerbalComponent,
-      
       DamageScalingDomainDice: domainSpell.Relationships.DamageScalingDomainDice.Id,
       SchoolDomainSpellSchool: domainSpell.Relationships.SchoolDomainSpellSchool.Id,
    }

@@ -10,13 +10,14 @@ import (
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainSpeciesDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type DomainSpeciesDTORelationships struct {
@@ -31,16 +32,15 @@ type DomainSpeciesDTO struct {
    Relationships DomainSpeciesDTORelationships
 }
 
-func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies, originTable *string) *DomainSpeciesDTO {
+func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies, traversedTables []string) *DomainSpeciesDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainSpecies).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpecies).Name())) {
       print("Hit circular catch case for table DomainSpecies\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainSpecies).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainSpecies).Name())
+   
    var includedCreatureTypeDomainCreatureType types.DomainCreatureType
    
    services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureTypeDomainCreatureType), &includedCreatureTypeDomainCreatureType)
@@ -49,12 +49,12 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
       Id: domainSpecies.Id,
       Attributes: DomainSpeciesDTOAttributes{
          Description: domainSpecies.Description,
+         
          IsActive: domainSpecies.IsActive,
          Title: domainSpecies.Title,
-         
       },
       Relationships: DomainSpeciesDTORelationships{
-         CreatureTypeDomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureTypeDomainCreatureType, originTable),
+         CreatureTypeDomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureTypeDomainCreatureType, traversedTables),
       },
    }
 }
@@ -63,9 +63,9 @@ func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) types.Doma
    return types.DomainSpecies{
       Id: domainSpecies.Id,
       Description: domainSpecies.Attributes.Description,
+      
       IsActive: domainSpecies.Attributes.IsActive,
       Title: domainSpecies.Attributes.Title,
-      
       CreatureTypeDomainCreatureType: domainSpecies.Relationships.CreatureTypeDomainCreatureType.Id,
    }
 }

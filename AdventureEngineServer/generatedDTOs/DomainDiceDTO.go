@@ -10,15 +10,16 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainDiceDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Maximum float64
    Minimum float64
    Title *string
-   
 }
 
 type DomainDiceDTORelationships struct {
@@ -32,27 +33,26 @@ type DomainDiceDTO struct {
    Relationships DomainDiceDTORelationships
 }
 
-func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, originTable *string) *DomainDiceDTO {
+func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traversedTables []string) *DomainDiceDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainDice).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainDice).Name())) {
       print("Hit circular catch case for table DomainDice\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainDice).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainDice).Name())
+   
    
    
    return &DomainDiceDTO{
       Id: domainDice.Id,
       Attributes: DomainDiceDTOAttributes{
          Description: domainDice.Description,
+         
          IsActive: domainDice.IsActive,
          Maximum: domainDice.Maximum,
          Minimum: domainDice.Minimum,
          Title: domainDice.Title,
-         
       },
       Relationships: DomainDiceDTORelationships{
       },
@@ -63,10 +63,10 @@ func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) types.DomainDice {
    return types.DomainDice{
       Id: domainDice.Id,
       Description: domainDice.Attributes.Description,
+      
       IsActive: domainDice.Attributes.IsActive,
       Maximum: domainDice.Attributes.Maximum,
       Minimum: domainDice.Attributes.Minimum,
       Title: domainDice.Attributes.Title,
-      
    }
 }

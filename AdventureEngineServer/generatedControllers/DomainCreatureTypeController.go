@@ -23,7 +23,7 @@ func GetDomainCreatureTypes(ctx *gin.Context, db *gorm.DB) {
    
    var returnBuffer []dtos.DomainCreatureTypeDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &dbTypeInstance, nil)
+      pointerToDTO := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &dbTypeInstance, []string{})
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -45,7 +45,7 @@ func GetDomainCreatureTypeById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -57,6 +57,6 @@ func SaveDomainCreatureType(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

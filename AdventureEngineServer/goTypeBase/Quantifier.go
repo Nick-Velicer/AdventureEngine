@@ -25,6 +25,9 @@ type QuantifierJson struct {
 	// "Effect__domainStaticEffect".
 	EffectDomainStaticEffect *float64 `json:"Effect__domainStaticEffect,omitempty" yaml:"Effect__domainStaticEffect,omitempty" mapstructure:"Effect__domainStaticEffect,omitempty"`
 
+	// Id corresponds to the JSON schema field "Id".
+	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+
 	// ImpactsSelf corresponds to the JSON schema field "ImpactsSelf".
 	ImpactsSelf *bool `json:"ImpactsSelf,omitempty" yaml:"ImpactsSelf,omitempty" mapstructure:"ImpactsSelf,omitempty"`
 
@@ -104,7 +107,4 @@ type QuantifierJson struct {
 
 	// UntilShortRest corresponds to the JSON schema field "UntilShortRest".
 	UntilShortRest *bool `json:"UntilShortRest,omitempty" yaml:"UntilShortRest,omitempty" mapstructure:"UntilShortRest,omitempty"`
-
-	// Id corresponds to the JSON schema field "id".
-	Id *float64 `json:"id,omitempty" yaml:"id,omitempty" mapstructure:"id,omitempty"`
 }

@@ -10,13 +10,14 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainConditionDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type DomainConditionDTORelationships struct {
@@ -30,25 +31,24 @@ type DomainConditionDTO struct {
    Relationships DomainConditionDTORelationships
 }
 
-func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.DomainCondition, originTable *string) *DomainConditionDTO {
+func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.DomainCondition, traversedTables []string) *DomainConditionDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainCondition).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainCondition).Name())) {
       print("Hit circular catch case for table DomainCondition\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainCondition).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainCondition).Name())
+   
    
    
    return &DomainConditionDTO{
       Id: domainCondition.Id,
       Attributes: DomainConditionDTOAttributes{
          Description: domainCondition.Description,
+         
          IsActive: domainCondition.IsActive,
          Title: domainCondition.Title,
-         
       },
       Relationships: DomainConditionDTORelationships{
       },
@@ -59,8 +59,8 @@ func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) ty
    return types.DomainCondition{
       Id: domainCondition.Id,
       Description: domainCondition.Attributes.Description,
+      
       IsActive: domainCondition.Attributes.IsActive,
       Title: domainCondition.Attributes.Title,
-      
    }
 }

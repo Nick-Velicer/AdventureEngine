@@ -10,13 +10,14 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainCreatureTypeDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type DomainCreatureTypeDTORelationships struct {
@@ -30,25 +31,24 @@ type DomainCreatureTypeDTO struct {
    Relationships DomainCreatureTypeDTORelationships
 }
 
-func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *types.DomainCreatureType, originTable *string) *DomainCreatureTypeDTO {
+func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *types.DomainCreatureType, traversedTables []string) *DomainCreatureTypeDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainCreatureType).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainCreatureType).Name())) {
       print("Hit circular catch case for table DomainCreatureType\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainCreatureType).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainCreatureType).Name())
+   
    
    
    return &DomainCreatureTypeDTO{
       Id: domainCreatureType.Id,
       Attributes: DomainCreatureTypeDTOAttributes{
          Description: domainCreatureType.Description,
+         
          IsActive: domainCreatureType.IsActive,
          Title: domainCreatureType.Title,
-         
       },
       Relationships: DomainCreatureTypeDTORelationships{
       },
@@ -59,8 +59,8 @@ func DomainCreatureTypeDTOToDomainCreatureType(domainCreatureType *DomainCreatur
    return types.DomainCreatureType{
       Id: domainCreatureType.Id,
       Description: domainCreatureType.Attributes.Description,
+      
       IsActive: domainCreatureType.Attributes.IsActive,
       Title: domainCreatureType.Attributes.Title,
-      
    }
 }

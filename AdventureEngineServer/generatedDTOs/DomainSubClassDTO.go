@@ -10,13 +10,14 @@ import (
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainSubClassDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type DomainSubClassDTORelationships struct {
@@ -31,16 +32,15 @@ type DomainSubClassDTO struct {
    Relationships DomainSubClassDTORelationships
 }
 
-func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass, originTable *string) *DomainSubClassDTO {
+func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass, traversedTables []string) *DomainSubClassDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainSubClass).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainSubClass).Name())) {
       print("Hit circular catch case for table DomainSubClass\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainSubClass).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainSubClass).Name())
+   
    var includedParentClassDomainClass types.DomainClass
    
    services.GetDomainClassById(db, int(*domainSubClass.ParentClassDomainClass), &includedParentClassDomainClass)
@@ -49,12 +49,12 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
       Id: domainSubClass.Id,
       Attributes: DomainSubClassDTOAttributes{
          Description: domainSubClass.Description,
+         
          IsActive: domainSubClass.IsActive,
          Title: domainSubClass.Title,
-         
       },
       Relationships: DomainSubClassDTORelationships{
-         ParentClassDomainClass: DomainClassToDomainClassDTO(db, &includedParentClassDomainClass, originTable),
+         ParentClassDomainClass: DomainClassToDomainClassDTO(db, &includedParentClassDomainClass, traversedTables),
       },
    }
 }
@@ -63,9 +63,9 @@ func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) types.
    return types.DomainSubClass{
       Id: domainSubClass.Id,
       Description: domainSubClass.Attributes.Description,
+      
       IsActive: domainSubClass.Attributes.IsActive,
       Title: domainSubClass.Attributes.Title,
-      
       ParentClassDomainClass: domainSubClass.Relationships.ParentClassDomainClass.Id,
    }
 }

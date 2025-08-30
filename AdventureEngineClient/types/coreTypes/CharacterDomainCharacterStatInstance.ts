@@ -1,4 +1,4 @@
-import { ExtendedSchemaObject} from "../SchemaObject";
+import { ExtendedSchemaObject } from "../SchemaObject";
 import { Character } from "./Character";
 import { DomainCharacterStat } from "./DomainCharacterStat";
   

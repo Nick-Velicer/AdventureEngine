@@ -23,7 +23,7 @@ func GetDomainItems(ctx *gin.Context, db *gorm.DB) {
    
    var returnBuffer []dtos.DomainItemDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainItemToDomainItemDTO(db, &dbTypeInstance, nil)
+      pointerToDTO := dtos.DomainItemToDomainItemDTO(db, &dbTypeInstance, []string{})
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -45,7 +45,7 @@ func GetDomainItemById(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainItemToDomainItemDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainItemToDomainItemDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -57,6 +57,6 @@ func SaveDomainItem(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.DomainItemToDomainItemDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.DomainItemToDomainItemDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

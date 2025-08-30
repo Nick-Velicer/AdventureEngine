@@ -10,13 +10,14 @@ import (
    
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type DomainStaticEffectDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type DomainStaticEffectDTORelationships struct {
@@ -30,25 +31,24 @@ type DomainStaticEffectDTO struct {
    Relationships DomainStaticEffectDTORelationships
 }
 
-func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect, originTable *string) *DomainStaticEffectDTO {
+func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect, traversedTables []string) *DomainStaticEffectDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*domainStaticEffect).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*domainStaticEffect).Name())) {
       print("Hit circular catch case for table DomainStaticEffect\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*domainStaticEffect).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*domainStaticEffect).Name())
+   
    
    
    return &DomainStaticEffectDTO{
       Id: domainStaticEffect.Id,
       Attributes: DomainStaticEffectDTOAttributes{
          Description: domainStaticEffect.Description,
+         
          IsActive: domainStaticEffect.IsActive,
          Title: domainStaticEffect.Title,
-         
       },
       Relationships: DomainStaticEffectDTORelationships{
       },
@@ -59,8 +59,8 @@ func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticE
    return types.DomainStaticEffect{
       Id: domainStaticEffect.Id,
       Description: domainStaticEffect.Attributes.Description,
+      
       IsActive: domainStaticEffect.Attributes.IsActive,
       Title: domainStaticEffect.Attributes.Title,
-      
    }
 }

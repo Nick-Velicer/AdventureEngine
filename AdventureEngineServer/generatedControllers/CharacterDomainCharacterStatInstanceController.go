@@ -23,7 +23,7 @@ func GetCharacterDomainCharacterStatInstances(ctx *gin.Context, db *gorm.DB) {
    
    var returnBuffer []dtos.CharacterDomainCharacterStatInstanceDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &dbTypeInstance, nil)
+      pointerToDTO := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &dbTypeInstance, []string{})
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -45,7 +45,7 @@ func GetCharacterDomainCharacterStatInstanceById(ctx *gin.Context, db *gorm.DB) 
       return
    }
    
-   returnBuffer := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
@@ -57,6 +57,6 @@ func SaveCharacterDomainCharacterStatInstance(ctx *gin.Context, db *gorm.DB) {
       return
    }
    
-   returnBuffer := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &serviceBuffer, nil)
+   returnBuffer := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }

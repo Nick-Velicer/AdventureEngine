@@ -10,13 +10,14 @@ import (
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
+   "slices"
 )
 
 type CharacterDTOAttributes struct {
    Description *string
+   
    IsActive *bool
    Title *string
-   
 }
 
 type CharacterDTORelationships struct {
@@ -35,16 +36,15 @@ type CharacterDTO struct {
    Relationships CharacterDTORelationships
 }
 
-func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, originTable *string) *CharacterDTO {
+func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedTables []string) *CharacterDTO {
    
-   if (originTable != nil && *originTable == reflect.TypeOf(*character).Name()) {
+   if (slices.Contains(traversedTables, reflect.TypeOf(*character).Name())) {
       print("Hit circular catch case for table Character\n")
       return nil
    }
-   if (originTable == nil) {
-      var tableName string = reflect.TypeOf(*character).Name()
-      originTable = &tableName
-   }
+   
+   traversedTables = append(traversedTables, reflect.TypeOf(*character).Name())
+   
    var includedCampaignCampaign types.Campaign
    var includedCurrentSizeDomainSize types.DomainSize
    var includedSpeciesDomainSpecies types.DomainSpecies
@@ -61,16 +61,16 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, originTabl
       Id: character.Id,
       Attributes: CharacterDTOAttributes{
          Description: character.Description,
+         
          IsActive: character.IsActive,
          Title: character.Title,
-         
       },
       Relationships: CharacterDTORelationships{
-         CampaignCampaign: CampaignToCampaignDTO(db, &includedCampaignCampaign, originTable),
-         CurrentSizeDomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSizeDomainSize, originTable),
-         SpeciesDomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpeciesDomainSpecies, originTable),
-         SubclassDomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubclassDomainSubClass, originTable),
-         StatsCharacterDomainCharacterStatInstance: utils.Map(includedStatsCharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, originTable) }),
+         CampaignCampaign: CampaignToCampaignDTO(db, &includedCampaignCampaign, traversedTables),
+         CurrentSizeDomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSizeDomainSize, traversedTables),
+         SpeciesDomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpeciesDomainSpecies, traversedTables),
+         SubclassDomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubclassDomainSubClass, traversedTables),
+         StatsCharacterDomainCharacterStatInstance: utils.Map(includedStatsCharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, traversedTables) }),
       },
    }
 }
@@ -79,9 +79,9 @@ func CharacterDTOToCharacter(character *CharacterDTO) types.Character {
    return types.Character{
       Id: character.Id,
       Description: character.Attributes.Description,
+      
       IsActive: character.Attributes.IsActive,
       Title: character.Attributes.Title,
-      
       CampaignCampaign: character.Relationships.CampaignCampaign.Id,
       CurrentSizeDomainSize: character.Relationships.CurrentSizeDomainSize.Id,
       SpeciesDomainSpecies: character.Relationships.SpeciesDomainSpecies.Id,
