@@ -51,9 +51,9 @@ type RecursionGuardedSchemaObject<T extends SchemaObject, G extends (typeof AppT
 		Id: T["Id"],
 		Attributes: T["Attributes"],
 		Relationships: {
-			ManyToOne?: {[key in keyof T["Relationships"]["ManyToOne"]]: RecursionGuardedSchemaObject<T["Relationships"]["ManyToOne"][key], G extends undefined? T : G | T>},
+			ManyToOne: {[key in keyof T["Relationships"]["ManyToOne"]]: RecursionGuardedSchemaObject<T["Relationships"]["ManyToOne"][key], G extends undefined? T : G | T>},
 			//Extra handling to have the circular catch case resolve as undefined instead of undefined[]
-			OneToMany?: {[key in keyof T["Relationships"]["OneToMany"]]: RecursionGuardedSchemaObject<T["Relationships"]["OneToMany"][key][number], G extends undefined? T : G | T> extends undefined? 
+			OneToMany: {[key in keyof T["Relationships"]["OneToMany"]]: RecursionGuardedSchemaObject<T["Relationships"]["OneToMany"][key][number], G extends undefined? T : G | T> extends undefined? 
 				undefined 
 				: 
 				RecursionGuardedSchemaObject<T["Relationships"]["OneToMany"][key][number], G extends undefined? T : G | T>[]

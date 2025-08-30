@@ -10,6 +10,7 @@ export type DomainClass = ExtendedSchemaObject<{
         ManyToOne: {
             HitDie__domainDice: DomainDice,
             SpellcastingStat__domainCharacterStat: DomainCharacterStat,
-        }
+        },
+        OneToMany: {}
     }
 }>

@@ -10,6 +10,7 @@ export type CharacterDomainCharacterStatInstance = ExtendedSchemaObject<{
         ManyToOne: {
             Character__Character: Character,
             StatInstance__DomainCharacterStat: DomainCharacterStat
-        }
+        },
+        OneToMany: {}
     }
 }>

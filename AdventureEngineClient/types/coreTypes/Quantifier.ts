@@ -38,6 +38,7 @@ export type Quantifier = ExtendedSchemaObject<{
             DamageType__domainDamageType?: DomainDamageType
             ResistanceType__domainDamageType?: DomainDamageType
             Save__domainCharacterStat?: DomainCharacterStat
-        }
+        },
+        OneToMany: {}
     }
 }>

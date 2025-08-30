@@ -24,6 +24,7 @@ export type DomainSpell = ExtendedSchemaObject<{
         ManyToOne: {
             School__domainSpellSchool?: DomainSpellSchool
             DamageScaling__domainDice?: DomainDice
-        }
+        },
+        OneToMany: {}
     }
 }>

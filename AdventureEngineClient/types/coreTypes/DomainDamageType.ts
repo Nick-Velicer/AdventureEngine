@@ -5,5 +5,7 @@ export type DomainDamageType = ExtendedSchemaObject<{
     Attributes: {
     },
     Relationships: {
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>

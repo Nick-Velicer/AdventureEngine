@@ -5,6 +5,7 @@ export type Campaign = ExtendedSchemaObject<{
         
     },
     Relationships: {
-        
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>

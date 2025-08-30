@@ -5,5 +5,7 @@ export type DomainSpellSchool = ExtendedSchemaObject<{
     Attributes: {
     }
     Relationships: {
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>

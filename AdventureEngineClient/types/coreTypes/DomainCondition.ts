@@ -6,6 +6,7 @@ export type DomainCondition = ExtendedSchemaObject<{
 
     },
     Relationships: {
-
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>

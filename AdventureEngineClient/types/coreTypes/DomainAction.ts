@@ -7,5 +7,7 @@ export type DomainAction = ExtendedSchemaObject<{
         UsesBonusAction?: boolean,
     },
     Relationships: {
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>

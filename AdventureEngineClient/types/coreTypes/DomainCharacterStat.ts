@@ -21,5 +21,7 @@ export type DomainCharacterStat = ExtendedSchemaObject<{
         UsesBonusAction?: boolean,
     },
     Relationships: {
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>

@@ -9,5 +9,7 @@ export type DomainSize = ExtendedSchemaObject<{
         BaseHexArea: number,
     }
     Relationships: {
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>

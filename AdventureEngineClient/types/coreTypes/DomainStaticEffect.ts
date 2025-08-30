@@ -5,5 +5,7 @@ export type DomainStaticEffect = ExtendedSchemaObject<{
     Attributes: {
     },
     Relationships: {
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>

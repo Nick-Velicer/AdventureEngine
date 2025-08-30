@@ -13,8 +13,8 @@ export type SchemaObject = {
     //it defaults to the false case), hence the need to manually specify relationships that are 
     //one-to-many level vs. many-to-one level
     Relationships: {
-        ManyToOne?: Record<string, SchemaObject | undefined>,
-        OneToMany?: Record<string, SchemaObject[] | undefined>
+        ManyToOne: Record<string, SchemaObject | undefined>,
+        OneToMany: Record<string, SchemaObject[] | undefined>
     }
 }
 
@@ -22,8 +22,8 @@ export type SchemaObject = {
 export type ExtendedSchemaObject<T extends {
     Attributes: Record<string, any>
     Relationships: {
-        ManyToOne?: Record<string, SchemaObject | undefined >,
-        OneToMany?: Record<string, SchemaObject[] | undefined>
+        ManyToOne: Record<string, SchemaObject | undefined >,
+        OneToMany: Record<string, SchemaObject[] | undefined>
     }
 }> = {
     Id: number | undefined,

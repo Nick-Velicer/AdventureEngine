@@ -16,5 +16,7 @@ export type DomainDiceRollType = ExtendedSchemaObject<{
     Attributes: {
     },
     Relationships: {
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>

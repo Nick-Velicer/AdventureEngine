@@ -7,5 +7,7 @@ export type DomainDice = ExtendedSchemaObject<{
         Maximum: number,
     },
     Relationships: {
+        ManyToOne: {},
+        OneToMany: {}
     }
 }>
