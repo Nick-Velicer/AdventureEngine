@@ -510,7 +510,7 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
         lines = [
             'func Get' + relationshipTable + 'sBy' + tableName + 'Id(' + dbArgName + ' *gorm.DB, id int, ' + relationshipTable  + 's *[]types.' + relationshipTable + ') error {',
             *indentLineBlock([
-	            'result := db.Table("' + relationshipTable + '").Where("' + foreignKeyName + ' = id").Find(&' + relationshipTable + 's)',
+	            'result := db.Table("' + relationshipTable + '").Where(map[string]interface{}{"' + foreignKeyName + '": id}).Find(&' + relationshipTable + 's)',
                 'return result.Error',  
             ]),
             '}'
