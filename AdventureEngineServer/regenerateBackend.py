@@ -327,7 +327,7 @@ def produceTestInsertStatements(tableName: str, typeMeta: dict):
         return baseInsertStatement
     
 
-    return [generateInsertStatement(i) for i in range(3)]
+    return [generateInsertStatement(i) for i in range(6)]
 
 #Currently assuming full levels of relationship includes
 def produceDTOForType(tableName: str, typeMeta: dict):

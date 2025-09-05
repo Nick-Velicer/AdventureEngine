@@ -35,7 +35,7 @@ const appTypeImports = (typeNames: Array<string>) => {
 }
 
 const constantStructure = (typeNames: Array<string>) => {
-	return ["const AppTypes = {"].concat(typeNames.map((typeName) => '	' + typeName + ': {} as ' + typeName + ',')).concat(["} as const satisfies Record<string, SchemaObject> "]).join("\n");
+	return ["export const AppTypes = {"].concat(typeNames.map((typeName) => '	' + typeName + ': {} as ' + typeName + ',')).concat(["} as const satisfies Record<string, SchemaObject> "]).join("\n");
 }
 
 //This was initially in SchemaObject.ts, but since it only deals with this final type sanitization scope,

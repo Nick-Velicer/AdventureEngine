@@ -22,7 +22,7 @@ import { DomainStaticEffect as Base__DomainStaticEffect } from "../coreTypes/Dom
 import { DomainSubClass as Base__DomainSubClass } from "../coreTypes/DomainSubClass";
 import { Quantifier as Base__Quantifier } from "../coreTypes/Quantifier";
 
-const AppTypes = {
+export const AppTypes = {
 	Campaign: {} as Campaign,
 	Character: {} as Character,
 	CharacterDomainCharacterStatInstance: {} as CharacterDomainCharacterStatInstance,

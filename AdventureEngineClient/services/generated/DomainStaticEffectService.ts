@@ -4,7 +4,7 @@
 
 import { type DomainStaticEffect } from "../../types/appTypes/appTypes";
 
-export async function getDomainStaticEffects(): Promise<Array<DomainStaticEffect>> {
+export async function getDomainStaticEffects(): Promise<DomainStaticEffect[]> {
    try {
       const response = await fetch("http://localhost:8080/getDomainStaticEffects");
       const returnObj = await response.json() as unknown as Array<DomainStaticEffect>;

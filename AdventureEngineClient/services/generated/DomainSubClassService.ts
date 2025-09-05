@@ -4,7 +4,7 @@
 
 import { type DomainSubClass } from "../../types/appTypes/appTypes";
 
-export async function getDomainSubClasss(): Promise<Array<DomainSubClass>> {
+export async function getDomainSubClasss(): Promise<DomainSubClass[]> {
    try {
       const response = await fetch("http://localhost:8080/getDomainSubClasss");
       const returnObj = await response.json() as unknown as Array<DomainSubClass>;

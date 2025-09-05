@@ -4,7 +4,7 @@
 
 import { type DomainSize } from "../../types/appTypes/appTypes";
 
-export async function getDomainSizes(): Promise<Array<DomainSize>> {
+export async function getDomainSizes(): Promise<DomainSize[]> {
    try {
       const response = await fetch("http://localhost:8080/getDomainSizes");
       const returnObj = await response.json() as unknown as Array<DomainSize>;

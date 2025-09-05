@@ -4,7 +4,7 @@
 
 import { type CharacterDomainCharacterStatInstance } from "../../types/appTypes/appTypes";
 
-export async function getCharacterDomainCharacterStatInstances(): Promise<Array<CharacterDomainCharacterStatInstance>> {
+export async function getCharacterDomainCharacterStatInstances(): Promise<CharacterDomainCharacterStatInstance[]> {
    try {
       const response = await fetch("http://localhost:8080/getCharacterDomainCharacterStatInstances");
       const returnObj = await response.json() as unknown as Array<CharacterDomainCharacterStatInstance>;

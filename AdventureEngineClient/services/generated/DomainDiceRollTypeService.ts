@@ -4,7 +4,7 @@
 
 import { type DomainDiceRollType } from "../../types/appTypes/appTypes";
 
-export async function getDomainDiceRollTypes(): Promise<Array<DomainDiceRollType>> {
+export async function getDomainDiceRollTypes(): Promise<DomainDiceRollType[]> {
    try {
       const response = await fetch("http://localhost:8080/getDomainDiceRollTypes");
       const returnObj = await response.json() as unknown as Array<DomainDiceRollType>;

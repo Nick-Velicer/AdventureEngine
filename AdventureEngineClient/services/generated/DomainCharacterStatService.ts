@@ -4,7 +4,7 @@
 
 import { type DomainCharacterStat } from "../../types/appTypes/appTypes";
 
-export async function getDomainCharacterStats(): Promise<Array<DomainCharacterStat>> {
+export async function getDomainCharacterStats(): Promise<DomainCharacterStat[]> {
    try {
       const response = await fetch("http://localhost:8080/getDomainCharacterStats");
       const returnObj = await response.json() as unknown as Array<DomainCharacterStat>;

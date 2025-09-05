@@ -47,7 +47,7 @@ def produceTSServiceFile(typeName: str):
 
     def produceGetCollectionMethod(tableName: str):
         lines = [
-            'export async function get' + typeName + 's(): Promise<Array<' + typeName + '>> {',
+            'export async function get' + typeName + 's(): Promise<' + typeName + '[]> {',
             *indentLineBlock([
                 'try {',
                 *indentLineBlock([

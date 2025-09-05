@@ -4,7 +4,7 @@
 
 import { type DomainDice } from "../../types/appTypes/appTypes";
 
-export async function getDomainDices(): Promise<Array<DomainDice>> {
+export async function getDomainDices(): Promise<DomainDice[]> {
    try {
       const response = await fetch("http://localhost:8080/getDomainDices");
       const returnObj = await response.json() as unknown as Array<DomainDice>;

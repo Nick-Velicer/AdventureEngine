@@ -4,7 +4,7 @@
 
 import { type DomainAction } from "../../types/appTypes/appTypes";
 
-export async function getDomainActions(): Promise<Array<DomainAction>> {
+export async function getDomainActions(): Promise<DomainAction[]> {
    try {
       const response = await fetch("http://localhost:8080/getDomainActions");
       const returnObj = await response.json() as unknown as Array<DomainAction>;

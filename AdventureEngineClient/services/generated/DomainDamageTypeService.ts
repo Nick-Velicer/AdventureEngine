@@ -4,7 +4,7 @@
 
 import { type DomainDamageType } from "../../types/appTypes/appTypes";
 
-export async function getDomainDamageTypes(): Promise<Array<DomainDamageType>> {
+export async function getDomainDamageTypes(): Promise<DomainDamageType[]> {
    try {
       const response = await fetch("http://localhost:8080/getDomainDamageTypes");
       const returnObj = await response.json() as unknown as Array<DomainDamageType>;

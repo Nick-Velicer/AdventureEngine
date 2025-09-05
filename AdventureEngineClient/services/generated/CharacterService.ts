@@ -4,7 +4,7 @@
 
 import { type Character } from "../../types/appTypes/appTypes";
 
-export async function getCharacters(): Promise<Array<Character>> {
+export async function getCharacters(): Promise<Character[]> {
    try {
       const response = await fetch("http://localhost:8080/getCharacters");
       const returnObj = await response.json() as unknown as Array<Character>;

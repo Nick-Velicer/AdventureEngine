@@ -4,7 +4,7 @@
 
 import { type Quantifier } from "../../types/appTypes/appTypes";
 
-export async function getQuantifiers(): Promise<Array<Quantifier>> {
+export async function getQuantifiers(): Promise<Quantifier[]> {
    try {
       const response = await fetch("http://localhost:8080/getQuantifiers");
       const returnObj = await response.json() as unknown as Array<Quantifier>;

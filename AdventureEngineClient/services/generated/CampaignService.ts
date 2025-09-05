@@ -4,7 +4,7 @@
 
 import { type Campaign } from "../../types/appTypes/appTypes";
 
-export async function getCampaigns(): Promise<Array<Campaign>> {
+export async function getCampaigns(): Promise<Campaign[]> {
    try {
       const response = await fetch("http://localhost:8080/getCampaigns");
       const returnObj = await response.json() as unknown as Array<Campaign>;

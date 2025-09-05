@@ -27,7 +27,7 @@ export function composeStateConfig<
     type StoreShape = typeof stateDefault
 
     const stateDefault = {
-        character: queryHandler({
+        characterContext: queryHandler({
             key: ['character'],
             query: () => characterService.getItemById(1),
         }),

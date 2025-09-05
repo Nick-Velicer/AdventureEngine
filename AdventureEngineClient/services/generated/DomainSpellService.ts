@@ -4,7 +4,7 @@
 
 import { type DomainSpell } from "../../types/appTypes/appTypes";
 
-export async function getDomainSpells(): Promise<Array<DomainSpell>> {
+export async function getDomainSpells(): Promise<DomainSpell[]> {
    try {
       const response = await fetch("http://localhost:8080/getDomainSpells");
       const returnObj = await response.json() as unknown as Array<DomainSpell>;
