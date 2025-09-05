@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { useGlobalStore } from '../../../vueApp/src/main.ts'
+import type { CharacterDomainCharacterStatInstance } from '../../../types/appTypes/appTypes.ts';
+import { useGlobalQueries, useGlobalStore } from '../../../vueApp/src/main.ts'
+import CharacterStatDisplay from '../components/CharacterStatDisplay.vue';
 
 const state = useGlobalStore();
-
+const { data: characters, isPending } = useGlobalQueries.queryCharacters();
 </script>
 
 <template>
-	<section>
-        <div>
-            test!
-        </div>
-	</section>
+    <div>
+        on character management
+    </div>
+	
 </template>
 
 <style scoped>
