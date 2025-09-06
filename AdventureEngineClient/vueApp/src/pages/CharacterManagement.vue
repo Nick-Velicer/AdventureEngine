@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import type { CharacterDomainCharacterStatInstance } from '../../../types/appTypes/appTypes.ts';
-import { useGlobalQueries, useGlobalStore } from '../../../vueApp/src/main.ts'
 import CharacterStatDisplay from '../components/CharacterStatDisplay.vue';
+import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts'
+import { getCharacterbyId } from '../../../services/generated/CharacterService.ts';
+import { useQuery } from '@pinia/colada';
 
-const state = useGlobalStore();
-const { data: characters, isPending } = useGlobalQueries.queryCharacters();
+const state = composedAppInjectionContexts.store();
+const characterQuery = composedAppInjectionContexts.queries.queryCharacters();
+
+console.log(characterQuery.state.value);
 </script>
 
 <template>

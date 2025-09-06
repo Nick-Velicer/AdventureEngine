@@ -1,15 +1,19 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
-import { composedAppInjectionContexts } from '../../injections/composedInjectionContexts'
-import { createPinia } from 'pinia'
-import { PiniaColada } from '@pinia/colada'
-import { createRouter, createWebHistory } from 'vue-router'
+
+
 import CharacterManagement from './pages/CharacterManagement.vue'
 import TestItemDisplay from './components/TestItemDisplay.vue'
 import NotFoundPage from './pages/NotFoundPage.vue'
+import { createPinia } from 'pinia'
+import { PiniaColada } from '@pinia/colada'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const appContext = createApp(App);
+
+appContext.use(createPinia());
+appContext.use(PiniaColada, {});
 
 //Routing setup
 const routes = [
@@ -23,13 +27,7 @@ const router = createRouter({
 	routes,
 });
 
-export const useGlobalStore = composedAppInjectionContexts.store;
-export const useGlobalQueries = composedAppInjectionContexts.queries;
 
-
-//Any plugins/providers bound to the app context pre-mount
-appContext.use(createPinia());
-appContext.use(PiniaColada, {});
 appContext.use(router);
 
 

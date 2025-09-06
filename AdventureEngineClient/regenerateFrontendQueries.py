@@ -45,8 +45,8 @@ def main():
                 'key: string[]', 
                 'query: (...args : any[]) => Promise<T>'
             ]),
-            '//Covering a generic query return',
-            '}) => Record<string, T | any>'
+            '//Covering a generic query return, eventually this can be inferred',
+            '}) => () => Record<string, T | any>'
         ]),
         '>(',
         *indentLineBlock([
@@ -78,7 +78,7 @@ def produceQueryLinesForType(typeName: str):
 
     def produceGetCollectionQuery(tableName: str):
         lines = [
-            'query' + tableName + 's: () => queryHandler({',
+            'query' + tableName + 's: queryHandler({',
                 *indentLineBlock([
                     'key: ["' + tableName + 's"],',
                     'query: () => services.' + tableName + '.getAllItems()',
@@ -88,9 +88,22 @@ def produceQueryLinesForType(typeName: str):
 
         return lines
     
+    def produceGetItemByIdQuery(tableName: str):
+        lines = [
+            'query' + tableName + 'sById: queryHandler({',
+                *indentLineBlock([
+                    'key: ["get' + tableName + 'ById"],',
+                    'query: () => services.' + tableName + '.getItemById(1)',
+                ]),
+            '}),',
+        ]
+
+        return lines
+    
 
     lines = [
         *produceGetCollectionQuery(typeName),
+        *produceGetItemByIdQuery(typeName)
     ]
 
     return lines

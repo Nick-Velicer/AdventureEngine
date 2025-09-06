@@ -17,89 +17,165 @@ export function composeQueryContext<
    QueryHandlerType extends <T>(opts: {
       key: string[]
       query: (...args : any[]) => Promise<T>
-   //Covering a generic query return
-   }) => Record<string, T | any>
+   //Covering a generic query return, eventually this can be inferred
+   }) => () => Record<string, T | any>
 >(
    //Arguments/dependencies
    queryHandler: QueryHandlerType,
    services: QueryServicesType
 ) {
    return {
-      queryCampaigns: () => queryHandler({
+      queryCampaigns: queryHandler({
          key: ["Campaigns"],
          query: () => services.Campaign.getAllItems()
       }),
-      queryCharacters: () => queryHandler({
+      queryCampaignsById: queryHandler({
+         key: ["getCampaignById"],
+         query: () => services.Campaign.getItemById(1)
+      }),
+      queryCharacters: queryHandler({
          key: ["Characters"],
          query: () => services.Character.getAllItems()
       }),
-      queryCharacterDomainCharacterStatInstances: () => queryHandler({
+      queryCharactersById: queryHandler({
+         key: ["getCharacterById"],
+         query: () => services.Character.getItemById(1)
+      }),
+      queryCharacterDomainCharacterStatInstances: queryHandler({
          key: ["CharacterDomainCharacterStatInstances"],
          query: () => services.CharacterDomainCharacterStatInstance.getAllItems()
       }),
-      queryDomainActions: () => queryHandler({
+      queryCharacterDomainCharacterStatInstancesById: queryHandler({
+         key: ["getCharacterDomainCharacterStatInstanceById"],
+         query: () => services.CharacterDomainCharacterStatInstance.getItemById(1)
+      }),
+      queryDomainActions: queryHandler({
          key: ["DomainActions"],
          query: () => services.DomainAction.getAllItems()
       }),
-      queryDomainCharacterStats: () => queryHandler({
+      queryDomainActionsById: queryHandler({
+         key: ["getDomainActionById"],
+         query: () => services.DomainAction.getItemById(1)
+      }),
+      queryDomainCharacterStats: queryHandler({
          key: ["DomainCharacterStats"],
          query: () => services.DomainCharacterStat.getAllItems()
       }),
-      queryDomainClasss: () => queryHandler({
+      queryDomainCharacterStatsById: queryHandler({
+         key: ["getDomainCharacterStatById"],
+         query: () => services.DomainCharacterStat.getItemById(1)
+      }),
+      queryDomainClasss: queryHandler({
          key: ["DomainClasss"],
          query: () => services.DomainClass.getAllItems()
       }),
-      queryDomainConditions: () => queryHandler({
+      queryDomainClasssById: queryHandler({
+         key: ["getDomainClassById"],
+         query: () => services.DomainClass.getItemById(1)
+      }),
+      queryDomainConditions: queryHandler({
          key: ["DomainConditions"],
          query: () => services.DomainCondition.getAllItems()
       }),
-      queryDomainCreatureTypes: () => queryHandler({
+      queryDomainConditionsById: queryHandler({
+         key: ["getDomainConditionById"],
+         query: () => services.DomainCondition.getItemById(1)
+      }),
+      queryDomainCreatureTypes: queryHandler({
          key: ["DomainCreatureTypes"],
          query: () => services.DomainCreatureType.getAllItems()
       }),
-      queryDomainDamageTypes: () => queryHandler({
+      queryDomainCreatureTypesById: queryHandler({
+         key: ["getDomainCreatureTypeById"],
+         query: () => services.DomainCreatureType.getItemById(1)
+      }),
+      queryDomainDamageTypes: queryHandler({
          key: ["DomainDamageTypes"],
          query: () => services.DomainDamageType.getAllItems()
       }),
-      queryDomainDices: () => queryHandler({
+      queryDomainDamageTypesById: queryHandler({
+         key: ["getDomainDamageTypeById"],
+         query: () => services.DomainDamageType.getItemById(1)
+      }),
+      queryDomainDices: queryHandler({
          key: ["DomainDices"],
          query: () => services.DomainDice.getAllItems()
       }),
-      queryDomainDiceRollTypes: () => queryHandler({
+      queryDomainDicesById: queryHandler({
+         key: ["getDomainDiceById"],
+         query: () => services.DomainDice.getItemById(1)
+      }),
+      queryDomainDiceRollTypes: queryHandler({
          key: ["DomainDiceRollTypes"],
          query: () => services.DomainDiceRollType.getAllItems()
       }),
-      queryDomainItems: () => queryHandler({
+      queryDomainDiceRollTypesById: queryHandler({
+         key: ["getDomainDiceRollTypeById"],
+         query: () => services.DomainDiceRollType.getItemById(1)
+      }),
+      queryDomainItems: queryHandler({
          key: ["DomainItems"],
          query: () => services.DomainItem.getAllItems()
       }),
-      queryDomainSizes: () => queryHandler({
+      queryDomainItemsById: queryHandler({
+         key: ["getDomainItemById"],
+         query: () => services.DomainItem.getItemById(1)
+      }),
+      queryDomainSizes: queryHandler({
          key: ["DomainSizes"],
          query: () => services.DomainSize.getAllItems()
       }),
-      queryDomainSpeciess: () => queryHandler({
+      queryDomainSizesById: queryHandler({
+         key: ["getDomainSizeById"],
+         query: () => services.DomainSize.getItemById(1)
+      }),
+      queryDomainSpeciess: queryHandler({
          key: ["DomainSpeciess"],
          query: () => services.DomainSpecies.getAllItems()
       }),
-      queryDomainSpells: () => queryHandler({
+      queryDomainSpeciessById: queryHandler({
+         key: ["getDomainSpeciesById"],
+         query: () => services.DomainSpecies.getItemById(1)
+      }),
+      queryDomainSpells: queryHandler({
          key: ["DomainSpells"],
          query: () => services.DomainSpell.getAllItems()
       }),
-      queryDomainSpellSchools: () => queryHandler({
+      queryDomainSpellsById: queryHandler({
+         key: ["getDomainSpellById"],
+         query: () => services.DomainSpell.getItemById(1)
+      }),
+      queryDomainSpellSchools: queryHandler({
          key: ["DomainSpellSchools"],
          query: () => services.DomainSpellSchool.getAllItems()
       }),
-      queryDomainStaticEffects: () => queryHandler({
+      queryDomainSpellSchoolsById: queryHandler({
+         key: ["getDomainSpellSchoolById"],
+         query: () => services.DomainSpellSchool.getItemById(1)
+      }),
+      queryDomainStaticEffects: queryHandler({
          key: ["DomainStaticEffects"],
          query: () => services.DomainStaticEffect.getAllItems()
       }),
-      queryDomainSubClasss: () => queryHandler({
+      queryDomainStaticEffectsById: queryHandler({
+         key: ["getDomainStaticEffectById"],
+         query: () => services.DomainStaticEffect.getItemById(1)
+      }),
+      queryDomainSubClasss: queryHandler({
          key: ["DomainSubClasss"],
          query: () => services.DomainSubClass.getAllItems()
       }),
-      queryQuantifiers: () => queryHandler({
+      queryDomainSubClasssById: queryHandler({
+         key: ["getDomainSubClassById"],
+         query: () => services.DomainSubClass.getItemById(1)
+      }),
+      queryQuantifiers: queryHandler({
          key: ["Quantifiers"],
          query: () => services.Quantifier.getAllItems()
+      }),
+      queryQuantifiersById: queryHandler({
+         key: ["getQuantifierById"],
+         query: () => services.Quantifier.getItemById(1)
       }),
    }
 }
