@@ -37,7 +37,7 @@ def main():
         '',
         'export type QueryServicesType = {[key in keyof typeof AppTypes]: ServiceInterface<typeof AppTypes[key]>}',
         '',
-        'export function composeQueryContext<',
+        'export function composeQueryBuilderContext<',
         *indentLineBlock([
             '//Type templating',
             'QueryHandlerType extends <T>(opts: {',
@@ -69,7 +69,7 @@ def main():
     f.writelines([i + '\n' for i in fileLines])
     f.close()
     
-    print("Frontend queries successfully generated.")
+    print("Frontend query builders successfully generated.")
 
 
 def produceQueryLinesForType(typeName: str):
@@ -78,9 +78,9 @@ def produceQueryLinesForType(typeName: str):
 
     def produceGetCollectionQuery(tableName: str):
         lines = [
-            'query' + tableName + 's: queryHandler({',
+            'createGet' + tableName + 'sQuery: () => queryHandler({',
                 *indentLineBlock([
-                    'key: ["' + tableName + 's"],',
+                    'key: ["get' + tableName + 's"],',
                     'query: () => services.' + tableName + '.getAllItems()',
                 ]),
             '}),',
@@ -90,12 +90,18 @@ def produceQueryLinesForType(typeName: str):
     
     def produceGetItemByIdQuery(tableName: str):
         lines = [
-            'query' + tableName + 'sById: queryHandler({',
+            'createGet' + tableName + 'ByIdQuery: (id: number) => {',
+            *indentLineBlock([
+                '//For some reason queries with args does not work without the extra function body/return.',
+                '//Not a huge deal, but apparently a Colada quirk for dynamic-ish queries',
+                'return queryHandler({',
                 *indentLineBlock([
-                    'key: ["get' + tableName + 'ById"],',
-                    'query: () => services.' + tableName + '.getItemById(1)',
+                    'key: ["get' + tableName + 'ById", id.toString()],',
+                    'query: () => services.' + tableName + '.getItemById(id)',
                 ]),
-            '}),',
+                '});'
+            ]),
+            '},',
         ]
 
         return lines

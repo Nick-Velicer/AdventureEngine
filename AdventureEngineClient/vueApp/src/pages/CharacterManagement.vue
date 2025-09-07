@@ -6,15 +6,39 @@ import { getCharacterbyId } from '../../../services/generated/CharacterService.t
 import { useQuery } from '@pinia/colada';
 
 const state = composedAppInjectionContexts.store();
-const characterQuery = composedAppInjectionContexts.queries.queryCharacters();
+const characterQuery = composedAppInjectionContexts.queries.createGetCharactersQuery();
 
-console.log(characterQuery.state.value);
+const individualCharacterQuery = composedAppInjectionContexts.queries.createGetCharacterByIdQuery(1);
+
+const queryResult = individualCharacterQuery();
+
+console.log(queryResult);
 </script>
 
 <template>
-    <div>
-        on character management
-    </div>
+    <section>
+		<p v-if="queryResult.isPending === true">
+		Loading...
+		</p>
+		<div v-else>
+			<button v-on:click="() => queryResult.refetch()">Test Query Refresh</button>
+			<div>
+				Current Character:
+			</div>
+			<div v-bind:style="{display: 'flex', gap: '2rem'}">
+				<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
+					<div v-for="item in [queryResult.data.value]" v-text="item?.Id"></div>
+				</div>
+				<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
+					<div v-for="item in [queryResult.data.value]" v-text="item?.Attributes.Title"></div>
+				</div>
+				<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
+					<div v-for="item in [queryResult.data.value]" v-text="item?.Attributes.IsActive? 'Active' : 'Inactive'"></div>
+				</div>
+			</div>
+			
+		</div>
+	</section>
 	
 </template>
 
