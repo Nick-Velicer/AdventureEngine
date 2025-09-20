@@ -1,35 +1,33 @@
 <script setup lang="ts">
-import { NLayout, NLayoutSider, NMenu } from 'naive-ui'
-type PropsType = {
-    collapsed: boolean
-}
+import { RouterLink } from 'vue-router';
+import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
+import { routes } from '../utils/routes';
 
-const props = defineProps<PropsType>();
+
+const store = composedAppInjectionContexts.store();
 
 </script>
 
 <template>
-    <n-layout v-if="props.collapsed" has-sider>
-        <n-layout-sider
-            bordered
-            collapse-mode="width"
-            :collapsed-width="64"
-            :width="240"
-            :collapsed="collapsed"
-            show-trigger
-        >
-            <n-menu
-            :collapsed="collapsed"
-            :collapsed-width="64"
-            :collapsed-icon-size="22"
-            />
-        </n-layout-sider>
-        <n-layout>
-            <span>Content</span>
-        </n-layout>
-    </n-layout>
+    <nav class="navMenuContainer">
+        <RouterLink v-for="route in routes.filter(route => route.primaryNavigation)" :key="route.title" class="navMenuItem" :to="route.path">
+            {{ route.title }}
+        </RouterLink>
+    </nav>
 </template>
 
 <style scoped>
+    .navMenuContainer {
+        display: flex;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+        gap: v-bind("store.reactiveThemeElement("--spacing-large")");
+        background-color: v-bind("store.reactiveThemeElement("--color-background")");
+        font-family: v-bind("store.reactiveThemeElement("--font-family-body")");
+    }
 
+    .navMenuItem {
+        color: v-bind("store.reactiveThemeElement("--text-color-primary")");
+    }
 </style>

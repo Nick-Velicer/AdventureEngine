@@ -9,28 +9,21 @@ import { storeToRefs } from 'pinia';
 
 const store = composedAppInjectionContexts.store();
 
-const currentThemeColor = computed(() => store.theme["--color-background"]);
-
 </script>
 
 <template>
     <div class="topLevelContainer scrollWrapper">
         <header class="flex w-full h-fit">
-            <n-switch v-model:value="store.navMenuCollapsed"/>
-            <div class="flex-1 text-center">Header Content</div>
             <DevTools/>
+            <NavMenu/>
         </header>
-        <div class="flex h-full">
-            <nav>
-                <NavMenu :collapsed="store.navMenuCollapsed"/>
-            </nav>
+        <div class="scrollArea">
             <main>
                 <slot></slot>
-                
-                <footer class="footerContainer">
-                    Footer Content
-                </footer>
             </main>
+            <footer class="footerContainer">
+                Footer Content
+            </footer>
         </div>
     </div>
     

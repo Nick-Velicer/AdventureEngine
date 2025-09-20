@@ -7,15 +7,7 @@ import "../../theme/generated/variables.css";
 
 <template>
     <Layout>
-        <h1>Hello App!</h1>
-        <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
-        <nav>
-        <RouterLink to="/Test">Test</RouterLink>
-        <RouterLink to="/CharacterManagement">CharacterManagement</RouterLink>
-        </nav>
-        <main>
         <RouterView />
-        </main>
     </Layout>
     
 </template>

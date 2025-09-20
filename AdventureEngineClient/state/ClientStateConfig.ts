@@ -5,7 +5,6 @@ export type StoreShape = typeof stateDefault
 
 export const stateDefault = {
     activeCharacterId: undefined as number | undefined,
-    navMenuCollapsed: false,
     theme: themeDefault as Record<ThemeVariables, string>,
     count: 0
 }
@@ -23,6 +22,6 @@ export const stateActions = {
     },
     setTheme(variant: "Light" | "Dark") {
         this.theme = variant === "Light"? themeDefault : testDarkTheme
-    }
+    },
 }
 //} satisfies Record<string, (arg0: StoreShape) => void>

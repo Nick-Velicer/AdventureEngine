@@ -9,16 +9,10 @@ import { acceptHMRUpdate, createPinia } from 'pinia'
 import { PiniaColada } from '@pinia/colada'
 import { createRouter, createWebHistory } from 'vue-router'
 import { composedAppInjectionContexts } from '../../injections/composedInjectionContexts'
+import TableView from './pages/TableManagement.vue'
+import { routes } from './utils/routes'
 
 const appContext = createApp(App);
-
-
-//Routing setup
-const routes = [
-	{ path: '/CharacterManagement', component: CharacterManagement },
-	{ path: '/Test', component: TestItemDisplay },
-	{ path: '/:pathMatch(.*)*', component: NotFoundPage }
-];
 
 const router = createRouter({
 	history: createWebHistory(),
