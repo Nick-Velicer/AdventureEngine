@@ -20,7 +20,15 @@ type DomainCreatureTypeDTOAttributes struct {
    Title *string
 }
 
+type DomainCreatureTypeDTOManyToOneRelationships struct {
+}
+
+type DomainCreatureTypeDTOOneToManyRelationships struct {
+}
+
 type DomainCreatureTypeDTORelationships struct {
+   ManyToOne DomainCreatureTypeDTOManyToOneRelationships
+   OneToMany DomainCreatureTypeDTOOneToManyRelationships
 }
 
 type DomainCreatureTypeDTO struct {
@@ -51,6 +59,10 @@ func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *
          Title: domainCreatureType.Title,
       },
       Relationships: DomainCreatureTypeDTORelationships{
+         ManyToOne: DomainCreatureTypeDTOManyToOneRelationships {
+         },
+         OneToMany: DomainCreatureTypeDTOOneToManyRelationships {
+         },
       },
    }
 }

@@ -22,7 +22,15 @@ type DomainDiceDTOAttributes struct {
    Title *string
 }
 
+type DomainDiceDTOManyToOneRelationships struct {
+}
+
+type DomainDiceDTOOneToManyRelationships struct {
+}
+
 type DomainDiceDTORelationships struct {
+   ManyToOne DomainDiceDTOManyToOneRelationships
+   OneToMany DomainDiceDTOOneToManyRelationships
 }
 
 type DomainDiceDTO struct {
@@ -55,6 +63,10 @@ func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traver
          Title: domainDice.Title,
       },
       Relationships: DomainDiceDTORelationships{
+         ManyToOne: DomainDiceDTOManyToOneRelationships {
+         },
+         OneToMany: DomainDiceDTOOneToManyRelationships {
+         },
       },
    }
 }

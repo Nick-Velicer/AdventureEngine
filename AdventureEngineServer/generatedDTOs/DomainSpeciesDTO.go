@@ -20,8 +20,16 @@ type DomainSpeciesDTOAttributes struct {
    Title *string
 }
 
-type DomainSpeciesDTORelationships struct {
+type DomainSpeciesDTOManyToOneRelationships struct {
    CreatureTypeDomainCreatureType *DomainCreatureTypeDTO
+}
+
+type DomainSpeciesDTOOneToManyRelationships struct {
+}
+
+type DomainSpeciesDTORelationships struct {
+   ManyToOne DomainSpeciesDTOManyToOneRelationships
+   OneToMany DomainSpeciesDTOOneToManyRelationships
 }
 
 type DomainSpeciesDTO struct {
@@ -54,7 +62,11 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
          Title: domainSpecies.Title,
       },
       Relationships: DomainSpeciesDTORelationships{
-         CreatureTypeDomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureTypeDomainCreatureType, traversedTables),
+         ManyToOne: DomainSpeciesDTOManyToOneRelationships {
+            CreatureTypeDomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureTypeDomainCreatureType, traversedTables),
+         },
+         OneToMany: DomainSpeciesDTOOneToManyRelationships {
+         },
       },
    }
 }
@@ -66,6 +78,6 @@ func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) types.Doma
       
       IsActive: domainSpecies.Attributes.IsActive,
       Title: domainSpecies.Attributes.Title,
-      CreatureTypeDomainCreatureType: domainSpecies.Relationships.CreatureTypeDomainCreatureType.Id,
+      CreatureTypeDomainCreatureType: domainSpecies.Relationships.ManyToOne.CreatureTypeDomainCreatureType.Id,
    }
 }

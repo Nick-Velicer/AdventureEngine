@@ -20,7 +20,15 @@ type DomainStaticEffectDTOAttributes struct {
    Title *string
 }
 
+type DomainStaticEffectDTOManyToOneRelationships struct {
+}
+
+type DomainStaticEffectDTOOneToManyRelationships struct {
+}
+
 type DomainStaticEffectDTORelationships struct {
+   ManyToOne DomainStaticEffectDTOManyToOneRelationships
+   OneToMany DomainStaticEffectDTOOneToManyRelationships
 }
 
 type DomainStaticEffectDTO struct {
@@ -51,6 +59,10 @@ func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *
          Title: domainStaticEffect.Title,
       },
       Relationships: DomainStaticEffectDTORelationships{
+         ManyToOne: DomainStaticEffectDTOManyToOneRelationships {
+         },
+         OneToMany: DomainStaticEffectDTOOneToManyRelationships {
+         },
       },
    }
 }

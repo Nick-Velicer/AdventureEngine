@@ -20,7 +20,15 @@ type DomainSpellSchoolDTOAttributes struct {
    Title *string
 }
 
+type DomainSpellSchoolDTOManyToOneRelationships struct {
+}
+
+type DomainSpellSchoolDTOOneToManyRelationships struct {
+}
+
 type DomainSpellSchoolDTORelationships struct {
+   ManyToOne DomainSpellSchoolDTOManyToOneRelationships
+   OneToMany DomainSpellSchoolDTOOneToManyRelationships
 }
 
 type DomainSpellSchoolDTO struct {
@@ -51,6 +59,10 @@ func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *typ
          Title: domainSpellSchool.Title,
       },
       Relationships: DomainSpellSchoolDTORelationships{
+         ManyToOne: DomainSpellSchoolDTOManyToOneRelationships {
+         },
+         OneToMany: DomainSpellSchoolDTOOneToManyRelationships {
+         },
       },
    }
 }

@@ -20,7 +20,15 @@ type DomainDiceRollTypeDTOAttributes struct {
    Title *string
 }
 
+type DomainDiceRollTypeDTOManyToOneRelationships struct {
+}
+
+type DomainDiceRollTypeDTOOneToManyRelationships struct {
+}
+
 type DomainDiceRollTypeDTORelationships struct {
+   ManyToOne DomainDiceRollTypeDTOManyToOneRelationships
+   OneToMany DomainDiceRollTypeDTOOneToManyRelationships
 }
 
 type DomainDiceRollTypeDTO struct {
@@ -51,6 +59,10 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
          Title: domainDiceRollType.Title,
       },
       Relationships: DomainDiceRollTypeDTORelationships{
+         ManyToOne: DomainDiceRollTypeDTOManyToOneRelationships {
+         },
+         OneToMany: DomainDiceRollTypeDTOOneToManyRelationships {
+         },
       },
    }
 }

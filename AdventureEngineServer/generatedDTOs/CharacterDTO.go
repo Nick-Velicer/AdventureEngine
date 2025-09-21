@@ -20,12 +20,20 @@ type CharacterDTOAttributes struct {
    Title *string
 }
 
-type CharacterDTORelationships struct {
+type CharacterDTOManyToOneRelationships struct {
    CampaignCampaign *CampaignDTO
    CurrentSizeDomainSize *DomainSizeDTO
    SpeciesDomainSpecies *DomainSpeciesDTO
    SubclassDomainSubClass *DomainSubClassDTO
+}
+
+type CharacterDTOOneToManyRelationships struct {
    StatsCharacterDomainCharacterStatInstance []*CharacterDomainCharacterStatInstanceDTO
+}
+
+type CharacterDTORelationships struct {
+   ManyToOne CharacterDTOManyToOneRelationships
+   OneToMany CharacterDTOOneToManyRelationships
 }
 
 type CharacterDTO struct {
@@ -66,11 +74,15 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
          Title: character.Title,
       },
       Relationships: CharacterDTORelationships{
-         CampaignCampaign: CampaignToCampaignDTO(db, &includedCampaignCampaign, traversedTables),
-         CurrentSizeDomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSizeDomainSize, traversedTables),
-         SpeciesDomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpeciesDomainSpecies, traversedTables),
-         SubclassDomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubclassDomainSubClass, traversedTables),
-         StatsCharacterDomainCharacterStatInstance: utils.Map(includedStatsCharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, traversedTables) }),
+         ManyToOne: CharacterDTOManyToOneRelationships {
+            CampaignCampaign: CampaignToCampaignDTO(db, &includedCampaignCampaign, traversedTables),
+            CurrentSizeDomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSizeDomainSize, traversedTables),
+            SpeciesDomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpeciesDomainSpecies, traversedTables),
+            SubclassDomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubclassDomainSubClass, traversedTables),
+         },
+         OneToMany: CharacterDTOOneToManyRelationships {
+            StatsCharacterDomainCharacterStatInstance: utils.Map(includedStatsCharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, traversedTables) }),
+         },
       },
    }
 }
@@ -82,9 +94,9 @@ func CharacterDTOToCharacter(character *CharacterDTO) types.Character {
       
       IsActive: character.Attributes.IsActive,
       Title: character.Attributes.Title,
-      CampaignCampaign: character.Relationships.CampaignCampaign.Id,
-      CurrentSizeDomainSize: character.Relationships.CurrentSizeDomainSize.Id,
-      SpeciesDomainSpecies: character.Relationships.SpeciesDomainSpecies.Id,
-      SubclassDomainSubClass: character.Relationships.SubclassDomainSubClass.Id,
+      CampaignCampaign: character.Relationships.ManyToOne.CampaignCampaign.Id,
+      CurrentSizeDomainSize: character.Relationships.ManyToOne.CurrentSizeDomainSize.Id,
+      SpeciesDomainSpecies: character.Relationships.ManyToOne.SpeciesDomainSpecies.Id,
+      SubclassDomainSubClass: character.Relationships.ManyToOne.SubclassDomainSubClass.Id,
    }
 }

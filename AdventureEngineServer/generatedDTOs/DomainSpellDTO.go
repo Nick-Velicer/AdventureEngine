@@ -35,9 +35,17 @@ type DomainSpellDTOAttributes struct {
    VerbalComponent *string
 }
 
-type DomainSpellDTORelationships struct {
+type DomainSpellDTOManyToOneRelationships struct {
    DamageScalingDomainDice *DomainDiceDTO
    SchoolDomainSpellSchool *DomainSpellSchoolDTO
+}
+
+type DomainSpellDTOOneToManyRelationships struct {
+}
+
+type DomainSpellDTORelationships struct {
+   ManyToOne DomainSpellDTOManyToOneRelationships
+   OneToMany DomainSpellDTOOneToManyRelationships
 }
 
 type DomainSpellDTO struct {
@@ -87,8 +95,12 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
          VerbalComponent: domainSpell.VerbalComponent,
       },
       Relationships: DomainSpellDTORelationships{
-         DamageScalingDomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice, traversedTables),
-         SchoolDomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchoolDomainSpellSchool, traversedTables),
+         ManyToOne: DomainSpellDTOManyToOneRelationships {
+            DamageScalingDomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice, traversedTables),
+            SchoolDomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchoolDomainSpellSchool, traversedTables),
+         },
+         OneToMany: DomainSpellDTOOneToManyRelationships {
+         },
       },
    }
 }
@@ -115,7 +127,7 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
       SomaticComponent: domainSpell.Attributes.SomaticComponent,
       Title: domainSpell.Attributes.Title,
       VerbalComponent: domainSpell.Attributes.VerbalComponent,
-      DamageScalingDomainDice: domainSpell.Relationships.DamageScalingDomainDice.Id,
-      SchoolDomainSpellSchool: domainSpell.Relationships.SchoolDomainSpellSchool.Id,
+      DamageScalingDomainDice: domainSpell.Relationships.ManyToOne.DamageScalingDomainDice.Id,
+      SchoolDomainSpellSchool: domainSpell.Relationships.ManyToOne.SchoolDomainSpellSchool.Id,
    }
 }

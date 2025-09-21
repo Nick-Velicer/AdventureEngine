@@ -20,7 +20,15 @@ type CampaignDTOAttributes struct {
    Title *string
 }
 
+type CampaignDTOManyToOneRelationships struct {
+}
+
+type CampaignDTOOneToManyRelationships struct {
+}
+
 type CampaignDTORelationships struct {
+   ManyToOne CampaignDTOManyToOneRelationships
+   OneToMany CampaignDTOOneToManyRelationships
 }
 
 type CampaignDTO struct {
@@ -51,6 +59,10 @@ func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTable
          Title: campaign.Title,
       },
       Relationships: CampaignDTORelationships{
+         ManyToOne: CampaignDTOManyToOneRelationships {
+         },
+         OneToMany: CampaignDTOOneToManyRelationships {
+         },
       },
    }
 }

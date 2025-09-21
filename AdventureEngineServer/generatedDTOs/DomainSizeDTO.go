@@ -23,7 +23,15 @@ type DomainSizeDTOAttributes struct {
    Title *string
 }
 
+type DomainSizeDTOManyToOneRelationships struct {
+}
+
+type DomainSizeDTOOneToManyRelationships struct {
+}
+
 type DomainSizeDTORelationships struct {
+   ManyToOne DomainSizeDTOManyToOneRelationships
+   OneToMany DomainSizeDTOOneToManyRelationships
 }
 
 type DomainSizeDTO struct {
@@ -57,6 +65,10 @@ func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traver
          Title: domainSize.Title,
       },
       Relationships: DomainSizeDTORelationships{
+         ManyToOne: DomainSizeDTOManyToOneRelationships {
+         },
+         OneToMany: DomainSizeDTOOneToManyRelationships {
+         },
       },
    }
 }

@@ -20,9 +20,17 @@ type CharacterDomainCharacterStatInstanceDTOAttributes struct {
    Title *string
 }
 
-type CharacterDomainCharacterStatInstanceDTORelationships struct {
+type CharacterDomainCharacterStatInstanceDTOManyToOneRelationships struct {
    CharacterCharacter *CharacterDTO
    StatInstanceDomainCharacterStat *DomainCharacterStatDTO
+}
+
+type CharacterDomainCharacterStatInstanceDTOOneToManyRelationships struct {
+}
+
+type CharacterDomainCharacterStatInstanceDTORelationships struct {
+   ManyToOne CharacterDomainCharacterStatInstanceDTOManyToOneRelationships
+   OneToMany CharacterDomainCharacterStatInstanceDTOOneToManyRelationships
 }
 
 type CharacterDomainCharacterStatInstanceDTO struct {
@@ -57,8 +65,12 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
          Title: characterDomainCharacterStatInstance.Title,
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
-         CharacterCharacter: CharacterToCharacterDTO(db, &includedCharacterCharacter, traversedTables),
-         StatInstanceDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstanceDomainCharacterStat, traversedTables),
+         ManyToOne: CharacterDomainCharacterStatInstanceDTOManyToOneRelationships {
+            CharacterCharacter: CharacterToCharacterDTO(db, &includedCharacterCharacter, traversedTables),
+            StatInstanceDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstanceDomainCharacterStat, traversedTables),
+         },
+         OneToMany: CharacterDomainCharacterStatInstanceDTOOneToManyRelationships {
+         },
       },
    }
 }
@@ -70,7 +82,7 @@ func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstan
       
       IsActive: characterDomainCharacterStatInstance.Attributes.IsActive,
       Title: characterDomainCharacterStatInstance.Attributes.Title,
-      CharacterCharacter: characterDomainCharacterStatInstance.Relationships.CharacterCharacter.Id,
-      StatInstanceDomainCharacterStat: characterDomainCharacterStatInstance.Relationships.StatInstanceDomainCharacterStat.Id,
+      CharacterCharacter: characterDomainCharacterStatInstance.Relationships.ManyToOne.CharacterCharacter.Id,
+      StatInstanceDomainCharacterStat: characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstanceDomainCharacterStat.Id,
    }
 }

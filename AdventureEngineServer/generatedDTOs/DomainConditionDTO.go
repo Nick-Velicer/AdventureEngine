@@ -20,7 +20,15 @@ type DomainConditionDTOAttributes struct {
    Title *string
 }
 
+type DomainConditionDTOManyToOneRelationships struct {
+}
+
+type DomainConditionDTOOneToManyRelationships struct {
+}
+
 type DomainConditionDTORelationships struct {
+   ManyToOne DomainConditionDTOManyToOneRelationships
+   OneToMany DomainConditionDTOOneToManyRelationships
 }
 
 type DomainConditionDTO struct {
@@ -51,6 +59,10 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
          Title: domainCondition.Title,
       },
       Relationships: DomainConditionDTORelationships{
+         ManyToOne: DomainConditionDTOManyToOneRelationships {
+         },
+         OneToMany: DomainConditionDTOOneToManyRelationships {
+         },
       },
    }
 }

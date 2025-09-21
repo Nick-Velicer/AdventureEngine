@@ -23,7 +23,15 @@ type DomainItemDTOAttributes struct {
    TwoHandedQuantifier *float64
 }
 
+type DomainItemDTOManyToOneRelationships struct {
+}
+
+type DomainItemDTOOneToManyRelationships struct {
+}
+
 type DomainItemDTORelationships struct {
+   ManyToOne DomainItemDTOManyToOneRelationships
+   OneToMany DomainItemDTOOneToManyRelationships
 }
 
 type DomainItemDTO struct {
@@ -57,6 +65,10 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
          TwoHandedQuantifier: domainItem.TwoHandedQuantifier,
       },
       Relationships: DomainItemDTORelationships{
+         ManyToOne: DomainItemDTOManyToOneRelationships {
+         },
+         OneToMany: DomainItemDTOOneToManyRelationships {
+         },
       },
    }
 }

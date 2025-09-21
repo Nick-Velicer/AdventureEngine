@@ -22,7 +22,15 @@ type DomainCharacterStatDTOAttributes struct {
    UsesBonusAction *bool
 }
 
+type DomainCharacterStatDTOManyToOneRelationships struct {
+}
+
+type DomainCharacterStatDTOOneToManyRelationships struct {
+}
+
 type DomainCharacterStatDTORelationships struct {
+   ManyToOne DomainCharacterStatDTOManyToOneRelationships
+   OneToMany DomainCharacterStatDTOOneToManyRelationships
 }
 
 type DomainCharacterStatDTO struct {
@@ -55,6 +63,10 @@ func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterSta
          UsesBonusAction: domainCharacterStat.UsesBonusAction,
       },
       Relationships: DomainCharacterStatDTORelationships{
+         ManyToOne: DomainCharacterStatDTOManyToOneRelationships {
+         },
+         OneToMany: DomainCharacterStatDTOOneToManyRelationships {
+         },
       },
    }
 }
