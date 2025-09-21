@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { DataTableColumns } from 'naive-ui'
-import { NButton, useMessage } from 'naive-ui'
+import { NDataTable, NButton } from 'naive-ui'
 import { h } from 'vue'
-import type { AppTypes } from '../../../types/appTypes/appTypes'
+import { AppTypes } from '../../../types/appTypes/appTypes'
+import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts'
+import type { SchemaObject } from '../../../types/SchemaObject'
+import { flattenSchemaObject } from '../utils/utils'
 
 type PropsType = {
     table: keyof typeof AppTypes
@@ -10,69 +13,35 @@ type PropsType = {
 
 const props = defineProps<PropsType>();
 
-interface Song {
-  no: number
-  title: string
-  length: string
-}
+const queryInitTitle = "createGet" + props.table + "sQuery" 
 
-function createColumns({
-  play
-}: {
-  play: (row: Song) => void
-}): DataTableColumns<Song> {
-  return [
-    {
-      title: 'No',
-      key: 'no'
-    },
-    {
-      title: 'Title',
-      key: 'title'
-    },
-    {
-      title: 'Length',
-      key: 'length'
-    },
-    {
-      title: 'Action',
-      key: 'actions',
-      render(row) {
-        return h(
-          NButton,
-          {
-            strong: true,
-            tertiary: true,
-            size: 'small',
-            onClick: () => play(row)
-          },
-          { default: () => 'Play' }
-        )
-      }
-    }
-  ]
-}
+const createTableDataQuery = composedAppInjectionContexts.queries[queryInitTitle as keyof typeof composedAppInjectionContexts.queries];
 
-const data: Song[] = [
-  { no: 3, title: 'Wonderwall', length: '4:18' },
-  { no: 4, title: 'Don\'t Look Back in Anger', length: '4:48' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' }
-]
+const tableQuery = createTableDataQuery();
 
-const message = useMessage()
-const columns = createColumns({
-  play(row: Song) {
-    message.info(`Play ${row.title}`)
-  }
-})
-const pagination = false as const
+const tableResponse = tableQuery();
+
+console.log(tableResponse);
+
 </script>
 
 <template>
-  <n-data-table
-    :columns="columns"
-    :data="data"
-    :pagination="pagination"
-    :bordered="false"
-  />
+    <n-button v-on:click="() => console.log(tableResponse)">See Query Result</n-button>
+    <n-button v-on:click="() => tableResponse.refetch()">Test Query Refresh</n-button>
+    <div v-if="tableResponse.isPending === true">
+        Loading...
+    </div>
+    <div v-else-if="tableResponse.state.data?.length < 0">
+        Unable to retrieve collection for {{ props.table }}
+    </div>
+        <n-data-table
+            v-else
+            :columns="tableResponse?.data?.value?.length > 0? Object.keys(flattenSchemaObject(tableResponse.data.value[0])).map(columnName => ({
+    title: columnName,
+    key: columnName
+})) : []"
+            :data="tableResponse?.data?.value?.length > 0?  tableResponse.data.value.map(object => flattenSchemaObject(object)) : []"
+            :bordered="false"
+        />
+    
 </template>
