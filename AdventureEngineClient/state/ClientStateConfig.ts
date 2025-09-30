@@ -13,7 +13,7 @@ export const stateDefault = {
 
 export const stateGetters = {
     doubleCount: (state) => state.count * 2,
-    reactiveThemeElement: (state) => (themeElement: ThemeVariables) => state.theme[themeElement]
+    reactiveThemeElement: (state) => (themeElement: ThemeVariables) => state.theme[themeElement],
 
 } satisfies Record<string, (arg0: StoreShape) => any>
 

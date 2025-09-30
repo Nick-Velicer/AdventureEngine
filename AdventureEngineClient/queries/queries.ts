@@ -3,6 +3,7 @@
 //Edits made here will not persist after regeneration.
 
 import { AppTypes } from "../types/appTypes/appTypes";
+import type { SchemaObject } from "../types/SchemaObject";
 
 export type ServiceInterface<T> = {
    getAllItems: () => Promise<Array<T>>
@@ -12,24 +13,19 @@ export type ServiceInterface<T> = {
 
 export type QueryServicesType = {[key in keyof typeof AppTypes]: ServiceInterface<typeof AppTypes[key]>}
 
-export function composeQueryBuilderContext<
-   //Type templating
-   QueryHandlerType extends <T>(opts: {
-      key: string[]
-      query: (...args : any[]) => Promise<T>
-   //Covering a generic query return, eventually this can be inferred
-   }) => () => Record<string, T | any>
->(
-   //Arguments/dependencies
-   queryHandler: QueryHandlerType,
+export function composeQueryBuilderContext<T extends <G extends SchemaObject>(opts: {
+   key: string[],
+   query: (...args : any[]) => Promise<G | G[]>
+}) => ReturnType<T>>(
+   queryHandler: T,
    services: QueryServicesType
 ) {
    return {
-      createGetCampaignsQuery: () => queryHandler({
+      useGetCampaignsQuery: () => queryHandler({
          key: ["getCampaigns"],
          query: () => services.Campaign.getAllItems()
       }),
-      createGetCampaignByIdQuery: (id: number) => {
+      useGetCampaignByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -37,11 +33,11 @@ export function composeQueryBuilderContext<
             query: () => services.Campaign.getItemById(id)
          });
       },
-      createGetCharactersQuery: () => queryHandler({
+      useGetCharactersQuery: () => queryHandler({
          key: ["getCharacters"],
          query: () => services.Character.getAllItems()
       }),
-      createGetCharacterByIdQuery: (id: number) => {
+      useGetCharacterByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -49,11 +45,11 @@ export function composeQueryBuilderContext<
             query: () => services.Character.getItemById(id)
          });
       },
-      createGetCharacterDomainCharacterStatInstancesQuery: () => queryHandler({
+      useGetCharacterDomainCharacterStatInstancesQuery: () => queryHandler({
          key: ["getCharacterDomainCharacterStatInstances"],
          query: () => services.CharacterDomainCharacterStatInstance.getAllItems()
       }),
-      createGetCharacterDomainCharacterStatInstanceByIdQuery: (id: number) => {
+      useGetCharacterDomainCharacterStatInstanceByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -61,11 +57,11 @@ export function composeQueryBuilderContext<
             query: () => services.CharacterDomainCharacterStatInstance.getItemById(id)
          });
       },
-      createGetDomainActionsQuery: () => queryHandler({
+      useGetDomainActionsQuery: () => queryHandler({
          key: ["getDomainActions"],
          query: () => services.DomainAction.getAllItems()
       }),
-      createGetDomainActionByIdQuery: (id: number) => {
+      useGetDomainActionByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -73,11 +69,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainAction.getItemById(id)
          });
       },
-      createGetDomainCharacterStatsQuery: () => queryHandler({
+      useGetDomainCharacterStatsQuery: () => queryHandler({
          key: ["getDomainCharacterStats"],
          query: () => services.DomainCharacterStat.getAllItems()
       }),
-      createGetDomainCharacterStatByIdQuery: (id: number) => {
+      useGetDomainCharacterStatByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -85,11 +81,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainCharacterStat.getItemById(id)
          });
       },
-      createGetDomainClasssQuery: () => queryHandler({
+      useGetDomainClasssQuery: () => queryHandler({
          key: ["getDomainClasss"],
          query: () => services.DomainClass.getAllItems()
       }),
-      createGetDomainClassByIdQuery: (id: number) => {
+      useGetDomainClassByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -97,11 +93,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainClass.getItemById(id)
          });
       },
-      createGetDomainConditionsQuery: () => queryHandler({
+      useGetDomainConditionsQuery: () => queryHandler({
          key: ["getDomainConditions"],
          query: () => services.DomainCondition.getAllItems()
       }),
-      createGetDomainConditionByIdQuery: (id: number) => {
+      useGetDomainConditionByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -109,11 +105,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainCondition.getItemById(id)
          });
       },
-      createGetDomainCreatureTypesQuery: () => queryHandler({
+      useGetDomainCreatureTypesQuery: () => queryHandler({
          key: ["getDomainCreatureTypes"],
          query: () => services.DomainCreatureType.getAllItems()
       }),
-      createGetDomainCreatureTypeByIdQuery: (id: number) => {
+      useGetDomainCreatureTypeByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -121,11 +117,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainCreatureType.getItemById(id)
          });
       },
-      createGetDomainDamageTypesQuery: () => queryHandler({
+      useGetDomainDamageTypesQuery: () => queryHandler({
          key: ["getDomainDamageTypes"],
          query: () => services.DomainDamageType.getAllItems()
       }),
-      createGetDomainDamageTypeByIdQuery: (id: number) => {
+      useGetDomainDamageTypeByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -133,11 +129,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainDamageType.getItemById(id)
          });
       },
-      createGetDomainDicesQuery: () => queryHandler({
+      useGetDomainDicesQuery: () => queryHandler({
          key: ["getDomainDices"],
          query: () => services.DomainDice.getAllItems()
       }),
-      createGetDomainDiceByIdQuery: (id: number) => {
+      useGetDomainDiceByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -145,11 +141,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainDice.getItemById(id)
          });
       },
-      createGetDomainDiceRollTypesQuery: () => queryHandler({
+      useGetDomainDiceRollTypesQuery: () => queryHandler({
          key: ["getDomainDiceRollTypes"],
          query: () => services.DomainDiceRollType.getAllItems()
       }),
-      createGetDomainDiceRollTypeByIdQuery: (id: number) => {
+      useGetDomainDiceRollTypeByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -157,11 +153,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainDiceRollType.getItemById(id)
          });
       },
-      createGetDomainItemsQuery: () => queryHandler({
+      useGetDomainItemsQuery: () => queryHandler({
          key: ["getDomainItems"],
          query: () => services.DomainItem.getAllItems()
       }),
-      createGetDomainItemByIdQuery: (id: number) => {
+      useGetDomainItemByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -169,11 +165,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainItem.getItemById(id)
          });
       },
-      createGetDomainSizesQuery: () => queryHandler({
+      useGetDomainSizesQuery: () => queryHandler({
          key: ["getDomainSizes"],
          query: () => services.DomainSize.getAllItems()
       }),
-      createGetDomainSizeByIdQuery: (id: number) => {
+      useGetDomainSizeByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -181,11 +177,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSize.getItemById(id)
          });
       },
-      createGetDomainSpeciessQuery: () => queryHandler({
+      useGetDomainSpeciessQuery: () => queryHandler({
          key: ["getDomainSpeciess"],
          query: () => services.DomainSpecies.getAllItems()
       }),
-      createGetDomainSpeciesByIdQuery: (id: number) => {
+      useGetDomainSpeciesByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -193,11 +189,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSpecies.getItemById(id)
          });
       },
-      createGetDomainSpellsQuery: () => queryHandler({
+      useGetDomainSpellsQuery: () => queryHandler({
          key: ["getDomainSpells"],
          query: () => services.DomainSpell.getAllItems()
       }),
-      createGetDomainSpellByIdQuery: (id: number) => {
+      useGetDomainSpellByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -205,11 +201,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSpell.getItemById(id)
          });
       },
-      createGetDomainSpellSchoolsQuery: () => queryHandler({
+      useGetDomainSpellSchoolsQuery: () => queryHandler({
          key: ["getDomainSpellSchools"],
          query: () => services.DomainSpellSchool.getAllItems()
       }),
-      createGetDomainSpellSchoolByIdQuery: (id: number) => {
+      useGetDomainSpellSchoolByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -217,11 +213,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSpellSchool.getItemById(id)
          });
       },
-      createGetDomainStaticEffectsQuery: () => queryHandler({
+      useGetDomainStaticEffectsQuery: () => queryHandler({
          key: ["getDomainStaticEffects"],
          query: () => services.DomainStaticEffect.getAllItems()
       }),
-      createGetDomainStaticEffectByIdQuery: (id: number) => {
+      useGetDomainStaticEffectByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -229,11 +225,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainStaticEffect.getItemById(id)
          });
       },
-      createGetDomainSubClasssQuery: () => queryHandler({
+      useGetDomainSubClasssQuery: () => queryHandler({
          key: ["getDomainSubClasss"],
          query: () => services.DomainSubClass.getAllItems()
       }),
-      createGetDomainSubClassByIdQuery: (id: number) => {
+      useGetDomainSubClassByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
@@ -241,11 +237,11 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSubClass.getItemById(id)
          });
       },
-      createGetQuantifiersQuery: () => queryHandler({
+      useGetQuantifiersQuery: () => queryHandler({
          key: ["getQuantifiers"],
          query: () => services.Quantifier.getAllItems()
       }),
-      createGetQuantifierByIdQuery: (id: number) => {
+      useGetQuantifierByIdQuery: (id: number) => {
          //For some reason queries with args does not work without the extra function body/return.
          //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
