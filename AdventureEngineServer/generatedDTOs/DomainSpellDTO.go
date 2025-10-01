@@ -36,8 +36,8 @@ type DomainSpellDTOAttributes struct {
 }
 
 type DomainSpellDTOManyToOneRelationships struct {
-   DamageScalingDomainDice *DomainDiceDTO
-   SchoolDomainSpellSchool *DomainSpellSchoolDTO
+   DamageScaling__DomainDice *DomainDiceDTO
+   School__DomainSpellSchool *DomainSpellSchoolDTO
 }
 
 type DomainSpellDTOOneToManyRelationships struct {
@@ -96,8 +96,8 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
       },
       Relationships: DomainSpellDTORelationships{
          ManyToOne: DomainSpellDTOManyToOneRelationships {
-            DamageScalingDomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice, traversedTables),
-            SchoolDomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchoolDomainSpellSchool, traversedTables),
+            DamageScaling__DomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice, traversedTables),
+            School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchoolDomainSpellSchool, traversedTables),
          },
          OneToMany: DomainSpellDTOOneToManyRelationships {
          },
@@ -127,7 +127,7 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
       SomaticComponent: domainSpell.Attributes.SomaticComponent,
       Title: domainSpell.Attributes.Title,
       VerbalComponent: domainSpell.Attributes.VerbalComponent,
-      DamageScalingDomainDice: domainSpell.Relationships.ManyToOne.DamageScalingDomainDice.Id,
-      SchoolDomainSpellSchool: domainSpell.Relationships.ManyToOne.SchoolDomainSpellSchool.Id,
+      DamageScalingDomainDice: domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice.Id,
+      SchoolDomainSpellSchool: domainSpell.Relationships.ManyToOne.School__DomainSpellSchool.Id,
    }
 }

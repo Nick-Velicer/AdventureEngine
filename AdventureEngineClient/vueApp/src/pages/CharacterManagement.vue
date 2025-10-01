@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import type { CharacterDomainCharacterStatInstance } from '../../../types/appTypes/appTypes.ts';
+import type { Character, CharacterDomainCharacterStatInstance } from '../../../types/appTypes/appTypes.ts';
 import CharacterStatDisplay from '../components/CharacterStatDisplay.vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts'
-import { getCharacterbyId } from '../../../services/generated/CharacterService.ts';
-import { useQuery } from '@pinia/colada';
+import type { UseQueryReturn } from '@pinia/colada';
+import BasicStatIcon from '../components/BasicStatIcon.vue';
 
 const state = composedAppInjectionContexts.store();
-const characterQuery = composedAppInjectionContexts.queries.createGetCharactersQuery();
+const characterQuery = composedAppInjectionContexts.queries.useGetCharacterByIdQuery(1) as UseQueryReturn<Character>;
+console.log(characterQuery.data.value?.Relationships.OneToMany);
 
-const individualCharacterQuery = composedAppInjectionContexts.queries.createGetCharacterByIdQuery(1);
+const stats = [
+    "Strength",
+    "Dexterity",
+    "Constitution",
+    "Intelligence",
+    "Wisdom",
+    "Charisma"
+]
 
-const queryResult = individualCharacterQuery();
-
-console.log(queryResult);
 </script>
 
 <template>
     <section>
-		<p v-if="queryResult.isPending === true">
+		<p v-if="characterQuery.isPending === true">
 		Loading...
 		</p>
 		<div v-else>
-			<button v-on:click="() => queryResult.refetch()">Test Query Refresh</button>
+			<button v-on:click="() => characterQuery.refetch()">Test Query Refresh</button>
 			<div>
-				Current Character:
+				Current Character: {{ characterQuery.data.value?.Attributes.Title}}
 			</div>
 			<div v-bind:style="{display: 'flex', gap: '2rem'}">
-				<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
-					<div v-for="item in [queryResult.data.value]" v-text="item?.Id"></div>
-				</div>
-				<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
-					<div v-for="item in [queryResult.data.value]" v-text="item?.Attributes.Title"></div>
-				</div>
-				<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
-					<div v-for="item in [queryResult.data.value]" v-text="item?.Attributes.IsActive? 'Active' : 'Inactive'"></div>
+				<div v-for="item, index in characterQuery.data.value?.Relationships.OneToMany.Stats__CharacterDomainCharacterStatInstance">
+					<BasicStatIcon :basic-stat-name="stats[index]"/>
+					<div v-text="item?.Attributes?.Title"/>
 				</div>
 			</div>
 			

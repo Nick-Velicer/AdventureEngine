@@ -21,7 +21,7 @@ type DomainSubClassDTOAttributes struct {
 }
 
 type DomainSubClassDTOManyToOneRelationships struct {
-   ParentClassDomainClass *DomainClassDTO
+   ParentClass__DomainClass *DomainClassDTO
 }
 
 type DomainSubClassDTOOneToManyRelationships struct {
@@ -63,7 +63,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
       },
       Relationships: DomainSubClassDTORelationships{
          ManyToOne: DomainSubClassDTOManyToOneRelationships {
-            ParentClassDomainClass: DomainClassToDomainClassDTO(db, &includedParentClassDomainClass, traversedTables),
+            ParentClass__DomainClass: DomainClassToDomainClassDTO(db, &includedParentClassDomainClass, traversedTables),
          },
          OneToMany: DomainSubClassDTOOneToManyRelationships {
          },
@@ -78,6 +78,6 @@ func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) types.
       
       IsActive: domainSubClass.Attributes.IsActive,
       Title: domainSubClass.Attributes.Title,
-      ParentClassDomainClass: domainSubClass.Relationships.ManyToOne.ParentClassDomainClass.Id,
+      ParentClassDomainClass: domainSubClass.Relationships.ManyToOne.ParentClass__DomainClass.Id,
    }
 }

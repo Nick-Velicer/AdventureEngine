@@ -42,13 +42,13 @@ type QuantifierDTOAttributes struct {
 }
 
 type QuantifierDTOManyToOneRelationships struct {
-   AddedSpellDomainSpell *DomainSpellDTO
-   ConditionDomainCondition *DomainConditionDTO
-   DamageTypeDomainDamageType *DomainDamageTypeDTO
-   EffectDomainStaticEffect *DomainStaticEffectDTO
-   ResistanceTypeDomainDamageType *DomainDamageTypeDTO
-   SaveDomainCharacterStat *DomainCharacterStatDTO
-   TargetDomainCharacterStat *DomainCharacterStatDTO
+   AddedSpell__DomainSpell *DomainSpellDTO
+   Condition__DomainCondition *DomainConditionDTO
+   DamageType__DomainDamageType *DomainDamageTypeDTO
+   Effect__DomainStaticEffect *DomainStaticEffectDTO
+   ResistanceType__DomainDamageType *DomainDamageTypeDTO
+   Save__DomainCharacterStat *DomainCharacterStatDTO
+   Target__DomainCharacterStat *DomainCharacterStatDTO
 }
 
 type QuantifierDTOOneToManyRelationships struct {
@@ -123,13 +123,13 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
       },
       Relationships: QuantifierDTORelationships{
          ManyToOne: QuantifierDTOManyToOneRelationships {
-            AddedSpellDomainSpell: DomainSpellToDomainSpellDTO(db, &includedAddedSpellDomainSpell, traversedTables),
-            ConditionDomainCondition: DomainConditionToDomainConditionDTO(db, &includedConditionDomainCondition, traversedTables),
-            DamageTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedDamageTypeDomainDamageType, traversedTables),
-            EffectDomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedEffectDomainStaticEffect, traversedTables),
-            ResistanceTypeDomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedResistanceTypeDomainDamageType, traversedTables),
-            SaveDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSaveDomainCharacterStat, traversedTables),
-            TargetDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedTargetDomainCharacterStat, traversedTables),
+            AddedSpell__DomainSpell: DomainSpellToDomainSpellDTO(db, &includedAddedSpellDomainSpell, traversedTables),
+            Condition__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedConditionDomainCondition, traversedTables),
+            DamageType__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedDamageTypeDomainDamageType, traversedTables),
+            Effect__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedEffectDomainStaticEffect, traversedTables),
+            ResistanceType__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedResistanceTypeDomainDamageType, traversedTables),
+            Save__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSaveDomainCharacterStat, traversedTables),
+            Target__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedTargetDomainCharacterStat, traversedTables),
          },
          OneToMany: QuantifierDTOOneToManyRelationships {
          },
@@ -165,12 +165,12 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) types.Quantifier {
       Title: quantifier.Attributes.Title,
       UntilLongRest: quantifier.Attributes.UntilLongRest,
       UntilShortRest: quantifier.Attributes.UntilShortRest,
-      AddedSpellDomainSpell: quantifier.Relationships.ManyToOne.AddedSpellDomainSpell.Id,
-      ConditionDomainCondition: quantifier.Relationships.ManyToOne.ConditionDomainCondition.Id,
-      DamageTypeDomainDamageType: quantifier.Relationships.ManyToOne.DamageTypeDomainDamageType.Id,
-      EffectDomainStaticEffect: quantifier.Relationships.ManyToOne.EffectDomainStaticEffect.Id,
-      ResistanceTypeDomainDamageType: quantifier.Relationships.ManyToOne.ResistanceTypeDomainDamageType.Id,
-      SaveDomainCharacterStat: quantifier.Relationships.ManyToOne.SaveDomainCharacterStat.Id,
-      TargetDomainCharacterStat: quantifier.Relationships.ManyToOne.TargetDomainCharacterStat.Id,
+      AddedSpellDomainSpell: quantifier.Relationships.ManyToOne.AddedSpell__DomainSpell.Id,
+      ConditionDomainCondition: quantifier.Relationships.ManyToOne.Condition__DomainCondition.Id,
+      DamageTypeDomainDamageType: quantifier.Relationships.ManyToOne.DamageType__DomainDamageType.Id,
+      EffectDomainStaticEffect: quantifier.Relationships.ManyToOne.Effect__DomainStaticEffect.Id,
+      ResistanceTypeDomainDamageType: quantifier.Relationships.ManyToOne.ResistanceType__DomainDamageType.Id,
+      SaveDomainCharacterStat: quantifier.Relationships.ManyToOne.Save__DomainCharacterStat.Id,
+      TargetDomainCharacterStat: quantifier.Relationships.ManyToOne.Target__DomainCharacterStat.Id,
    }
 }

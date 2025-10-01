@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lineiconshq/free-icons": "^1.0.3",
+    "@lineiconshq/vue-lineicons": "^0.0.4",
     "@pinia/colada": "^0.17.1",
     "@tailwindcss/vite": "^4.1.13",
     "axios": "^1.11.0",

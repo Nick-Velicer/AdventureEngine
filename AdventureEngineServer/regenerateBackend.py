@@ -335,6 +335,10 @@ def produceDTOForType(tableName: str, typeMeta: dict):
     dbArgName = 'db'
     objectArgName = tableName[0].lower() + tableName[1:]
 
+    def reformatRelationshipName(relationshipName: str, correspondingTable: str):
+        relationshipName = relationshipName[0].upper() + relationshipName[1:]
+        return relationshipName[:relationshipName.rfind(correspondingTable)] + '__' + correspondingTable
+
     def produceConvertToTableTypeMethod(tableName: str, typeMeta: dict):
         lines = [
             'func ' + tableName + 'DTOTo' + tableName + '(' + objectArgName + ' *' + tableName + 'DTO) types.' + tableName + ' {',
@@ -343,7 +347,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                 *indentLineBlock([
                     'Id: ' + objectArgName + '.Id,',
                     *[(attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.Attributes.' + attribute + ',' if attribute != 'Id' else '') for attribute in typeMeta['attributes']],
-                    *[relationship[0].upper() + relationship[1:] + ': ' + objectArgName + '.Relationships.ManyToOne.' + relationship + '.Id,' for relationship in typeMeta["relationships"]['manyToOne']],
+                    *[relationship[0].upper() + relationship[1:] + ': ' + objectArgName + '.Relationships.ManyToOne.' + reformatRelationshipName(relationship, typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"]) + '.Id,' for relationship in typeMeta["relationships"]['manyToOne']],
                 ]),
                 '}',
             ]),
@@ -382,10 +386,10 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                     'Relationships: ' + tableName + 'DTORelationships{',
                     *indentLineBlock([
                         'ManyToOne: ' + tableName + 'DTOManyToOneRelationships {',
-                        *indentLineBlock([relationship[0].upper() + relationship[1:] + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + ', traversedTables),' for relationship in typeMeta["relationships"]['manyToOne']]),
+                        *indentLineBlock([reformatRelationshipName(relationship, typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"]) + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + ', traversedTables),' for relationship in typeMeta["relationships"]['manyToOne']]),
                         '},',
                         'OneToMany: ' + tableName + 'DTOOneToManyRelationships {',
-                        *indentLineBlock([relationship[0].upper() + relationship[1:] + ': utils.Map(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &relationshipElement, traversedTables) }),' for relationship in typeMeta["relationships"]['oneToMany']]),
+                        *indentLineBlock([reformatRelationshipName(relationship, typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"]) + ': utils.Map(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &relationshipElement, traversedTables) }),' for relationship in typeMeta["relationships"]['oneToMany']]),
                         '},',
                     ]),
                     '},',
@@ -418,11 +422,11 @@ def produceDTOForType(tableName: str, typeMeta: dict):
         '}',
         '',
         'type ' + tableName + 'DTOManyToOneRelationships struct {',
-        *indentLineBlock([relationship[0].upper() + relationship[1:] + ' *' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + "DTO" for relationship in typeMeta['relationships']['manyToOne']]),
+        *indentLineBlock([reformatRelationshipName(relationship, typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"]) + ' *' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + "DTO" for relationship in typeMeta['relationships']['manyToOne']]),
         '}',
         '',
         'type ' + tableName + 'DTOOneToManyRelationships struct {',
-        *indentLineBlock([relationship[0].upper() + relationship[1:] + ' []*' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + "DTO" for relationship in typeMeta['relationships']['oneToMany']]),
+        *indentLineBlock([reformatRelationshipName(relationship, typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"]) + ' []*' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + "DTO" for relationship in typeMeta['relationships']['oneToMany']]),
         '}',
         '',
         'type ' + tableName + 'DTORelationships struct {',

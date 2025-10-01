@@ -21,8 +21,8 @@ type DomainClassDTOAttributes struct {
 }
 
 type DomainClassDTOManyToOneRelationships struct {
-   HitDieDomainDice *DomainDiceDTO
-   SpellcastingStatDomainCharacterStat *DomainCharacterStatDTO
+   HitDie__DomainDice *DomainDiceDTO
+   SpellcastingStat__DomainCharacterStat *DomainCharacterStatDTO
 }
 
 type DomainClassDTOOneToManyRelationships struct {
@@ -66,8 +66,8 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
       },
       Relationships: DomainClassDTORelationships{
          ManyToOne: DomainClassDTOManyToOneRelationships {
-            HitDieDomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDieDomainDice, traversedTables),
-            SpellcastingStatDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStatDomainCharacterStat, traversedTables),
+            HitDie__DomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDieDomainDice, traversedTables),
+            SpellcastingStat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStatDomainCharacterStat, traversedTables),
          },
          OneToMany: DomainClassDTOOneToManyRelationships {
          },
@@ -82,7 +82,7 @@ func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) types.DomainClass 
       
       IsActive: domainClass.Attributes.IsActive,
       Title: domainClass.Attributes.Title,
-      HitDieDomainDice: domainClass.Relationships.ManyToOne.HitDieDomainDice.Id,
-      SpellcastingStatDomainCharacterStat: domainClass.Relationships.ManyToOne.SpellcastingStatDomainCharacterStat.Id,
+      HitDieDomainDice: domainClass.Relationships.ManyToOne.HitDie__DomainDice.Id,
+      SpellcastingStatDomainCharacterStat: domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat.Id,
    }
 }

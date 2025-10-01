@@ -21,8 +21,8 @@ type CharacterDomainCharacterStatInstanceDTOAttributes struct {
 }
 
 type CharacterDomainCharacterStatInstanceDTOManyToOneRelationships struct {
-   CharacterCharacter *CharacterDTO
-   StatInstanceDomainCharacterStat *DomainCharacterStatDTO
+   Character__Character *CharacterDTO
+   StatInstance__DomainCharacterStat *DomainCharacterStatDTO
 }
 
 type CharacterDomainCharacterStatInstanceDTOOneToManyRelationships struct {
@@ -66,8 +66,8 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
          ManyToOne: CharacterDomainCharacterStatInstanceDTOManyToOneRelationships {
-            CharacterCharacter: CharacterToCharacterDTO(db, &includedCharacterCharacter, traversedTables),
-            StatInstanceDomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstanceDomainCharacterStat, traversedTables),
+            Character__Character: CharacterToCharacterDTO(db, &includedCharacterCharacter, traversedTables),
+            StatInstance__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstanceDomainCharacterStat, traversedTables),
          },
          OneToMany: CharacterDomainCharacterStatInstanceDTOOneToManyRelationships {
          },
@@ -82,7 +82,7 @@ func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstan
       
       IsActive: characterDomainCharacterStatInstance.Attributes.IsActive,
       Title: characterDomainCharacterStatInstance.Attributes.Title,
-      CharacterCharacter: characterDomainCharacterStatInstance.Relationships.ManyToOne.CharacterCharacter.Id,
-      StatInstanceDomainCharacterStat: characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstanceDomainCharacterStat.Id,
+      CharacterCharacter: characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character.Id,
+      StatInstanceDomainCharacterStat: characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstance__DomainCharacterStat.Id,
    }
 }
