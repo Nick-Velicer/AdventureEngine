@@ -5,7 +5,7 @@ package generatedDatabaseTypes
 type DomainSpecies struct {
 	// CreatureTypeDomainCreatureType corresponds to the JSON schema field
 	// "CreatureType__DomainCreatureType".
-	CreatureTypeDomainCreatureType *float64 `json:"CreatureType__DomainCreatureType,omitempty" yaml:"CreatureType__DomainCreatureType,omitempty" mapstructure:"CreatureType__DomainCreatureType,omitempty"`
+	CreatureType__DomainCreatureType *float64 `json:"CreatureType__DomainCreatureType,omitempty" yaml:"CreatureType__DomainCreatureType,omitempty" mapstructure:"CreatureType__DomainCreatureType,omitempty"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`

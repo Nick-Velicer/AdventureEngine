@@ -13,8 +13,8 @@ type DomainSubClassJson struct {
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
 	// ParentClassDomainClass corresponds to the JSON schema field
-	// "ParentClass__domainClass".
-	ParentClassDomainClass *float64 `json:"ParentClass__domainClass,omitempty" yaml:"ParentClass__domainClass,omitempty" mapstructure:"ParentClass__domainClass,omitempty"`
+	// "ParentClass__DomainClass".
+	ParentClassDomainClass *float64 `json:"ParentClass__DomainClass,omitempty" yaml:"ParentClass__DomainClass,omitempty" mapstructure:"ParentClass__DomainClass,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

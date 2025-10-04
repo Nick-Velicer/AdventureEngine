@@ -31,13 +31,13 @@ export type Quantifier = ExtendedSchemaObject<{
     }
     Relationships: {
         ManyToOne: {
-            Effect__domainStaticEffect?: DomainStaticEffect
-            Target__domainCharacterStat?: DomainCharacterStat
-            AddedSpell__domainSpell?: DomainSpell
-            Condition__domainCondition?: DomainCondition
-            DamageType__domainDamageType?: DomainDamageType
-            ResistanceType__domainDamageType?: DomainDamageType
-            Save__domainCharacterStat?: DomainCharacterStat
+            Effect__DomainStaticEffect?: DomainStaticEffect
+            Target__DomainCharacterStat?: DomainCharacterStat
+            AddedSpell__DomainSpell?: DomainSpell
+            Condition__DomainCondition?: DomainCondition
+            DamageType__DomainDamageType?: DomainDamageType
+            ResistanceType__DomainDamageType?: DomainDamageType
+            Save__DomainCharacterStat?: DomainCharacterStat
         },
         OneToMany: {}
     }

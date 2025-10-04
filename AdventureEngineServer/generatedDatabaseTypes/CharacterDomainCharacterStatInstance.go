@@ -4,7 +4,7 @@ package generatedDatabaseTypes
 
 type CharacterDomainCharacterStatInstance struct {
 	// CharacterCharacter corresponds to the JSON schema field "Character__Character".
-	CharacterCharacter *float64 `json:"Character__Character,omitempty" yaml:"Character__Character,omitempty" mapstructure:"Character__Character,omitempty"`
+	Character__Character *float64 `json:"Character__Character,omitempty" yaml:"Character__Character,omitempty" mapstructure:"Character__Character,omitempty"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
@@ -17,7 +17,7 @@ type CharacterDomainCharacterStatInstance struct {
 
 	// StatInstanceDomainCharacterStat corresponds to the JSON schema field
 	// "StatInstance__DomainCharacterStat".
-	StatInstanceDomainCharacterStat *float64 `json:"StatInstance__DomainCharacterStat,omitempty" yaml:"StatInstance__DomainCharacterStat,omitempty" mapstructure:"StatInstance__DomainCharacterStat,omitempty"`
+	StatInstance__DomainCharacterStat *float64 `json:"StatInstance__DomainCharacterStat,omitempty" yaml:"StatInstance__DomainCharacterStat,omitempty" mapstructure:"StatInstance__DomainCharacterStat,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

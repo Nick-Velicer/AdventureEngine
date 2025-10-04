@@ -50,11 +50,11 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainClass).Name())
    
-   var includedHitDieDomainDice types.DomainDice
-   var includedSpellcastingStatDomainCharacterStat types.DomainCharacterStat
+   var includedHitDie__DomainDice types.DomainDice
+   var includedSpellcastingStat__DomainCharacterStat types.DomainCharacterStat
    
-   services.GetDomainDiceById(db, int(*domainClass.HitDieDomainDice), &includedHitDieDomainDice)
-   services.GetDomainCharacterStatById(db, int(*domainClass.SpellcastingStatDomainCharacterStat), &includedSpellcastingStatDomainCharacterStat)
+   services.GetDomainDiceById(db, int(*domainClass.HitDie__DomainDice), &includedHitDie__DomainDice)
+   services.GetDomainCharacterStatById(db, int(*domainClass.SpellcastingStat__DomainCharacterStat), &includedSpellcastingStat__DomainCharacterStat)
    
    return &DomainClassDTO{
       Id: domainClass.Id,
@@ -66,8 +66,8 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
       },
       Relationships: DomainClassDTORelationships{
          ManyToOne: DomainClassDTOManyToOneRelationships {
-            HitDie__DomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDieDomainDice, traversedTables),
-            SpellcastingStat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStatDomainCharacterStat, traversedTables),
+            HitDie__DomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDie__DomainDice, traversedTables),
+            SpellcastingStat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: DomainClassDTOOneToManyRelationships {
          },
@@ -82,7 +82,7 @@ func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) types.DomainClass 
       
       IsActive: domainClass.Attributes.IsActive,
       Title: domainClass.Attributes.Title,
-      HitDieDomainDice: domainClass.Relationships.ManyToOne.HitDie__DomainDice.Id,
-      SpellcastingStatDomainCharacterStat: domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat.Id,
+      HitDie__DomainDice: domainClass.Relationships.ManyToOne.HitDie__DomainDice.Id,
+      SpellcastingStat__DomainCharacterStat: domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat.Id,
    }
 }

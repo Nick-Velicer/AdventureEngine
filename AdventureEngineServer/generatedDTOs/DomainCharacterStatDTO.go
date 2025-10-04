@@ -14,9 +14,11 @@ import (
 )
 
 type DomainCharacterStatDTOAttributes struct {
+   Abbreviation string
    Description *string
    
    IsActive *bool
+   IsBaseStat bool
    Title *string
    UsesAction *bool
    UsesBonusAction *bool
@@ -55,9 +57,11 @@ func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterSta
    return &DomainCharacterStatDTO{
       Id: domainCharacterStat.Id,
       Attributes: DomainCharacterStatDTOAttributes{
+         Abbreviation: domainCharacterStat.Abbreviation,
          Description: domainCharacterStat.Description,
          
          IsActive: domainCharacterStat.IsActive,
+         IsBaseStat: domainCharacterStat.IsBaseStat,
          Title: domainCharacterStat.Title,
          UsesAction: domainCharacterStat.UsesAction,
          UsesBonusAction: domainCharacterStat.UsesBonusAction,
@@ -74,9 +78,11 @@ func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterSta
 func DomainCharacterStatDTOToDomainCharacterStat(domainCharacterStat *DomainCharacterStatDTO) types.DomainCharacterStat {
    return types.DomainCharacterStat{
       Id: domainCharacterStat.Id,
+      Abbreviation: domainCharacterStat.Attributes.Abbreviation,
       Description: domainCharacterStat.Attributes.Description,
       
       IsActive: domainCharacterStat.Attributes.IsActive,
+      IsBaseStat: domainCharacterStat.Attributes.IsBaseStat,
       Title: domainCharacterStat.Attributes.Title,
       UsesAction: domainCharacterStat.Attributes.UsesAction,
       UsesBonusAction: domainCharacterStat.Attributes.UsesBonusAction,

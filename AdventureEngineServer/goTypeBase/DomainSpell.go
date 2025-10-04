@@ -8,11 +8,19 @@ type DomainSpellJson struct {
 	ConcentrationRequired *bool `json:"ConcentrationRequired,omitempty" yaml:"ConcentrationRequired,omitempty" mapstructure:"ConcentrationRequired,omitempty"`
 
 	// DamageScalingDomainDice corresponds to the JSON schema field
-	// "DamageScaling__domainDice".
-	DamageScalingDomainDice *float64 `json:"DamageScaling__domainDice,omitempty" yaml:"DamageScaling__domainDice,omitempty" mapstructure:"DamageScaling__domainDice,omitempty"`
+	// "DamageScaling__DomainDice".
+	DamageScalingDomainDice *float64 `json:"DamageScaling__DomainDice,omitempty" yaml:"DamageScaling__DomainDice,omitempty" mapstructure:"DamageScaling__DomainDice,omitempty"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+
+	// HasSomaticRequirement corresponds to the JSON schema field
+	// "HasSomaticRequirement".
+	HasSomaticRequirement *bool `json:"HasSomaticRequirement,omitempty" yaml:"HasSomaticRequirement,omitempty" mapstructure:"HasSomaticRequirement,omitempty"`
+
+	// HasVerbalRequirement corresponds to the JSON schema field
+	// "HasVerbalRequirement".
+	HasVerbalRequirement *bool `json:"HasVerbalRequirement,omitempty" yaml:"HasVerbalRequirement,omitempty" mapstructure:"HasVerbalRequirement,omitempty"`
 
 	// HourCastTime corresponds to the JSON schema field "HourCastTime".
 	HourCastTime *float64 `json:"HourCastTime,omitempty" yaml:"HourCastTime,omitempty" mapstructure:"HourCastTime,omitempty"`
@@ -57,15 +65,9 @@ type DomainSpellJson struct {
 	RoundDuration *float64 `json:"RoundDuration,omitempty" yaml:"RoundDuration,omitempty" mapstructure:"RoundDuration,omitempty"`
 
 	// SchoolDomainSpellSchool corresponds to the JSON schema field
-	// "School__domainSpellSchool".
-	SchoolDomainSpellSchool *float64 `json:"School__domainSpellSchool,omitempty" yaml:"School__domainSpellSchool,omitempty" mapstructure:"School__domainSpellSchool,omitempty"`
-
-	// SomaticComponent corresponds to the JSON schema field "SomaticComponent".
-	SomaticComponent *string `json:"SomaticComponent,omitempty" yaml:"SomaticComponent,omitempty" mapstructure:"SomaticComponent,omitempty"`
+	// "School__DomainSpellSchool".
+	SchoolDomainSpellSchool *float64 `json:"School__DomainSpellSchool,omitempty" yaml:"School__DomainSpellSchool,omitempty" mapstructure:"School__DomainSpellSchool,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
-
-	// VerbalComponent corresponds to the JSON schema field "VerbalComponent".
-	VerbalComponent *string `json:"VerbalComponent,omitempty" yaml:"VerbalComponent,omitempty" mapstructure:"VerbalComponent,omitempty"`
 }

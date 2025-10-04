@@ -10,9 +10,9 @@ export type Character = ExtendedSchemaObject<{
     },
     Relationships: {
         ManyToOne: { 
-            CurrentSize__domainSize?: DomainSize,
-            Species__domainSpecies?: DomainSpecies,
-            Subclass__domainSubClass?: DomainSubClass,
+            CurrentSize__DomainSize?: DomainSize,
+            Species__DomainSpecies?: DomainSpecies,
+            Subclass__DomainSubClass?: DomainSubClass,
             Campaign__Campaign?: Campaign,
         },
         OneToMany: {

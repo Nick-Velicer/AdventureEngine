@@ -4,11 +4,11 @@ package generatedDatabaseTypes
 
 type Character struct {
 	// CampaignCampaign corresponds to the JSON schema field "Campaign__Campaign".
-	CampaignCampaign *float64 `json:"Campaign__Campaign,omitempty" yaml:"Campaign__Campaign,omitempty" mapstructure:"Campaign__Campaign,omitempty"`
+	Campaign__Campaign *float64 `json:"Campaign__Campaign,omitempty" yaml:"Campaign__Campaign,omitempty" mapstructure:"Campaign__Campaign,omitempty"`
 
 	// CurrentSizeDomainSize corresponds to the JSON schema field
-	// "CurrentSize__domainSize".
-	CurrentSizeDomainSize *float64 `json:"CurrentSize__domainSize,omitempty" yaml:"CurrentSize__domainSize,omitempty" mapstructure:"CurrentSize__domainSize,omitempty"`
+	// "CurrentSize__DomainSize".
+	CurrentSize__DomainSize *float64 `json:"CurrentSize__DomainSize,omitempty" yaml:"CurrentSize__DomainSize,omitempty" mapstructure:"CurrentSize__DomainSize,omitempty"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
@@ -20,15 +20,15 @@ type Character struct {
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
 	// SpeciesDomainSpecies corresponds to the JSON schema field
-	// "Species__domainSpecies".
-	SpeciesDomainSpecies *float64 `json:"Species__domainSpecies,omitempty" yaml:"Species__domainSpecies,omitempty" mapstructure:"Species__domainSpecies,omitempty"`
+	// "Species__DomainSpecies".
+	Species__DomainSpecies *float64 `json:"Species__DomainSpecies,omitempty" yaml:"Species__DomainSpecies,omitempty" mapstructure:"Species__DomainSpecies,omitempty"`
 
 	// StatsCharacterDomainCharacterStatInstance corresponds to the JSON schema field
 	// "Stats__CharacterDomainCharacterStatInstance".
 
 	// SubclassDomainSubClass corresponds to the JSON schema field
-	// "Subclass__domainSubClass".
-	SubclassDomainSubClass *float64 `json:"Subclass__domainSubClass,omitempty" yaml:"Subclass__domainSubClass,omitempty" mapstructure:"Subclass__domainSubClass,omitempty"`
+	// "Subclass__DomainSubClass".
+	Subclass__DomainSubClass *float64 `json:"Subclass__DomainSubClass,omitempty" yaml:"Subclass__DomainSubClass,omitempty" mapstructure:"Subclass__DomainSubClass,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

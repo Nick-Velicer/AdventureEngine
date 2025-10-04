@@ -49,9 +49,9 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSubClass).Name())
    
-   var includedParentClassDomainClass types.DomainClass
+   var includedParentClass__DomainClass types.DomainClass
    
-   services.GetDomainClassById(db, int(*domainSubClass.ParentClassDomainClass), &includedParentClassDomainClass)
+   services.GetDomainClassById(db, int(*domainSubClass.ParentClass__DomainClass), &includedParentClass__DomainClass)
    
    return &DomainSubClassDTO{
       Id: domainSubClass.Id,
@@ -63,7 +63,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
       },
       Relationships: DomainSubClassDTORelationships{
          ManyToOne: DomainSubClassDTOManyToOneRelationships {
-            ParentClass__DomainClass: DomainClassToDomainClassDTO(db, &includedParentClassDomainClass, traversedTables),
+            ParentClass__DomainClass: DomainClassToDomainClassDTO(db, &includedParentClass__DomainClass, traversedTables),
          },
          OneToMany: DomainSubClassDTOOneToManyRelationships {
          },
@@ -78,6 +78,6 @@ func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) types.
       
       IsActive: domainSubClass.Attributes.IsActive,
       Title: domainSubClass.Attributes.Title,
-      ParentClassDomainClass: domainSubClass.Relationships.ManyToOne.ParentClass__DomainClass.Id,
+      ParentClass__DomainClass: domainSubClass.Relationships.ManyToOne.ParentClass__DomainClass.Id,
    }
 }

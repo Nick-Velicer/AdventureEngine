@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type DomainCharacterStat struct {
+	// Abbreviation corresponds to the JSON schema field "Abbreviation".
+	Abbreviation string `json:"Abbreviation" yaml:"Abbreviation" mapstructure:"Abbreviation"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
@@ -11,6 +14,9 @@ type DomainCharacterStat struct {
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+
+	// IsBaseStat corresponds to the JSON schema field "IsBaseStat".
+	IsBaseStat bool `json:"IsBaseStat" yaml:"IsBaseStat" mapstructure:"IsBaseStat"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

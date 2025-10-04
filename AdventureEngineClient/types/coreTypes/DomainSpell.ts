@@ -5,8 +5,8 @@ import { DomainSpellSchool } from "./DomainSpellSchool";
 export type DomainSpell = ExtendedSchemaObject<{
     Attributes: {
         MaterialComponent?: string
-        SomaticComponent?: string
-        VerbalComponent?: string
+        HasSomaticRequirement?: boolean
+        HasVerbalRequirement?: boolean
         IsRanged?: boolean
         IsMelee?: boolean
         IsRitual?: boolean
@@ -22,8 +22,8 @@ export type DomainSpell = ExtendedSchemaObject<{
     }
     Relationships: {
         ManyToOne: {
-            School__domainSpellSchool?: DomainSpellSchool
-            DamageScaling__domainDice?: DomainDice
+            School__DomainSpellSchool?: DomainSpellSchool
+            DamageScaling__DomainDice?: DomainDice
         },
         OneToMany: {}
     }

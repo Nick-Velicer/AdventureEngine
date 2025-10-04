@@ -50,11 +50,11 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
    
    traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())
    
-   var includedCharacterCharacter types.Character
-   var includedStatInstanceDomainCharacterStat types.DomainCharacterStat
+   var includedCharacter__Character types.Character
+   var includedStatInstance__DomainCharacterStat types.DomainCharacterStat
    
-   services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.CharacterCharacter), &includedCharacterCharacter)
-   services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.StatInstanceDomainCharacterStat), &includedStatInstanceDomainCharacterStat)
+   services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), &includedCharacter__Character)
+   services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.StatInstance__DomainCharacterStat), &includedStatInstance__DomainCharacterStat)
    
    return &CharacterDomainCharacterStatInstanceDTO{
       Id: characterDomainCharacterStatInstance.Id,
@@ -66,8 +66,8 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
          ManyToOne: CharacterDomainCharacterStatInstanceDTOManyToOneRelationships {
-            Character__Character: CharacterToCharacterDTO(db, &includedCharacterCharacter, traversedTables),
-            StatInstance__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstanceDomainCharacterStat, traversedTables),
+            Character__Character: CharacterToCharacterDTO(db, &includedCharacter__Character, traversedTables),
+            StatInstance__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstance__DomainCharacterStat, traversedTables),
          },
          OneToMany: CharacterDomainCharacterStatInstanceDTOOneToManyRelationships {
          },
@@ -82,7 +82,7 @@ func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstan
       
       IsActive: characterDomainCharacterStatInstance.Attributes.IsActive,
       Title: characterDomainCharacterStatInstance.Attributes.Title,
-      CharacterCharacter: characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character.Id,
-      StatInstanceDomainCharacterStat: characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstance__DomainCharacterStat.Id,
+      Character__Character: characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character.Id,
+      StatInstance__DomainCharacterStat: characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstance__DomainCharacterStat.Id,
    }
 }

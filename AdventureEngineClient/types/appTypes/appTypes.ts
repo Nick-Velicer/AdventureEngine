@@ -105,4 +105,4 @@ export const AppTypes = {
 	DomainStaticEffect: {} as DomainStaticEffect,
 	DomainSubClass: {} as DomainSubClass,
 	Quantifier: {} as Quantifier,
-} as const satisfies Record<string, SchemaObject>
+} as const satisfies Record<string, SchemaObject> 

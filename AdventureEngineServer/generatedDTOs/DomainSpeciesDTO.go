@@ -49,9 +49,9 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSpecies).Name())
    
-   var includedCreatureTypeDomainCreatureType types.DomainCreatureType
+   var includedCreatureType__DomainCreatureType types.DomainCreatureType
    
-   services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureTypeDomainCreatureType), &includedCreatureTypeDomainCreatureType)
+   services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureType__DomainCreatureType), &includedCreatureType__DomainCreatureType)
    
    return &DomainSpeciesDTO{
       Id: domainSpecies.Id,
@@ -63,7 +63,7 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
       },
       Relationships: DomainSpeciesDTORelationships{
          ManyToOne: DomainSpeciesDTOManyToOneRelationships {
-            CreatureType__DomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureTypeDomainCreatureType, traversedTables),
+            CreatureType__DomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureType__DomainCreatureType, traversedTables),
          },
          OneToMany: DomainSpeciesDTOOneToManyRelationships {
          },
@@ -78,6 +78,6 @@ func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) types.Doma
       
       IsActive: domainSpecies.Attributes.IsActive,
       Title: domainSpecies.Attributes.Title,
-      CreatureTypeDomainCreatureType: domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType.Id,
+      CreatureType__DomainCreatureType: domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType.Id,
    }
 }

@@ -8,8 +8,8 @@ export type DomainClass = ExtendedSchemaObject<{
     },
     Relationships: {
         ManyToOne: {
-            HitDie__domainDice: DomainDice,
-            SpellcastingStat__domainCharacterStat: DomainCharacterStat,
+            HitDie__DomainDice: DomainDice,
+            SpellcastingStat__DomainCharacterStat: DomainCharacterStat,
         },
         OneToMany: {}
     }

@@ -53,17 +53,17 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
    
    traversedTables = append(traversedTables, reflect.TypeOf(*character).Name())
    
-   var includedCampaignCampaign types.Campaign
-   var includedCurrentSizeDomainSize types.DomainSize
-   var includedSpeciesDomainSpecies types.DomainSpecies
-   var includedSubclassDomainSubClass types.DomainSubClass
-   var includedStatsCharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
+   var includedCampaign__Campaign types.Campaign
+   var includedCurrentSize__DomainSize types.DomainSize
+   var includedSpecies__DomainSpecies types.DomainSpecies
+   var includedSubclass__DomainSubClass types.DomainSubClass
+   var includedStats__CharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
    
-   services.GetCampaignById(db, int(*character.CampaignCampaign), &includedCampaignCampaign)
-   services.GetDomainSizeById(db, int(*character.CurrentSizeDomainSize), &includedCurrentSizeDomainSize)
-   services.GetDomainSpeciesById(db, int(*character.SpeciesDomainSpecies), &includedSpeciesDomainSpecies)
-   services.GetDomainSubClassById(db, int(*character.SubclassDomainSubClass), &includedSubclassDomainSubClass)
-   services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStatsCharacterDomainCharacterStatInstances)
+   services.GetCampaignById(db, int(*character.Campaign__Campaign), &includedCampaign__Campaign)
+   services.GetDomainSizeById(db, int(*character.CurrentSize__DomainSize), &includedCurrentSize__DomainSize)
+   services.GetDomainSpeciesById(db, int(*character.Species__DomainSpecies), &includedSpecies__DomainSpecies)
+   services.GetDomainSubClassById(db, int(*character.Subclass__DomainSubClass), &includedSubclass__DomainSubClass)
+   services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStats__CharacterDomainCharacterStatInstances)
    
    return &CharacterDTO{
       Id: character.Id,
@@ -75,13 +75,13 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
       },
       Relationships: CharacterDTORelationships{
          ManyToOne: CharacterDTOManyToOneRelationships {
-            Campaign__Campaign: CampaignToCampaignDTO(db, &includedCampaignCampaign, traversedTables),
-            CurrentSize__DomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSizeDomainSize, traversedTables),
-            Species__DomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpeciesDomainSpecies, traversedTables),
-            Subclass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubclassDomainSubClass, traversedTables),
+            Campaign__Campaign: CampaignToCampaignDTO(db, &includedCampaign__Campaign, traversedTables),
+            CurrentSize__DomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSize__DomainSize, traversedTables),
+            Species__DomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpecies__DomainSpecies, traversedTables),
+            Subclass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubclass__DomainSubClass, traversedTables),
          },
          OneToMany: CharacterDTOOneToManyRelationships {
-            Stats__CharacterDomainCharacterStatInstance: utils.Map(includedStatsCharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, traversedTables) }),
+            Stats__CharacterDomainCharacterStatInstance: utils.Map(includedStats__CharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, traversedTables) }),
          },
       },
    }
@@ -94,9 +94,9 @@ func CharacterDTOToCharacter(character *CharacterDTO) types.Character {
       
       IsActive: character.Attributes.IsActive,
       Title: character.Attributes.Title,
-      CampaignCampaign: character.Relationships.ManyToOne.Campaign__Campaign.Id,
-      CurrentSizeDomainSize: character.Relationships.ManyToOne.CurrentSize__DomainSize.Id,
-      SpeciesDomainSpecies: character.Relationships.ManyToOne.Species__DomainSpecies.Id,
-      SubclassDomainSubClass: character.Relationships.ManyToOne.Subclass__DomainSubClass.Id,
+      Campaign__Campaign: character.Relationships.ManyToOne.Campaign__Campaign.Id,
+      CurrentSize__DomainSize: character.Relationships.ManyToOne.CurrentSize__DomainSize.Id,
+      Species__DomainSpecies: character.Relationships.ManyToOne.Species__DomainSpecies.Id,
+      Subclass__DomainSubClass: character.Relationships.ManyToOne.Subclass__DomainSubClass.Id,
    }
 }

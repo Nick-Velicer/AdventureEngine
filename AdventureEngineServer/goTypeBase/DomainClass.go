@@ -6,8 +6,8 @@ type DomainClassJson struct {
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
-	// HitDieDomainDice corresponds to the JSON schema field "HitDie__domainDice".
-	HitDieDomainDice *float64 `json:"HitDie__domainDice,omitempty" yaml:"HitDie__domainDice,omitempty" mapstructure:"HitDie__domainDice,omitempty"`
+	// HitDieDomainDice corresponds to the JSON schema field "HitDie__DomainDice".
+	HitDieDomainDice *float64 `json:"HitDie__DomainDice,omitempty" yaml:"HitDie__DomainDice,omitempty" mapstructure:"HitDie__DomainDice,omitempty"`
 
 	// Id corresponds to the JSON schema field "Id".
 	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
@@ -16,8 +16,8 @@ type DomainClassJson struct {
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
 	// SpellcastingStatDomainCharacterStat corresponds to the JSON schema field
-	// "SpellcastingStat__domainCharacterStat".
-	SpellcastingStatDomainCharacterStat *float64 `json:"SpellcastingStat__domainCharacterStat,omitempty" yaml:"SpellcastingStat__domainCharacterStat,omitempty" mapstructure:"SpellcastingStat__domainCharacterStat,omitempty"`
+	// "SpellcastingStat__DomainCharacterStat".
+	SpellcastingStatDomainCharacterStat *float64 `json:"SpellcastingStat__DomainCharacterStat,omitempty" yaml:"SpellcastingStat__DomainCharacterStat,omitempty" mapstructure:"SpellcastingStat__DomainCharacterStat,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

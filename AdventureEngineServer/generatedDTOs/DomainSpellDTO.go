@@ -16,6 +16,8 @@ import (
 type DomainSpellDTOAttributes struct {
    ConcentrationRequired *bool
    Description *string
+   HasSomaticRequirement *bool
+   HasVerbalRequirement *bool
    HourCastTime *float64
    HourDuration *float64
    
@@ -30,9 +32,7 @@ type DomainSpellDTOAttributes struct {
    MaterialComponent *string
    MinuteCastTime *float64
    RoundDuration *float64
-   SomaticComponent *string
    Title *string
-   VerbalComponent *string
 }
 
 type DomainSpellDTOManyToOneRelationships struct {
@@ -65,17 +65,19 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSpell).Name())
    
-   var includedDamageScalingDomainDice types.DomainDice
-   var includedSchoolDomainSpellSchool types.DomainSpellSchool
+   var includedDamageScaling__DomainDice types.DomainDice
+   var includedSchool__DomainSpellSchool types.DomainSpellSchool
    
-   services.GetDomainDiceById(db, int(*domainSpell.DamageScalingDomainDice), &includedDamageScalingDomainDice)
-   services.GetDomainSpellSchoolById(db, int(*domainSpell.SchoolDomainSpellSchool), &includedSchoolDomainSpellSchool)
+   services.GetDomainDiceById(db, int(*domainSpell.DamageScaling__DomainDice), &includedDamageScaling__DomainDice)
+   services.GetDomainSpellSchoolById(db, int(*domainSpell.School__DomainSpellSchool), &includedSchool__DomainSpellSchool)
    
    return &DomainSpellDTO{
       Id: domainSpell.Id,
       Attributes: DomainSpellDTOAttributes{
          ConcentrationRequired: domainSpell.ConcentrationRequired,
          Description: domainSpell.Description,
+         HasSomaticRequirement: domainSpell.HasSomaticRequirement,
+         HasVerbalRequirement: domainSpell.HasVerbalRequirement,
          HourCastTime: domainSpell.HourCastTime,
          HourDuration: domainSpell.HourDuration,
          
@@ -90,14 +92,12 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
          MaterialComponent: domainSpell.MaterialComponent,
          MinuteCastTime: domainSpell.MinuteCastTime,
          RoundDuration: domainSpell.RoundDuration,
-         SomaticComponent: domainSpell.SomaticComponent,
          Title: domainSpell.Title,
-         VerbalComponent: domainSpell.VerbalComponent,
       },
       Relationships: DomainSpellDTORelationships{
          ManyToOne: DomainSpellDTOManyToOneRelationships {
-            DamageScaling__DomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScalingDomainDice, traversedTables),
-            School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchoolDomainSpellSchool, traversedTables),
+            DamageScaling__DomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScaling__DomainDice, traversedTables),
+            School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchool__DomainSpellSchool, traversedTables),
          },
          OneToMany: DomainSpellDTOOneToManyRelationships {
          },
@@ -110,6 +110,8 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
       Id: domainSpell.Id,
       ConcentrationRequired: domainSpell.Attributes.ConcentrationRequired,
       Description: domainSpell.Attributes.Description,
+      HasSomaticRequirement: domainSpell.Attributes.HasSomaticRequirement,
+      HasVerbalRequirement: domainSpell.Attributes.HasVerbalRequirement,
       HourCastTime: domainSpell.Attributes.HourCastTime,
       HourDuration: domainSpell.Attributes.HourDuration,
       
@@ -124,10 +126,8 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
       MaterialComponent: domainSpell.Attributes.MaterialComponent,
       MinuteCastTime: domainSpell.Attributes.MinuteCastTime,
       RoundDuration: domainSpell.Attributes.RoundDuration,
-      SomaticComponent: domainSpell.Attributes.SomaticComponent,
       Title: domainSpell.Attributes.Title,
-      VerbalComponent: domainSpell.Attributes.VerbalComponent,
-      DamageScalingDomainDice: domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice.Id,
-      SchoolDomainSpellSchool: domainSpell.Relationships.ManyToOne.School__DomainSpellSchool.Id,
+      DamageScaling__DomainDice: domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice.Id,
+      School__DomainSpellSchool: domainSpell.Relationships.ManyToOne.School__DomainSpellSchool.Id,
    }
 }
