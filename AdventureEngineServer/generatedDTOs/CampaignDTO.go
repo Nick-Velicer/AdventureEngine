@@ -41,6 +41,11 @@ type CampaignDTO struct {
 
 func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTables []string) *CampaignDTO {
    
+   if (campaign == nil) {
+      print("No valid pointer passed to DTO conversion for table Campaign")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*campaign).Name())) {
       print("Hit circular catch case for table Campaign\n")
       return nil

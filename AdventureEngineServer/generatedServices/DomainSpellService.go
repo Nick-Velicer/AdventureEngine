@@ -45,3 +45,7 @@ func SaveDomainSpell(db *gorm.DB, domainSpell *types.DomainSpell) error {
    return tx.Commit().Error
 }
 
+func GetClassSpellsByDomainSpellId(db *gorm.DB, id int, ClassSpells *[]types.ClassSpell) error {
+   result := db.Table("ClassSpell").Where(map[string]interface{}{"Spell__DomainSpell": id}).Find(&ClassSpells)
+   return result.Error
+}

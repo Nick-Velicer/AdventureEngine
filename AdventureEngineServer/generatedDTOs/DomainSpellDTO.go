@@ -6,7 +6,7 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
@@ -15,6 +15,7 @@ import (
 
 type DomainSpellDTOAttributes struct {
    ConcentrationRequired *bool
+   DayDuration *float64
    Description *string
    HasSomaticRequirement *bool
    HasVerbalRequirement *bool
@@ -25,13 +26,18 @@ type DomainSpellDTOAttributes struct {
    IsActive *bool
    IsBonusAction *bool
    IsCantrip *bool
-   IsMelee *bool
-   IsRanged *bool
+   IsInstantaneous *bool
    IsRitual *bool
-   Level *float64
+   LastsUntilDispelled *bool
+   LevelRequirement *float64
    MaterialComponent *string
    MinuteCastTime *float64
+   MinuteDuration *float64
+   RangeFeet *float64
+   RangeMiles *float64
+   RequiresTouch *bool
    RoundDuration *float64
+   TargetsSelf *bool
    Title *string
 }
 
@@ -41,6 +47,7 @@ type DomainSpellDTOManyToOneRelationships struct {
 }
 
 type DomainSpellDTOOneToManyRelationships struct {
+   Classes__ClassSpell []*ClassSpellDTO
 }
 
 type DomainSpellDTORelationships struct {
@@ -58,6 +65,11 @@ type DomainSpellDTO struct {
 
 func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, traversedTables []string) *DomainSpellDTO {
    
+   if (domainSpell == nil) {
+      print("No valid pointer passed to DTO conversion for table DomainSpell")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpell).Name())) {
       print("Hit circular catch case for table DomainSpell\n")
       return nil
@@ -67,14 +79,29 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
    
    var includedDamageScaling__DomainDice types.DomainDice
    var includedSchool__DomainSpellSchool types.DomainSpellSchool
+   var includedClasses__ClassSpells []types.ClassSpell
    
-   services.GetDomainDiceById(db, int(*domainSpell.DamageScaling__DomainDice), &includedDamageScaling__DomainDice)
-   services.GetDomainSpellSchoolById(db, int(*domainSpell.School__DomainSpellSchool), &includedSchool__DomainSpellSchool)
+   if (domainSpell.DamageScaling__DomainDice != nil) {
+      services.GetDomainDiceById(db, int(*domainSpell.DamageScaling__DomainDice), &includedDamageScaling__DomainDice)
+   }
+
+   if (domainSpell.School__DomainSpellSchool != nil) {
+      services.GetDomainSpellSchoolById(db, int(*domainSpell.School__DomainSpellSchool), &includedSchool__DomainSpellSchool)
+   }
+
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedClasses__ClassSpells).Elem().Name())) {
+      services.GetClassSpellsByDomainSpellId(db, int(*domainSpell.Id), &includedClasses__ClassSpells)
+   } else {
+      includedClasses__ClassSpells = []types.ClassSpell{}
+      print("Hit circular catch case for table ClassSpell\n")
+   }
+
    
    return &DomainSpellDTO{
       Id: domainSpell.Id,
       Attributes: DomainSpellDTOAttributes{
          ConcentrationRequired: domainSpell.ConcentrationRequired,
+         DayDuration: domainSpell.DayDuration,
          Description: domainSpell.Description,
          HasSomaticRequirement: domainSpell.HasSomaticRequirement,
          HasVerbalRequirement: domainSpell.HasVerbalRequirement,
@@ -85,13 +112,18 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
          IsActive: domainSpell.IsActive,
          IsBonusAction: domainSpell.IsBonusAction,
          IsCantrip: domainSpell.IsCantrip,
-         IsMelee: domainSpell.IsMelee,
-         IsRanged: domainSpell.IsRanged,
+         IsInstantaneous: domainSpell.IsInstantaneous,
          IsRitual: domainSpell.IsRitual,
-         Level: domainSpell.Level,
+         LastsUntilDispelled: domainSpell.LastsUntilDispelled,
+         LevelRequirement: domainSpell.LevelRequirement,
          MaterialComponent: domainSpell.MaterialComponent,
          MinuteCastTime: domainSpell.MinuteCastTime,
+         MinuteDuration: domainSpell.MinuteDuration,
+         RangeFeet: domainSpell.RangeFeet,
+         RangeMiles: domainSpell.RangeMiles,
+         RequiresTouch: domainSpell.RequiresTouch,
          RoundDuration: domainSpell.RoundDuration,
+         TargetsSelf: domainSpell.TargetsSelf,
          Title: domainSpell.Title,
       },
       Relationships: DomainSpellDTORelationships{
@@ -100,6 +132,7 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
             School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchool__DomainSpellSchool, traversedTables),
          },
          OneToMany: DomainSpellDTOOneToManyRelationships {
+            Classes__ClassSpell: utils.Map(includedClasses__ClassSpells, func(relationshipElement types.ClassSpell) *ClassSpellDTO { return ClassSpellToClassSpellDTO(db, &relationshipElement, traversedTables) }),
          },
       },
    }
@@ -109,6 +142,7 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
    return types.DomainSpell{
       Id: domainSpell.Id,
       ConcentrationRequired: domainSpell.Attributes.ConcentrationRequired,
+      DayDuration: domainSpell.Attributes.DayDuration,
       Description: domainSpell.Attributes.Description,
       HasSomaticRequirement: domainSpell.Attributes.HasSomaticRequirement,
       HasVerbalRequirement: domainSpell.Attributes.HasVerbalRequirement,
@@ -119,13 +153,18 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell 
       IsActive: domainSpell.Attributes.IsActive,
       IsBonusAction: domainSpell.Attributes.IsBonusAction,
       IsCantrip: domainSpell.Attributes.IsCantrip,
-      IsMelee: domainSpell.Attributes.IsMelee,
-      IsRanged: domainSpell.Attributes.IsRanged,
+      IsInstantaneous: domainSpell.Attributes.IsInstantaneous,
       IsRitual: domainSpell.Attributes.IsRitual,
-      Level: domainSpell.Attributes.Level,
+      LastsUntilDispelled: domainSpell.Attributes.LastsUntilDispelled,
+      LevelRequirement: domainSpell.Attributes.LevelRequirement,
       MaterialComponent: domainSpell.Attributes.MaterialComponent,
       MinuteCastTime: domainSpell.Attributes.MinuteCastTime,
+      MinuteDuration: domainSpell.Attributes.MinuteDuration,
+      RangeFeet: domainSpell.Attributes.RangeFeet,
+      RangeMiles: domainSpell.Attributes.RangeMiles,
+      RequiresTouch: domainSpell.Attributes.RequiresTouch,
       RoundDuration: domainSpell.Attributes.RoundDuration,
+      TargetsSelf: domainSpell.Attributes.TargetsSelf,
       Title: domainSpell.Attributes.Title,
       DamageScaling__DomainDice: domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice.Id,
       School__DomainSpellSchool: domainSpell.Relationships.ManyToOne.School__DomainSpellSchool.Id,

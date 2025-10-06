@@ -3,9 +3,11 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"fmt"
+	"io/fs"
 	"log"
 	"os"
-	"strconv"
+	"path/filepath"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -43,6 +45,24 @@ func createDB() *gorm.DB {
 	executeMigrationFromFile(db, "./testCreates.sql")
 	executeMigrationFromFile(db, "./testInserts.sql")
 
+	migrationsPath := "./generatedMigrations"
+
+	err = filepath.WalkDir(migrationsPath, func(path string, child fs.DirEntry, err error) error {
+		if err != nil {
+			return fmt.Errorf("error accessing path %q: %w", path, err)
+		}
+
+		if !child.IsDir() {
+			executeMigrationFromFile(db, migrationsPath+"/"+child.Name())
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		log.Fatalf("Migrations could not be applied, has regenerateMigrations.py been run?")
+	}
+
 	db.Close()
 
 	returnGormDB, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
@@ -68,60 +88,11 @@ func executeMigrationFromFile(db *sql.DB, filePath string) {
 		log.Fatal(err)
 	}
 
-	rows, err := result.RowsAffected()
+	_, err = result.RowsAffected()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	log.Println("Successfully executed " + filePath + ":")
-	log.Println(strconv.FormatInt(rows, 10) + " rows affected")
-}
-
-func createTable(db *sql.DB) {
-
-	createStudentTableSQL := `CREATE TABLE student (
-		"idStudent" integer NOT NULL PRIMARY KEY AUTOINCREMENT,		
-		"code" TEXT,
-		"name" TEXT,
-		"program" TEXT		
-	  );` // SQL Statement for Create Table
-
-	log.Println("Create student table...")
-	statement, err := db.Prepare(createStudentTableSQL) // Prepare SQL Statement
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	statement.Exec() // Execute SQL Statements
-	log.Println("student table created")
-}
-
-// We are passing db reference connection from main to our method with other parameters
-func insertStudent(db *sql.DB, code string, name string, program string) {
-	log.Println("Inserting student record ...")
-	insertStudentSQL := `INSERT INTO student(code, name, program) VALUES (?, ?, ?)`
-	statement, err := db.Prepare(insertStudentSQL) // Prepare statement.
-	// This is good to avoid SQL injections
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-	_, err = statement.Exec(code, name, program)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-}
-
-func displayStudents(db *sql.DB) {
-	row, err := db.Query("SELECT * FROM student ORDER BY name")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer row.Close()
-	for row.Next() { // Iterate and fetch the records from result cursor
-		var id int
-		var code string
-		var name string
-		var program string
-		row.Scan(&id, &code, &name, &program)
-		log.Println("Student: ", code, " ", name, " ", program)
-	}
+	//log.Println(strconv.FormatInt(rows, 10) + " rows affected")
 }

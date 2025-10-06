@@ -1,4 +1,6 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
+import { ClassPrimaryAbility } from "./ClassPrimaryAbility";
+import { ClassSave } from "./ClassSave";
 import { DomainCharacterStat } from "./DomainCharacterStat";
 import { DomainDice } from "./DomainDice";
 
@@ -11,6 +13,9 @@ export type DomainClass = ExtendedSchemaObject<{
             HitDie__DomainDice: DomainDice,
             SpellcastingStat__DomainCharacterStat: DomainCharacterStat,
         },
-        OneToMany: {}
+        OneToMany: {
+            PrimaryStats__ClassPrimaryAbility: ClassPrimaryAbility[],
+            Saves__ClassSave: ClassSave[]
+        }
     }
 }>

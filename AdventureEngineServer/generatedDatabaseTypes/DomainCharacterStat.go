@@ -20,10 +20,4 @@ type DomainCharacterStat struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
-
-	// UsesAction corresponds to the JSON schema field "UsesAction".
-	UsesAction *bool `json:"UsesAction,omitempty" yaml:"UsesAction,omitempty" mapstructure:"UsesAction,omitempty"`
-
-	// UsesBonusAction corresponds to the JSON schema field "UsesBonusAction".
-	UsesBonusAction *bool `json:"UsesBonusAction,omitempty" yaml:"UsesBonusAction,omitempty" mapstructure:"UsesBonusAction,omitempty"`
 }

@@ -233,6 +233,13 @@ def produceDTOForType(tableName: str, typeMeta: dict):
             'func ' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ', traversedTables []string) *' + tableName + 'DTO {',
             *indentLineBlock([
                 '',
+                'if (' + objectArgName + ' == nil) {',
+                *indentLineBlock([
+                    'print("No valid pointer passed to DTO conversion for table ' + tableName + '")',
+                    'return nil'
+                ]),
+                '}',
+                '',
                 'if (slices.Contains(traversedTables, reflect.TypeOf(*' + objectArgName + ').Name())) {',
                 *indentLineBlock([
                     'print("Hit circular catch case for table ' + tableName + '\\n")',
@@ -245,8 +252,22 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                 *['var included' + relationship + ' types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
                 *['var included' + relationship + 's []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['oneToMany']],
                 '',
-                *['services.Get' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), &included' + relationship + ')' for relationship in typeMeta["relationships"]['manyToOne']],
-                *['services.Get' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'sBy' + tableName + 'Id(' + dbArgName + ', int(*' + tableName[0].lower() + tableName[1:] + '.Id),' + ' &included' + relationship + 's)' for relationship in typeMeta["relationships"]['oneToMany']],
+                *[
+                    #Not technically using the indentLineBlock convention, but python doesn't like the extra inner looping/unpacking so this is relatively a reasonable tradeoff
+                    'if (' + objectArgName + '.' + relationship + ' != nil) {\n' +
+                    '      services.Get' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), &included' + relationship + ')\n'  +
+                    '   }\n'
+                    for relationship in typeMeta["relationships"]['manyToOne']
+                ],
+                *[
+                    'if (slices.Contains(traversedTables, reflect.TypeOf(included' + relationship + 's).Elem().Name())) {\n' +
+                    '      services.Get' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'sBy' + tableName + 'Id(' + dbArgName + ', int(*' + tableName[0].lower() + tableName[1:] + '.Id),' + ' &included' + relationship + 's)\n'  +
+                    '   } else {\n' +
+                    '      included' + relationship + 's = []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '{}\n' +
+                    '      print("Hit circular catch case for table ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '\\n")\n' +
+                    '   }\n'
+                    for relationship in typeMeta["relationships"]['oneToMany']
+                ],
                 '',
                 'return &' + tableName + 'DTO{',
                 *indentLineBlock([
@@ -396,7 +417,12 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
     #while being able to determine the reference from the parent type (they will all be imported from the service package anyways)
     def produceServiceGetByFKMethod(tableName: str, relationshipTable: str):
 
-        foreignKeyName = [key for key in list(typeMetas[relationshipTable]['relationships']['manyToOne'].keys()) if typeMetas[relationshipTable]['relationships']['manyToOne'][key]['correspondingTable'] == tableName][0]
+        filteredForeignKeys = [key for key in list(typeMetas[relationshipTable]['relationships']['manyToOne'].keys()) if typeMetas[relationshipTable]['relationships']['manyToOne'][key]['correspondingTable'] == tableName]
+
+        if len(filteredForeignKeys) == 0:
+            return []
+
+        foreignKeyName = filteredForeignKeys[0]
     
         lines = [
             'func Get' + relationshipTable + 'sBy' + tableName + 'Id(' + dbArgName + ' *gorm.DB, id int, ' + relationshipTable  + 's *[]types.' + relationshipTable + ') error {',

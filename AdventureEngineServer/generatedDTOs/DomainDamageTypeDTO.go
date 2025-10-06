@@ -41,6 +41,11 @@ type DomainDamageTypeDTO struct {
 
 func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.DomainDamageType, traversedTables []string) *DomainDamageTypeDTO {
    
+   if (domainDamageType == nil) {
+      print("No valid pointer passed to DTO conversion for table DomainDamageType")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainDamageType).Name())) {
       print("Hit circular catch case for table DomainDamageType\n")
       return nil

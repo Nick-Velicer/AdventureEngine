@@ -5,6 +5,9 @@
 import * as CampaignService from "../../services/generated/CampaignService";
 import * as CharacterService from "../../services/generated/CharacterService";
 import * as CharacterDomainCharacterStatInstanceService from "../../services/generated/CharacterDomainCharacterStatInstanceService";
+import * as ClassPrimaryAbilityService from "../../services/generated/ClassPrimaryAbilityService";
+import * as ClassSaveService from "../../services/generated/ClassSaveService";
+import * as ClassSpellService from "../../services/generated/ClassSpellService";
 import * as DomainActionService from "../../services/generated/DomainActionService";
 import * as DomainCharacterStatService from "../../services/generated/DomainCharacterStatService";
 import * as DomainClassService from "../../services/generated/DomainClassService";
@@ -37,6 +40,21 @@ export const generatedInjectableServices = {
       getAllItems: CharacterDomainCharacterStatInstanceService.getCharacterDomainCharacterStatInstances,
       getItemById: CharacterDomainCharacterStatInstanceService.getCharacterDomainCharacterStatInstancebyId,
       saveItem: CharacterDomainCharacterStatInstanceService.saveCharacterDomainCharacterStatInstance
+   },
+   ClassPrimaryAbility: {
+      getAllItems: ClassPrimaryAbilityService.getClassPrimaryAbilitys,
+      getItemById: ClassPrimaryAbilityService.getClassPrimaryAbilitybyId,
+      saveItem: ClassPrimaryAbilityService.saveClassPrimaryAbility
+   },
+   ClassSave: {
+      getAllItems: ClassSaveService.getClassSaves,
+      getItemById: ClassSaveService.getClassSavebyId,
+      saveItem: ClassSaveService.saveClassSave
+   },
+   ClassSpell: {
+      getAllItems: ClassSpellService.getClassSpells,
+      getItemById: ClassSpellService.getClassSpellbyId,
+      saveItem: ClassSpellService.saveClassSpell
    },
    DomainAction: {
       getAllItems: DomainActionService.getDomainActions,

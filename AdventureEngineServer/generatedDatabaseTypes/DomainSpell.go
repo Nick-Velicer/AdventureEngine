@@ -3,6 +3,8 @@
 package generatedDatabaseTypes
 
 type DomainSpell struct {
+	// ClassesClassSpell corresponds to the JSON schema field "Classes__ClassSpell".
+
 	// ConcentrationRequired corresponds to the JSON schema field
 	// "ConcentrationRequired".
 	ConcentrationRequired *bool `json:"ConcentrationRequired,omitempty" yaml:"ConcentrationRequired,omitempty" mapstructure:"ConcentrationRequired,omitempty"`
@@ -10,6 +12,9 @@ type DomainSpell struct {
 	// DamageScalingDomainDice corresponds to the JSON schema field
 	// "DamageScaling__DomainDice".
 	DamageScaling__DomainDice *float64 `json:"DamageScaling__DomainDice,omitempty" yaml:"DamageScaling__DomainDice,omitempty" mapstructure:"DamageScaling__DomainDice,omitempty"`
+
+	// DayDuration corresponds to the JSON schema field "DayDuration".
+	DayDuration *float64 `json:"DayDuration,omitempty" yaml:"DayDuration,omitempty" mapstructure:"DayDuration,omitempty"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
@@ -43,17 +48,17 @@ type DomainSpell struct {
 	// IsCantrip corresponds to the JSON schema field "IsCantrip".
 	IsCantrip *bool `json:"IsCantrip,omitempty" yaml:"IsCantrip,omitempty" mapstructure:"IsCantrip,omitempty"`
 
-	// IsMelee corresponds to the JSON schema field "IsMelee".
-	IsMelee *bool `json:"IsMelee,omitempty" yaml:"IsMelee,omitempty" mapstructure:"IsMelee,omitempty"`
-
-	// IsRanged corresponds to the JSON schema field "IsRanged".
-	IsRanged *bool `json:"IsRanged,omitempty" yaml:"IsRanged,omitempty" mapstructure:"IsRanged,omitempty"`
+	// IsInstantaneous corresponds to the JSON schema field "IsInstantaneous".
+	IsInstantaneous *bool `json:"IsInstantaneous,omitempty" yaml:"IsInstantaneous,omitempty" mapstructure:"IsInstantaneous,omitempty"`
 
 	// IsRitual corresponds to the JSON schema field "IsRitual".
 	IsRitual *bool `json:"IsRitual,omitempty" yaml:"IsRitual,omitempty" mapstructure:"IsRitual,omitempty"`
 
-	// Level corresponds to the JSON schema field "Level".
-	Level *float64 `json:"Level,omitempty" yaml:"Level,omitempty" mapstructure:"Level,omitempty"`
+	// LastsUntilDispelled corresponds to the JSON schema field "LastsUntilDispelled".
+	LastsUntilDispelled *bool `json:"LastsUntilDispelled,omitempty" yaml:"LastsUntilDispelled,omitempty" mapstructure:"LastsUntilDispelled,omitempty"`
+
+	// LevelRequirement corresponds to the JSON schema field "LevelRequirement".
+	LevelRequirement *float64 `json:"LevelRequirement,omitempty" yaml:"LevelRequirement,omitempty" mapstructure:"LevelRequirement,omitempty"`
 
 	// MaterialComponent corresponds to the JSON schema field "MaterialComponent".
 	MaterialComponent *string `json:"MaterialComponent,omitempty" yaml:"MaterialComponent,omitempty" mapstructure:"MaterialComponent,omitempty"`
@@ -61,12 +66,27 @@ type DomainSpell struct {
 	// MinuteCastTime corresponds to the JSON schema field "MinuteCastTime".
 	MinuteCastTime *float64 `json:"MinuteCastTime,omitempty" yaml:"MinuteCastTime,omitempty" mapstructure:"MinuteCastTime,omitempty"`
 
+	// MinuteDuration corresponds to the JSON schema field "MinuteDuration".
+	MinuteDuration *float64 `json:"MinuteDuration,omitempty" yaml:"MinuteDuration,omitempty" mapstructure:"MinuteDuration,omitempty"`
+
+	// RangeFeet corresponds to the JSON schema field "RangeFeet".
+	RangeFeet *float64 `json:"RangeFeet,omitempty" yaml:"RangeFeet,omitempty" mapstructure:"RangeFeet,omitempty"`
+
+	// RangeMiles corresponds to the JSON schema field "RangeMiles".
+	RangeMiles *float64 `json:"RangeMiles,omitempty" yaml:"RangeMiles,omitempty" mapstructure:"RangeMiles,omitempty"`
+
+	// RequiresTouch corresponds to the JSON schema field "RequiresTouch".
+	RequiresTouch *bool `json:"RequiresTouch,omitempty" yaml:"RequiresTouch,omitempty" mapstructure:"RequiresTouch,omitempty"`
+
 	// RoundDuration corresponds to the JSON schema field "RoundDuration".
 	RoundDuration *float64 `json:"RoundDuration,omitempty" yaml:"RoundDuration,omitempty" mapstructure:"RoundDuration,omitempty"`
 
 	// SchoolDomainSpellSchool corresponds to the JSON schema field
 	// "School__DomainSpellSchool".
 	School__DomainSpellSchool *float64 `json:"School__DomainSpellSchool,omitempty" yaml:"School__DomainSpellSchool,omitempty" mapstructure:"School__DomainSpellSchool,omitempty"`
+
+	// TargetsSelf corresponds to the JSON schema field "TargetsSelf".
+	TargetsSelf *bool `json:"TargetsSelf,omitempty" yaml:"TargetsSelf,omitempty" mapstructure:"TargetsSelf,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

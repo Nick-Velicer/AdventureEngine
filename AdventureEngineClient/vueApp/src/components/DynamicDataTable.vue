@@ -39,7 +39,7 @@ console.log(query.value);
         </div>
         <n-data-table
             :columns="query?.data?.value?.length > 0? Object.keys(flattenSchemaObject(query.data.value[0])).map(columnName => ({
-                title: columnName,
+                title: columnName.replace('__', ': ').split(/(?=[A-Z])/).join(' '),
                 key: columnName
             })) : []"
             :data="query?.data?.value?.length > 0? query.data.value.map(object => flattenSchemaObject(object)) : []"

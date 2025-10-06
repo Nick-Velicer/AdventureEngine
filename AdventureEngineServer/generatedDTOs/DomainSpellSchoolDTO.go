@@ -41,6 +41,11 @@ type DomainSpellSchoolDTO struct {
 
 func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *types.DomainSpellSchool, traversedTables []string) *DomainSpellSchoolDTO {
    
+   if (domainSpellSchool == nil) {
+      print("No valid pointer passed to DTO conversion for table DomainSpellSchool")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpellSchool).Name())) {
       print("Hit circular catch case for table DomainSpellSchool\n")
       return nil

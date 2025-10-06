@@ -43,6 +43,11 @@ type CharacterDomainCharacterStatInstanceDTO struct {
 
 func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance, traversedTables []string) *CharacterDomainCharacterStatInstanceDTO {
    
+   if (characterDomainCharacterStatInstance == nil) {
+      print("No valid pointer passed to DTO conversion for table CharacterDomainCharacterStatInstance")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())) {
       print("Hit circular catch case for table CharacterDomainCharacterStatInstance\n")
       return nil
@@ -53,8 +58,14 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
    var includedCharacter__Character types.Character
    var includedStatInstance__DomainCharacterStat types.DomainCharacterStat
    
-   services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), &includedCharacter__Character)
-   services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.StatInstance__DomainCharacterStat), &includedStatInstance__DomainCharacterStat)
+   if (characterDomainCharacterStatInstance.Character__Character != nil) {
+      services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), &includedCharacter__Character)
+   }
+
+   if (characterDomainCharacterStatInstance.StatInstance__DomainCharacterStat != nil) {
+      services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.StatInstance__DomainCharacterStat), &includedStatInstance__DomainCharacterStat)
+   }
+
    
    return &CharacterDomainCharacterStatInstanceDTO{
       Id: characterDomainCharacterStatInstance.Id,

@@ -15,6 +15,11 @@ type DomainClass struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
+	// PrimaryStatsClassPrimaryAbility corresponds to the JSON schema field
+	// "PrimaryStats__ClassPrimaryAbility".
+
+	// SavesClassSave corresponds to the JSON schema field "Saves__ClassSave".
+
 	// SpellcastingStatDomainCharacterStat corresponds to the JSON schema field
 	// "SpellcastingStat__DomainCharacterStat".
 	SpellcastingStat__DomainCharacterStat *float64 `json:"SpellcastingStat__DomainCharacterStat,omitempty" yaml:"SpellcastingStat__DomainCharacterStat,omitempty" mapstructure:"SpellcastingStat__DomainCharacterStat,omitempty"`

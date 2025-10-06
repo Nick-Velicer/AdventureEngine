@@ -46,6 +46,11 @@ type CharacterDTO struct {
 
 func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedTables []string) *CharacterDTO {
    
+   if (character == nil) {
+      print("No valid pointer passed to DTO conversion for table Character")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*character).Name())) {
       print("Hit circular catch case for table Character\n")
       return nil
@@ -59,11 +64,29 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
    var includedSubclass__DomainSubClass types.DomainSubClass
    var includedStats__CharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
    
-   services.GetCampaignById(db, int(*character.Campaign__Campaign), &includedCampaign__Campaign)
-   services.GetDomainSizeById(db, int(*character.CurrentSize__DomainSize), &includedCurrentSize__DomainSize)
-   services.GetDomainSpeciesById(db, int(*character.Species__DomainSpecies), &includedSpecies__DomainSpecies)
-   services.GetDomainSubClassById(db, int(*character.Subclass__DomainSubClass), &includedSubclass__DomainSubClass)
-   services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStats__CharacterDomainCharacterStatInstances)
+   if (character.Campaign__Campaign != nil) {
+      services.GetCampaignById(db, int(*character.Campaign__Campaign), &includedCampaign__Campaign)
+   }
+
+   if (character.CurrentSize__DomainSize != nil) {
+      services.GetDomainSizeById(db, int(*character.CurrentSize__DomainSize), &includedCurrentSize__DomainSize)
+   }
+
+   if (character.Species__DomainSpecies != nil) {
+      services.GetDomainSpeciesById(db, int(*character.Species__DomainSpecies), &includedSpecies__DomainSpecies)
+   }
+
+   if (character.Subclass__DomainSubClass != nil) {
+      services.GetDomainSubClassById(db, int(*character.Subclass__DomainSubClass), &includedSubclass__DomainSubClass)
+   }
+
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedStats__CharacterDomainCharacterStatInstances).Elem().Name())) {
+      services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStats__CharacterDomainCharacterStatInstances)
+   } else {
+      includedStats__CharacterDomainCharacterStatInstances = []types.CharacterDomainCharacterStatInstance{}
+      print("Hit circular catch case for table CharacterDomainCharacterStatInstance\n")
+   }
+
    
    return &CharacterDTO{
       Id: character.Id,

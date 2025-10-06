@@ -42,6 +42,11 @@ type DomainSpeciesDTO struct {
 
 func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies, traversedTables []string) *DomainSpeciesDTO {
    
+   if (domainSpecies == nil) {
+      print("No valid pointer passed to DTO conversion for table DomainSpecies")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpecies).Name())) {
       print("Hit circular catch case for table DomainSpecies\n")
       return nil
@@ -51,7 +56,10 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
    
    var includedCreatureType__DomainCreatureType types.DomainCreatureType
    
-   services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureType__DomainCreatureType), &includedCreatureType__DomainCreatureType)
+   if (domainSpecies.CreatureType__DomainCreatureType != nil) {
+      services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureType__DomainCreatureType), &includedCreatureType__DomainCreatureType)
+   }
+
    
    return &DomainSpeciesDTO{
       Id: domainSpecies.Id,

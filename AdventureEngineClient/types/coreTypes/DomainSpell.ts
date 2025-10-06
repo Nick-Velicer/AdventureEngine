@@ -1,4 +1,5 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
+import { ClassSpell } from "./ClassSpell";
 import { DomainDice } from "./DomainDice";
 import { DomainSpellSchool } from "./DomainSpellSchool";
 
@@ -7,14 +8,20 @@ export type DomainSpell = ExtendedSchemaObject<{
         MaterialComponent?: string
         HasSomaticRequirement?: boolean
         HasVerbalRequirement?: boolean
-        IsRanged?: boolean
-        IsMelee?: boolean
+        RangeFeet?: number
+        RangeMiles?: number
+        RequiresTouch?: boolean
+        TargetsSelf?: boolean
         IsRitual?: boolean
         ConcentrationRequired?: boolean
+        IsInstantaneous?: boolean
         RoundDuration?: number
+        MinuteDuration?: number
         HourDuration?: number
+        DayDuration?: number
+        LastsUntilDispelled?: boolean
         IsCantrip?: boolean
-        Level?: number
+        LevelRequirement?: number
         IsAction?: boolean
         IsBonusAction?: boolean
         MinuteCastTime?: number
@@ -25,6 +32,8 @@ export type DomainSpell = ExtendedSchemaObject<{
             School__DomainSpellSchool?: DomainSpellSchool
             DamageScaling__DomainDice?: DomainDice
         },
-        OneToMany: {}
+        OneToMany: {
+            Classes__ClassSpell: ClassSpell[]
+        }
     }
 }>

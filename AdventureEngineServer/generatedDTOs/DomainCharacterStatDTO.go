@@ -20,8 +20,6 @@ type DomainCharacterStatDTOAttributes struct {
    IsActive *bool
    IsBaseStat bool
    Title *string
-   UsesAction *bool
-   UsesBonusAction *bool
 }
 
 type DomainCharacterStatDTOManyToOneRelationships struct {
@@ -45,6 +43,11 @@ type DomainCharacterStatDTO struct {
 
 func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterStat *types.DomainCharacterStat, traversedTables []string) *DomainCharacterStatDTO {
    
+   if (domainCharacterStat == nil) {
+      print("No valid pointer passed to DTO conversion for table DomainCharacterStat")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainCharacterStat).Name())) {
       print("Hit circular catch case for table DomainCharacterStat\n")
       return nil
@@ -63,8 +66,6 @@ func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterSta
          IsActive: domainCharacterStat.IsActive,
          IsBaseStat: domainCharacterStat.IsBaseStat,
          Title: domainCharacterStat.Title,
-         UsesAction: domainCharacterStat.UsesAction,
-         UsesBonusAction: domainCharacterStat.UsesBonusAction,
       },
       Relationships: DomainCharacterStatDTORelationships{
          ManyToOne: DomainCharacterStatDTOManyToOneRelationships {
@@ -84,7 +85,5 @@ func DomainCharacterStatDTOToDomainCharacterStat(domainCharacterStat *DomainChar
       IsActive: domainCharacterStat.Attributes.IsActive,
       IsBaseStat: domainCharacterStat.Attributes.IsBaseStat,
       Title: domainCharacterStat.Attributes.Title,
-      UsesAction: domainCharacterStat.Attributes.UsesAction,
-      UsesBonusAction: domainCharacterStat.Attributes.UsesBonusAction,
    }
 }

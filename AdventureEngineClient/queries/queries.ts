@@ -57,6 +57,42 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.CharacterDomainCharacterStatInstance.getItemById(id)
          });
       },
+      useGetClassPrimaryAbilitysQuery: () => queryHandler({
+         key: ["getClassPrimaryAbilitys"],
+         query: () => services.ClassPrimaryAbility.getAllItems()
+      }),
+      useGetClassPrimaryAbilityByIdQuery: (id: number) => {
+         //For some reason queries with args does not work without the extra function body/return.
+         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
+         return queryHandler({
+            key: ["getClassPrimaryAbilityById", id.toString()],
+            query: () => services.ClassPrimaryAbility.getItemById(id)
+         });
+      },
+      useGetClassSavesQuery: () => queryHandler({
+         key: ["getClassSaves"],
+         query: () => services.ClassSave.getAllItems()
+      }),
+      useGetClassSaveByIdQuery: (id: number) => {
+         //For some reason queries with args does not work without the extra function body/return.
+         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
+         return queryHandler({
+            key: ["getClassSaveById", id.toString()],
+            query: () => services.ClassSave.getItemById(id)
+         });
+      },
+      useGetClassSpellsQuery: () => queryHandler({
+         key: ["getClassSpells"],
+         query: () => services.ClassSpell.getAllItems()
+      }),
+      useGetClassSpellByIdQuery: (id: number) => {
+         //For some reason queries with args does not work without the extra function body/return.
+         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
+         return queryHandler({
+            key: ["getClassSpellById", id.toString()],
+            query: () => services.ClassSpell.getItemById(id)
+         });
+      },
       useGetDomainActionsQuery: () => queryHandler({
          key: ["getDomainActions"],
          query: () => services.DomainAction.getAllItems()

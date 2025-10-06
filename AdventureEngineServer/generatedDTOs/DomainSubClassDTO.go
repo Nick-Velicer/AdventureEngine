@@ -42,6 +42,11 @@ type DomainSubClassDTO struct {
 
 func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass, traversedTables []string) *DomainSubClassDTO {
    
+   if (domainSubClass == nil) {
+      print("No valid pointer passed to DTO conversion for table DomainSubClass")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainSubClass).Name())) {
       print("Hit circular catch case for table DomainSubClass\n")
       return nil
@@ -51,7 +56,10 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
    
    var includedParentClass__DomainClass types.DomainClass
    
-   services.GetDomainClassById(db, int(*domainSubClass.ParentClass__DomainClass), &includedParentClass__DomainClass)
+   if (domainSubClass.ParentClass__DomainClass != nil) {
+      services.GetDomainClassById(db, int(*domainSubClass.ParentClass__DomainClass), &includedParentClass__DomainClass)
+   }
+
    
    return &DomainSubClassDTO{
       Id: domainSubClass.Id,

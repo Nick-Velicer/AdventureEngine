@@ -41,6 +41,11 @@ type DomainDiceRollTypeDTO struct {
 
 func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType, traversedTables []string) *DomainDiceRollTypeDTO {
    
+   if (domainDiceRollType == nil) {
+      print("No valid pointer passed to DTO conversion for table DomainDiceRollType")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainDiceRollType).Name())) {
       print("Hit circular catch case for table DomainDiceRollType\n")
       return nil

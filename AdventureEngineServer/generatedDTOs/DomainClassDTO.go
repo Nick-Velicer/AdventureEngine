@@ -6,7 +6,7 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
@@ -26,6 +26,8 @@ type DomainClassDTOManyToOneRelationships struct {
 }
 
 type DomainClassDTOOneToManyRelationships struct {
+   PrimaryStats__ClassPrimaryAbility []*ClassPrimaryAbilityDTO
+   Saves__ClassSave []*ClassSaveDTO
 }
 
 type DomainClassDTORelationships struct {
@@ -43,6 +45,11 @@ type DomainClassDTO struct {
 
 func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, traversedTables []string) *DomainClassDTO {
    
+   if (domainClass == nil) {
+      print("No valid pointer passed to DTO conversion for table DomainClass")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainClass).Name())) {
       print("Hit circular catch case for table DomainClass\n")
       return nil
@@ -52,9 +59,31 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
    
    var includedHitDie__DomainDice types.DomainDice
    var includedSpellcastingStat__DomainCharacterStat types.DomainCharacterStat
+   var includedPrimaryStats__ClassPrimaryAbilitys []types.ClassPrimaryAbility
+   var includedSaves__ClassSaves []types.ClassSave
    
-   services.GetDomainDiceById(db, int(*domainClass.HitDie__DomainDice), &includedHitDie__DomainDice)
-   services.GetDomainCharacterStatById(db, int(*domainClass.SpellcastingStat__DomainCharacterStat), &includedSpellcastingStat__DomainCharacterStat)
+   if (domainClass.HitDie__DomainDice != nil) {
+      services.GetDomainDiceById(db, int(*domainClass.HitDie__DomainDice), &includedHitDie__DomainDice)
+   }
+
+   if (domainClass.SpellcastingStat__DomainCharacterStat != nil) {
+      services.GetDomainCharacterStatById(db, int(*domainClass.SpellcastingStat__DomainCharacterStat), &includedSpellcastingStat__DomainCharacterStat)
+   }
+
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedPrimaryStats__ClassPrimaryAbilitys).Elem().Name())) {
+      services.GetClassPrimaryAbilitysByDomainClassId(db, int(*domainClass.Id), &includedPrimaryStats__ClassPrimaryAbilitys)
+   } else {
+      includedPrimaryStats__ClassPrimaryAbilitys = []types.ClassPrimaryAbility{}
+      print("Hit circular catch case for table ClassPrimaryAbility\n")
+   }
+
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedSaves__ClassSaves).Elem().Name())) {
+      services.GetClassSavesByDomainClassId(db, int(*domainClass.Id), &includedSaves__ClassSaves)
+   } else {
+      includedSaves__ClassSaves = []types.ClassSave{}
+      print("Hit circular catch case for table ClassSave\n")
+   }
+
    
    return &DomainClassDTO{
       Id: domainClass.Id,
@@ -70,6 +99,8 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
             SpellcastingStat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: DomainClassDTOOneToManyRelationships {
+            PrimaryStats__ClassPrimaryAbility: utils.Map(includedPrimaryStats__ClassPrimaryAbilitys, func(relationshipElement types.ClassPrimaryAbility) *ClassPrimaryAbilityDTO { return ClassPrimaryAbilityToClassPrimaryAbilityDTO(db, &relationshipElement, traversedTables) }),
+            Saves__ClassSave: utils.Map(includedSaves__ClassSaves, func(relationshipElement types.ClassSave) *ClassSaveDTO { return ClassSaveToClassSaveDTO(db, &relationshipElement, traversedTables) }),
          },
       },
    }

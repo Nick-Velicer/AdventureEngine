@@ -41,6 +41,11 @@ type DomainStaticEffectDTO struct {
 
 func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect, traversedTables []string) *DomainStaticEffectDTO {
    
+   if (domainStaticEffect == nil) {
+      print("No valid pointer passed to DTO conversion for table DomainStaticEffect")
+      return nil
+   }
+   
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainStaticEffect).Name())) {
       print("Hit circular catch case for table DomainStaticEffect\n")
       return nil
