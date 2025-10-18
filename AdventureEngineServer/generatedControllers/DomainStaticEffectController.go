@@ -50,13 +50,25 @@ func GetDomainStaticEffectById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainStaticEffect(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainStaticEffectDTO
    var serviceBuffer types.DomainStaticEffect
-   err := services.SaveDomainStaticEffect(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainStaticEffectDTOToDomainStaticEffect(&DTOBuffer)
+   
+   if err := services.SaveDomainStaticEffect(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainStaticEffectToDomainStaticEffectDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

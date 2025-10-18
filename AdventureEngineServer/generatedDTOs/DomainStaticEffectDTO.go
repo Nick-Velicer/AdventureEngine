@@ -42,7 +42,7 @@ type DomainStaticEffectDTO struct {
 func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect, traversedTables []string) *DomainStaticEffectDTO {
    
    if (domainStaticEffect == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainStaticEffect")
+      print("Nil pointer passed to DTO conversion for table DomainStaticEffect")
       return nil
    }
    
@@ -73,11 +73,13 @@ func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *
 }
 
 func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticEffectDTO) types.DomainStaticEffect {
-   return types.DomainStaticEffect{
-      Id: domainStaticEffect.Id,
-      Description: domainStaticEffect.Attributes.Description,
-      
-      IsActive: domainStaticEffect.Attributes.IsActive,
-      Title: domainStaticEffect.Attributes.Title,
-   }
+   var tableTypeBuffer types.DomainStaticEffect
+   
+   tableTypeBuffer.Id = domainStaticEffect.Id
+   tableTypeBuffer.Description = domainStaticEffect.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainStaticEffect.Attributes.IsActive
+   tableTypeBuffer.Title = domainStaticEffect.Attributes.Title
+   
+   return tableTypeBuffer
 }

@@ -50,13 +50,25 @@ func GetCharacterById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveCharacter(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.CharacterDTO
    var serviceBuffer types.Character
-   err := services.SaveCharacter(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.CharacterDTOToCharacter(&DTOBuffer)
+   
+   if err := services.SaveCharacter(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.CharacterToCharacterDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

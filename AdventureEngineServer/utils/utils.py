@@ -145,5 +145,5 @@ def produceDatabaseTargetType(baseFileName: str, typeMeta: list):
         #which gets around things like CampaignCampaign being turned into __Campaign__Campaign
         fileContent = fileContent.replace(correspondingTable + " *", "__" + correspondingTable + " *")
 
-    return fileContent.replace("Json", "").replace("goTypeBase", "generatedDatabaseTypes")
+    return fileContent.replace("Json", "").replace("goTypeBase", "generatedDatabaseTypes").replace('yaml:"', 'gorm:"column:').replace(",omitempty", "").replace("column:Id", "primaryKey;column:Id")
 

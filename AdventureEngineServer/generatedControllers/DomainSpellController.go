@@ -50,13 +50,25 @@ func GetDomainSpellById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainSpell(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainSpellDTO
    var serviceBuffer types.DomainSpell
-   err := services.SaveDomainSpell(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainSpellDTOToDomainSpell(&DTOBuffer)
+   
+   if err := services.SaveDomainSpell(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainSpellToDomainSpellDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

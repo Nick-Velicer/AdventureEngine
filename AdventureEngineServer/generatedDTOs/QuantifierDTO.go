@@ -70,7 +70,7 @@ type QuantifierDTO struct {
 func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traversedTables []string) *QuantifierDTO {
    
    if (quantifier == nil) {
-      print("No valid pointer passed to DTO conversion for table Quantifier")
+      print("Nil pointer passed to DTO conversion for table Quantifier")
       return nil
    }
    
@@ -164,39 +164,62 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
 }
 
 func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) types.Quantifier {
-   return types.Quantifier{
-      Id: quantifier.Id,
-      Delta: quantifier.Attributes.Delta,
-      Description: quantifier.Attributes.Description,
-      
-      ImpactsSelf: quantifier.Attributes.ImpactsSelf,
-      IntoInventory: quantifier.Attributes.IntoInventory,
-      IsAction: quantifier.Attributes.IsAction,
-      IsActive: quantifier.Attributes.IsActive,
-      IsBonusAction: quantifier.Attributes.IsBonusAction,
-      Level1SpellSlots: quantifier.Attributes.Level1SpellSlots,
-      Level2SpellSlots: quantifier.Attributes.Level2SpellSlots,
-      Level3SpellSlots: quantifier.Attributes.Level3SpellSlots,
-      Level4SpellSlots: quantifier.Attributes.Level4SpellSlots,
-      Level5SpellSlots: quantifier.Attributes.Level5SpellSlots,
-      Level6SpellSlots: quantifier.Attributes.Level6SpellSlots,
-      Level7SpellSlots: quantifier.Attributes.Level7SpellSlots,
-      Level8SpellSlots: quantifier.Attributes.Level8SpellSlots,
-      Level9SpellSlots: quantifier.Attributes.Level9SpellSlots,
-      LevelMaximumRequirement: quantifier.Attributes.LevelMaximumRequirement,
-      LevelMinimumRequirement: quantifier.Attributes.LevelMinimumRequirement,
-      Quantity: quantifier.Attributes.Quantity,
-      RefreshOnLongRest: quantifier.Attributes.RefreshOnLongRest,
-      RefreshOnShortRest: quantifier.Attributes.RefreshOnShortRest,
-      Title: quantifier.Attributes.Title,
-      UntilLongRest: quantifier.Attributes.UntilLongRest,
-      UntilShortRest: quantifier.Attributes.UntilShortRest,
-      AddedSpell__DomainSpell: quantifier.Relationships.ManyToOne.AddedSpell__DomainSpell.Id,
-      Condition__DomainCondition: quantifier.Relationships.ManyToOne.Condition__DomainCondition.Id,
-      DamageType__DomainDamageType: quantifier.Relationships.ManyToOne.DamageType__DomainDamageType.Id,
-      Effect__DomainStaticEffect: quantifier.Relationships.ManyToOne.Effect__DomainStaticEffect.Id,
-      ResistanceType__DomainDamageType: quantifier.Relationships.ManyToOne.ResistanceType__DomainDamageType.Id,
-      Save__DomainCharacterStat: quantifier.Relationships.ManyToOne.Save__DomainCharacterStat.Id,
-      Target__DomainCharacterStat: quantifier.Relationships.ManyToOne.Target__DomainCharacterStat.Id,
+   var tableTypeBuffer types.Quantifier
+   
+   tableTypeBuffer.Id = quantifier.Id
+   tableTypeBuffer.Delta = quantifier.Attributes.Delta
+   tableTypeBuffer.Description = quantifier.Attributes.Description
+   
+   tableTypeBuffer.ImpactsSelf = quantifier.Attributes.ImpactsSelf
+   tableTypeBuffer.IntoInventory = quantifier.Attributes.IntoInventory
+   tableTypeBuffer.IsAction = quantifier.Attributes.IsAction
+   tableTypeBuffer.IsActive = quantifier.Attributes.IsActive
+   tableTypeBuffer.IsBonusAction = quantifier.Attributes.IsBonusAction
+   tableTypeBuffer.Level1SpellSlots = quantifier.Attributes.Level1SpellSlots
+   tableTypeBuffer.Level2SpellSlots = quantifier.Attributes.Level2SpellSlots
+   tableTypeBuffer.Level3SpellSlots = quantifier.Attributes.Level3SpellSlots
+   tableTypeBuffer.Level4SpellSlots = quantifier.Attributes.Level4SpellSlots
+   tableTypeBuffer.Level5SpellSlots = quantifier.Attributes.Level5SpellSlots
+   tableTypeBuffer.Level6SpellSlots = quantifier.Attributes.Level6SpellSlots
+   tableTypeBuffer.Level7SpellSlots = quantifier.Attributes.Level7SpellSlots
+   tableTypeBuffer.Level8SpellSlots = quantifier.Attributes.Level8SpellSlots
+   tableTypeBuffer.Level9SpellSlots = quantifier.Attributes.Level9SpellSlots
+   tableTypeBuffer.LevelMaximumRequirement = quantifier.Attributes.LevelMaximumRequirement
+   tableTypeBuffer.LevelMinimumRequirement = quantifier.Attributes.LevelMinimumRequirement
+   tableTypeBuffer.Quantity = quantifier.Attributes.Quantity
+   tableTypeBuffer.RefreshOnLongRest = quantifier.Attributes.RefreshOnLongRest
+   tableTypeBuffer.RefreshOnShortRest = quantifier.Attributes.RefreshOnShortRest
+   tableTypeBuffer.Title = quantifier.Attributes.Title
+   tableTypeBuffer.UntilLongRest = quantifier.Attributes.UntilLongRest
+   tableTypeBuffer.UntilShortRest = quantifier.Attributes.UntilShortRest
+   
+   if (quantifier.Relationships.ManyToOne.AddedSpell__DomainSpell != nil) {
+      tableTypeBuffer.AddedSpell__DomainSpell = quantifier.Relationships.ManyToOne.AddedSpell__DomainSpell.Id
    }
+
+   if (quantifier.Relationships.ManyToOne.Condition__DomainCondition != nil) {
+      tableTypeBuffer.Condition__DomainCondition = quantifier.Relationships.ManyToOne.Condition__DomainCondition.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.DamageType__DomainDamageType != nil) {
+      tableTypeBuffer.DamageType__DomainDamageType = quantifier.Relationships.ManyToOne.DamageType__DomainDamageType.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Effect__DomainStaticEffect != nil) {
+      tableTypeBuffer.Effect__DomainStaticEffect = quantifier.Relationships.ManyToOne.Effect__DomainStaticEffect.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.ResistanceType__DomainDamageType != nil) {
+      tableTypeBuffer.ResistanceType__DomainDamageType = quantifier.Relationships.ManyToOne.ResistanceType__DomainDamageType.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Save__DomainCharacterStat != nil) {
+      tableTypeBuffer.Save__DomainCharacterStat = quantifier.Relationships.ManyToOne.Save__DomainCharacterStat.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainCharacterStat != nil) {
+      tableTypeBuffer.Target__DomainCharacterStat = quantifier.Relationships.ManyToOne.Target__DomainCharacterStat.Id
+   }
+
+   return tableTypeBuffer
 }

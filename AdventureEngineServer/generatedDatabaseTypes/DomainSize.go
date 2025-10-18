@@ -4,23 +4,23 @@ package generatedDatabaseTypes
 
 type DomainSize struct {
 	// BaseHexArea corresponds to the JSON schema field "BaseHexArea".
-	BaseHexArea float64 `json:"BaseHexArea" yaml:"BaseHexArea" mapstructure:"BaseHexArea"`
+	BaseHexArea float64 `json:"BaseHexArea" gorm:"column:BaseHexArea" mapstructure:"BaseHexArea"`
 
 	// BaseTileArea corresponds to the JSON schema field "BaseTileArea".
-	BaseTileArea float64 `json:"BaseTileArea" yaml:"BaseTileArea" mapstructure:"BaseTileArea"`
+	BaseTileArea float64 `json:"BaseTileArea" gorm:"column:BaseTileArea" mapstructure:"BaseTileArea"`
 
 	// Description corresponds to the JSON schema field "Description".
-	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
-	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// SizeOrder corresponds to the JSON schema field "SizeOrder".
-	SizeOrder float64 `json:"SizeOrder" yaml:"SizeOrder" mapstructure:"SizeOrder"`
+	SizeOrder float64 `json:"SizeOrder" gorm:"column:SizeOrder" mapstructure:"SizeOrder"`
 
 	// Title corresponds to the JSON schema field "Title".
-	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 }

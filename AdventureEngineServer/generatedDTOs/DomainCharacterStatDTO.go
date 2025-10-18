@@ -44,7 +44,7 @@ type DomainCharacterStatDTO struct {
 func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterStat *types.DomainCharacterStat, traversedTables []string) *DomainCharacterStatDTO {
    
    if (domainCharacterStat == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainCharacterStat")
+      print("Nil pointer passed to DTO conversion for table DomainCharacterStat")
       return nil
    }
    
@@ -77,13 +77,15 @@ func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterSta
 }
 
 func DomainCharacterStatDTOToDomainCharacterStat(domainCharacterStat *DomainCharacterStatDTO) types.DomainCharacterStat {
-   return types.DomainCharacterStat{
-      Id: domainCharacterStat.Id,
-      Abbreviation: domainCharacterStat.Attributes.Abbreviation,
-      Description: domainCharacterStat.Attributes.Description,
-      
-      IsActive: domainCharacterStat.Attributes.IsActive,
-      IsBaseStat: domainCharacterStat.Attributes.IsBaseStat,
-      Title: domainCharacterStat.Attributes.Title,
-   }
+   var tableTypeBuffer types.DomainCharacterStat
+   
+   tableTypeBuffer.Id = domainCharacterStat.Id
+   tableTypeBuffer.Abbreviation = domainCharacterStat.Attributes.Abbreviation
+   tableTypeBuffer.Description = domainCharacterStat.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainCharacterStat.Attributes.IsActive
+   tableTypeBuffer.IsBaseStat = domainCharacterStat.Attributes.IsBaseStat
+   tableTypeBuffer.Title = domainCharacterStat.Attributes.Title
+   
+   return tableTypeBuffer
 }

@@ -50,13 +50,25 @@ func GetDomainCreatureTypeById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainCreatureType(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainCreatureTypeDTO
    var serviceBuffer types.DomainCreatureType
-   err := services.SaveDomainCreatureType(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainCreatureTypeDTOToDomainCreatureType(&DTOBuffer)
+   
+   if err := services.SaveDomainCreatureType(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

@@ -7,87 +7,87 @@ type DomainSpell struct {
 
 	// ConcentrationRequired corresponds to the JSON schema field
 	// "ConcentrationRequired".
-	ConcentrationRequired *bool `json:"ConcentrationRequired,omitempty" yaml:"ConcentrationRequired,omitempty" mapstructure:"ConcentrationRequired,omitempty"`
+	ConcentrationRequired *bool `json:"ConcentrationRequired" gorm:"column:ConcentrationRequired" mapstructure:"ConcentrationRequired"`
 
 	// DamageScalingDomainDice corresponds to the JSON schema field
 	// "DamageScaling__DomainDice".
-	DamageScaling__DomainDice *float64 `json:"DamageScaling__DomainDice,omitempty" yaml:"DamageScaling__DomainDice,omitempty" mapstructure:"DamageScaling__DomainDice,omitempty"`
+	DamageScaling__DomainDice *float64 `json:"DamageScaling__DomainDice" gorm:"column:DamageScaling__DomainDice" mapstructure:"DamageScaling__DomainDice"`
 
 	// DayDuration corresponds to the JSON schema field "DayDuration".
-	DayDuration *float64 `json:"DayDuration,omitempty" yaml:"DayDuration,omitempty" mapstructure:"DayDuration,omitempty"`
+	DayDuration *float64 `json:"DayDuration" gorm:"column:DayDuration" mapstructure:"DayDuration"`
 
 	// Description corresponds to the JSON schema field "Description".
-	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// HasSomaticRequirement corresponds to the JSON schema field
 	// "HasSomaticRequirement".
-	HasSomaticRequirement *bool `json:"HasSomaticRequirement,omitempty" yaml:"HasSomaticRequirement,omitempty" mapstructure:"HasSomaticRequirement,omitempty"`
+	HasSomaticRequirement *bool `json:"HasSomaticRequirement" gorm:"column:HasSomaticRequirement" mapstructure:"HasSomaticRequirement"`
 
 	// HasVerbalRequirement corresponds to the JSON schema field
 	// "HasVerbalRequirement".
-	HasVerbalRequirement *bool `json:"HasVerbalRequirement,omitempty" yaml:"HasVerbalRequirement,omitempty" mapstructure:"HasVerbalRequirement,omitempty"`
+	HasVerbalRequirement *bool `json:"HasVerbalRequirement" gorm:"column:HasVerbalRequirement" mapstructure:"HasVerbalRequirement"`
 
 	// HourCastTime corresponds to the JSON schema field "HourCastTime".
-	HourCastTime *float64 `json:"HourCastTime,omitempty" yaml:"HourCastTime,omitempty" mapstructure:"HourCastTime,omitempty"`
+	HourCastTime *float64 `json:"HourCastTime" gorm:"column:HourCastTime" mapstructure:"HourCastTime"`
 
 	// HourDuration corresponds to the JSON schema field "HourDuration".
-	HourDuration *float64 `json:"HourDuration,omitempty" yaml:"HourDuration,omitempty" mapstructure:"HourDuration,omitempty"`
+	HourDuration *float64 `json:"HourDuration" gorm:"column:HourDuration" mapstructure:"HourDuration"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsAction corresponds to the JSON schema field "IsAction".
-	IsAction *bool `json:"IsAction,omitempty" yaml:"IsAction,omitempty" mapstructure:"IsAction,omitempty"`
+	IsAction *bool `json:"IsAction" gorm:"column:IsAction" mapstructure:"IsAction"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
-	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// IsBonusAction corresponds to the JSON schema field "IsBonusAction".
-	IsBonusAction *bool `json:"IsBonusAction,omitempty" yaml:"IsBonusAction,omitempty" mapstructure:"IsBonusAction,omitempty"`
+	IsBonusAction *bool `json:"IsBonusAction" gorm:"column:IsBonusAction" mapstructure:"IsBonusAction"`
 
 	// IsCantrip corresponds to the JSON schema field "IsCantrip".
-	IsCantrip *bool `json:"IsCantrip,omitempty" yaml:"IsCantrip,omitempty" mapstructure:"IsCantrip,omitempty"`
+	IsCantrip *bool `json:"IsCantrip" gorm:"column:IsCantrip" mapstructure:"IsCantrip"`
 
 	// IsInstantaneous corresponds to the JSON schema field "IsInstantaneous".
-	IsInstantaneous *bool `json:"IsInstantaneous,omitempty" yaml:"IsInstantaneous,omitempty" mapstructure:"IsInstantaneous,omitempty"`
+	IsInstantaneous *bool `json:"IsInstantaneous" gorm:"column:IsInstantaneous" mapstructure:"IsInstantaneous"`
 
 	// IsRitual corresponds to the JSON schema field "IsRitual".
-	IsRitual *bool `json:"IsRitual,omitempty" yaml:"IsRitual,omitempty" mapstructure:"IsRitual,omitempty"`
+	IsRitual *bool `json:"IsRitual" gorm:"column:IsRitual" mapstructure:"IsRitual"`
 
 	// LastsUntilDispelled corresponds to the JSON schema field "LastsUntilDispelled".
-	LastsUntilDispelled *bool `json:"LastsUntilDispelled,omitempty" yaml:"LastsUntilDispelled,omitempty" mapstructure:"LastsUntilDispelled,omitempty"`
+	LastsUntilDispelled *bool `json:"LastsUntilDispelled" gorm:"column:LastsUntilDispelled" mapstructure:"LastsUntilDispelled"`
 
 	// LevelRequirement corresponds to the JSON schema field "LevelRequirement".
-	LevelRequirement *float64 `json:"LevelRequirement,omitempty" yaml:"LevelRequirement,omitempty" mapstructure:"LevelRequirement,omitempty"`
+	LevelRequirement *float64 `json:"LevelRequirement" gorm:"column:LevelRequirement" mapstructure:"LevelRequirement"`
 
 	// MaterialComponent corresponds to the JSON schema field "MaterialComponent".
-	MaterialComponent *string `json:"MaterialComponent,omitempty" yaml:"MaterialComponent,omitempty" mapstructure:"MaterialComponent,omitempty"`
+	MaterialComponent *string `json:"MaterialComponent" gorm:"column:MaterialComponent" mapstructure:"MaterialComponent"`
 
 	// MinuteCastTime corresponds to the JSON schema field "MinuteCastTime".
-	MinuteCastTime *float64 `json:"MinuteCastTime,omitempty" yaml:"MinuteCastTime,omitempty" mapstructure:"MinuteCastTime,omitempty"`
+	MinuteCastTime *float64 `json:"MinuteCastTime" gorm:"column:MinuteCastTime" mapstructure:"MinuteCastTime"`
 
 	// MinuteDuration corresponds to the JSON schema field "MinuteDuration".
-	MinuteDuration *float64 `json:"MinuteDuration,omitempty" yaml:"MinuteDuration,omitempty" mapstructure:"MinuteDuration,omitempty"`
+	MinuteDuration *float64 `json:"MinuteDuration" gorm:"column:MinuteDuration" mapstructure:"MinuteDuration"`
 
 	// RangeFeet corresponds to the JSON schema field "RangeFeet".
-	RangeFeet *float64 `json:"RangeFeet,omitempty" yaml:"RangeFeet,omitempty" mapstructure:"RangeFeet,omitempty"`
+	RangeFeet *float64 `json:"RangeFeet" gorm:"column:RangeFeet" mapstructure:"RangeFeet"`
 
 	// RangeMiles corresponds to the JSON schema field "RangeMiles".
-	RangeMiles *float64 `json:"RangeMiles,omitempty" yaml:"RangeMiles,omitempty" mapstructure:"RangeMiles,omitempty"`
+	RangeMiles *float64 `json:"RangeMiles" gorm:"column:RangeMiles" mapstructure:"RangeMiles"`
 
 	// RequiresTouch corresponds to the JSON schema field "RequiresTouch".
-	RequiresTouch *bool `json:"RequiresTouch,omitempty" yaml:"RequiresTouch,omitempty" mapstructure:"RequiresTouch,omitempty"`
+	RequiresTouch *bool `json:"RequiresTouch" gorm:"column:RequiresTouch" mapstructure:"RequiresTouch"`
 
 	// RoundDuration corresponds to the JSON schema field "RoundDuration".
-	RoundDuration *float64 `json:"RoundDuration,omitempty" yaml:"RoundDuration,omitempty" mapstructure:"RoundDuration,omitempty"`
+	RoundDuration *float64 `json:"RoundDuration" gorm:"column:RoundDuration" mapstructure:"RoundDuration"`
 
 	// SchoolDomainSpellSchool corresponds to the JSON schema field
 	// "School__DomainSpellSchool".
-	School__DomainSpellSchool *float64 `json:"School__DomainSpellSchool,omitempty" yaml:"School__DomainSpellSchool,omitempty" mapstructure:"School__DomainSpellSchool,omitempty"`
+	School__DomainSpellSchool *float64 `json:"School__DomainSpellSchool" gorm:"column:School__DomainSpellSchool" mapstructure:"School__DomainSpellSchool"`
 
 	// TargetsSelf corresponds to the JSON schema field "TargetsSelf".
-	TargetsSelf *bool `json:"TargetsSelf,omitempty" yaml:"TargetsSelf,omitempty" mapstructure:"TargetsSelf,omitempty"`
+	TargetsSelf *bool `json:"TargetsSelf" gorm:"column:TargetsSelf" mapstructure:"TargetsSelf"`
 
 	// Title corresponds to the JSON schema field "Title".
-	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 }

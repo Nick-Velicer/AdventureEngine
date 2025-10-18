@@ -46,7 +46,7 @@ type DomainClassDTO struct {
 func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, traversedTables []string) *DomainClassDTO {
    
    if (domainClass == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainClass")
+      print("Nil pointer passed to DTO conversion for table DomainClass")
       return nil
    }
    
@@ -107,13 +107,21 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
 }
 
 func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) types.DomainClass {
-   return types.DomainClass{
-      Id: domainClass.Id,
-      Description: domainClass.Attributes.Description,
-      
-      IsActive: domainClass.Attributes.IsActive,
-      Title: domainClass.Attributes.Title,
-      HitDie__DomainDice: domainClass.Relationships.ManyToOne.HitDie__DomainDice.Id,
-      SpellcastingStat__DomainCharacterStat: domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat.Id,
+   var tableTypeBuffer types.DomainClass
+   
+   tableTypeBuffer.Id = domainClass.Id
+   tableTypeBuffer.Description = domainClass.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainClass.Attributes.IsActive
+   tableTypeBuffer.Title = domainClass.Attributes.Title
+   
+   if (domainClass.Relationships.ManyToOne.HitDie__DomainDice != nil) {
+      tableTypeBuffer.HitDie__DomainDice = domainClass.Relationships.ManyToOne.HitDie__DomainDice.Id
    }
+
+   if (domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat != nil) {
+      tableTypeBuffer.SpellcastingStat__DomainCharacterStat = domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat.Id
+   }
+
+   return tableTypeBuffer
 }

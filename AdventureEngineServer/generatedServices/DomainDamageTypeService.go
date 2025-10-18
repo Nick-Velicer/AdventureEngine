@@ -37,7 +37,7 @@ func SaveDomainDamageType(db *gorm.DB, domainDamageType *types.DomainDamageType)
       return err
    }
    
-   if err := tx.Save(domainDamageType).Error; err != nil {
+   if err := tx.Table("DomainDamageType").Save(domainDamageType).Error; err != nil {
       tx.Rollback()
       return err
    }

@@ -50,13 +50,25 @@ func GetDomainSubClassById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainSubClass(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainSubClassDTO
    var serviceBuffer types.DomainSubClass
-   err := services.SaveDomainSubClass(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainSubClassDTOToDomainSubClass(&DTOBuffer)
+   
+   if err := services.SaveDomainSubClass(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainSubClassToDomainSubClassDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

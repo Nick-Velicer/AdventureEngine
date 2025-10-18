@@ -37,7 +37,7 @@ func SaveDomainStaticEffect(db *gorm.DB, domainStaticEffect *types.DomainStaticE
       return err
    }
    
-   if err := tx.Save(domainStaticEffect).Error; err != nil {
+   if err := tx.Table("DomainStaticEffect").Save(domainStaticEffect).Error; err != nil {
       tx.Rollback()
       return err
    }

@@ -50,13 +50,25 @@ func GetClassSpellById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveClassSpell(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.ClassSpellDTO
    var serviceBuffer types.ClassSpell
-   err := services.SaveClassSpell(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.ClassSpellDTOToClassSpell(&DTOBuffer)
+   
+   if err := services.SaveClassSpell(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.ClassSpellToClassSpellDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

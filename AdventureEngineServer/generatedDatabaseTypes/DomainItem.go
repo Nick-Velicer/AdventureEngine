@@ -4,23 +4,23 @@ package generatedDatabaseTypes
 
 type DomainItem struct {
 	// CustomEffectText corresponds to the JSON schema field "CustomEffectText".
-	CustomEffectText *string `json:"CustomEffectText,omitempty" yaml:"CustomEffectText,omitempty" mapstructure:"CustomEffectText,omitempty"`
+	CustomEffectText *string `json:"CustomEffectText" gorm:"column:CustomEffectText" mapstructure:"CustomEffectText"`
 
 	// Description corresponds to the JSON schema field "Description".
-	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
-	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// OneHandedQuantifier corresponds to the JSON schema field "OneHandedQuantifier".
-	OneHandedQuantifier *float64 `json:"OneHandedQuantifier,omitempty" yaml:"OneHandedQuantifier,omitempty" mapstructure:"OneHandedQuantifier,omitempty"`
+	OneHandedQuantifier *float64 `json:"OneHandedQuantifier" gorm:"column:OneHandedQuantifier" mapstructure:"OneHandedQuantifier"`
 
 	// Title corresponds to the JSON schema field "Title".
-	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 
 	// TwoHandedQuantifier corresponds to the JSON schema field "TwoHandedQuantifier".
-	TwoHandedQuantifier *float64 `json:"TwoHandedQuantifier,omitempty" yaml:"TwoHandedQuantifier,omitempty" mapstructure:"TwoHandedQuantifier,omitempty"`
+	TwoHandedQuantifier *float64 `json:"TwoHandedQuantifier" gorm:"column:TwoHandedQuantifier" mapstructure:"TwoHandedQuantifier"`
 }

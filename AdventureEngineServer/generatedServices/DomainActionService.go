@@ -37,7 +37,7 @@ func SaveDomainAction(db *gorm.DB, domainAction *types.DomainAction) error {
       return err
    }
    
-   if err := tx.Save(domainAction).Error; err != nil {
+   if err := tx.Table("DomainAction").Save(domainAction).Error; err != nil {
       tx.Rollback()
       return err
    }

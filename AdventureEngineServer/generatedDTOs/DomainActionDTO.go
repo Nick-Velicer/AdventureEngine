@@ -44,7 +44,7 @@ type DomainActionDTO struct {
 func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction, traversedTables []string) *DomainActionDTO {
    
    if (domainAction == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainAction")
+      print("Nil pointer passed to DTO conversion for table DomainAction")
       return nil
    }
    
@@ -77,13 +77,15 @@ func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction
 }
 
 func DomainActionDTOToDomainAction(domainAction *DomainActionDTO) types.DomainAction {
-   return types.DomainAction{
-      Id: domainAction.Id,
-      Description: domainAction.Attributes.Description,
-      
-      IsActive: domainAction.Attributes.IsActive,
-      Title: domainAction.Attributes.Title,
-      UsesAction: domainAction.Attributes.UsesAction,
-      UsesBonusAction: domainAction.Attributes.UsesBonusAction,
-   }
+   var tableTypeBuffer types.DomainAction
+   
+   tableTypeBuffer.Id = domainAction.Id
+   tableTypeBuffer.Description = domainAction.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainAction.Attributes.IsActive
+   tableTypeBuffer.Title = domainAction.Attributes.Title
+   tableTypeBuffer.UsesAction = domainAction.Attributes.UsesAction
+   tableTypeBuffer.UsesBonusAction = domainAction.Attributes.UsesBonusAction
+   
+   return tableTypeBuffer
 }

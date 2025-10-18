@@ -45,7 +45,7 @@ type DomainSizeDTO struct {
 func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traversedTables []string) *DomainSizeDTO {
    
    if (domainSize == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainSize")
+      print("Nil pointer passed to DTO conversion for table DomainSize")
       return nil
    }
    
@@ -79,14 +79,16 @@ func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traver
 }
 
 func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) types.DomainSize {
-   return types.DomainSize{
-      Id: domainSize.Id,
-      BaseHexArea: domainSize.Attributes.BaseHexArea,
-      BaseTileArea: domainSize.Attributes.BaseTileArea,
-      Description: domainSize.Attributes.Description,
-      
-      IsActive: domainSize.Attributes.IsActive,
-      SizeOrder: domainSize.Attributes.SizeOrder,
-      Title: domainSize.Attributes.Title,
-   }
+   var tableTypeBuffer types.DomainSize
+   
+   tableTypeBuffer.Id = domainSize.Id
+   tableTypeBuffer.BaseHexArea = domainSize.Attributes.BaseHexArea
+   tableTypeBuffer.BaseTileArea = domainSize.Attributes.BaseTileArea
+   tableTypeBuffer.Description = domainSize.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainSize.Attributes.IsActive
+   tableTypeBuffer.SizeOrder = domainSize.Attributes.SizeOrder
+   tableTypeBuffer.Title = domainSize.Attributes.Title
+   
+   return tableTypeBuffer
 }

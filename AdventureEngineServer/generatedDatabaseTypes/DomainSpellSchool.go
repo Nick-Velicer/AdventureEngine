@@ -4,14 +4,14 @@ package generatedDatabaseTypes
 
 type DomainSpellSchool struct {
 	// Description corresponds to the JSON schema field "Description".
-	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
-	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// Title corresponds to the JSON schema field "Title".
-	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 }

@@ -277,111 +277,112 @@ def regenerateDomainClassMigration():
 def regenerateSavingThrowsMigration():
 
     global classes
+    global baseStats
 
     savingThrows = [
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Strength"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Constitution"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Constitution"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Bard"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Dexterity"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Bard"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Charisma"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Cleric"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Wisdom"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Cleric"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Charisma"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Druid"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Intelligence"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Druid"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Wisdom"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Fighter"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Strength"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Fighter"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Constitution"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Constitution"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Monk"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Strength"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Monk"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Dexterity"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Paladin"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Wisdom"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Paladin"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Charisma"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Ranger"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Strength"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Ranger"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Dexterity"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Rogue"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Dexterity"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Rogue"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Intelligence"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Sorcerer"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Constitution"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Constitution"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Sorcerer"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Charisma"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Warlock"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Wisdom"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Warlock"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Charisma"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Wizard"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Intelligence"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Warlock"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Wisdom"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Artificer"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Constitution"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Constitution"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Artificer"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(classes, "Intelligence"),
+            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
         },
     ]
 

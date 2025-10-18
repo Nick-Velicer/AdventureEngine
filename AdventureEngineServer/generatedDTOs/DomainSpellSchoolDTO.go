@@ -42,7 +42,7 @@ type DomainSpellSchoolDTO struct {
 func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *types.DomainSpellSchool, traversedTables []string) *DomainSpellSchoolDTO {
    
    if (domainSpellSchool == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainSpellSchool")
+      print("Nil pointer passed to DTO conversion for table DomainSpellSchool")
       return nil
    }
    
@@ -73,11 +73,13 @@ func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *typ
 }
 
 func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoolDTO) types.DomainSpellSchool {
-   return types.DomainSpellSchool{
-      Id: domainSpellSchool.Id,
-      Description: domainSpellSchool.Attributes.Description,
-      
-      IsActive: domainSpellSchool.Attributes.IsActive,
-      Title: domainSpellSchool.Attributes.Title,
-   }
+   var tableTypeBuffer types.DomainSpellSchool
+   
+   tableTypeBuffer.Id = domainSpellSchool.Id
+   tableTypeBuffer.Description = domainSpellSchool.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainSpellSchool.Attributes.IsActive
+   tableTypeBuffer.Title = domainSpellSchool.Attributes.Title
+   
+   return tableTypeBuffer
 }

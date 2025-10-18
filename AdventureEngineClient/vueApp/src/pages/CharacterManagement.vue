@@ -6,8 +6,8 @@ import type { UseQueryReturn } from '@pinia/colada';
 import BasicStatIcon from '../components/BasicStatIcon.vue';
 
 const state = composedAppInjectionContexts.store();
-const characterQuery = composedAppInjectionContexts.queries.useGetCharacterByIdQuery(1) as UseQueryReturn<Character>;
-console.log(characterQuery.data.value?.Relationships.OneToMany);
+const characterQuery = composedAppInjectionContexts.queries.useGetCharacterByIdQuery(1);
+console.log(characterQuery.data.value);
 
 const stats = [
     "Strength",

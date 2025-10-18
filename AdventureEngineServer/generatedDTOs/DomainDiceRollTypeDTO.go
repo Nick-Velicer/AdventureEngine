@@ -42,7 +42,7 @@ type DomainDiceRollTypeDTO struct {
 func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType, traversedTables []string) *DomainDiceRollTypeDTO {
    
    if (domainDiceRollType == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainDiceRollType")
+      print("Nil pointer passed to DTO conversion for table DomainDiceRollType")
       return nil
    }
    
@@ -73,11 +73,13 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
 }
 
 func DomainDiceRollTypeDTOToDomainDiceRollType(domainDiceRollType *DomainDiceRollTypeDTO) types.DomainDiceRollType {
-   return types.DomainDiceRollType{
-      Id: domainDiceRollType.Id,
-      Description: domainDiceRollType.Attributes.Description,
-      
-      IsActive: domainDiceRollType.Attributes.IsActive,
-      Title: domainDiceRollType.Attributes.Title,
-   }
+   var tableTypeBuffer types.DomainDiceRollType
+   
+   tableTypeBuffer.Id = domainDiceRollType.Id
+   tableTypeBuffer.Description = domainDiceRollType.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainDiceRollType.Attributes.IsActive
+   tableTypeBuffer.Title = domainDiceRollType.Attributes.Title
+   
+   return tableTypeBuffer
 }

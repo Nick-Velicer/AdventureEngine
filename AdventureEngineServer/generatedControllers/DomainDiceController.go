@@ -50,13 +50,25 @@ func GetDomainDiceById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainDice(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainDiceDTO
    var serviceBuffer types.DomainDice
-   err := services.SaveDomainDice(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainDiceDTOToDomainDice(&DTOBuffer)
+   
+   if err := services.SaveDomainDice(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainDiceToDomainDiceDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

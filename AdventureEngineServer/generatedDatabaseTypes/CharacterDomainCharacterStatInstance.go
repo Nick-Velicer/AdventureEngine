@@ -4,21 +4,21 @@ package generatedDatabaseTypes
 
 type CharacterDomainCharacterStatInstance struct {
 	// CharacterCharacter corresponds to the JSON schema field "Character__Character".
-	Character__Character *float64 `json:"Character__Character,omitempty" yaml:"Character__Character,omitempty" mapstructure:"Character__Character,omitempty"`
+	Character__Character *float64 `json:"Character__Character" gorm:"column:Character__Character" mapstructure:"Character__Character"`
 
 	// Description corresponds to the JSON schema field "Description".
-	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
-	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// StatInstanceDomainCharacterStat corresponds to the JSON schema field
 	// "StatInstance__DomainCharacterStat".
-	StatInstance__DomainCharacterStat *float64 `json:"StatInstance__DomainCharacterStat,omitempty" yaml:"StatInstance__DomainCharacterStat,omitempty" mapstructure:"StatInstance__DomainCharacterStat,omitempty"`
+	StatInstance__DomainCharacterStat *float64 `json:"StatInstance__DomainCharacterStat" gorm:"column:StatInstance__DomainCharacterStat" mapstructure:"StatInstance__DomainCharacterStat"`
 
 	// Title corresponds to the JSON schema field "Title".
-	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 }

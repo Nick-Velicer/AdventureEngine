@@ -42,7 +42,7 @@ type DomainDamageTypeDTO struct {
 func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.DomainDamageType, traversedTables []string) *DomainDamageTypeDTO {
    
    if (domainDamageType == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainDamageType")
+      print("Nil pointer passed to DTO conversion for table DomainDamageType")
       return nil
    }
    
@@ -73,11 +73,13 @@ func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.
 }
 
 func DomainDamageTypeDTOToDomainDamageType(domainDamageType *DomainDamageTypeDTO) types.DomainDamageType {
-   return types.DomainDamageType{
-      Id: domainDamageType.Id,
-      Description: domainDamageType.Attributes.Description,
-      
-      IsActive: domainDamageType.Attributes.IsActive,
-      Title: domainDamageType.Attributes.Title,
-   }
+   var tableTypeBuffer types.DomainDamageType
+   
+   tableTypeBuffer.Id = domainDamageType.Id
+   tableTypeBuffer.Description = domainDamageType.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainDamageType.Attributes.IsActive
+   tableTypeBuffer.Title = domainDamageType.Attributes.Title
+   
+   return tableTypeBuffer
 }

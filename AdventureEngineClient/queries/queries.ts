@@ -13,14 +13,28 @@ export type ServiceInterface<T> = {
 
 export type QueryServicesType = {[key in keyof typeof AppTypes]: ServiceInterface<typeof AppTypes[key]>}
 
-export function composeQueryBuilderContext<T extends <G extends SchemaObject>(opts: {
-   key: string[],
-   query: (...args : any[]) => Promise<G | G[]>
-}) => ReturnType<T>>(
+export function composeQueryBuilderContext<
+   T extends <G extends SchemaObject>(opts: {
+      key: string[],
+      query: (...args : any[]) => Promise<G | G[]>
+   }) => ReturnType<T>,
+   U extends <G extends SchemaObject>(opts: {
+      mutation: (...args : any[]) => Promise<G>
+      onSettled: () => any
+      //Eventually a more general onSuccess interface name would be nice
+      //but for now this is a reasonable expectation and saves some headache
+      //from having an extra translation step when the Pinia handlers are injected.
+   }) => ReturnType<U>,
+   C extends () => ReturnType<C>,
+   Q extends (cacheContext: ReturnType<C>, keys: string[]) => any,
+>(
    queryHandler: T,
+   mutationHandler: U,
+   cacheHandler: C,queryInvalidator: Q,
    services: QueryServicesType
 ) {
    return {
+      //Campaign
       useGetCampaignsQuery: () => queryHandler({
          key: ["getCampaigns"],
          query: () => services.Campaign.getAllItems()
@@ -33,6 +47,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.Campaign.getItemById(id)
          });
       },
+      useSaveCampaignMutation: (obj: Parameters<typeof services.Campaign.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.Campaign.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getCampaigns", "getCampaignById"])
+         });
+      },
+      
+      //Character
       useGetCharactersQuery: () => queryHandler({
          key: ["getCharacters"],
          query: () => services.Character.getAllItems()
@@ -45,6 +68,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.Character.getItemById(id)
          });
       },
+      useSaveCharacterMutation: (obj: Parameters<typeof services.Character.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.Character.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getCharacters", "getCharacterById"])
+         });
+      },
+      
+      //CharacterDomainCharacterStatInstance
       useGetCharacterDomainCharacterStatInstancesQuery: () => queryHandler({
          key: ["getCharacterDomainCharacterStatInstances"],
          query: () => services.CharacterDomainCharacterStatInstance.getAllItems()
@@ -57,6 +89,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.CharacterDomainCharacterStatInstance.getItemById(id)
          });
       },
+      useSaveCharacterDomainCharacterStatInstanceMutation: (obj: Parameters<typeof services.CharacterDomainCharacterStatInstance.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.CharacterDomainCharacterStatInstance.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getCharacterDomainCharacterStatInstances", "getCharacterDomainCharacterStatInstanceById"])
+         });
+      },
+      
+      //ClassPrimaryAbility
       useGetClassPrimaryAbilitysQuery: () => queryHandler({
          key: ["getClassPrimaryAbilitys"],
          query: () => services.ClassPrimaryAbility.getAllItems()
@@ -69,6 +110,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.ClassPrimaryAbility.getItemById(id)
          });
       },
+      useSaveClassPrimaryAbilityMutation: (obj: Parameters<typeof services.ClassPrimaryAbility.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.ClassPrimaryAbility.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getClassPrimaryAbilitys", "getClassPrimaryAbilityById"])
+         });
+      },
+      
+      //ClassSave
       useGetClassSavesQuery: () => queryHandler({
          key: ["getClassSaves"],
          query: () => services.ClassSave.getAllItems()
@@ -81,6 +131,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.ClassSave.getItemById(id)
          });
       },
+      useSaveClassSaveMutation: (obj: Parameters<typeof services.ClassSave.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.ClassSave.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getClassSaves", "getClassSaveById"])
+         });
+      },
+      
+      //ClassSpell
       useGetClassSpellsQuery: () => queryHandler({
          key: ["getClassSpells"],
          query: () => services.ClassSpell.getAllItems()
@@ -93,6 +152,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.ClassSpell.getItemById(id)
          });
       },
+      useSaveClassSpellMutation: (obj: Parameters<typeof services.ClassSpell.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.ClassSpell.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getClassSpells", "getClassSpellById"])
+         });
+      },
+      
+      //DomainAction
       useGetDomainActionsQuery: () => queryHandler({
          key: ["getDomainActions"],
          query: () => services.DomainAction.getAllItems()
@@ -105,6 +173,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainAction.getItemById(id)
          });
       },
+      useSaveDomainActionMutation: (obj: Parameters<typeof services.DomainAction.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainAction.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainActions", "getDomainActionById"])
+         });
+      },
+      
+      //DomainCharacterStat
       useGetDomainCharacterStatsQuery: () => queryHandler({
          key: ["getDomainCharacterStats"],
          query: () => services.DomainCharacterStat.getAllItems()
@@ -117,6 +194,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainCharacterStat.getItemById(id)
          });
       },
+      useSaveDomainCharacterStatMutation: (obj: Parameters<typeof services.DomainCharacterStat.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainCharacterStat.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainCharacterStats", "getDomainCharacterStatById"])
+         });
+      },
+      
+      //DomainClass
       useGetDomainClasssQuery: () => queryHandler({
          key: ["getDomainClasss"],
          query: () => services.DomainClass.getAllItems()
@@ -129,6 +215,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainClass.getItemById(id)
          });
       },
+      useSaveDomainClassMutation: (obj: Parameters<typeof services.DomainClass.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainClass.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainClasss", "getDomainClassById"])
+         });
+      },
+      
+      //DomainCondition
       useGetDomainConditionsQuery: () => queryHandler({
          key: ["getDomainConditions"],
          query: () => services.DomainCondition.getAllItems()
@@ -141,6 +236,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainCondition.getItemById(id)
          });
       },
+      useSaveDomainConditionMutation: (obj: Parameters<typeof services.DomainCondition.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainCondition.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainConditions", "getDomainConditionById"])
+         });
+      },
+      
+      //DomainCreatureType
       useGetDomainCreatureTypesQuery: () => queryHandler({
          key: ["getDomainCreatureTypes"],
          query: () => services.DomainCreatureType.getAllItems()
@@ -153,6 +257,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainCreatureType.getItemById(id)
          });
       },
+      useSaveDomainCreatureTypeMutation: (obj: Parameters<typeof services.DomainCreatureType.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainCreatureType.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainCreatureTypes", "getDomainCreatureTypeById"])
+         });
+      },
+      
+      //DomainDamageType
       useGetDomainDamageTypesQuery: () => queryHandler({
          key: ["getDomainDamageTypes"],
          query: () => services.DomainDamageType.getAllItems()
@@ -165,6 +278,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainDamageType.getItemById(id)
          });
       },
+      useSaveDomainDamageTypeMutation: (obj: Parameters<typeof services.DomainDamageType.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainDamageType.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainDamageTypes", "getDomainDamageTypeById"])
+         });
+      },
+      
+      //DomainDice
       useGetDomainDicesQuery: () => queryHandler({
          key: ["getDomainDices"],
          query: () => services.DomainDice.getAllItems()
@@ -177,6 +299,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainDice.getItemById(id)
          });
       },
+      useSaveDomainDiceMutation: (obj: Parameters<typeof services.DomainDice.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainDice.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainDices", "getDomainDiceById"])
+         });
+      },
+      
+      //DomainDiceRollType
       useGetDomainDiceRollTypesQuery: () => queryHandler({
          key: ["getDomainDiceRollTypes"],
          query: () => services.DomainDiceRollType.getAllItems()
@@ -189,6 +320,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainDiceRollType.getItemById(id)
          });
       },
+      useSaveDomainDiceRollTypeMutation: (obj: Parameters<typeof services.DomainDiceRollType.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainDiceRollType.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainDiceRollTypes", "getDomainDiceRollTypeById"])
+         });
+      },
+      
+      //DomainItem
       useGetDomainItemsQuery: () => queryHandler({
          key: ["getDomainItems"],
          query: () => services.DomainItem.getAllItems()
@@ -201,6 +341,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainItem.getItemById(id)
          });
       },
+      useSaveDomainItemMutation: (obj: Parameters<typeof services.DomainItem.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainItem.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainItems", "getDomainItemById"])
+         });
+      },
+      
+      //DomainSize
       useGetDomainSizesQuery: () => queryHandler({
          key: ["getDomainSizes"],
          query: () => services.DomainSize.getAllItems()
@@ -213,6 +362,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainSize.getItemById(id)
          });
       },
+      useSaveDomainSizeMutation: (obj: Parameters<typeof services.DomainSize.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainSize.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainSizes", "getDomainSizeById"])
+         });
+      },
+      
+      //DomainSpecies
       useGetDomainSpeciessQuery: () => queryHandler({
          key: ["getDomainSpeciess"],
          query: () => services.DomainSpecies.getAllItems()
@@ -225,6 +383,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainSpecies.getItemById(id)
          });
       },
+      useSaveDomainSpeciesMutation: (obj: Parameters<typeof services.DomainSpecies.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainSpecies.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainSpeciess", "getDomainSpeciesById"])
+         });
+      },
+      
+      //DomainSpell
       useGetDomainSpellsQuery: () => queryHandler({
          key: ["getDomainSpells"],
          query: () => services.DomainSpell.getAllItems()
@@ -237,6 +404,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainSpell.getItemById(id)
          });
       },
+      useSaveDomainSpellMutation: (obj: Parameters<typeof services.DomainSpell.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainSpell.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainSpells", "getDomainSpellById"])
+         });
+      },
+      
+      //DomainSpellSchool
       useGetDomainSpellSchoolsQuery: () => queryHandler({
          key: ["getDomainSpellSchools"],
          query: () => services.DomainSpellSchool.getAllItems()
@@ -249,6 +425,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainSpellSchool.getItemById(id)
          });
       },
+      useSaveDomainSpellSchoolMutation: (obj: Parameters<typeof services.DomainSpellSchool.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainSpellSchool.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainSpellSchools", "getDomainSpellSchoolById"])
+         });
+      },
+      
+      //DomainStaticEffect
       useGetDomainStaticEffectsQuery: () => queryHandler({
          key: ["getDomainStaticEffects"],
          query: () => services.DomainStaticEffect.getAllItems()
@@ -261,6 +446,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainStaticEffect.getItemById(id)
          });
       },
+      useSaveDomainStaticEffectMutation: (obj: Parameters<typeof services.DomainStaticEffect.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainStaticEffect.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainStaticEffects", "getDomainStaticEffectById"])
+         });
+      },
+      
+      //DomainSubClass
       useGetDomainSubClasssQuery: () => queryHandler({
          key: ["getDomainSubClasss"],
          query: () => services.DomainSubClass.getAllItems()
@@ -273,6 +467,15 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.DomainSubClass.getItemById(id)
          });
       },
+      useSaveDomainSubClassMutation: (obj: Parameters<typeof services.DomainSubClass.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainSubClass.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getDomainSubClasss", "getDomainSubClassById"])
+         });
+      },
+      
+      //Quantifier
       useGetQuantifiersQuery: () => queryHandler({
          key: ["getQuantifiers"],
          query: () => services.Quantifier.getAllItems()
@@ -285,5 +488,13 @@ export function composeQueryBuilderContext<T extends <G extends SchemaObject>(op
             query: () => services.Quantifier.getItemById(id)
          });
       },
+      useSaveQuantifierMutation: (obj: Parameters<typeof services.Quantifier.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.Quantifier.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getQuantifiers", "getQuantifierById"])
+         });
+      },
+      
    }
 }

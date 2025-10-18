@@ -43,7 +43,7 @@ type DomainSpeciesDTO struct {
 func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies, traversedTables []string) *DomainSpeciesDTO {
    
    if (domainSpecies == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainSpecies")
+      print("Nil pointer passed to DTO conversion for table DomainSpecies")
       return nil
    }
    
@@ -80,12 +80,17 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
 }
 
 func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) types.DomainSpecies {
-   return types.DomainSpecies{
-      Id: domainSpecies.Id,
-      Description: domainSpecies.Attributes.Description,
-      
-      IsActive: domainSpecies.Attributes.IsActive,
-      Title: domainSpecies.Attributes.Title,
-      CreatureType__DomainCreatureType: domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType.Id,
+   var tableTypeBuffer types.DomainSpecies
+   
+   tableTypeBuffer.Id = domainSpecies.Id
+   tableTypeBuffer.Description = domainSpecies.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainSpecies.Attributes.IsActive
+   tableTypeBuffer.Title = domainSpecies.Attributes.Title
+   
+   if (domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType != nil) {
+      tableTypeBuffer.CreatureType__DomainCreatureType = domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType.Id
    }
+
+   return tableTypeBuffer
 }

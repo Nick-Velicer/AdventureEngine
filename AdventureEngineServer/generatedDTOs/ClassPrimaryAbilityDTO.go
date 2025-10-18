@@ -44,7 +44,7 @@ type ClassPrimaryAbilityDTO struct {
 func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbility *types.ClassPrimaryAbility, traversedTables []string) *ClassPrimaryAbilityDTO {
    
    if (classPrimaryAbility == nil) {
-      print("No valid pointer passed to DTO conversion for table ClassPrimaryAbility")
+      print("Nil pointer passed to DTO conversion for table ClassPrimaryAbility")
       return nil
    }
    
@@ -87,13 +87,21 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbilit
 }
 
 func ClassPrimaryAbilityDTOToClassPrimaryAbility(classPrimaryAbility *ClassPrimaryAbilityDTO) types.ClassPrimaryAbility {
-   return types.ClassPrimaryAbility{
-      Id: classPrimaryAbility.Id,
-      Description: classPrimaryAbility.Attributes.Description,
-      
-      IsActive: classPrimaryAbility.Attributes.IsActive,
-      Title: classPrimaryAbility.Attributes.Title,
-      Class__DomainClass: classPrimaryAbility.Relationships.ManyToOne.Class__DomainClass.Id,
-      Stat__DomainCharacterStat: classPrimaryAbility.Relationships.ManyToOne.Stat__DomainCharacterStat.Id,
+   var tableTypeBuffer types.ClassPrimaryAbility
+   
+   tableTypeBuffer.Id = classPrimaryAbility.Id
+   tableTypeBuffer.Description = classPrimaryAbility.Attributes.Description
+   
+   tableTypeBuffer.IsActive = classPrimaryAbility.Attributes.IsActive
+   tableTypeBuffer.Title = classPrimaryAbility.Attributes.Title
+   
+   if (classPrimaryAbility.Relationships.ManyToOne.Class__DomainClass != nil) {
+      tableTypeBuffer.Class__DomainClass = classPrimaryAbility.Relationships.ManyToOne.Class__DomainClass.Id
    }
+
+   if (classPrimaryAbility.Relationships.ManyToOne.Stat__DomainCharacterStat != nil) {
+      tableTypeBuffer.Stat__DomainCharacterStat = classPrimaryAbility.Relationships.ManyToOne.Stat__DomainCharacterStat.Id
+   }
+
+   return tableTypeBuffer
 }

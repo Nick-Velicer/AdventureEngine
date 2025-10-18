@@ -38,14 +38,32 @@ def main():
         '',
         'export type QueryServicesType = {[key in keyof typeof AppTypes]: ServiceInterface<typeof AppTypes[key]>}',
         '',
-        'export function composeQueryBuilderContext<T extends <G extends SchemaObject>(opts: {',
+        'export function composeQueryBuilderContext<',
         *indentLineBlock([
-            'key: string[],',
-            'query: (...args : any[]) => Promise<G | G[]>',
+            'T extends <G extends SchemaObject>(opts: {',
+            *indentLineBlock([
+                'key: string[],',
+                'query: (...args : any[]) => Promise<G | G[]>',
+            ]),
+            '}) => ReturnType<T>,',
+            'U extends <G extends SchemaObject>(opts: {',
+            *indentLineBlock([
+                'mutation: (...args : any[]) => Promise<G>',
+                'onSettled: () => any',
+                '//Eventually a more general onSuccess interface name would be nice',
+                '//but for now this is a reasonable expectation and saves some headache',
+                '//from having an extra translation step when the Pinia handlers are injected.'
+            ]),
+            '}) => ReturnType<U>,',
+            'C extends () => ReturnType<C>,',
+            'Q extends (cacheContext: ReturnType<C>, keys: string[]) => any,',
         ]),
-        '}) => ReturnType<T>>(',
+        '>(',
         *indentLineBlock([
             'queryHandler: T,', 
+            'mutationHandler: U,',
+            'cacheHandler: C,'
+            'queryInvalidator: Q,',
             'services: QueryServicesType'
         ]),
         ') {',
@@ -100,10 +118,29 @@ def produceQueryLinesForType(typeName: str):
 
         return lines
     
+    def produceSaveItemMutation(tableName: str):
+        lines = [
+            'useSave' + tableName + 'Mutation: (obj: Parameters<typeof services.' + tableName + '.saveItem>[0]) => {',
+            *indentLineBlock([
+                'const queryCache = cacheHandler();',
+                'return mutationHandler({',
+                *indentLineBlock([
+                    'mutation: () => services.' + tableName + '.saveItem(obj),',
+                    'onSettled: async () => queryInvalidator(queryCache, ["get' + tableName + 's", "get' + tableName + 'ById"])'
+                ]),
+                '});'
+            ]),
+            '},',
+        ]
+
+        return lines
 
     lines = [
+        '//' + typeName,
         *produceGetCollectionQuery(typeName),
-        *produceGetItemByIdQuery(typeName)
+        *produceGetItemByIdQuery(typeName),
+        *produceSaveItemMutation(typeName),
+        ''
     ]
 
     return lines

@@ -44,7 +44,7 @@ type ClassSaveDTO struct {
 func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedTables []string) *ClassSaveDTO {
    
    if (classSave == nil) {
-      print("No valid pointer passed to DTO conversion for table ClassSave")
+      print("Nil pointer passed to DTO conversion for table ClassSave")
       return nil
    }
    
@@ -87,13 +87,21 @@ func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedT
 }
 
 func ClassSaveDTOToClassSave(classSave *ClassSaveDTO) types.ClassSave {
-   return types.ClassSave{
-      Id: classSave.Id,
-      Description: classSave.Attributes.Description,
-      
-      IsActive: classSave.Attributes.IsActive,
-      Title: classSave.Attributes.Title,
-      Class__DomainClass: classSave.Relationships.ManyToOne.Class__DomainClass.Id,
-      Stat__DomainCharacterStat: classSave.Relationships.ManyToOne.Stat__DomainCharacterStat.Id,
+   var tableTypeBuffer types.ClassSave
+   
+   tableTypeBuffer.Id = classSave.Id
+   tableTypeBuffer.Description = classSave.Attributes.Description
+   
+   tableTypeBuffer.IsActive = classSave.Attributes.IsActive
+   tableTypeBuffer.Title = classSave.Attributes.Title
+   
+   if (classSave.Relationships.ManyToOne.Class__DomainClass != nil) {
+      tableTypeBuffer.Class__DomainClass = classSave.Relationships.ManyToOne.Class__DomainClass.Id
    }
+
+   if (classSave.Relationships.ManyToOne.Stat__DomainCharacterStat != nil) {
+      tableTypeBuffer.Stat__DomainCharacterStat = classSave.Relationships.ManyToOne.Stat__DomainCharacterStat.Id
+   }
+
+   return tableTypeBuffer
 }

@@ -37,7 +37,7 @@ func SaveDomainSubClass(db *gorm.DB, domainSubClass *types.DomainSubClass) error
       return err
    }
    
-   if err := tx.Save(domainSubClass).Error; err != nil {
+   if err := tx.Table("DomainSubClass").Save(domainSubClass).Error; err != nil {
       tx.Rollback()
       return err
    }

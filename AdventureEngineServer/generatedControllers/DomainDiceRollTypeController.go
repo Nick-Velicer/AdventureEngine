@@ -50,13 +50,25 @@ func GetDomainDiceRollTypeById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainDiceRollType(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainDiceRollTypeDTO
    var serviceBuffer types.DomainDiceRollType
-   err := services.SaveDomainDiceRollType(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainDiceRollTypeDTOToDomainDiceRollType(&DTOBuffer)
+   
+   if err := services.SaveDomainDiceRollType(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

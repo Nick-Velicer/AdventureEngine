@@ -44,7 +44,7 @@ type DomainDiceDTO struct {
 func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traversedTables []string) *DomainDiceDTO {
    
    if (domainDice == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainDice")
+      print("Nil pointer passed to DTO conversion for table DomainDice")
       return nil
    }
    
@@ -77,13 +77,15 @@ func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traver
 }
 
 func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) types.DomainDice {
-   return types.DomainDice{
-      Id: domainDice.Id,
-      Description: domainDice.Attributes.Description,
-      
-      IsActive: domainDice.Attributes.IsActive,
-      Maximum: domainDice.Attributes.Maximum,
-      Minimum: domainDice.Attributes.Minimum,
-      Title: domainDice.Attributes.Title,
-   }
+   var tableTypeBuffer types.DomainDice
+   
+   tableTypeBuffer.Id = domainDice.Id
+   tableTypeBuffer.Description = domainDice.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainDice.Attributes.IsActive
+   tableTypeBuffer.Maximum = domainDice.Attributes.Maximum
+   tableTypeBuffer.Minimum = domainDice.Attributes.Minimum
+   tableTypeBuffer.Title = domainDice.Attributes.Title
+   
+   return tableTypeBuffer
 }

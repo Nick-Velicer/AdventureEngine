@@ -50,13 +50,25 @@ func GetClassSaveById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveClassSave(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.ClassSaveDTO
    var serviceBuffer types.ClassSave
-   err := services.SaveClassSave(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.ClassSaveDTOToClassSave(&DTOBuffer)
+   
+   if err := services.SaveClassSave(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.ClassSaveToClassSaveDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

@@ -50,13 +50,25 @@ func GetDomainItemById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainItem(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainItemDTO
    var serviceBuffer types.DomainItem
-   err := services.SaveDomainItem(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainItemDTOToDomainItem(&DTOBuffer)
+   
+   if err := services.SaveDomainItem(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainItemToDomainItemDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

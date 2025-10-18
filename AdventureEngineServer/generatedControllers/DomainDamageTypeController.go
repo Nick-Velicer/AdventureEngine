@@ -50,13 +50,25 @@ func GetDomainDamageTypeById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainDamageType(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainDamageTypeDTO
    var serviceBuffer types.DomainDamageType
-   err := services.SaveDomainDamageType(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainDamageTypeDTOToDomainDamageType(&DTOBuffer)
+   
+   if err := services.SaveDomainDamageType(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

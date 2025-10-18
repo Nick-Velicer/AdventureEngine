@@ -45,7 +45,7 @@ type DomainItemDTO struct {
 func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traversedTables []string) *DomainItemDTO {
    
    if (domainItem == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainItem")
+      print("Nil pointer passed to DTO conversion for table DomainItem")
       return nil
    }
    
@@ -79,14 +79,16 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
 }
 
 func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) types.DomainItem {
-   return types.DomainItem{
-      Id: domainItem.Id,
-      CustomEffectText: domainItem.Attributes.CustomEffectText,
-      Description: domainItem.Attributes.Description,
-      
-      IsActive: domainItem.Attributes.IsActive,
-      OneHandedQuantifier: domainItem.Attributes.OneHandedQuantifier,
-      Title: domainItem.Attributes.Title,
-      TwoHandedQuantifier: domainItem.Attributes.TwoHandedQuantifier,
-   }
+   var tableTypeBuffer types.DomainItem
+   
+   tableTypeBuffer.Id = domainItem.Id
+   tableTypeBuffer.CustomEffectText = domainItem.Attributes.CustomEffectText
+   tableTypeBuffer.Description = domainItem.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainItem.Attributes.IsActive
+   tableTypeBuffer.OneHandedQuantifier = domainItem.Attributes.OneHandedQuantifier
+   tableTypeBuffer.Title = domainItem.Attributes.Title
+   tableTypeBuffer.TwoHandedQuantifier = domainItem.Attributes.TwoHandedQuantifier
+   
+   return tableTypeBuffer
 }

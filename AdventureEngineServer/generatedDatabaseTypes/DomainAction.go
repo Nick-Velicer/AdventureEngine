@@ -4,20 +4,20 @@ package generatedDatabaseTypes
 
 type DomainAction struct {
 	// Description corresponds to the JSON schema field "Description".
-	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
-	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// Title corresponds to the JSON schema field "Title".
-	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 
 	// UsesAction corresponds to the JSON schema field "UsesAction".
-	UsesAction *bool `json:"UsesAction,omitempty" yaml:"UsesAction,omitempty" mapstructure:"UsesAction,omitempty"`
+	UsesAction *bool `json:"UsesAction" gorm:"column:UsesAction" mapstructure:"UsesAction"`
 
 	// UsesBonusAction corresponds to the JSON schema field "UsesBonusAction".
-	UsesBonusAction *bool `json:"UsesBonusAction,omitempty" yaml:"UsesBonusAction,omitempty" mapstructure:"UsesBonusAction,omitempty"`
+	UsesBonusAction *bool `json:"UsesBonusAction" gorm:"column:UsesBonusAction" mapstructure:"UsesBonusAction"`
 }

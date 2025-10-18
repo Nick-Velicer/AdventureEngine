@@ -13,7 +13,7 @@ const store = composedAppInjectionContexts.store();
 
 <template>
     <div class="topLevelContainer scrollWrapper">
-        <header class="flex w-full h-fit">
+        <header class="flex w-full h-fit items-center py-2">
             <DevTools/>
             <NavMenu/>
         </header>

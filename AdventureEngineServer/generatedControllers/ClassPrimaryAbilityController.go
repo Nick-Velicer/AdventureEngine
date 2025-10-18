@@ -50,13 +50,25 @@ func GetClassPrimaryAbilityById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveClassPrimaryAbility(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.ClassPrimaryAbilityDTO
    var serviceBuffer types.ClassPrimaryAbility
-   err := services.SaveClassPrimaryAbility(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.ClassPrimaryAbilityDTOToClassPrimaryAbility(&DTOBuffer)
+   
+   if err := services.SaveClassPrimaryAbility(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.ClassPrimaryAbilityToClassPrimaryAbilityDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

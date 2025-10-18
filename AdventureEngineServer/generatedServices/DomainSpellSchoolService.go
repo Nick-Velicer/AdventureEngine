@@ -37,7 +37,7 @@ func SaveDomainSpellSchool(db *gorm.DB, domainSpellSchool *types.DomainSpellScho
       return err
    }
    
-   if err := tx.Save(domainSpellSchool).Error; err != nil {
+   if err := tx.Table("DomainSpellSchool").Save(domainSpellSchool).Error; err != nil {
       tx.Rollback()
       return err
    }

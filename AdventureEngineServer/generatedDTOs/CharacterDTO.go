@@ -47,7 +47,7 @@ type CharacterDTO struct {
 func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedTables []string) *CharacterDTO {
    
    if (character == nil) {
-      print("No valid pointer passed to DTO conversion for table Character")
+      print("Nil pointer passed to DTO conversion for table Character")
       return nil
    }
    
@@ -111,15 +111,29 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
 }
 
 func CharacterDTOToCharacter(character *CharacterDTO) types.Character {
-   return types.Character{
-      Id: character.Id,
-      Description: character.Attributes.Description,
-      
-      IsActive: character.Attributes.IsActive,
-      Title: character.Attributes.Title,
-      Campaign__Campaign: character.Relationships.ManyToOne.Campaign__Campaign.Id,
-      CurrentSize__DomainSize: character.Relationships.ManyToOne.CurrentSize__DomainSize.Id,
-      Species__DomainSpecies: character.Relationships.ManyToOne.Species__DomainSpecies.Id,
-      Subclass__DomainSubClass: character.Relationships.ManyToOne.Subclass__DomainSubClass.Id,
+   var tableTypeBuffer types.Character
+   
+   tableTypeBuffer.Id = character.Id
+   tableTypeBuffer.Description = character.Attributes.Description
+   
+   tableTypeBuffer.IsActive = character.Attributes.IsActive
+   tableTypeBuffer.Title = character.Attributes.Title
+   
+   if (character.Relationships.ManyToOne.Campaign__Campaign != nil) {
+      tableTypeBuffer.Campaign__Campaign = character.Relationships.ManyToOne.Campaign__Campaign.Id
    }
+
+   if (character.Relationships.ManyToOne.CurrentSize__DomainSize != nil) {
+      tableTypeBuffer.CurrentSize__DomainSize = character.Relationships.ManyToOne.CurrentSize__DomainSize.Id
+   }
+
+   if (character.Relationships.ManyToOne.Species__DomainSpecies != nil) {
+      tableTypeBuffer.Species__DomainSpecies = character.Relationships.ManyToOne.Species__DomainSpecies.Id
+   }
+
+   if (character.Relationships.ManyToOne.Subclass__DomainSubClass != nil) {
+      tableTypeBuffer.Subclass__DomainSubClass = character.Relationships.ManyToOne.Subclass__DomainSubClass.Id
+   }
+
+   return tableTypeBuffer
 }

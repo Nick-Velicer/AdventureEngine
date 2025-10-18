@@ -50,13 +50,25 @@ func GetDomainSizeById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainSize(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainSizeDTO
    var serviceBuffer types.DomainSize
-   err := services.SaveDomainSize(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainSizeDTOToDomainSize(&DTOBuffer)
+   
+   if err := services.SaveDomainSize(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainSizeToDomainSizeDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

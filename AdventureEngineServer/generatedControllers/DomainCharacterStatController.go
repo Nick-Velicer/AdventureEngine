@@ -50,13 +50,25 @@ func GetDomainCharacterStatById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainCharacterStat(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainCharacterStatDTO
    var serviceBuffer types.DomainCharacterStat
-   err := services.SaveDomainCharacterStat(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainCharacterStatDTOToDomainCharacterStat(&DTOBuffer)
+   
+   if err := services.SaveDomainCharacterStat(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainCharacterStatToDomainCharacterStatDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

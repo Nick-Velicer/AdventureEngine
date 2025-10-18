@@ -37,7 +37,7 @@ func SaveDomainCondition(db *gorm.DB, domainCondition *types.DomainCondition) er
       return err
    }
    
-   if err := tx.Save(domainCondition).Error; err != nil {
+   if err := tx.Table("DomainCondition").Save(domainCondition).Error; err != nil {
       tx.Rollback()
       return err
    }

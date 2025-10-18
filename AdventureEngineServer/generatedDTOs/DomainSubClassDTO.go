@@ -43,7 +43,7 @@ type DomainSubClassDTO struct {
 func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass, traversedTables []string) *DomainSubClassDTO {
    
    if (domainSubClass == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainSubClass")
+      print("Nil pointer passed to DTO conversion for table DomainSubClass")
       return nil
    }
    
@@ -80,12 +80,17 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
 }
 
 func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) types.DomainSubClass {
-   return types.DomainSubClass{
-      Id: domainSubClass.Id,
-      Description: domainSubClass.Attributes.Description,
-      
-      IsActive: domainSubClass.Attributes.IsActive,
-      Title: domainSubClass.Attributes.Title,
-      ParentClass__DomainClass: domainSubClass.Relationships.ManyToOne.ParentClass__DomainClass.Id,
+   var tableTypeBuffer types.DomainSubClass
+   
+   tableTypeBuffer.Id = domainSubClass.Id
+   tableTypeBuffer.Description = domainSubClass.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainSubClass.Attributes.IsActive
+   tableTypeBuffer.Title = domainSubClass.Attributes.Title
+   
+   if (domainSubClass.Relationships.ManyToOne.ParentClass__DomainClass != nil) {
+      tableTypeBuffer.ParentClass__DomainClass = domainSubClass.Relationships.ManyToOne.ParentClass__DomainClass.Id
    }
+
+   return tableTypeBuffer
 }

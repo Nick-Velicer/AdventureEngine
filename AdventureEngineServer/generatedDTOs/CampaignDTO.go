@@ -42,7 +42,7 @@ type CampaignDTO struct {
 func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTables []string) *CampaignDTO {
    
    if (campaign == nil) {
-      print("No valid pointer passed to DTO conversion for table Campaign")
+      print("Nil pointer passed to DTO conversion for table Campaign")
       return nil
    }
    
@@ -73,11 +73,13 @@ func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTable
 }
 
 func CampaignDTOToCampaign(campaign *CampaignDTO) types.Campaign {
-   return types.Campaign{
-      Id: campaign.Id,
-      Description: campaign.Attributes.Description,
-      
-      IsActive: campaign.Attributes.IsActive,
-      Title: campaign.Attributes.Title,
-   }
+   var tableTypeBuffer types.Campaign
+   
+   tableTypeBuffer.Id = campaign.Id
+   tableTypeBuffer.Description = campaign.Attributes.Description
+   
+   tableTypeBuffer.IsActive = campaign.Attributes.IsActive
+   tableTypeBuffer.Title = campaign.Attributes.Title
+   
+   return tableTypeBuffer
 }

@@ -66,7 +66,7 @@ type DomainSpellDTO struct {
 func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, traversedTables []string) *DomainSpellDTO {
    
    if (domainSpell == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainSpell")
+      print("Nil pointer passed to DTO conversion for table DomainSpell")
       return nil
    }
    
@@ -139,34 +139,42 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
 }
 
 func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) types.DomainSpell {
-   return types.DomainSpell{
-      Id: domainSpell.Id,
-      ConcentrationRequired: domainSpell.Attributes.ConcentrationRequired,
-      DayDuration: domainSpell.Attributes.DayDuration,
-      Description: domainSpell.Attributes.Description,
-      HasSomaticRequirement: domainSpell.Attributes.HasSomaticRequirement,
-      HasVerbalRequirement: domainSpell.Attributes.HasVerbalRequirement,
-      HourCastTime: domainSpell.Attributes.HourCastTime,
-      HourDuration: domainSpell.Attributes.HourDuration,
-      
-      IsAction: domainSpell.Attributes.IsAction,
-      IsActive: domainSpell.Attributes.IsActive,
-      IsBonusAction: domainSpell.Attributes.IsBonusAction,
-      IsCantrip: domainSpell.Attributes.IsCantrip,
-      IsInstantaneous: domainSpell.Attributes.IsInstantaneous,
-      IsRitual: domainSpell.Attributes.IsRitual,
-      LastsUntilDispelled: domainSpell.Attributes.LastsUntilDispelled,
-      LevelRequirement: domainSpell.Attributes.LevelRequirement,
-      MaterialComponent: domainSpell.Attributes.MaterialComponent,
-      MinuteCastTime: domainSpell.Attributes.MinuteCastTime,
-      MinuteDuration: domainSpell.Attributes.MinuteDuration,
-      RangeFeet: domainSpell.Attributes.RangeFeet,
-      RangeMiles: domainSpell.Attributes.RangeMiles,
-      RequiresTouch: domainSpell.Attributes.RequiresTouch,
-      RoundDuration: domainSpell.Attributes.RoundDuration,
-      TargetsSelf: domainSpell.Attributes.TargetsSelf,
-      Title: domainSpell.Attributes.Title,
-      DamageScaling__DomainDice: domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice.Id,
-      School__DomainSpellSchool: domainSpell.Relationships.ManyToOne.School__DomainSpellSchool.Id,
+   var tableTypeBuffer types.DomainSpell
+   
+   tableTypeBuffer.Id = domainSpell.Id
+   tableTypeBuffer.ConcentrationRequired = domainSpell.Attributes.ConcentrationRequired
+   tableTypeBuffer.DayDuration = domainSpell.Attributes.DayDuration
+   tableTypeBuffer.Description = domainSpell.Attributes.Description
+   tableTypeBuffer.HasSomaticRequirement = domainSpell.Attributes.HasSomaticRequirement
+   tableTypeBuffer.HasVerbalRequirement = domainSpell.Attributes.HasVerbalRequirement
+   tableTypeBuffer.HourCastTime = domainSpell.Attributes.HourCastTime
+   tableTypeBuffer.HourDuration = domainSpell.Attributes.HourDuration
+   
+   tableTypeBuffer.IsAction = domainSpell.Attributes.IsAction
+   tableTypeBuffer.IsActive = domainSpell.Attributes.IsActive
+   tableTypeBuffer.IsBonusAction = domainSpell.Attributes.IsBonusAction
+   tableTypeBuffer.IsCantrip = domainSpell.Attributes.IsCantrip
+   tableTypeBuffer.IsInstantaneous = domainSpell.Attributes.IsInstantaneous
+   tableTypeBuffer.IsRitual = domainSpell.Attributes.IsRitual
+   tableTypeBuffer.LastsUntilDispelled = domainSpell.Attributes.LastsUntilDispelled
+   tableTypeBuffer.LevelRequirement = domainSpell.Attributes.LevelRequirement
+   tableTypeBuffer.MaterialComponent = domainSpell.Attributes.MaterialComponent
+   tableTypeBuffer.MinuteCastTime = domainSpell.Attributes.MinuteCastTime
+   tableTypeBuffer.MinuteDuration = domainSpell.Attributes.MinuteDuration
+   tableTypeBuffer.RangeFeet = domainSpell.Attributes.RangeFeet
+   tableTypeBuffer.RangeMiles = domainSpell.Attributes.RangeMiles
+   tableTypeBuffer.RequiresTouch = domainSpell.Attributes.RequiresTouch
+   tableTypeBuffer.RoundDuration = domainSpell.Attributes.RoundDuration
+   tableTypeBuffer.TargetsSelf = domainSpell.Attributes.TargetsSelf
+   tableTypeBuffer.Title = domainSpell.Attributes.Title
+   
+   if (domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice != nil) {
+      tableTypeBuffer.DamageScaling__DomainDice = domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice.Id
    }
+
+   if (domainSpell.Relationships.ManyToOne.School__DomainSpellSchool != nil) {
+      tableTypeBuffer.School__DomainSpellSchool = domainSpell.Relationships.ManyToOne.School__DomainSpellSchool.Id
+   }
+
+   return tableTypeBuffer
 }

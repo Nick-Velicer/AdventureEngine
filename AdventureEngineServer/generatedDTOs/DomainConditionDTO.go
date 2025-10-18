@@ -42,7 +42,7 @@ type DomainConditionDTO struct {
 func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.DomainCondition, traversedTables []string) *DomainConditionDTO {
    
    if (domainCondition == nil) {
-      print("No valid pointer passed to DTO conversion for table DomainCondition")
+      print("Nil pointer passed to DTO conversion for table DomainCondition")
       return nil
    }
    
@@ -73,11 +73,13 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
 }
 
 func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) types.DomainCondition {
-   return types.DomainCondition{
-      Id: domainCondition.Id,
-      Description: domainCondition.Attributes.Description,
-      
-      IsActive: domainCondition.Attributes.IsActive,
-      Title: domainCondition.Attributes.Title,
-   }
+   var tableTypeBuffer types.DomainCondition
+   
+   tableTypeBuffer.Id = domainCondition.Id
+   tableTypeBuffer.Description = domainCondition.Attributes.Description
+   
+   tableTypeBuffer.IsActive = domainCondition.Attributes.IsActive
+   tableTypeBuffer.Title = domainCondition.Attributes.Title
+   
+   return tableTypeBuffer
 }

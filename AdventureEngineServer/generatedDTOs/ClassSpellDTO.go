@@ -44,7 +44,7 @@ type ClassSpellDTO struct {
 func ClassSpellToClassSpellDTO(db *gorm.DB, classSpell *types.ClassSpell, traversedTables []string) *ClassSpellDTO {
    
    if (classSpell == nil) {
-      print("No valid pointer passed to DTO conversion for table ClassSpell")
+      print("Nil pointer passed to DTO conversion for table ClassSpell")
       return nil
    }
    
@@ -87,13 +87,21 @@ func ClassSpellToClassSpellDTO(db *gorm.DB, classSpell *types.ClassSpell, traver
 }
 
 func ClassSpellDTOToClassSpell(classSpell *ClassSpellDTO) types.ClassSpell {
-   return types.ClassSpell{
-      Id: classSpell.Id,
-      Description: classSpell.Attributes.Description,
-      
-      IsActive: classSpell.Attributes.IsActive,
-      Title: classSpell.Attributes.Title,
-      Class__DomainClass: classSpell.Relationships.ManyToOne.Class__DomainClass.Id,
-      Spell__DomainSpell: classSpell.Relationships.ManyToOne.Spell__DomainSpell.Id,
+   var tableTypeBuffer types.ClassSpell
+   
+   tableTypeBuffer.Id = classSpell.Id
+   tableTypeBuffer.Description = classSpell.Attributes.Description
+   
+   tableTypeBuffer.IsActive = classSpell.Attributes.IsActive
+   tableTypeBuffer.Title = classSpell.Attributes.Title
+   
+   if (classSpell.Relationships.ManyToOne.Class__DomainClass != nil) {
+      tableTypeBuffer.Class__DomainClass = classSpell.Relationships.ManyToOne.Class__DomainClass.Id
    }
+
+   if (classSpell.Relationships.ManyToOne.Spell__DomainSpell != nil) {
+      tableTypeBuffer.Spell__DomainSpell = classSpell.Relationships.ManyToOne.Spell__DomainSpell.Id
+   }
+
+   return tableTypeBuffer
 }

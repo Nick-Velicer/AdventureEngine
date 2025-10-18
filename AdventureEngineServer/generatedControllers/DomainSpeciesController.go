@@ -50,13 +50,25 @@ func GetDomainSpeciesById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainSpecies(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainSpeciesDTO
    var serviceBuffer types.DomainSpecies
-   err := services.SaveDomainSpecies(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainSpeciesDTOToDomainSpecies(&DTOBuffer)
+   
+   if err := services.SaveDomainSpecies(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainSpeciesToDomainSpeciesDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

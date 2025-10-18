@@ -37,7 +37,7 @@ func SaveCharacter(db *gorm.DB, character *types.Character) error {
       return err
    }
    
-   if err := tx.Save(character).Error; err != nil {
+   if err := tx.Table("Character").Save(character).Error; err != nil {
       tx.Rollback()
       return err
    }

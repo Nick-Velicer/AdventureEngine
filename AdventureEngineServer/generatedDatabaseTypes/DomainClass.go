@@ -4,16 +4,16 @@ package generatedDatabaseTypes
 
 type DomainClass struct {
 	// Description corresponds to the JSON schema field "Description".
-	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
+	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// HitDieDomainDice corresponds to the JSON schema field "HitDie__DomainDice".
-	HitDie__DomainDice *float64 `json:"HitDie__DomainDice,omitempty" yaml:"HitDie__DomainDice,omitempty" mapstructure:"HitDie__DomainDice,omitempty"`
+	HitDie__DomainDice *float64 `json:"HitDie__DomainDice" gorm:"column:HitDie__DomainDice" mapstructure:"HitDie__DomainDice"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
+	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
-	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// PrimaryStatsClassPrimaryAbility corresponds to the JSON schema field
 	// "PrimaryStats__ClassPrimaryAbility".
@@ -22,8 +22,8 @@ type DomainClass struct {
 
 	// SpellcastingStatDomainCharacterStat corresponds to the JSON schema field
 	// "SpellcastingStat__DomainCharacterStat".
-	SpellcastingStat__DomainCharacterStat *float64 `json:"SpellcastingStat__DomainCharacterStat,omitempty" yaml:"SpellcastingStat__DomainCharacterStat,omitempty" mapstructure:"SpellcastingStat__DomainCharacterStat,omitempty"`
+	SpellcastingStat__DomainCharacterStat *float64 `json:"SpellcastingStat__DomainCharacterStat" gorm:"column:SpellcastingStat__DomainCharacterStat" mapstructure:"SpellcastingStat__DomainCharacterStat"`
 
 	// Title corresponds to the JSON schema field "Title".
-	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 }

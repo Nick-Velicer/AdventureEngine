@@ -44,7 +44,7 @@ type CharacterDomainCharacterStatInstanceDTO struct {
 func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance, traversedTables []string) *CharacterDomainCharacterStatInstanceDTO {
    
    if (characterDomainCharacterStatInstance == nil) {
-      print("No valid pointer passed to DTO conversion for table CharacterDomainCharacterStatInstance")
+      print("Nil pointer passed to DTO conversion for table CharacterDomainCharacterStatInstance")
       return nil
    }
    
@@ -87,13 +87,21 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
 }
 
 func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstance(characterDomainCharacterStatInstance *CharacterDomainCharacterStatInstanceDTO) types.CharacterDomainCharacterStatInstance {
-   return types.CharacterDomainCharacterStatInstance{
-      Id: characterDomainCharacterStatInstance.Id,
-      Description: characterDomainCharacterStatInstance.Attributes.Description,
-      
-      IsActive: characterDomainCharacterStatInstance.Attributes.IsActive,
-      Title: characterDomainCharacterStatInstance.Attributes.Title,
-      Character__Character: characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character.Id,
-      StatInstance__DomainCharacterStat: characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstance__DomainCharacterStat.Id,
+   var tableTypeBuffer types.CharacterDomainCharacterStatInstance
+   
+   tableTypeBuffer.Id = characterDomainCharacterStatInstance.Id
+   tableTypeBuffer.Description = characterDomainCharacterStatInstance.Attributes.Description
+   
+   tableTypeBuffer.IsActive = characterDomainCharacterStatInstance.Attributes.IsActive
+   tableTypeBuffer.Title = characterDomainCharacterStatInstance.Attributes.Title
+   
+   if (characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character != nil) {
+      tableTypeBuffer.Character__Character = characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character.Id
    }
+
+   if (characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstance__DomainCharacterStat != nil) {
+      tableTypeBuffer.StatInstance__DomainCharacterStat = characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstance__DomainCharacterStat.Id
+   }
+
+   return tableTypeBuffer
 }

@@ -50,13 +50,25 @@ func GetDomainConditionById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainCondition(ctx *gin.Context, db *gorm.DB) {
+   var DTOBuffer dtos.DomainConditionDTO
    var serviceBuffer types.DomainCondition
-   err := services.SaveDomainCondition(db, &serviceBuffer)
-   if err != nil {
+   
+   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
+   
+   serviceBuffer = dtos.DomainConditionDTOToDomainCondition(&DTOBuffer)
+   
+   if err := services.SaveDomainCondition(db, &serviceBuffer); err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    returnBuffer := dtos.DomainConditionToDomainConditionDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if DTOBuffer.Id != nil {
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   } else {
+      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
+   }
 }

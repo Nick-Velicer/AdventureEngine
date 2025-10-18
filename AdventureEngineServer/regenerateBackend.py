@@ -214,13 +214,19 @@ def produceDTOForType(tableName: str, typeMeta: dict):
         lines = [
             'func ' + tableName + 'DTOTo' + tableName + '(' + objectArgName + ' *' + tableName + 'DTO) types.' + tableName + ' {',
             *indentLineBlock([
-                'return types.' + tableName + '{',
-                *indentLineBlock([
-                    'Id: ' + objectArgName + '.Id,',
-                    *[(attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.Attributes.' + attribute + ',' if attribute != 'Id' else '') for attribute in typeMeta['attributes']],
-                    *[relationship[0].upper() + relationship[1:] + ': ' + objectArgName + '.Relationships.ManyToOne.' + relationship + '.Id,' for relationship in typeMeta["relationships"]['manyToOne']],
-                ]),
-                '}',
+                'var tableTypeBuffer types.' + tableName,
+                '',
+                'tableTypeBuffer.Id = ' + objectArgName + '.Id',
+                *[('tableTypeBuffer.' + (attribute[0].upper() + attribute[1:] + ' = ' + objectArgName + '.Attributes.' + attribute + '') if attribute != 'Id' else '') for attribute in typeMeta['attributes']],
+                '',
+                *[
+                    #Not technically using the indentLineBlock convention, but python doesn't like the extra inner looping/unpacking so this is relatively a reasonable tradeoff
+                    'if (' + objectArgName + '.Relationships.ManyToOne.' + relationship + ' != nil) {\n' +
+                    '      tableTypeBuffer.' + relationship + ' = ' + objectArgName + '.Relationships.ManyToOne.' + relationship + '.Id\n' + 
+                    '   }\n'
+                    for relationship in typeMeta["relationships"]['manyToOne']
+                ],
+                'return tableTypeBuffer'
             ]),
             '}'
         ]
@@ -235,7 +241,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                 '',
                 'if (' + objectArgName + ' == nil) {',
                 *indentLineBlock([
-                    'print("No valid pointer passed to DTO conversion for table ' + tableName + '")',
+                    'print("Nil pointer passed to DTO conversion for table ' + tableName + '")',
                     'return nil'
                 ]),
                 '}',
@@ -373,7 +379,7 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                 '   return err',
                 '}',
                 '',
-                'if err := tx.Save(' + objectArgName + ').Error; err != nil {',
+                'if err := tx.Table("' + tableName + '").Save(' + objectArgName + ').Error; err != nil {',
                 '   tx.Rollback()',
                 '   return err',
                 '}',
@@ -542,9 +548,19 @@ def produceControllerFileForType(tableName: str):
         lines = [
             'func Save' + tableName + '(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
             *indentLineBlock([
+                'var DTOBuffer dtos.' + tableName + 'DTO',
                 'var serviceBuffer types.' + tableName,
-                'err := services.Save' + tableName + '(' + dbArgName + ', &serviceBuffer)',
-                'if err != nil {',
+                '',
+                'if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {',
+                *indentLineBlock([
+                    'ctx.IndentedJSON(http.StatusBadRequest, err.Error())',
+                    'return'
+                ]),
+                '}',
+                '',
+                'serviceBuffer = dtos.' + tableName + 'DTOTo' + tableName + '(&DTOBuffer)',
+                '',
+                'if err := services.Save' + tableName + '(' + dbArgName + ', &serviceBuffer); err != nil {',
                 *indentLineBlock([
                     'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
                     'return'
@@ -552,7 +568,15 @@ def produceControllerFileForType(tableName: str):
                 '}',
                 '',
                 'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, []string{})',
-                'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
+                'if DTOBuffer.Id != nil {',
+                *indentLineBlock([  
+                    'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
+                ]),
+                '} else {',
+                *indentLineBlock([  
+                    'ctx.IndentedJSON(http.StatusCreated, returnBuffer)'
+                ]),
+                '}'
 	        ]),
             '}'
         ]
