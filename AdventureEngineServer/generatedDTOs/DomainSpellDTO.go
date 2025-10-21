@@ -56,7 +56,7 @@ type DomainSpellDTORelationships struct {
 }
 
 type DomainSpellDTO struct {
-   Id *float64
+   Id *int
    
    Attributes DomainSpellDTOAttributes
    
@@ -66,7 +66,7 @@ type DomainSpellDTO struct {
 func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, traversedTables []string) *DomainSpellDTO {
    
    if (domainSpell == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainSpell")
+      print("Nil pointer passed to DTO conversion for table DomainSpell\n")
       return nil
    }
    
@@ -77,16 +77,16 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSpell).Name())
    
-   var includedDamageScaling__DomainDice types.DomainDice
-   var includedSchool__DomainSpellSchool types.DomainSpellSchool
+   var includedDamageScaling__DomainDice *types.DomainDice
+   var includedSchool__DomainSpellSchool *types.DomainSpellSchool
    var includedClasses__ClassSpells []types.ClassSpell
    
    if (domainSpell.DamageScaling__DomainDice != nil) {
-      services.GetDomainDiceById(db, int(*domainSpell.DamageScaling__DomainDice), &includedDamageScaling__DomainDice)
+      services.GetDomainDiceById(db, int(*domainSpell.DamageScaling__DomainDice), includedDamageScaling__DomainDice)
    }
 
    if (domainSpell.School__DomainSpellSchool != nil) {
-      services.GetDomainSpellSchoolById(db, int(*domainSpell.School__DomainSpellSchool), &includedSchool__DomainSpellSchool)
+      services.GetDomainSpellSchoolById(db, int(*domainSpell.School__DomainSpellSchool), includedSchool__DomainSpellSchool)
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedClasses__ClassSpells).Elem().Name())) {
@@ -128,8 +128,8 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
       },
       Relationships: DomainSpellDTORelationships{
          ManyToOne: DomainSpellDTOManyToOneRelationships {
-            DamageScaling__DomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScaling__DomainDice, traversedTables),
-            School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchool__DomainSpellSchool, traversedTables),
+            DamageScaling__DomainDice: DomainDiceToDomainDiceDTO(db, includedDamageScaling__DomainDice, traversedTables),
+            School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, includedSchool__DomainSpellSchool, traversedTables),
          },
          OneToMany: DomainSpellDTOOneToManyRelationships {
             Classes__ClassSpell: utils.Map(includedClasses__ClassSpells, func(relationshipElement types.ClassSpell) *ClassSpellDTO { return ClassSpellToClassSpellDTO(db, &relationshipElement, traversedTables) }),

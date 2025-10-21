@@ -8,9 +8,11 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -65,7 +67,12 @@ func createDB() *gorm.DB {
 
 	db.Close()
 
-	returnGormDB, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	returnGormDB, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			NoLowerCase:  true, // skip the snake_casing of names
+			NameReplacer: strings.NewReplacer("Id", "Id"),
+		},
+	})
 
 	if err != nil {
 		log.Fatal(err.Error())

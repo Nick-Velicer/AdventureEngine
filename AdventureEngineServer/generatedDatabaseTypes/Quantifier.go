@@ -5,15 +5,15 @@ package generatedDatabaseTypes
 type Quantifier struct {
 	// AddedSpellDomainSpell corresponds to the JSON schema field
 	// "AddedSpell__DomainSpell".
-	AddedSpell__DomainSpell *float64 `json:"AddedSpell__DomainSpell" gorm:"column:AddedSpell__DomainSpell" mapstructure:"AddedSpell__DomainSpell"`
+	AddedSpell__DomainSpell *int `json:"AddedSpell__DomainSpell" gorm:"column:AddedSpell__DomainSpell" mapstructure:"AddedSpell__DomainSpell"`
 
 	// ConditionDomainCondition corresponds to the JSON schema field
 	// "Condition__DomainCondition".
-	Condition__DomainCondition *float64 `json:"Condition__DomainCondition" gorm:"column:Condition__DomainCondition" mapstructure:"Condition__DomainCondition"`
+	Condition__DomainCondition *int `json:"Condition__DomainCondition" gorm:"column:Condition__DomainCondition" mapstructure:"Condition__DomainCondition"`
 
 	// DamageTypeDomainDamageType corresponds to the JSON schema field
 	// "DamageType__DomainDamageType".
-	DamageType__DomainDamageType *float64 `json:"DamageType__DomainDamageType" gorm:"column:DamageType__DomainDamageType" mapstructure:"DamageType__DomainDamageType"`
+	DamageType__DomainDamageType *int `json:"DamageType__DomainDamageType" gorm:"column:DamageType__DomainDamageType" mapstructure:"DamageType__DomainDamageType"`
 
 	// Delta corresponds to the JSON schema field "Delta".
 	Delta *float64 `json:"Delta" gorm:"column:Delta" mapstructure:"Delta"`
@@ -23,10 +23,10 @@ type Quantifier struct {
 
 	// EffectDomainStaticEffect corresponds to the JSON schema field
 	// "Effect__DomainStaticEffect".
-	Effect__DomainStaticEffect *float64 `json:"Effect__DomainStaticEffect" gorm:"column:Effect__DomainStaticEffect" mapstructure:"Effect__DomainStaticEffect"`
+	Effect__DomainStaticEffect *int `json:"Effect__DomainStaticEffect" gorm:"column:Effect__DomainStaticEffect" mapstructure:"Effect__DomainStaticEffect"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
+	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// ImpactsSelf corresponds to the JSON schema field "ImpactsSelf".
 	ImpactsSelf *bool `json:"ImpactsSelf" gorm:"column:ImpactsSelf" mapstructure:"ImpactsSelf"`
@@ -89,15 +89,15 @@ type Quantifier struct {
 
 	// ResistanceTypeDomainDamageType corresponds to the JSON schema field
 	// "ResistanceType__DomainDamageType".
-	ResistanceType__DomainDamageType *float64 `json:"ResistanceType__DomainDamageType" gorm:"column:ResistanceType__DomainDamageType" mapstructure:"ResistanceType__DomainDamageType"`
+	ResistanceType__DomainDamageType *int `json:"ResistanceType__DomainDamageType" gorm:"column:ResistanceType__DomainDamageType" mapstructure:"ResistanceType__DomainDamageType"`
 
 	// SaveDomainCharacterStat corresponds to the JSON schema field
 	// "Save__DomainCharacterStat".
-	Save__DomainCharacterStat *float64 `json:"Save__DomainCharacterStat" gorm:"column:Save__DomainCharacterStat" mapstructure:"Save__DomainCharacterStat"`
+	Save__DomainCharacterStat *int `json:"Save__DomainCharacterStat" gorm:"column:Save__DomainCharacterStat" mapstructure:"Save__DomainCharacterStat"`
 
 	// TargetDomainCharacterStat corresponds to the JSON schema field
 	// "Target__DomainCharacterStat".
-	Target__DomainCharacterStat *float64 `json:"Target__DomainCharacterStat" gorm:"column:Target__DomainCharacterStat" mapstructure:"Target__DomainCharacterStat"`
+	Target__DomainCharacterStat *int `json:"Target__DomainCharacterStat" gorm:"column:Target__DomainCharacterStat" mapstructure:"Target__DomainCharacterStat"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`

@@ -33,7 +33,7 @@ type DomainSubClassDTORelationships struct {
 }
 
 type DomainSubClassDTO struct {
-   Id *float64
+   Id *int
    
    Attributes DomainSubClassDTOAttributes
    
@@ -43,7 +43,7 @@ type DomainSubClassDTO struct {
 func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass, traversedTables []string) *DomainSubClassDTO {
    
    if (domainSubClass == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainSubClass")
+      print("Nil pointer passed to DTO conversion for table DomainSubClass\n")
       return nil
    }
    
@@ -54,10 +54,10 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSubClass).Name())
    
-   var includedParentClass__DomainClass types.DomainClass
+   var includedParentClass__DomainClass *types.DomainClass
    
    if (domainSubClass.ParentClass__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*domainSubClass.ParentClass__DomainClass), &includedParentClass__DomainClass)
+      services.GetDomainClassById(db, int(*domainSubClass.ParentClass__DomainClass), includedParentClass__DomainClass)
    }
 
    
@@ -71,7 +71,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
       },
       Relationships: DomainSubClassDTORelationships{
          ManyToOne: DomainSubClassDTOManyToOneRelationships {
-            ParentClass__DomainClass: DomainClassToDomainClassDTO(db, &includedParentClass__DomainClass, traversedTables),
+            ParentClass__DomainClass: DomainClassToDomainClassDTO(db, includedParentClass__DomainClass, traversedTables),
          },
          OneToMany: DomainSubClassDTOOneToManyRelationships {
          },

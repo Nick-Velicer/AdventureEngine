@@ -32,7 +32,7 @@ type DomainDamageTypeDTORelationships struct {
 }
 
 type DomainDamageTypeDTO struct {
-   Id *float64
+   Id *int
    
    Attributes DomainDamageTypeDTOAttributes
    
@@ -42,7 +42,7 @@ type DomainDamageTypeDTO struct {
 func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.DomainDamageType, traversedTables []string) *DomainDamageTypeDTO {
    
    if (domainDamageType == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainDamageType")
+      print("Nil pointer passed to DTO conversion for table DomainDamageType\n")
       return nil
    }
    

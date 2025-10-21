@@ -37,15 +37,25 @@ func SaveCharacter(db *gorm.DB, character *types.Character) error {
       return err
    }
    
-   if err := tx.Table("Character").Save(character).Error; err != nil {
-      tx.Rollback()
-      return err
+   if character.Id != nil {
+      print("Saving\n")
+      if err := tx.Table("Character").Save(character).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+   } else {
+      print("Creating\n")
+      if err := tx.Table("Character").Create(character).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+      print(character.Id)
    }
    
    return tx.Commit().Error
 }
 
 func GetCharacterDomainCharacterStatInstancesByCharacterId(db *gorm.DB, id int, CharacterDomainCharacterStatInstances *[]types.CharacterDomainCharacterStatInstance) error {
-   result := db.Table("CharacterDomainCharacterStatInstance").Where(map[string]interface{}{"Character__Character": id}).Find(&CharacterDomainCharacterStatInstances)
+   result := db.Table("CharacterDomainCharacterStatInstance").Where(map[string]interface{}{"Character__Character": id}).Find(CharacterDomainCharacterStatInstances)
    return result.Error
 }

@@ -7,10 +7,10 @@ type DomainClass struct {
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// HitDieDomainDice corresponds to the JSON schema field "HitDie__DomainDice".
-	HitDie__DomainDice *float64 `json:"HitDie__DomainDice" gorm:"column:HitDie__DomainDice" mapstructure:"HitDie__DomainDice"`
+	HitDie__DomainDice *int `json:"HitDie__DomainDice" gorm:"column:HitDie__DomainDice" mapstructure:"HitDie__DomainDice"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
+	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
@@ -22,7 +22,7 @@ type DomainClass struct {
 
 	// SpellcastingStatDomainCharacterStat corresponds to the JSON schema field
 	// "SpellcastingStat__DomainCharacterStat".
-	SpellcastingStat__DomainCharacterStat *float64 `json:"SpellcastingStat__DomainCharacterStat" gorm:"column:SpellcastingStat__DomainCharacterStat" mapstructure:"SpellcastingStat__DomainCharacterStat"`
+	SpellcastingStat__DomainCharacterStat *int `json:"SpellcastingStat__DomainCharacterStat" gorm:"column:SpellcastingStat__DomainCharacterStat" mapstructure:"SpellcastingStat__DomainCharacterStat"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`

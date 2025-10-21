@@ -60,7 +60,7 @@ type QuantifierDTORelationships struct {
 }
 
 type QuantifierDTO struct {
-   Id *float64
+   Id *int
    
    Attributes QuantifierDTOAttributes
    
@@ -70,7 +70,7 @@ type QuantifierDTO struct {
 func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traversedTables []string) *QuantifierDTO {
    
    if (quantifier == nil) {
-      print("Nil pointer passed to DTO conversion for table Quantifier")
+      print("Nil pointer passed to DTO conversion for table Quantifier\n")
       return nil
    }
    
@@ -81,40 +81,40 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
    
    traversedTables = append(traversedTables, reflect.TypeOf(*quantifier).Name())
    
-   var includedAddedSpell__DomainSpell types.DomainSpell
-   var includedCondition__DomainCondition types.DomainCondition
-   var includedDamageType__DomainDamageType types.DomainDamageType
-   var includedEffect__DomainStaticEffect types.DomainStaticEffect
-   var includedResistanceType__DomainDamageType types.DomainDamageType
-   var includedSave__DomainCharacterStat types.DomainCharacterStat
-   var includedTarget__DomainCharacterStat types.DomainCharacterStat
+   var includedAddedSpell__DomainSpell *types.DomainSpell
+   var includedCondition__DomainCondition *types.DomainCondition
+   var includedDamageType__DomainDamageType *types.DomainDamageType
+   var includedEffect__DomainStaticEffect *types.DomainStaticEffect
+   var includedResistanceType__DomainDamageType *types.DomainDamageType
+   var includedSave__DomainCharacterStat *types.DomainCharacterStat
+   var includedTarget__DomainCharacterStat *types.DomainCharacterStat
    
    if (quantifier.AddedSpell__DomainSpell != nil) {
-      services.GetDomainSpellById(db, int(*quantifier.AddedSpell__DomainSpell), &includedAddedSpell__DomainSpell)
+      services.GetDomainSpellById(db, int(*quantifier.AddedSpell__DomainSpell), includedAddedSpell__DomainSpell)
    }
 
    if (quantifier.Condition__DomainCondition != nil) {
-      services.GetDomainConditionById(db, int(*quantifier.Condition__DomainCondition), &includedCondition__DomainCondition)
+      services.GetDomainConditionById(db, int(*quantifier.Condition__DomainCondition), includedCondition__DomainCondition)
    }
 
    if (quantifier.DamageType__DomainDamageType != nil) {
-      services.GetDomainDamageTypeById(db, int(*quantifier.DamageType__DomainDamageType), &includedDamageType__DomainDamageType)
+      services.GetDomainDamageTypeById(db, int(*quantifier.DamageType__DomainDamageType), includedDamageType__DomainDamageType)
    }
 
    if (quantifier.Effect__DomainStaticEffect != nil) {
-      services.GetDomainStaticEffectById(db, int(*quantifier.Effect__DomainStaticEffect), &includedEffect__DomainStaticEffect)
+      services.GetDomainStaticEffectById(db, int(*quantifier.Effect__DomainStaticEffect), includedEffect__DomainStaticEffect)
    }
 
    if (quantifier.ResistanceType__DomainDamageType != nil) {
-      services.GetDomainDamageTypeById(db, int(*quantifier.ResistanceType__DomainDamageType), &includedResistanceType__DomainDamageType)
+      services.GetDomainDamageTypeById(db, int(*quantifier.ResistanceType__DomainDamageType), includedResistanceType__DomainDamageType)
    }
 
    if (quantifier.Save__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*quantifier.Save__DomainCharacterStat), &includedSave__DomainCharacterStat)
+      services.GetDomainCharacterStatById(db, int(*quantifier.Save__DomainCharacterStat), includedSave__DomainCharacterStat)
    }
 
    if (quantifier.Target__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*quantifier.Target__DomainCharacterStat), &includedTarget__DomainCharacterStat)
+      services.GetDomainCharacterStatById(db, int(*quantifier.Target__DomainCharacterStat), includedTarget__DomainCharacterStat)
    }
 
    
@@ -149,13 +149,13 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
       },
       Relationships: QuantifierDTORelationships{
          ManyToOne: QuantifierDTOManyToOneRelationships {
-            AddedSpell__DomainSpell: DomainSpellToDomainSpellDTO(db, &includedAddedSpell__DomainSpell, traversedTables),
-            Condition__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedCondition__DomainCondition, traversedTables),
-            DamageType__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedDamageType__DomainDamageType, traversedTables),
-            Effect__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedEffect__DomainStaticEffect, traversedTables),
-            ResistanceType__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedResistanceType__DomainDamageType, traversedTables),
-            Save__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSave__DomainCharacterStat, traversedTables),
-            Target__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedTarget__DomainCharacterStat, traversedTables),
+            AddedSpell__DomainSpell: DomainSpellToDomainSpellDTO(db, includedAddedSpell__DomainSpell, traversedTables),
+            Condition__DomainCondition: DomainConditionToDomainConditionDTO(db, includedCondition__DomainCondition, traversedTables),
+            DamageType__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, includedDamageType__DomainDamageType, traversedTables),
+            Effect__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, includedEffect__DomainStaticEffect, traversedTables),
+            ResistanceType__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, includedResistanceType__DomainDamageType, traversedTables),
+            Save__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedSave__DomainCharacterStat, traversedTables),
+            Target__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedTarget__DomainCharacterStat, traversedTables),
          },
          OneToMany: QuantifierDTOOneToManyRelationships {
          },

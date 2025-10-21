@@ -33,7 +33,7 @@ type DomainSpeciesDTORelationships struct {
 }
 
 type DomainSpeciesDTO struct {
-   Id *float64
+   Id *int
    
    Attributes DomainSpeciesDTOAttributes
    
@@ -43,7 +43,7 @@ type DomainSpeciesDTO struct {
 func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies, traversedTables []string) *DomainSpeciesDTO {
    
    if (domainSpecies == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainSpecies")
+      print("Nil pointer passed to DTO conversion for table DomainSpecies\n")
       return nil
    }
    
@@ -54,10 +54,10 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSpecies).Name())
    
-   var includedCreatureType__DomainCreatureType types.DomainCreatureType
+   var includedCreatureType__DomainCreatureType *types.DomainCreatureType
    
    if (domainSpecies.CreatureType__DomainCreatureType != nil) {
-      services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureType__DomainCreatureType), &includedCreatureType__DomainCreatureType)
+      services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureType__DomainCreatureType), includedCreatureType__DomainCreatureType)
    }
 
    
@@ -71,7 +71,7 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
       },
       Relationships: DomainSpeciesDTORelationships{
          ManyToOne: DomainSpeciesDTOManyToOneRelationships {
-            CreatureType__DomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureType__DomainCreatureType, traversedTables),
+            CreatureType__DomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, includedCreatureType__DomainCreatureType, traversedTables),
          },
          OneToMany: DomainSpeciesDTOOneToManyRelationships {
          },

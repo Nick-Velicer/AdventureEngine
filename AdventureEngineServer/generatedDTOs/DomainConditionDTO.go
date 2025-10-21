@@ -32,7 +32,7 @@ type DomainConditionDTORelationships struct {
 }
 
 type DomainConditionDTO struct {
-   Id *float64
+   Id *int
    
    Attributes DomainConditionDTOAttributes
    
@@ -42,7 +42,7 @@ type DomainConditionDTO struct {
 func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.DomainCondition, traversedTables []string) *DomainConditionDTO {
    
    if (domainCondition == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainCondition")
+      print("Nil pointer passed to DTO conversion for table DomainCondition\n")
       return nil
    }
    

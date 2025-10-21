@@ -37,9 +37,19 @@ func SaveClassSave(db *gorm.DB, classSave *types.ClassSave) error {
       return err
    }
    
-   if err := tx.Table("ClassSave").Save(classSave).Error; err != nil {
-      tx.Rollback()
-      return err
+   if classSave.Id != nil {
+      print("Saving\n")
+      if err := tx.Table("ClassSave").Save(classSave).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+   } else {
+      print("Creating\n")
+      if err := tx.Table("ClassSave").Create(classSave).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+      print(classSave.Id)
    }
    
    return tx.Commit().Error

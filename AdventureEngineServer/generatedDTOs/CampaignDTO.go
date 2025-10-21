@@ -32,7 +32,7 @@ type CampaignDTORelationships struct {
 }
 
 type CampaignDTO struct {
-   Id *float64
+   Id *int
    
    Attributes CampaignDTOAttributes
    
@@ -42,7 +42,7 @@ type CampaignDTO struct {
 func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTables []string) *CampaignDTO {
    
    if (campaign == nil) {
-      print("Nil pointer passed to DTO conversion for table Campaign")
+      print("Nil pointer passed to DTO conversion for table Campaign\n")
       return nil
    }
    

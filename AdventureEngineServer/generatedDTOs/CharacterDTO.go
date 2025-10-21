@@ -37,7 +37,7 @@ type CharacterDTORelationships struct {
 }
 
 type CharacterDTO struct {
-   Id *float64
+   Id *int
    
    Attributes CharacterDTOAttributes
    
@@ -47,7 +47,7 @@ type CharacterDTO struct {
 func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedTables []string) *CharacterDTO {
    
    if (character == nil) {
-      print("Nil pointer passed to DTO conversion for table Character")
+      print("Nil pointer passed to DTO conversion for table Character\n")
       return nil
    }
    
@@ -58,26 +58,26 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
    
    traversedTables = append(traversedTables, reflect.TypeOf(*character).Name())
    
-   var includedCampaign__Campaign types.Campaign
-   var includedCurrentSize__DomainSize types.DomainSize
-   var includedSpecies__DomainSpecies types.DomainSpecies
-   var includedSubclass__DomainSubClass types.DomainSubClass
+   var includedCampaign__Campaign *types.Campaign
+   var includedCurrentSize__DomainSize *types.DomainSize
+   var includedSpecies__DomainSpecies *types.DomainSpecies
+   var includedSubclass__DomainSubClass *types.DomainSubClass
    var includedStats__CharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
    
    if (character.Campaign__Campaign != nil) {
-      services.GetCampaignById(db, int(*character.Campaign__Campaign), &includedCampaign__Campaign)
+      services.GetCampaignById(db, int(*character.Campaign__Campaign), includedCampaign__Campaign)
    }
 
    if (character.CurrentSize__DomainSize != nil) {
-      services.GetDomainSizeById(db, int(*character.CurrentSize__DomainSize), &includedCurrentSize__DomainSize)
+      services.GetDomainSizeById(db, int(*character.CurrentSize__DomainSize), includedCurrentSize__DomainSize)
    }
 
    if (character.Species__DomainSpecies != nil) {
-      services.GetDomainSpeciesById(db, int(*character.Species__DomainSpecies), &includedSpecies__DomainSpecies)
+      services.GetDomainSpeciesById(db, int(*character.Species__DomainSpecies), includedSpecies__DomainSpecies)
    }
 
    if (character.Subclass__DomainSubClass != nil) {
-      services.GetDomainSubClassById(db, int(*character.Subclass__DomainSubClass), &includedSubclass__DomainSubClass)
+      services.GetDomainSubClassById(db, int(*character.Subclass__DomainSubClass), includedSubclass__DomainSubClass)
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedStats__CharacterDomainCharacterStatInstances).Elem().Name())) {
@@ -98,10 +98,10 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
       },
       Relationships: CharacterDTORelationships{
          ManyToOne: CharacterDTOManyToOneRelationships {
-            Campaign__Campaign: CampaignToCampaignDTO(db, &includedCampaign__Campaign, traversedTables),
-            CurrentSize__DomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSize__DomainSize, traversedTables),
-            Species__DomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpecies__DomainSpecies, traversedTables),
-            Subclass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubclass__DomainSubClass, traversedTables),
+            Campaign__Campaign: CampaignToCampaignDTO(db, includedCampaign__Campaign, traversedTables),
+            CurrentSize__DomainSize: DomainSizeToDomainSizeDTO(db, includedCurrentSize__DomainSize, traversedTables),
+            Species__DomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, includedSpecies__DomainSpecies, traversedTables),
+            Subclass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, includedSubclass__DomainSubClass, traversedTables),
          },
          OneToMany: CharacterDTOOneToManyRelationships {
             Stats__CharacterDomainCharacterStatInstance: utils.Map(includedStats__CharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, traversedTables) }),

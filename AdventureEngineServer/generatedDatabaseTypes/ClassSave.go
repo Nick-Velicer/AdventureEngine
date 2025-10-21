@@ -4,20 +4,20 @@ package generatedDatabaseTypes
 
 type ClassSave struct {
 	// ClassDomainClass corresponds to the JSON schema field "Class__DomainClass".
-	Class__DomainClass *float64 `json:"Class__DomainClass" gorm:"column:Class__DomainClass" mapstructure:"Class__DomainClass"`
+	Class__DomainClass *int `json:"Class__DomainClass" gorm:"column:Class__DomainClass" mapstructure:"Class__DomainClass"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
+	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// StatDomainCharacterStat corresponds to the JSON schema field
 	// "Stat__DomainCharacterStat".
-	Stat__DomainCharacterStat *float64 `json:"Stat__DomainCharacterStat" gorm:"column:Stat__DomainCharacterStat" mapstructure:"Stat__DomainCharacterStat"`
+	Stat__DomainCharacterStat *int `json:"Stat__DomainCharacterStat" gorm:"column:Stat__DomainCharacterStat" mapstructure:"Stat__DomainCharacterStat"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`

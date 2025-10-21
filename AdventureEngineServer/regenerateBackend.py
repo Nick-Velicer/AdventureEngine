@@ -241,7 +241,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                 '',
                 'if (' + objectArgName + ' == nil) {',
                 *indentLineBlock([
-                    'print("Nil pointer passed to DTO conversion for table ' + tableName + '")',
+                    'print("Nil pointer passed to DTO conversion for table ' + tableName + '\\n")',
                     'return nil'
                 ]),
                 '}',
@@ -255,13 +255,13 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                 '',
                 'traversedTables = append(traversedTables, reflect.TypeOf(*' + objectArgName + ').Name())',
                 '',
-                *['var included' + relationship + ' types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
+                *['var included' + relationship + ' *types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
                 *['var included' + relationship + 's []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['oneToMany']],
                 '',
                 *[
                     #Not technically using the indentLineBlock convention, but python doesn't like the extra inner looping/unpacking so this is relatively a reasonable tradeoff
                     'if (' + objectArgName + '.' + relationship + ' != nil) {\n' +
-                    '      services.Get' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), &included' + relationship + ')\n'  +
+                    '      services.Get' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), included' + relationship + ')\n'  +
                     '   }\n'
                     for relationship in typeMeta["relationships"]['manyToOne']
                 ],
@@ -284,7 +284,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                     'Relationships: ' + tableName + 'DTORelationships{',
                     *indentLineBlock([
                         'ManyToOne: ' + tableName + 'DTOManyToOneRelationships {',
-                        *indentLineBlock([relationship + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + ', traversedTables),' for relationship in typeMeta["relationships"]['manyToOne']]),
+                        *indentLineBlock([relationship + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', included' + relationship + ', traversedTables),' for relationship in typeMeta["relationships"]['manyToOne']]),
                         '},',
                         'OneToMany: ' + tableName + 'DTOOneToManyRelationships {',
                         *indentLineBlock([relationship + ': utils.Map(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &relationshipElement, traversedTables) }),' for relationship in typeMeta["relationships"]['oneToMany']]),
@@ -336,7 +336,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
         '',
         'type ' + tableName + 'DTO struct {',
         *indentLineBlock([
-            'Id *float64',
+            'Id *int',
             '',
             'Attributes ' + tableName + 'DTOAttributes',
             '',
@@ -370,18 +370,41 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                 'defer func() {',
                 *indentLineBlock([
                     'if r := recover(); r != nil {',
-                    '   tx.Rollback()',    
+                    *indentLineBlock([
+                        'tx.Rollback()'
+                    ]),  
                     '}'
                 ]),
                 '}()',
                 '',
                 'if err := tx.Error; err != nil {',
-                '   return err',
+                *indentLineBlock([
+                    'return err',
+                ]),
                 '}',
                 '',
-                'if err := tx.Table("' + tableName + '").Save(' + objectArgName + ').Error; err != nil {',
-                '   tx.Rollback()',
-                '   return err',
+                'if ' + objectArgName + '.Id != nil {',
+                *indentLineBlock([
+                    'print("Saving\\n")',
+                    'if err := tx.Table("' + tableName + '").Save(' + objectArgName + ').Error; err != nil {',
+                    *indentLineBlock([
+                        'tx.Rollback()',
+                        'return err',
+                    ]),
+                    '}',
+                ]),
+
+                '} else {',
+                *indentLineBlock([
+                    'print("Creating\\n")',
+                    'if err := tx.Table("' + tableName + '").Create(' + objectArgName + ').Error; err != nil {',
+                    *indentLineBlock([
+                        'tx.Rollback()',
+                        'return err',
+                    ]),
+                    '}',
+                    'print(' + objectArgName + '.Id)',
+                ]),
                 '}',
                 '',
                 'return tx.Commit().Error',
@@ -433,7 +456,7 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
         lines = [
             'func Get' + relationshipTable + 'sBy' + tableName + 'Id(' + dbArgName + ' *gorm.DB, id int, ' + relationshipTable  + 's *[]types.' + relationshipTable + ') error {',
             *indentLineBlock([
-	            'result := db.Table("' + relationshipTable + '").Where(map[string]interface{}{"' + foreignKeyName + '": id}).Find(&' + relationshipTable + 's)',
+	            'result := db.Table("' + relationshipTable + '").Where(map[string]interface{}{"' + foreignKeyName + '": id}).Find(' + relationshipTable + 's)',
                 'return result.Error',  
             ]),
             '}'

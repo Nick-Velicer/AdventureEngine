@@ -35,7 +35,7 @@ type DomainSizeDTORelationships struct {
 }
 
 type DomainSizeDTO struct {
-   Id *float64
+   Id *int
    
    Attributes DomainSizeDTOAttributes
    
@@ -45,7 +45,7 @@ type DomainSizeDTO struct {
 func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traversedTables []string) *DomainSizeDTO {
    
    if (domainSize == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainSize")
+      print("Nil pointer passed to DTO conversion for table DomainSize\n")
       return nil
    }
    

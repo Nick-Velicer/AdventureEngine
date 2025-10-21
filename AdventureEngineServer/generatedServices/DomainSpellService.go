@@ -37,15 +37,25 @@ func SaveDomainSpell(db *gorm.DB, domainSpell *types.DomainSpell) error {
       return err
    }
    
-   if err := tx.Table("DomainSpell").Save(domainSpell).Error; err != nil {
-      tx.Rollback()
-      return err
+   if domainSpell.Id != nil {
+      print("Saving\n")
+      if err := tx.Table("DomainSpell").Save(domainSpell).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+   } else {
+      print("Creating\n")
+      if err := tx.Table("DomainSpell").Create(domainSpell).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+      print(domainSpell.Id)
    }
    
    return tx.Commit().Error
 }
 
 func GetClassSpellsByDomainSpellId(db *gorm.DB, id int, ClassSpells *[]types.ClassSpell) error {
-   result := db.Table("ClassSpell").Where(map[string]interface{}{"Spell__DomainSpell": id}).Find(&ClassSpells)
+   result := db.Table("ClassSpell").Where(map[string]interface{}{"Spell__DomainSpell": id}).Find(ClassSpells)
    return result.Error
 }

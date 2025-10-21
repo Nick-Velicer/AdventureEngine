@@ -32,7 +32,7 @@ type DomainStaticEffectDTORelationships struct {
 }
 
 type DomainStaticEffectDTO struct {
-   Id *float64
+   Id *int
    
    Attributes DomainStaticEffectDTOAttributes
    
@@ -42,7 +42,7 @@ type DomainStaticEffectDTO struct {
 func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect, traversedTables []string) *DomainStaticEffectDTO {
    
    if (domainStaticEffect == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainStaticEffect")
+      print("Nil pointer passed to DTO conversion for table DomainStaticEffect\n")
       return nil
    }
    

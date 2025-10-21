@@ -37,9 +37,19 @@ func SaveDomainSpecies(db *gorm.DB, domainSpecies *types.DomainSpecies) error {
       return err
    }
    
-   if err := tx.Table("DomainSpecies").Save(domainSpecies).Error; err != nil {
-      tx.Rollback()
-      return err
+   if domainSpecies.Id != nil {
+      print("Saving\n")
+      if err := tx.Table("DomainSpecies").Save(domainSpecies).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+   } else {
+      print("Creating\n")
+      if err := tx.Table("DomainSpecies").Create(domainSpecies).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+      print(domainSpecies.Id)
    }
    
    return tx.Commit().Error

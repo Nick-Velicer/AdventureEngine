@@ -7,14 +7,14 @@ type DomainSubClass struct {
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
+	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// ParentClassDomainClass corresponds to the JSON schema field
 	// "ParentClass__DomainClass".
-	ParentClass__DomainClass *float64 `json:"ParentClass__DomainClass" gorm:"column:ParentClass__DomainClass" mapstructure:"ParentClass__DomainClass"`
+	ParentClass__DomainClass *int `json:"ParentClass__DomainClass" gorm:"column:ParentClass__DomainClass" mapstructure:"ParentClass__DomainClass"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`

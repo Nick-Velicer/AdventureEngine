@@ -37,19 +37,29 @@ func SaveDomainClass(db *gorm.DB, domainClass *types.DomainClass) error {
       return err
    }
    
-   if err := tx.Table("DomainClass").Save(domainClass).Error; err != nil {
-      tx.Rollback()
-      return err
+   if domainClass.Id != nil {
+      print("Saving\n")
+      if err := tx.Table("DomainClass").Save(domainClass).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+   } else {
+      print("Creating\n")
+      if err := tx.Table("DomainClass").Create(domainClass).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+      print(domainClass.Id)
    }
    
    return tx.Commit().Error
 }
 
 func GetClassPrimaryAbilitysByDomainClassId(db *gorm.DB, id int, ClassPrimaryAbilitys *[]types.ClassPrimaryAbility) error {
-   result := db.Table("ClassPrimaryAbility").Where(map[string]interface{}{"Class__DomainClass": id}).Find(&ClassPrimaryAbilitys)
+   result := db.Table("ClassPrimaryAbility").Where(map[string]interface{}{"Class__DomainClass": id}).Find(ClassPrimaryAbilitys)
    return result.Error
 }
 func GetClassSavesByDomainClassId(db *gorm.DB, id int, ClassSaves *[]types.ClassSave) error {
-   result := db.Table("ClassSave").Where(map[string]interface{}{"Class__DomainClass": id}).Find(&ClassSaves)
+   result := db.Table("ClassSave").Where(map[string]interface{}{"Class__DomainClass": id}).Find(ClassSaves)
    return result.Error
 }

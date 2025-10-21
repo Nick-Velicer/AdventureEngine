@@ -4,31 +4,31 @@ package generatedDatabaseTypes
 
 type Character struct {
 	// CampaignCampaign corresponds to the JSON schema field "Campaign__Campaign".
-	Campaign__Campaign *float64 `json:"Campaign__Campaign" gorm:"column:Campaign__Campaign" mapstructure:"Campaign__Campaign"`
+	Campaign__Campaign *int `json:"Campaign__Campaign" gorm:"column:Campaign__Campaign" mapstructure:"Campaign__Campaign"`
 
 	// CurrentSizeDomainSize corresponds to the JSON schema field
 	// "CurrentSize__DomainSize".
-	CurrentSize__DomainSize *float64 `json:"CurrentSize__DomainSize" gorm:"column:CurrentSize__DomainSize" mapstructure:"CurrentSize__DomainSize"`
+	CurrentSize__DomainSize *int `json:"CurrentSize__DomainSize" gorm:"column:CurrentSize__DomainSize" mapstructure:"CurrentSize__DomainSize"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
+	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
 	// SpeciesDomainSpecies corresponds to the JSON schema field
 	// "Species__DomainSpecies".
-	Species__DomainSpecies *float64 `json:"Species__DomainSpecies" gorm:"column:Species__DomainSpecies" mapstructure:"Species__DomainSpecies"`
+	Species__DomainSpecies *int `json:"Species__DomainSpecies" gorm:"column:Species__DomainSpecies" mapstructure:"Species__DomainSpecies"`
 
 	// StatsCharacterDomainCharacterStatInstance corresponds to the JSON schema field
 	// "Stats__CharacterDomainCharacterStatInstance".
 
 	// SubclassDomainSubClass corresponds to the JSON schema field
 	// "Subclass__DomainSubClass".
-	Subclass__DomainSubClass *float64 `json:"Subclass__DomainSubClass" gorm:"column:Subclass__DomainSubClass" mapstructure:"Subclass__DomainSubClass"`
+	Subclass__DomainSubClass *int `json:"Subclass__DomainSubClass" gorm:"column:Subclass__DomainSubClass" mapstructure:"Subclass__DomainSubClass"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`

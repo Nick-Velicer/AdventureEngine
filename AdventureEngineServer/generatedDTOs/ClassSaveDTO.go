@@ -34,7 +34,7 @@ type ClassSaveDTORelationships struct {
 }
 
 type ClassSaveDTO struct {
-   Id *float64
+   Id *int
    
    Attributes ClassSaveDTOAttributes
    
@@ -44,7 +44,7 @@ type ClassSaveDTO struct {
 func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedTables []string) *ClassSaveDTO {
    
    if (classSave == nil) {
-      print("Nil pointer passed to DTO conversion for table ClassSave")
+      print("Nil pointer passed to DTO conversion for table ClassSave\n")
       return nil
    }
    
@@ -55,15 +55,15 @@ func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedT
    
    traversedTables = append(traversedTables, reflect.TypeOf(*classSave).Name())
    
-   var includedClass__DomainClass types.DomainClass
-   var includedStat__DomainCharacterStat types.DomainCharacterStat
+   var includedClass__DomainClass *types.DomainClass
+   var includedStat__DomainCharacterStat *types.DomainCharacterStat
    
    if (classSave.Class__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*classSave.Class__DomainClass), &includedClass__DomainClass)
+      services.GetDomainClassById(db, int(*classSave.Class__DomainClass), includedClass__DomainClass)
    }
 
    if (classSave.Stat__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*classSave.Stat__DomainCharacterStat), &includedStat__DomainCharacterStat)
+      services.GetDomainCharacterStatById(db, int(*classSave.Stat__DomainCharacterStat), includedStat__DomainCharacterStat)
    }
 
    
@@ -77,8 +77,8 @@ func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedT
       },
       Relationships: ClassSaveDTORelationships{
          ManyToOne: ClassSaveDTOManyToOneRelationships {
-            Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
-            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStat__DomainCharacterStat, traversedTables),
+            Class__DomainClass: DomainClassToDomainClassDTO(db, includedClass__DomainClass, traversedTables),
+            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: ClassSaveDTOOneToManyRelationships {
          },

@@ -34,7 +34,7 @@ type CharacterDomainCharacterStatInstanceDTORelationships struct {
 }
 
 type CharacterDomainCharacterStatInstanceDTO struct {
-   Id *float64
+   Id *int
    
    Attributes CharacterDomainCharacterStatInstanceDTOAttributes
    
@@ -44,7 +44,7 @@ type CharacterDomainCharacterStatInstanceDTO struct {
 func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance, traversedTables []string) *CharacterDomainCharacterStatInstanceDTO {
    
    if (characterDomainCharacterStatInstance == nil) {
-      print("Nil pointer passed to DTO conversion for table CharacterDomainCharacterStatInstance")
+      print("Nil pointer passed to DTO conversion for table CharacterDomainCharacterStatInstance\n")
       return nil
    }
    
@@ -55,15 +55,15 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
    
    traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())
    
-   var includedCharacter__Character types.Character
-   var includedStatInstance__DomainCharacterStat types.DomainCharacterStat
+   var includedCharacter__Character *types.Character
+   var includedStatInstance__DomainCharacterStat *types.DomainCharacterStat
    
    if (characterDomainCharacterStatInstance.Character__Character != nil) {
-      services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), &includedCharacter__Character)
+      services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), includedCharacter__Character)
    }
 
    if (characterDomainCharacterStatInstance.StatInstance__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.StatInstance__DomainCharacterStat), &includedStatInstance__DomainCharacterStat)
+      services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.StatInstance__DomainCharacterStat), includedStatInstance__DomainCharacterStat)
    }
 
    
@@ -77,8 +77,8 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
          ManyToOne: CharacterDomainCharacterStatInstanceDTOManyToOneRelationships {
-            Character__Character: CharacterToCharacterDTO(db, &includedCharacter__Character, traversedTables),
-            StatInstance__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStatInstance__DomainCharacterStat, traversedTables),
+            Character__Character: CharacterToCharacterDTO(db, includedCharacter__Character, traversedTables),
+            StatInstance__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedStatInstance__DomainCharacterStat, traversedTables),
          },
          OneToMany: CharacterDomainCharacterStatInstanceDTOOneToManyRelationships {
          },

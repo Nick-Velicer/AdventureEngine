@@ -37,9 +37,19 @@ func SaveDomainDice(db *gorm.DB, domainDice *types.DomainDice) error {
       return err
    }
    
-   if err := tx.Table("DomainDice").Save(domainDice).Error; err != nil {
-      tx.Rollback()
-      return err
+   if domainDice.Id != nil {
+      print("Saving\n")
+      if err := tx.Table("DomainDice").Save(domainDice).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+   } else {
+      print("Creating\n")
+      if err := tx.Table("DomainDice").Create(domainDice).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+      print(domainDice.Id)
    }
    
    return tx.Commit().Error

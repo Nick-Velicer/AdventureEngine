@@ -32,7 +32,7 @@ type DomainDiceRollTypeDTORelationships struct {
 }
 
 type DomainDiceRollTypeDTO struct {
-   Id *float64
+   Id *int
    
    Attributes DomainDiceRollTypeDTOAttributes
    
@@ -42,7 +42,7 @@ type DomainDiceRollTypeDTO struct {
 func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType, traversedTables []string) *DomainDiceRollTypeDTO {
    
    if (domainDiceRollType == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainDiceRollType")
+      print("Nil pointer passed to DTO conversion for table DomainDiceRollType\n")
       return nil
    }
    

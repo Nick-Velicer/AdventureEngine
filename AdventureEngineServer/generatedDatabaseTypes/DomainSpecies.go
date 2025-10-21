@@ -5,13 +5,13 @@ package generatedDatabaseTypes
 type DomainSpecies struct {
 	// CreatureTypeDomainCreatureType corresponds to the JSON schema field
 	// "CreatureType__DomainCreatureType".
-	CreatureType__DomainCreatureType *float64 `json:"CreatureType__DomainCreatureType" gorm:"column:CreatureType__DomainCreatureType" mapstructure:"CreatureType__DomainCreatureType"`
+	CreatureType__DomainCreatureType *int `json:"CreatureType__DomainCreatureType" gorm:"column:CreatureType__DomainCreatureType" mapstructure:"CreatureType__DomainCreatureType"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
+	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`

@@ -37,9 +37,19 @@ func SaveClassPrimaryAbility(db *gorm.DB, classPrimaryAbility *types.ClassPrimar
       return err
    }
    
-   if err := tx.Table("ClassPrimaryAbility").Save(classPrimaryAbility).Error; err != nil {
-      tx.Rollback()
-      return err
+   if classPrimaryAbility.Id != nil {
+      print("Saving\n")
+      if err := tx.Table("ClassPrimaryAbility").Save(classPrimaryAbility).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+   } else {
+      print("Creating\n")
+      if err := tx.Table("ClassPrimaryAbility").Create(classPrimaryAbility).Error; err != nil {
+         tx.Rollback()
+         return err
+      }
+      print(classPrimaryAbility.Id)
    }
    
    return tx.Commit().Error

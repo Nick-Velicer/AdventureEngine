@@ -11,7 +11,7 @@ type DomainSpell struct {
 
 	// DamageScalingDomainDice corresponds to the JSON schema field
 	// "DamageScaling__DomainDice".
-	DamageScaling__DomainDice *float64 `json:"DamageScaling__DomainDice" gorm:"column:DamageScaling__DomainDice" mapstructure:"DamageScaling__DomainDice"`
+	DamageScaling__DomainDice *int `json:"DamageScaling__DomainDice" gorm:"column:DamageScaling__DomainDice" mapstructure:"DamageScaling__DomainDice"`
 
 	// DayDuration corresponds to the JSON schema field "DayDuration".
 	DayDuration *float64 `json:"DayDuration" gorm:"column:DayDuration" mapstructure:"DayDuration"`
@@ -34,7 +34,7 @@ type DomainSpell struct {
 	HourDuration *float64 `json:"HourDuration" gorm:"column:HourDuration" mapstructure:"HourDuration"`
 
 	// Id corresponds to the JSON schema field "Id".
-	Id *float64 `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
+	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
 	// IsAction corresponds to the JSON schema field "IsAction".
 	IsAction *bool `json:"IsAction" gorm:"column:IsAction" mapstructure:"IsAction"`
@@ -83,7 +83,7 @@ type DomainSpell struct {
 
 	// SchoolDomainSpellSchool corresponds to the JSON schema field
 	// "School__DomainSpellSchool".
-	School__DomainSpellSchool *float64 `json:"School__DomainSpellSchool" gorm:"column:School__DomainSpellSchool" mapstructure:"School__DomainSpellSchool"`
+	School__DomainSpellSchool *int `json:"School__DomainSpellSchool" gorm:"column:School__DomainSpellSchool" mapstructure:"School__DomainSpellSchool"`
 
 	// TargetsSelf corresponds to the JSON schema field "TargetsSelf".
 	TargetsSelf *bool `json:"TargetsSelf" gorm:"column:TargetsSelf" mapstructure:"TargetsSelf"`

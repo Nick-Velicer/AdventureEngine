@@ -34,7 +34,7 @@ type ClassPrimaryAbilityDTORelationships struct {
 }
 
 type ClassPrimaryAbilityDTO struct {
-   Id *float64
+   Id *int
    
    Attributes ClassPrimaryAbilityDTOAttributes
    
@@ -44,7 +44,7 @@ type ClassPrimaryAbilityDTO struct {
 func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbility *types.ClassPrimaryAbility, traversedTables []string) *ClassPrimaryAbilityDTO {
    
    if (classPrimaryAbility == nil) {
-      print("Nil pointer passed to DTO conversion for table ClassPrimaryAbility")
+      print("Nil pointer passed to DTO conversion for table ClassPrimaryAbility\n")
       return nil
    }
    
@@ -55,15 +55,15 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbilit
    
    traversedTables = append(traversedTables, reflect.TypeOf(*classPrimaryAbility).Name())
    
-   var includedClass__DomainClass types.DomainClass
-   var includedStat__DomainCharacterStat types.DomainCharacterStat
+   var includedClass__DomainClass *types.DomainClass
+   var includedStat__DomainCharacterStat *types.DomainCharacterStat
    
    if (classPrimaryAbility.Class__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*classPrimaryAbility.Class__DomainClass), &includedClass__DomainClass)
+      services.GetDomainClassById(db, int(*classPrimaryAbility.Class__DomainClass), includedClass__DomainClass)
    }
 
    if (classPrimaryAbility.Stat__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*classPrimaryAbility.Stat__DomainCharacterStat), &includedStat__DomainCharacterStat)
+      services.GetDomainCharacterStatById(db, int(*classPrimaryAbility.Stat__DomainCharacterStat), includedStat__DomainCharacterStat)
    }
 
    
@@ -77,8 +77,8 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbilit
       },
       Relationships: ClassPrimaryAbilityDTORelationships{
          ManyToOne: ClassPrimaryAbilityDTOManyToOneRelationships {
-            Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
-            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStat__DomainCharacterStat, traversedTables),
+            Class__DomainClass: DomainClassToDomainClassDTO(db, includedClass__DomainClass, traversedTables),
+            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: ClassPrimaryAbilityDTOOneToManyRelationships {
          },
