@@ -20,11 +20,11 @@ func GetCampaignById(db *gorm.DB, id int, campaign *types.Campaign) error {
    return result.Error
 }
 
-func SaveCampaign(db *gorm.DB, campaign *types.Campaign) error {
+func SaveCampaign(db *gorm.DB, campaigns []*types.Campaign) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(campaign).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(campaigns).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveCampaign(db *gorm.DB, campaign *types.Campaign) error {
       return err
    }
    
-   if campaign.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("Campaign").Save(campaign).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("Campaign").Create(campaign).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(campaign.Id)
+   if err := tx.Table("Campaign").Create(campaigns).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

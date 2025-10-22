@@ -26,10 +26,10 @@ export async function getDomainDamageTypebyId(id: number): Promise<DomainDamageT
    }
 }
 
-export async function saveDomainDamageType(obj: DomainDamageType): Promise<DomainDamageType> {
+export async function saveDomainDamageType<T extends DomainDamageType | DomainDamageType[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainDamageType", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainDamageType;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

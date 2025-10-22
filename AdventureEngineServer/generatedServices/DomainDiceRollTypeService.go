@@ -20,11 +20,11 @@ func GetDomainDiceRollTypeById(db *gorm.DB, id int, domainDiceRollType *types.Do
    return result.Error
 }
 
-func SaveDomainDiceRollType(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType) error {
+func SaveDomainDiceRollType(db *gorm.DB, domainDiceRollTypes []*types.DomainDiceRollType) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainDiceRollType).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainDiceRollTypes).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainDiceRollType(db *gorm.DB, domainDiceRollType *types.DomainDiceRol
       return err
    }
    
-   if domainDiceRollType.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainDiceRollType").Save(domainDiceRollType).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainDiceRollType").Create(domainDiceRollType).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainDiceRollType.Id)
+   if err := tx.Table("DomainDiceRollType").Create(domainDiceRollTypes).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

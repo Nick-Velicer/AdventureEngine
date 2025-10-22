@@ -72,7 +72,7 @@ func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *
    }
 }
 
-func DomainCreatureTypeDTOToDomainCreatureType(domainCreatureType *DomainCreatureTypeDTO) types.DomainCreatureType {
+func DomainCreatureTypeDTOToDomainCreatureType(domainCreatureType *DomainCreatureTypeDTO) *types.DomainCreatureType {
    var tableTypeBuffer types.DomainCreatureType
    
    tableTypeBuffer.Id = domainCreatureType.Id
@@ -81,5 +81,5 @@ func DomainCreatureTypeDTOToDomainCreatureType(domainCreatureType *DomainCreatur
    tableTypeBuffer.IsActive = domainCreatureType.Attributes.IsActive
    tableTypeBuffer.Title = domainCreatureType.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

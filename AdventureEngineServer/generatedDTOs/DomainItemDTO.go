@@ -78,7 +78,7 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
    }
 }
 
-func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) types.DomainItem {
+func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) *types.DomainItem {
    var tableTypeBuffer types.DomainItem
    
    tableTypeBuffer.Id = domainItem.Id
@@ -90,5 +90,5 @@ func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) types.DomainItem {
    tableTypeBuffer.Title = domainItem.Attributes.Title
    tableTypeBuffer.TwoHandedQuantifier = domainItem.Attributes.TwoHandedQuantifier
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

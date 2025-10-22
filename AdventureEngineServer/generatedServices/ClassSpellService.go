@@ -20,11 +20,11 @@ func GetClassSpellById(db *gorm.DB, id int, classSpell *types.ClassSpell) error 
    return result.Error
 }
 
-func SaveClassSpell(db *gorm.DB, classSpell *types.ClassSpell) error {
+func SaveClassSpell(db *gorm.DB, classSpells []*types.ClassSpell) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(classSpell).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(classSpells).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveClassSpell(db *gorm.DB, classSpell *types.ClassSpell) error {
       return err
    }
    
-   if classSpell.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("ClassSpell").Save(classSpell).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("ClassSpell").Create(classSpell).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(classSpell.Id)
+   if err := tx.Table("ClassSpell").Create(classSpells).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

@@ -26,10 +26,10 @@ export async function getClassPrimaryAbilitybyId(id: number): Promise<ClassPrima
    }
 }
 
-export async function saveClassPrimaryAbility(obj: ClassPrimaryAbility): Promise<ClassPrimaryAbility> {
+export async function saveClassPrimaryAbility<T extends ClassPrimaryAbility | ClassPrimaryAbility[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveClassPrimaryAbility", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as ClassPrimaryAbility;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

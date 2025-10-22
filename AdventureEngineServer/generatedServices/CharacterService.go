@@ -20,11 +20,11 @@ func GetCharacterById(db *gorm.DB, id int, character *types.Character) error {
    return result.Error
 }
 
-func SaveCharacter(db *gorm.DB, character *types.Character) error {
+func SaveCharacter(db *gorm.DB, characters []*types.Character) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(character).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(characters).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveCharacter(db *gorm.DB, character *types.Character) error {
       return err
    }
    
-   if character.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("Character").Save(character).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("Character").Create(character).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(character.Id)
+   if err := tx.Table("Character").Create(characters).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error
@@ -57,5 +47,9 @@ func SaveCharacter(db *gorm.DB, character *types.Character) error {
 
 func GetCharacterDomainCharacterStatInstancesByCharacterId(db *gorm.DB, id int, CharacterDomainCharacterStatInstances *[]types.CharacterDomainCharacterStatInstance) error {
    result := db.Table("CharacterDomainCharacterStatInstance").Where(map[string]interface{}{"Character__Character": id}).Find(CharacterDomainCharacterStatInstances)
+   return result.Error
+}
+func GetCharacterDomainSubClassInstancesByCharacterId(db *gorm.DB, id int, CharacterDomainSubClassInstances *[]types.CharacterDomainSubClassInstance) error {
+   result := db.Table("CharacterDomainSubClassInstance").Where(map[string]interface{}{"Character__Character": id}).Find(CharacterDomainSubClassInstances)
    return result.Error
 }

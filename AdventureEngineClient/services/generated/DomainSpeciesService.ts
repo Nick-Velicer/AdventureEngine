@@ -26,10 +26,10 @@ export async function getDomainSpeciesbyId(id: number): Promise<DomainSpecies> {
    }
 }
 
-export async function saveDomainSpecies(obj: DomainSpecies): Promise<DomainSpecies> {
+export async function saveDomainSpecies<T extends DomainSpecies | DomainSpecies[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainSpecies", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainSpecies;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

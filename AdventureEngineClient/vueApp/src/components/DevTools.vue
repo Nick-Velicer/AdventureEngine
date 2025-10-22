@@ -6,14 +6,26 @@ import type { Character } from '../../../types/appTypes/appTypes';
 
 const store = composedAppInjectionContexts.store();
 
-const updateCharacter = composedAppInjectionContexts.queries.useSaveCharacterMutation;
+const saveCharacter = composedAppInjectionContexts.queries.useSaveCharacterMutation;
+const saveCharacterStats = composedAppInjectionContexts.queries.useSaveCharacterDomainCharacterStatInstanceMutation;
 
-function populateTestCharacter() {
+async function populateTestCharacter() {
 
     const character: Character = {
         Id: undefined,
         Attributes: {
-            Title: "Test Character",
+            Title: "Test Character 1",
+        },
+        Relationships: {
+            OneToMany: {},
+            ManyToOne: {},
+        }
+    }
+
+    const character2: Character = {
+        Id: undefined,
+        Attributes: {
+            Title: "Test Character 2",
         },
         Relationships: {
             OneToMany: {},
@@ -21,7 +33,8 @@ function populateTestCharacter() {
         }
     }
     
-    const response = updateCharacter(character).mutate();
+    const response = await saveCharacter([character, character2]).mutate();
+
     console.log(response);
 }
 

@@ -72,7 +72,7 @@ func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTable
    }
 }
 
-func CampaignDTOToCampaign(campaign *CampaignDTO) types.Campaign {
+func CampaignDTOToCampaign(campaign *CampaignDTO) *types.Campaign {
    var tableTypeBuffer types.Campaign
    
    tableTypeBuffer.Id = campaign.Id
@@ -81,5 +81,5 @@ func CampaignDTOToCampaign(campaign *CampaignDTO) types.Campaign {
    tableTypeBuffer.IsActive = campaign.Attributes.IsActive
    tableTypeBuffer.Title = campaign.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

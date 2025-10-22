@@ -8,7 +8,7 @@ import type { SchemaObject } from "../types/SchemaObject";
 export type ServiceInterface<T> = {
    getAllItems: () => Promise<Array<T>>
    getItemById: (id: number) => Promise<T>
-   saveItem: (item: T) => Promise<T>
+   saveItem: <G extends T | T[]>(item: G) => Promise<G>
 }
 
 export type QueryServicesType = {[key in keyof typeof AppTypes]: ServiceInterface<typeof AppTypes[key]>}
@@ -94,6 +94,27 @@ export function composeQueryBuilderContext<
          return mutationHandler({
             mutation: () => services.CharacterDomainCharacterStatInstance.saveItem(obj),
             onSettled: async () => queryInvalidator(queryCache, ["getCharacterDomainCharacterStatInstances", "getCharacterDomainCharacterStatInstanceById"])
+         });
+      },
+      
+      //CharacterDomainSubClassInstance
+      useGetCharacterDomainSubClassInstancesQuery: () => queryHandler({
+         key: ["getCharacterDomainSubClassInstances"],
+         query: () => services.CharacterDomainSubClassInstance.getAllItems()
+      }),
+      useGetCharacterDomainSubClassInstanceByIdQuery: (id: number) => {
+         //For some reason queries with args does not work without the extra function body/return.
+         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
+         return queryHandler({
+            key: ["getCharacterDomainSubClassInstanceById", id.toString()],
+            query: () => services.CharacterDomainSubClassInstance.getItemById(id)
+         });
+      },
+      useSaveCharacterDomainSubClassInstanceMutation: (obj: Parameters<typeof services.CharacterDomainSubClassInstance.saveItem>[0]) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.CharacterDomainSubClassInstance.saveItem(obj),
+            onSettled: async () => queryInvalidator(queryCache, ["getCharacterDomainSubClassInstances", "getCharacterDomainSubClassInstanceById"])
          });
       },
       

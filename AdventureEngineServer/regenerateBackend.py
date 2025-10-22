@@ -212,7 +212,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
 
     def produceConvertToTableTypeMethod(tableName: str, typeMeta: dict):
         lines = [
-            'func ' + tableName + 'DTOTo' + tableName + '(' + objectArgName + ' *' + tableName + 'DTO) types.' + tableName + ' {',
+            'func ' + tableName + 'DTOTo' + tableName + '(' + objectArgName + ' *' + tableName + 'DTO) *types.' + tableName + ' {',
             *indentLineBlock([
                 'var tableTypeBuffer types.' + tableName,
                 '',
@@ -226,7 +226,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                     '   }\n'
                     for relationship in typeMeta["relationships"]['manyToOne']
                 ],
-                'return tableTypeBuffer'
+                'return &tableTypeBuffer'
             ]),
             '}'
         ]
@@ -359,12 +359,14 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
 
     def produceServiceSaveMethod(tableName: str):
         lines = [
-            'func Save' + tableName + '(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ') error {',
+            'func Save' + tableName + '(' + dbArgName + ' *gorm.DB, ' + objectArgName + 's []*types.' + tableName + ') error {',
             *indentLineBlock([
                 'tx := ' + dbArgName + '.Begin()',
                 '',
                 'if tx.Error != nil {',
-                    'return errors.New("Could not initialize transaction to save " + reflect.TypeOf(' + objectArgName + ').Name() + " entity")',
+                *indentLineBlock([
+                    'return errors.New("Could not initialize transaction to save " + reflect.TypeOf(' + objectArgName + 's).Name() + " entity")',
+                ]), 
                 '}',
                 '',
                 'defer func() {',
@@ -383,27 +385,10 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                 ]),
                 '}',
                 '',
-                'if ' + objectArgName + '.Id != nil {',
+                'if err := tx.Table("' + tableName + '").Create(' + objectArgName + 's).Error; err != nil {',
                 *indentLineBlock([
-                    'print("Saving\\n")',
-                    'if err := tx.Table("' + tableName + '").Save(' + objectArgName + ').Error; err != nil {',
-                    *indentLineBlock([
-                        'tx.Rollback()',
-                        'return err',
-                    ]),
-                    '}',
-                ]),
-
-                '} else {',
-                *indentLineBlock([
-                    'print("Creating\\n")',
-                    'if err := tx.Table("' + tableName + '").Create(' + objectArgName + ').Error; err != nil {',
-                    *indentLineBlock([
-                        'tx.Rollback()',
-                        'return err',
-                    ]),
-                    '}',
-                    'print(' + objectArgName + '.Id)',
+                    'tx.Rollback()',
+                    'return err',
                 ]),
                 '}',
                 '',
@@ -571,35 +556,53 @@ def produceControllerFileForType(tableName: str):
         lines = [
             'func Save' + tableName + '(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
             *indentLineBlock([
-                'var DTOBuffer dtos.' + tableName + 'DTO',
-                'var serviceBuffer types.' + tableName,
+                '//Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line',
+                'var DTOBuffer *dtos.' + tableName + 'DTO = &dtos.' + tableName + 'DTO{}',
+                'var batchDTOBuffer []*dtos.' + tableName + 'DTO',
+                'var serviceBuffer []*types.' + tableName,
                 '',
-                'if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {',
+                '//If neither a single item nor a collection can be bound to JSON, fail early',
+                '//ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts',
+                'if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {',
+                *indentLineBlock([
+                    '',
+                    'serviceBuffer = []*types.' + tableName + '{dtos.' + tableName + 'DTOTo' + tableName + '(DTOBuffer)}',
+                    'if err := services.Save' + tableName + '(' + dbArgName + ', serviceBuffer); err != nil {',
+                    *indentLineBlock([
+                        'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                        'return'
+                    ]),
+                    '}',
+                    '',
+                    'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', serviceBuffer[0], []string{})',
+                    '',
+                    'ctx.IndentedJSON(http.StatusOK, returnBuffer)',
+                    'return',
+                    ''
+                ]),
+                '} else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {',
+                *indentLineBlock([
+                    '',
+                    'serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.' + tableName + 'DTO) *types.' + tableName + ' { return dtos.' + tableName + 'DTOTo' + tableName + '(dto) })',
+                    'if err := services.Save' + tableName + '(' + dbArgName + ', serviceBuffer); err != nil {',
+                    *indentLineBlock([
+                        'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                        'return'
+                    ]),
+                    '}',
+                    '',
+                    'returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.' + tableName + ') *dtos.' + tableName + 'DTO { return dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', dbReturn, []string{}) })',
+                    '',
+                    'ctx.IndentedJSON(http.StatusOK, returnBuffer)',
+                    'return',
+                    ''
+                ]),
+                '} else {',
                 *indentLineBlock([
                     'ctx.IndentedJSON(http.StatusBadRequest, err.Error())',
                     'return'
                 ]),
                 '}',
-                '',
-                'serviceBuffer = dtos.' + tableName + 'DTOTo' + tableName + '(&DTOBuffer)',
-                '',
-                'if err := services.Save' + tableName + '(' + dbArgName + ', &serviceBuffer); err != nil {',
-                *indentLineBlock([
-                    'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
-                    'return'
-                ]),
-                '}',
-                '',
-                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, []string{})',
-                'if DTOBuffer.Id != nil {',
-                *indentLineBlock([  
-                    'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
-                ]),
-                '} else {',
-                *indentLineBlock([  
-                    'ctx.IndentedJSON(http.StatusCreated, returnBuffer)'
-                ]),
-                '}'
 	        ]),
             '}'
         ]
@@ -613,12 +616,14 @@ def produceControllerFileForType(tableName: str):
         'import (',
         *indentLineBlock([
   	        '"github.com/gin-gonic/gin"',
+            '"github.com/gin-gonic/gin/binding"',
   	        '"gorm.io/gorm"',
             '"strconv"',
             '"net/http"',
             'services "AdventureEngineServer/generatedServices"',
             'types "AdventureEngineServer/generatedDatabaseTypes"',
-            'dtos "AdventureEngineServer/generatedDTOs"'
+            'dtos "AdventureEngineServer/generatedDTOs"',
+            'utils "AdventureEngineServer/utils"',
         ]),
         ')',
         '',

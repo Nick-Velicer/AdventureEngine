@@ -20,11 +20,11 @@ func GetDomainCreatureTypeById(db *gorm.DB, id int, domainCreatureType *types.Do
    return result.Error
 }
 
-func SaveDomainCreatureType(db *gorm.DB, domainCreatureType *types.DomainCreatureType) error {
+func SaveDomainCreatureType(db *gorm.DB, domainCreatureTypes []*types.DomainCreatureType) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainCreatureType).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainCreatureTypes).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainCreatureType(db *gorm.DB, domainCreatureType *types.DomainCreatur
       return err
    }
    
-   if domainCreatureType.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainCreatureType").Save(domainCreatureType).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainCreatureType").Create(domainCreatureType).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainCreatureType.Id)
+   if err := tx.Table("DomainCreatureType").Create(domainCreatureTypes).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

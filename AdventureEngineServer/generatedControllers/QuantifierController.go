@@ -5,12 +5,14 @@
 package generatedControllers
 import (
    "github.com/gin-gonic/gin"
+   "github.com/gin-gonic/gin/binding"
    "gorm.io/gorm"
    "strconv"
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
+   utils "AdventureEngineServer/utils"
 )
 
 func GetQuantifiers(ctx *gin.Context, db *gorm.DB) {
@@ -50,25 +52,41 @@ func GetQuantifierById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveQuantifier(ctx *gin.Context, db *gorm.DB) {
-   var DTOBuffer dtos.QuantifierDTO
-   var serviceBuffer types.Quantifier
+   //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
+   var DTOBuffer *dtos.QuantifierDTO = &dtos.QuantifierDTO{}
+   var batchDTOBuffer []*dtos.QuantifierDTO
+   var serviceBuffer []*types.Quantifier
    
-   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+   //If neither a single item nor a collection can be bound to JSON, fail early
+   //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
+   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = []*types.Quantifier{dtos.QuantifierDTOToQuantifier(DTOBuffer)}
+      if err := services.SaveQuantifier(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := dtos.QuantifierToQuantifierDTO(db, serviceBuffer[0], []string{})
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.QuantifierDTO) *types.Quantifier { return dtos.QuantifierDTOToQuantifier(dto) })
+      if err := services.SaveQuantifier(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.Quantifier) *dtos.QuantifierDTO { return dtos.QuantifierToQuantifierDTO(db, dbReturn, []string{}) })
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else {
       ctx.IndentedJSON(http.StatusBadRequest, err.Error())
       return
-   }
-   
-   serviceBuffer = dtos.QuantifierDTOToQuantifier(&DTOBuffer)
-   
-   if err := services.SaveQuantifier(db, &serviceBuffer); err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-      return
-   }
-   
-   returnBuffer := dtos.QuantifierToQuantifierDTO(db, &serviceBuffer, []string{})
-   if DTOBuffer.Id != nil {
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
-   } else {
-      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
    }
 }

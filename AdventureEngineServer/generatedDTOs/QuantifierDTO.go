@@ -163,7 +163,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
    }
 }
 
-func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) types.Quantifier {
+func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    var tableTypeBuffer types.Quantifier
    
    tableTypeBuffer.Id = quantifier.Id
@@ -221,5 +221,5 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) types.Quantifier {
       tableTypeBuffer.Target__DomainCharacterStat = quantifier.Relationships.ManyToOne.Target__DomainCharacterStat.Id
    }
 
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

@@ -78,7 +78,7 @@ func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traver
    }
 }
 
-func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) types.DomainSize {
+func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) *types.DomainSize {
    var tableTypeBuffer types.DomainSize
    
    tableTypeBuffer.Id = domainSize.Id
@@ -90,5 +90,5 @@ func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) types.DomainSize {
    tableTypeBuffer.SizeOrder = domainSize.Attributes.SizeOrder
    tableTypeBuffer.Title = domainSize.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

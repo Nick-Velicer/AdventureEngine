@@ -5,12 +5,14 @@
 package generatedControllers
 import (
    "github.com/gin-gonic/gin"
+   "github.com/gin-gonic/gin/binding"
    "gorm.io/gorm"
    "strconv"
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
+   utils "AdventureEngineServer/utils"
 )
 
 func GetDomainStaticEffects(ctx *gin.Context, db *gorm.DB) {
@@ -50,25 +52,41 @@ func GetDomainStaticEffectById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainStaticEffect(ctx *gin.Context, db *gorm.DB) {
-   var DTOBuffer dtos.DomainStaticEffectDTO
-   var serviceBuffer types.DomainStaticEffect
+   //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
+   var DTOBuffer *dtos.DomainStaticEffectDTO = &dtos.DomainStaticEffectDTO{}
+   var batchDTOBuffer []*dtos.DomainStaticEffectDTO
+   var serviceBuffer []*types.DomainStaticEffect
    
-   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+   //If neither a single item nor a collection can be bound to JSON, fail early
+   //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
+   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = []*types.DomainStaticEffect{dtos.DomainStaticEffectDTOToDomainStaticEffect(DTOBuffer)}
+      if err := services.SaveDomainStaticEffect(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := dtos.DomainStaticEffectToDomainStaticEffectDTO(db, serviceBuffer[0], []string{})
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.DomainStaticEffectDTO) *types.DomainStaticEffect { return dtos.DomainStaticEffectDTOToDomainStaticEffect(dto) })
+      if err := services.SaveDomainStaticEffect(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.DomainStaticEffect) *dtos.DomainStaticEffectDTO { return dtos.DomainStaticEffectToDomainStaticEffectDTO(db, dbReturn, []string{}) })
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else {
       ctx.IndentedJSON(http.StatusBadRequest, err.Error())
       return
-   }
-   
-   serviceBuffer = dtos.DomainStaticEffectDTOToDomainStaticEffect(&DTOBuffer)
-   
-   if err := services.SaveDomainStaticEffect(db, &serviceBuffer); err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-      return
-   }
-   
-   returnBuffer := dtos.DomainStaticEffectToDomainStaticEffectDTO(db, &serviceBuffer, []string{})
-   if DTOBuffer.Id != nil {
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
-   } else {
-      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
    }
 }

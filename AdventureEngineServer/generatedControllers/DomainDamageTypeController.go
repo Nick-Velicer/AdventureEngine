@@ -5,12 +5,14 @@
 package generatedControllers
 import (
    "github.com/gin-gonic/gin"
+   "github.com/gin-gonic/gin/binding"
    "gorm.io/gorm"
    "strconv"
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
+   utils "AdventureEngineServer/utils"
 )
 
 func GetDomainDamageTypes(ctx *gin.Context, db *gorm.DB) {
@@ -50,25 +52,41 @@ func GetDomainDamageTypeById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainDamageType(ctx *gin.Context, db *gorm.DB) {
-   var DTOBuffer dtos.DomainDamageTypeDTO
-   var serviceBuffer types.DomainDamageType
+   //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
+   var DTOBuffer *dtos.DomainDamageTypeDTO = &dtos.DomainDamageTypeDTO{}
+   var batchDTOBuffer []*dtos.DomainDamageTypeDTO
+   var serviceBuffer []*types.DomainDamageType
    
-   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+   //If neither a single item nor a collection can be bound to JSON, fail early
+   //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
+   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = []*types.DomainDamageType{dtos.DomainDamageTypeDTOToDomainDamageType(DTOBuffer)}
+      if err := services.SaveDomainDamageType(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, serviceBuffer[0], []string{})
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.DomainDamageTypeDTO) *types.DomainDamageType { return dtos.DomainDamageTypeDTOToDomainDamageType(dto) })
+      if err := services.SaveDomainDamageType(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.DomainDamageType) *dtos.DomainDamageTypeDTO { return dtos.DomainDamageTypeToDomainDamageTypeDTO(db, dbReturn, []string{}) })
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else {
       ctx.IndentedJSON(http.StatusBadRequest, err.Error())
       return
-   }
-   
-   serviceBuffer = dtos.DomainDamageTypeDTOToDomainDamageType(&DTOBuffer)
-   
-   if err := services.SaveDomainDamageType(db, &serviceBuffer); err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-      return
-   }
-   
-   returnBuffer := dtos.DomainDamageTypeToDomainDamageTypeDTO(db, &serviceBuffer, []string{})
-   if DTOBuffer.Id != nil {
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
-   } else {
-      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
    }
 }

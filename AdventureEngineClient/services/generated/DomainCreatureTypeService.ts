@@ -26,10 +26,10 @@ export async function getDomainCreatureTypebyId(id: number): Promise<DomainCreat
    }
 }
 
-export async function saveDomainCreatureType(obj: DomainCreatureType): Promise<DomainCreatureType> {
+export async function saveDomainCreatureType<T extends DomainCreatureType | DomainCreatureType[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainCreatureType", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainCreatureType;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

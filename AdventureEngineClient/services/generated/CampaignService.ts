@@ -26,10 +26,10 @@ export async function getCampaignbyId(id: number): Promise<Campaign> {
    }
 }
 
-export async function saveCampaign(obj: Campaign): Promise<Campaign> {
+export async function saveCampaign<T extends Campaign | Campaign[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveCampaign", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as Campaign;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

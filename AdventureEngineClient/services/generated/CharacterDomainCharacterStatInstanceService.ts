@@ -26,10 +26,10 @@ export async function getCharacterDomainCharacterStatInstancebyId(id: number): P
    }
 }
 
-export async function saveCharacterDomainCharacterStatInstance(obj: CharacterDomainCharacterStatInstance): Promise<CharacterDomainCharacterStatInstance> {
+export async function saveCharacterDomainCharacterStatInstance<T extends CharacterDomainCharacterStatInstance | CharacterDomainCharacterStatInstance[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveCharacterDomainCharacterStatInstance", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as CharacterDomainCharacterStatInstance;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

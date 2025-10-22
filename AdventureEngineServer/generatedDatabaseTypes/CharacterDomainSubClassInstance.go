@@ -2,7 +2,7 @@
 
 package generatedDatabaseTypes
 
-type CharacterDomainCharacterStatInstance struct {
+type CharacterDomainSubClassInstance struct {
 	// CharacterCharacter corresponds to the JSON schema field "Character__Character".
 	Character__Character *int `json:"Character__Character" gorm:"column:Character__Character" mapstructure:"Character__Character"`
 
@@ -15,13 +15,13 @@ type CharacterDomainCharacterStatInstance struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
-	// StatDomainCharacterStat corresponds to the JSON schema field
-	// "Stat__DomainCharacterStat".
-	Stat__DomainCharacterStat *int `json:"Stat__DomainCharacterStat" gorm:"column:Stat__DomainCharacterStat" mapstructure:"Stat__DomainCharacterStat"`
+	// Level corresponds to the JSON schema field "Level".
+	Level float64 `json:"Level" gorm:"column:Level" mapstructure:"Level"`
+
+	// SubClassDomainSubClass corresponds to the JSON schema field
+	// "SubClass__DomainSubClass".
+	SubClass__DomainSubClass *int `json:"SubClass__DomainSubClass" gorm:"column:SubClass__DomainSubClass" mapstructure:"SubClass__DomainSubClass"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
-
-	// Value corresponds to the JSON schema field "Value".
-	Value float64 `json:"Value" gorm:"column:Value" mapstructure:"Value"`
 }

@@ -5,12 +5,14 @@
 package generatedControllers
 import (
    "github.com/gin-gonic/gin"
+   "github.com/gin-gonic/gin/binding"
    "gorm.io/gorm"
    "strconv"
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
+   utils "AdventureEngineServer/utils"
 )
 
 func GetCharacters(ctx *gin.Context, db *gorm.DB) {
@@ -50,25 +52,41 @@ func GetCharacterById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveCharacter(ctx *gin.Context, db *gorm.DB) {
-   var DTOBuffer dtos.CharacterDTO
-   var serviceBuffer types.Character
+   //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
+   var DTOBuffer *dtos.CharacterDTO = &dtos.CharacterDTO{}
+   var batchDTOBuffer []*dtos.CharacterDTO
+   var serviceBuffer []*types.Character
    
-   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+   //If neither a single item nor a collection can be bound to JSON, fail early
+   //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
+   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = []*types.Character{dtos.CharacterDTOToCharacter(DTOBuffer)}
+      if err := services.SaveCharacter(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := dtos.CharacterToCharacterDTO(db, serviceBuffer[0], []string{})
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.CharacterDTO) *types.Character { return dtos.CharacterDTOToCharacter(dto) })
+      if err := services.SaveCharacter(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.Character) *dtos.CharacterDTO { return dtos.CharacterToCharacterDTO(db, dbReturn, []string{}) })
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else {
       ctx.IndentedJSON(http.StatusBadRequest, err.Error())
       return
-   }
-   
-   serviceBuffer = dtos.CharacterDTOToCharacter(&DTOBuffer)
-   
-   if err := services.SaveCharacter(db, &serviceBuffer); err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-      return
-   }
-   
-   returnBuffer := dtos.CharacterToCharacterDTO(db, &serviceBuffer, []string{})
-   if DTOBuffer.Id != nil {
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
-   } else {
-      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
    }
 }

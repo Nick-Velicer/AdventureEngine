@@ -5,12 +5,14 @@
 package generatedControllers
 import (
    "github.com/gin-gonic/gin"
+   "github.com/gin-gonic/gin/binding"
    "gorm.io/gorm"
    "strconv"
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
+   utils "AdventureEngineServer/utils"
 )
 
 func GetClassSpells(ctx *gin.Context, db *gorm.DB) {
@@ -50,25 +52,41 @@ func GetClassSpellById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveClassSpell(ctx *gin.Context, db *gorm.DB) {
-   var DTOBuffer dtos.ClassSpellDTO
-   var serviceBuffer types.ClassSpell
+   //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
+   var DTOBuffer *dtos.ClassSpellDTO = &dtos.ClassSpellDTO{}
+   var batchDTOBuffer []*dtos.ClassSpellDTO
+   var serviceBuffer []*types.ClassSpell
    
-   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+   //If neither a single item nor a collection can be bound to JSON, fail early
+   //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
+   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = []*types.ClassSpell{dtos.ClassSpellDTOToClassSpell(DTOBuffer)}
+      if err := services.SaveClassSpell(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := dtos.ClassSpellToClassSpellDTO(db, serviceBuffer[0], []string{})
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.ClassSpellDTO) *types.ClassSpell { return dtos.ClassSpellDTOToClassSpell(dto) })
+      if err := services.SaveClassSpell(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.ClassSpell) *dtos.ClassSpellDTO { return dtos.ClassSpellToClassSpellDTO(db, dbReturn, []string{}) })
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else {
       ctx.IndentedJSON(http.StatusBadRequest, err.Error())
       return
-   }
-   
-   serviceBuffer = dtos.ClassSpellDTOToClassSpell(&DTOBuffer)
-   
-   if err := services.SaveClassSpell(db, &serviceBuffer); err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-      return
-   }
-   
-   returnBuffer := dtos.ClassSpellToClassSpellDTO(db, &serviceBuffer, []string{})
-   if DTOBuffer.Id != nil {
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
-   } else {
-      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
    }
 }

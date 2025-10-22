@@ -86,7 +86,7 @@ func ClassSpellToClassSpellDTO(db *gorm.DB, classSpell *types.ClassSpell, traver
    }
 }
 
-func ClassSpellDTOToClassSpell(classSpell *ClassSpellDTO) types.ClassSpell {
+func ClassSpellDTOToClassSpell(classSpell *ClassSpellDTO) *types.ClassSpell {
    var tableTypeBuffer types.ClassSpell
    
    tableTypeBuffer.Id = classSpell.Id
@@ -103,5 +103,5 @@ func ClassSpellDTOToClassSpell(classSpell *ClassSpellDTO) types.ClassSpell {
       tableTypeBuffer.Spell__DomainSpell = classSpell.Relationships.ManyToOne.Spell__DomainSpell.Id
    }
 
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

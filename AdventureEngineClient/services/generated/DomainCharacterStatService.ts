@@ -26,10 +26,10 @@ export async function getDomainCharacterStatbyId(id: number): Promise<DomainChar
    }
 }
 
-export async function saveDomainCharacterStat(obj: DomainCharacterStat): Promise<DomainCharacterStat> {
+export async function saveDomainCharacterStat<T extends DomainCharacterStat | DomainCharacterStat[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainCharacterStat", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainCharacterStat;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

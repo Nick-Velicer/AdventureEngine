@@ -26,10 +26,10 @@ export async function getClassSpellbyId(id: number): Promise<ClassSpell> {
    }
 }
 
-export async function saveClassSpell(obj: ClassSpell): Promise<ClassSpell> {
+export async function saveClassSpell<T extends ClassSpell | ClassSpell[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveClassSpell", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as ClassSpell;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

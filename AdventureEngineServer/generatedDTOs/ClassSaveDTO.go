@@ -86,7 +86,7 @@ func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedT
    }
 }
 
-func ClassSaveDTOToClassSave(classSave *ClassSaveDTO) types.ClassSave {
+func ClassSaveDTOToClassSave(classSave *ClassSaveDTO) *types.ClassSave {
    var tableTypeBuffer types.ClassSave
    
    tableTypeBuffer.Id = classSave.Id
@@ -103,5 +103,5 @@ func ClassSaveDTOToClassSave(classSave *ClassSaveDTO) types.ClassSave {
       tableTypeBuffer.Stat__DomainCharacterStat = classSave.Relationships.ManyToOne.Stat__DomainCharacterStat.Id
    }
 
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

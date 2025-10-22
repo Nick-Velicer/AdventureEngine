@@ -20,11 +20,11 @@ func GetDomainSpellSchoolById(db *gorm.DB, id int, domainSpellSchool *types.Doma
    return result.Error
 }
 
-func SaveDomainSpellSchool(db *gorm.DB, domainSpellSchool *types.DomainSpellSchool) error {
+func SaveDomainSpellSchool(db *gorm.DB, domainSpellSchools []*types.DomainSpellSchool) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainSpellSchool).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainSpellSchools).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainSpellSchool(db *gorm.DB, domainSpellSchool *types.DomainSpellScho
       return err
    }
    
-   if domainSpellSchool.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainSpellSchool").Save(domainSpellSchool).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainSpellSchool").Create(domainSpellSchool).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainSpellSchool.Id)
+   if err := tx.Table("DomainSpellSchool").Create(domainSpellSchools).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

@@ -26,10 +26,10 @@ export async function getClassSavebyId(id: number): Promise<ClassSave> {
    }
 }
 
-export async function saveClassSave(obj: ClassSave): Promise<ClassSave> {
+export async function saveClassSave<T extends ClassSave | ClassSave[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveClassSave", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as ClassSave;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

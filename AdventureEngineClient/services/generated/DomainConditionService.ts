@@ -26,10 +26,10 @@ export async function getDomainConditionbyId(id: number): Promise<DomainConditio
    }
 }
 
-export async function saveDomainCondition(obj: DomainCondition): Promise<DomainCondition> {
+export async function saveDomainCondition<T extends DomainCondition | DomainCondition[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainCondition", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainCondition;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

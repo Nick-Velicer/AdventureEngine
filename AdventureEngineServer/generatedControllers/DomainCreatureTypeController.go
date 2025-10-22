@@ -5,12 +5,14 @@
 package generatedControllers
 import (
    "github.com/gin-gonic/gin"
+   "github.com/gin-gonic/gin/binding"
    "gorm.io/gorm"
    "strconv"
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
+   utils "AdventureEngineServer/utils"
 )
 
 func GetDomainCreatureTypes(ctx *gin.Context, db *gorm.DB) {
@@ -50,25 +52,41 @@ func GetDomainCreatureTypeById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveDomainCreatureType(ctx *gin.Context, db *gorm.DB) {
-   var DTOBuffer dtos.DomainCreatureTypeDTO
-   var serviceBuffer types.DomainCreatureType
+   //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
+   var DTOBuffer *dtos.DomainCreatureTypeDTO = &dtos.DomainCreatureTypeDTO{}
+   var batchDTOBuffer []*dtos.DomainCreatureTypeDTO
+   var serviceBuffer []*types.DomainCreatureType
    
-   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+   //If neither a single item nor a collection can be bound to JSON, fail early
+   //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
+   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = []*types.DomainCreatureType{dtos.DomainCreatureTypeDTOToDomainCreatureType(DTOBuffer)}
+      if err := services.SaveDomainCreatureType(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, serviceBuffer[0], []string{})
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.DomainCreatureTypeDTO) *types.DomainCreatureType { return dtos.DomainCreatureTypeDTOToDomainCreatureType(dto) })
+      if err := services.SaveDomainCreatureType(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.DomainCreatureType) *dtos.DomainCreatureTypeDTO { return dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, dbReturn, []string{}) })
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else {
       ctx.IndentedJSON(http.StatusBadRequest, err.Error())
       return
-   }
-   
-   serviceBuffer = dtos.DomainCreatureTypeDTOToDomainCreatureType(&DTOBuffer)
-   
-   if err := services.SaveDomainCreatureType(db, &serviceBuffer); err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-      return
-   }
-   
-   returnBuffer := dtos.DomainCreatureTypeToDomainCreatureTypeDTO(db, &serviceBuffer, []string{})
-   if DTOBuffer.Id != nil {
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
-   } else {
-      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
    }
 }

@@ -72,7 +72,7 @@ func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.
    }
 }
 
-func DomainDamageTypeDTOToDomainDamageType(domainDamageType *DomainDamageTypeDTO) types.DomainDamageType {
+func DomainDamageTypeDTOToDomainDamageType(domainDamageType *DomainDamageTypeDTO) *types.DomainDamageType {
    var tableTypeBuffer types.DomainDamageType
    
    tableTypeBuffer.Id = domainDamageType.Id
@@ -81,5 +81,5 @@ func DomainDamageTypeDTOToDomainDamageType(domainDamageType *DomainDamageTypeDTO
    tableTypeBuffer.IsActive = domainDamageType.Attributes.IsActive
    tableTypeBuffer.Title = domainDamageType.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

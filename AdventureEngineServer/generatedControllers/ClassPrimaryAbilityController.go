@@ -5,12 +5,14 @@
 package generatedControllers
 import (
    "github.com/gin-gonic/gin"
+   "github.com/gin-gonic/gin/binding"
    "gorm.io/gorm"
    "strconv"
    "net/http"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
+   utils "AdventureEngineServer/utils"
 )
 
 func GetClassPrimaryAbilitys(ctx *gin.Context, db *gorm.DB) {
@@ -50,25 +52,41 @@ func GetClassPrimaryAbilityById(ctx *gin.Context, db *gorm.DB) {
 }
 
 func SaveClassPrimaryAbility(ctx *gin.Context, db *gorm.DB) {
-   var DTOBuffer dtos.ClassPrimaryAbilityDTO
-   var serviceBuffer types.ClassPrimaryAbility
+   //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
+   var DTOBuffer *dtos.ClassPrimaryAbilityDTO = &dtos.ClassPrimaryAbilityDTO{}
+   var batchDTOBuffer []*dtos.ClassPrimaryAbilityDTO
+   var serviceBuffer []*types.ClassPrimaryAbility
    
-   if err := ctx.ShouldBindJSON(&DTOBuffer); err != nil {
+   //If neither a single item nor a collection can be bound to JSON, fail early
+   //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
+   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = []*types.ClassPrimaryAbility{dtos.ClassPrimaryAbilityDTOToClassPrimaryAbility(DTOBuffer)}
+      if err := services.SaveClassPrimaryAbility(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := dtos.ClassPrimaryAbilityToClassPrimaryAbilityDTO(db, serviceBuffer[0], []string{})
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.ClassPrimaryAbilityDTO) *types.ClassPrimaryAbility { return dtos.ClassPrimaryAbilityDTOToClassPrimaryAbility(dto) })
+      if err := services.SaveClassPrimaryAbility(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.ClassPrimaryAbility) *dtos.ClassPrimaryAbilityDTO { return dtos.ClassPrimaryAbilityToClassPrimaryAbilityDTO(db, dbReturn, []string{}) })
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else {
       ctx.IndentedJSON(http.StatusBadRequest, err.Error())
       return
-   }
-   
-   serviceBuffer = dtos.ClassPrimaryAbilityDTOToClassPrimaryAbility(&DTOBuffer)
-   
-   if err := services.SaveClassPrimaryAbility(db, &serviceBuffer); err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-      return
-   }
-   
-   returnBuffer := dtos.ClassPrimaryAbilityToClassPrimaryAbilityDTO(db, &serviceBuffer, []string{})
-   if DTOBuffer.Id != nil {
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
-   } else {
-      ctx.IndentedJSON(http.StatusCreated, returnBuffer)
    }
 }

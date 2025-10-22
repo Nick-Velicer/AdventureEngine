@@ -20,11 +20,11 @@ func GetDomainDiceById(db *gorm.DB, id int, domainDice *types.DomainDice) error 
    return result.Error
 }
 
-func SaveDomainDice(db *gorm.DB, domainDice *types.DomainDice) error {
+func SaveDomainDice(db *gorm.DB, domainDices []*types.DomainDice) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainDice).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainDices).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainDice(db *gorm.DB, domainDice *types.DomainDice) error {
       return err
    }
    
-   if domainDice.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainDice").Save(domainDice).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainDice").Create(domainDice).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainDice.Id)
+   if err := tx.Table("DomainDice").Create(domainDices).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

@@ -26,10 +26,10 @@ export async function getDomainStaticEffectbyId(id: number): Promise<DomainStati
    }
 }
 
-export async function saveDomainStaticEffect(obj: DomainStaticEffect): Promise<DomainStaticEffect> {
+export async function saveDomainStaticEffect<T extends DomainStaticEffect | DomainStaticEffect[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainStaticEffect", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainStaticEffect;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

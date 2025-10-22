@@ -18,11 +18,12 @@ type CharacterDomainCharacterStatInstanceDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Value float64
 }
 
 type CharacterDomainCharacterStatInstanceDTOManyToOneRelationships struct {
    Character__Character *CharacterDTO
-   StatInstance__DomainCharacterStat *DomainCharacterStatDTO
+   Stat__DomainCharacterStat *DomainCharacterStatDTO
 }
 
 type CharacterDomainCharacterStatInstanceDTOOneToManyRelationships struct {
@@ -56,14 +57,14 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
    traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())
    
    var includedCharacter__Character *types.Character
-   var includedStatInstance__DomainCharacterStat *types.DomainCharacterStat
+   var includedStat__DomainCharacterStat *types.DomainCharacterStat
    
    if (characterDomainCharacterStatInstance.Character__Character != nil) {
       services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), includedCharacter__Character)
    }
 
-   if (characterDomainCharacterStatInstance.StatInstance__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.StatInstance__DomainCharacterStat), includedStatInstance__DomainCharacterStat)
+   if (characterDomainCharacterStatInstance.Stat__DomainCharacterStat != nil) {
+      services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.Stat__DomainCharacterStat), includedStat__DomainCharacterStat)
    }
 
    
@@ -74,11 +75,12 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
          
          IsActive: characterDomainCharacterStatInstance.IsActive,
          Title: characterDomainCharacterStatInstance.Title,
+         Value: characterDomainCharacterStatInstance.Value,
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
          ManyToOne: CharacterDomainCharacterStatInstanceDTOManyToOneRelationships {
             Character__Character: CharacterToCharacterDTO(db, includedCharacter__Character, traversedTables),
-            StatInstance__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedStatInstance__DomainCharacterStat, traversedTables),
+            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: CharacterDomainCharacterStatInstanceDTOOneToManyRelationships {
          },
@@ -86,7 +88,7 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
    }
 }
 
-func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstance(characterDomainCharacterStatInstance *CharacterDomainCharacterStatInstanceDTO) types.CharacterDomainCharacterStatInstance {
+func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstance(characterDomainCharacterStatInstance *CharacterDomainCharacterStatInstanceDTO) *types.CharacterDomainCharacterStatInstance {
    var tableTypeBuffer types.CharacterDomainCharacterStatInstance
    
    tableTypeBuffer.Id = characterDomainCharacterStatInstance.Id
@@ -94,14 +96,15 @@ func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstan
    
    tableTypeBuffer.IsActive = characterDomainCharacterStatInstance.Attributes.IsActive
    tableTypeBuffer.Title = characterDomainCharacterStatInstance.Attributes.Title
+   tableTypeBuffer.Value = characterDomainCharacterStatInstance.Attributes.Value
    
    if (characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character != nil) {
       tableTypeBuffer.Character__Character = characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character.Id
    }
 
-   if (characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstance__DomainCharacterStat != nil) {
-      tableTypeBuffer.StatInstance__DomainCharacterStat = characterDomainCharacterStatInstance.Relationships.ManyToOne.StatInstance__DomainCharacterStat.Id
+   if (characterDomainCharacterStatInstance.Relationships.ManyToOne.Stat__DomainCharacterStat != nil) {
+      tableTypeBuffer.Stat__DomainCharacterStat = characterDomainCharacterStatInstance.Relationships.ManyToOne.Stat__DomainCharacterStat.Id
    }
 
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

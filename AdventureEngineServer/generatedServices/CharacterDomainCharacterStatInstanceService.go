@@ -20,11 +20,11 @@ func GetCharacterDomainCharacterStatInstanceById(db *gorm.DB, id int, characterD
    return result.Error
 }
 
-func SaveCharacterDomainCharacterStatInstance(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance) error {
+func SaveCharacterDomainCharacterStatInstance(db *gorm.DB, characterDomainCharacterStatInstances []*types.CharacterDomainCharacterStatInstance) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(characterDomainCharacterStatInstance).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(characterDomainCharacterStatInstances).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveCharacterDomainCharacterStatInstance(db *gorm.DB, characterDomainCharac
       return err
    }
    
-   if characterDomainCharacterStatInstance.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("CharacterDomainCharacterStatInstance").Save(characterDomainCharacterStatInstance).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("CharacterDomainCharacterStatInstance").Create(characterDomainCharacterStatInstance).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(characterDomainCharacterStatInstance.Id)
+   if err := tx.Table("CharacterDomainCharacterStatInstance").Create(characterDomainCharacterStatInstances).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

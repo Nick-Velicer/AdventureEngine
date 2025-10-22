@@ -76,7 +76,7 @@ func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction
    }
 }
 
-func DomainActionDTOToDomainAction(domainAction *DomainActionDTO) types.DomainAction {
+func DomainActionDTOToDomainAction(domainAction *DomainActionDTO) *types.DomainAction {
    var tableTypeBuffer types.DomainAction
    
    tableTypeBuffer.Id = domainAction.Id
@@ -87,5 +87,5 @@ func DomainActionDTOToDomainAction(domainAction *DomainActionDTO) types.DomainAc
    tableTypeBuffer.UsesAction = domainAction.Attributes.UsesAction
    tableTypeBuffer.UsesBonusAction = domainAction.Attributes.UsesBonusAction
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

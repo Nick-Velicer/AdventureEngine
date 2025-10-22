@@ -2,7 +2,7 @@
 
 package goTypeBase
 
-type CharacterDomainCharacterStatInstanceJson struct {
+type CharacterDomainSubClassInstanceJson struct {
 	// CharacterCharacter corresponds to the JSON schema field "Character__Character".
 	CharacterCharacter *float64 `json:"Character__Character,omitempty" yaml:"Character__Character,omitempty" mapstructure:"Character__Character,omitempty"`
 
@@ -15,13 +15,13 @@ type CharacterDomainCharacterStatInstanceJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
-	// StatDomainCharacterStat corresponds to the JSON schema field
-	// "Stat__DomainCharacterStat".
-	StatDomainCharacterStat *float64 `json:"Stat__DomainCharacterStat,omitempty" yaml:"Stat__DomainCharacterStat,omitempty" mapstructure:"Stat__DomainCharacterStat,omitempty"`
+	// Level corresponds to the JSON schema field "Level".
+	Level float64 `json:"Level" yaml:"Level" mapstructure:"Level"`
+
+	// SubClassDomainSubClass corresponds to the JSON schema field
+	// "SubClass__DomainSubClass".
+	SubClassDomainSubClass *float64 `json:"SubClass__DomainSubClass,omitempty" yaml:"SubClass__DomainSubClass,omitempty" mapstructure:"SubClass__DomainSubClass,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
-
-	// Value corresponds to the JSON schema field "Value".
-	Value float64 `json:"Value" yaml:"Value" mapstructure:"Value"`
 }

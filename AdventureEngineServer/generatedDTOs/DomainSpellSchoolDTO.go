@@ -72,7 +72,7 @@ func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *typ
    }
 }
 
-func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoolDTO) types.DomainSpellSchool {
+func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoolDTO) *types.DomainSpellSchool {
    var tableTypeBuffer types.DomainSpellSchool
    
    tableTypeBuffer.Id = domainSpellSchool.Id
@@ -81,5 +81,5 @@ func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoo
    tableTypeBuffer.IsActive = domainSpellSchool.Attributes.IsActive
    tableTypeBuffer.Title = domainSpellSchool.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

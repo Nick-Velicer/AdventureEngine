@@ -20,11 +20,11 @@ func GetDomainConditionById(db *gorm.DB, id int, domainCondition *types.DomainCo
    return result.Error
 }
 
-func SaveDomainCondition(db *gorm.DB, domainCondition *types.DomainCondition) error {
+func SaveDomainCondition(db *gorm.DB, domainConditions []*types.DomainCondition) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainCondition).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainConditions).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainCondition(db *gorm.DB, domainCondition *types.DomainCondition) er
       return err
    }
    
-   if domainCondition.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainCondition").Save(domainCondition).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainCondition").Create(domainCondition).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainCondition.Id)
+   if err := tx.Table("DomainCondition").Create(domainConditions).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

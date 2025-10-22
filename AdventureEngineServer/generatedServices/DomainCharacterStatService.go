@@ -20,11 +20,11 @@ func GetDomainCharacterStatById(db *gorm.DB, id int, domainCharacterStat *types.
    return result.Error
 }
 
-func SaveDomainCharacterStat(db *gorm.DB, domainCharacterStat *types.DomainCharacterStat) error {
+func SaveDomainCharacterStat(db *gorm.DB, domainCharacterStats []*types.DomainCharacterStat) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainCharacterStat).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainCharacterStats).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainCharacterStat(db *gorm.DB, domainCharacterStat *types.DomainChara
       return err
    }
    
-   if domainCharacterStat.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainCharacterStat").Save(domainCharacterStat).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainCharacterStat").Create(domainCharacterStat).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainCharacterStat.Id)
+   if err := tx.Table("DomainCharacterStat").Create(domainCharacterStats).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

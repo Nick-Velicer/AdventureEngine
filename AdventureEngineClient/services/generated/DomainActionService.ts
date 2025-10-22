@@ -26,10 +26,10 @@ export async function getDomainActionbyId(id: number): Promise<DomainAction> {
    }
 }
 
-export async function saveDomainAction(obj: DomainAction): Promise<DomainAction> {
+export async function saveDomainAction<T extends DomainAction | DomainAction[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainAction", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainAction;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

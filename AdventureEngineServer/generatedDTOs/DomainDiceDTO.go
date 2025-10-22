@@ -76,7 +76,7 @@ func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traver
    }
 }
 
-func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) types.DomainDice {
+func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) *types.DomainDice {
    var tableTypeBuffer types.DomainDice
    
    tableTypeBuffer.Id = domainDice.Id
@@ -87,5 +87,5 @@ func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) types.DomainDice {
    tableTypeBuffer.Minimum = domainDice.Attributes.Minimum
    tableTypeBuffer.Title = domainDice.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

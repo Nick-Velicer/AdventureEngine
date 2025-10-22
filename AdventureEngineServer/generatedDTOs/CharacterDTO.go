@@ -24,11 +24,11 @@ type CharacterDTOManyToOneRelationships struct {
    Campaign__Campaign *CampaignDTO
    CurrentSize__DomainSize *DomainSizeDTO
    Species__DomainSpecies *DomainSpeciesDTO
-   Subclass__DomainSubClass *DomainSubClassDTO
 }
 
 type CharacterDTOOneToManyRelationships struct {
    Stats__CharacterDomainCharacterStatInstance []*CharacterDomainCharacterStatInstanceDTO
+   SubClasses__CharacterDomainSubClassInstance []*CharacterDomainSubClassInstanceDTO
 }
 
 type CharacterDTORelationships struct {
@@ -61,8 +61,8 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
    var includedCampaign__Campaign *types.Campaign
    var includedCurrentSize__DomainSize *types.DomainSize
    var includedSpecies__DomainSpecies *types.DomainSpecies
-   var includedSubclass__DomainSubClass *types.DomainSubClass
    var includedStats__CharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
+   var includedSubClasses__CharacterDomainSubClassInstances []types.CharacterDomainSubClassInstance
    
    if (character.Campaign__Campaign != nil) {
       services.GetCampaignById(db, int(*character.Campaign__Campaign), includedCampaign__Campaign)
@@ -76,15 +76,18 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
       services.GetDomainSpeciesById(db, int(*character.Species__DomainSpecies), includedSpecies__DomainSpecies)
    }
 
-   if (character.Subclass__DomainSubClass != nil) {
-      services.GetDomainSubClassById(db, int(*character.Subclass__DomainSubClass), includedSubclass__DomainSubClass)
-   }
-
    if (slices.Contains(traversedTables, reflect.TypeOf(includedStats__CharacterDomainCharacterStatInstances).Elem().Name())) {
       services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStats__CharacterDomainCharacterStatInstances)
    } else {
       includedStats__CharacterDomainCharacterStatInstances = []types.CharacterDomainCharacterStatInstance{}
       print("Hit circular catch case for table CharacterDomainCharacterStatInstance\n")
+   }
+
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedSubClasses__CharacterDomainSubClassInstances).Elem().Name())) {
+      services.GetCharacterDomainSubClassInstancesByCharacterId(db, int(*character.Id), &includedSubClasses__CharacterDomainSubClassInstances)
+   } else {
+      includedSubClasses__CharacterDomainSubClassInstances = []types.CharacterDomainSubClassInstance{}
+      print("Hit circular catch case for table CharacterDomainSubClassInstance\n")
    }
 
    
@@ -101,16 +104,16 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
             Campaign__Campaign: CampaignToCampaignDTO(db, includedCampaign__Campaign, traversedTables),
             CurrentSize__DomainSize: DomainSizeToDomainSizeDTO(db, includedCurrentSize__DomainSize, traversedTables),
             Species__DomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, includedSpecies__DomainSpecies, traversedTables),
-            Subclass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, includedSubclass__DomainSubClass, traversedTables),
          },
          OneToMany: CharacterDTOOneToManyRelationships {
             Stats__CharacterDomainCharacterStatInstance: utils.Map(includedStats__CharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, traversedTables) }),
+            SubClasses__CharacterDomainSubClassInstance: utils.Map(includedSubClasses__CharacterDomainSubClassInstances, func(relationshipElement types.CharacterDomainSubClassInstance) *CharacterDomainSubClassInstanceDTO { return CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db, &relationshipElement, traversedTables) }),
          },
       },
    }
 }
 
-func CharacterDTOToCharacter(character *CharacterDTO) types.Character {
+func CharacterDTOToCharacter(character *CharacterDTO) *types.Character {
    var tableTypeBuffer types.Character
    
    tableTypeBuffer.Id = character.Id
@@ -131,9 +134,5 @@ func CharacterDTOToCharacter(character *CharacterDTO) types.Character {
       tableTypeBuffer.Species__DomainSpecies = character.Relationships.ManyToOne.Species__DomainSpecies.Id
    }
 
-   if (character.Relationships.ManyToOne.Subclass__DomainSubClass != nil) {
-      tableTypeBuffer.Subclass__DomainSubClass = character.Relationships.ManyToOne.Subclass__DomainSubClass.Id
-   }
-
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

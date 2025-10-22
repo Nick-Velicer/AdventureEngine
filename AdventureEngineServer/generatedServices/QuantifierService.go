@@ -20,11 +20,11 @@ func GetQuantifierById(db *gorm.DB, id int, quantifier *types.Quantifier) error 
    return result.Error
 }
 
-func SaveQuantifier(db *gorm.DB, quantifier *types.Quantifier) error {
+func SaveQuantifier(db *gorm.DB, quantifiers []*types.Quantifier) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(quantifier).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(quantifiers).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveQuantifier(db *gorm.DB, quantifier *types.Quantifier) error {
       return err
    }
    
-   if quantifier.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("Quantifier").Save(quantifier).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("Quantifier").Create(quantifier).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(quantifier.Id)
+   if err := tx.Table("Quantifier").Create(quantifiers).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

@@ -106,7 +106,7 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
    }
 }
 
-func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) types.DomainClass {
+func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) *types.DomainClass {
    var tableTypeBuffer types.DomainClass
    
    tableTypeBuffer.Id = domainClass.Id
@@ -123,5 +123,5 @@ func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) types.DomainClass 
       tableTypeBuffer.SpellcastingStat__DomainCharacterStat = domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat.Id
    }
 
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

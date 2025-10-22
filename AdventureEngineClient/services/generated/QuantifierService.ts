@@ -26,10 +26,10 @@ export async function getQuantifierbyId(id: number): Promise<Quantifier> {
    }
 }
 
-export async function saveQuantifier(obj: Quantifier): Promise<Quantifier> {
+export async function saveQuantifier<T extends Quantifier | Quantifier[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveQuantifier", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as Quantifier;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

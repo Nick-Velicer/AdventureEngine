@@ -72,7 +72,7 @@ func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *
    }
 }
 
-func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticEffectDTO) types.DomainStaticEffect {
+func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticEffectDTO) *types.DomainStaticEffect {
    var tableTypeBuffer types.DomainStaticEffect
    
    tableTypeBuffer.Id = domainStaticEffect.Id
@@ -81,5 +81,5 @@ func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticE
    tableTypeBuffer.IsActive = domainStaticEffect.Attributes.IsActive
    tableTypeBuffer.Title = domainStaticEffect.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

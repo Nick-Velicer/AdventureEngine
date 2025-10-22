@@ -1,15 +1,16 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 import { Character } from "./Character";
 import { DomainCharacterStat } from "./DomainCharacterStat";
+import { DomainSubClass } from "./DomainSubClass";
   
-export type CharacterDomainCharacterStatInstance = ExtendedSchemaObject<{
+export type CharacterDomainSubClassInstance = ExtendedSchemaObject<{
     Attributes: {
-        Value: number
+        Level: number
     },
     Relationships: {
         ManyToOne: {
             Character__Character: Character,
-            Stat__DomainCharacterStat: DomainCharacterStat
+            SubClass__DomainSubClass: DomainSubClass
         },
         OneToMany: {}
     }

@@ -76,7 +76,7 @@ func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterSta
    }
 }
 
-func DomainCharacterStatDTOToDomainCharacterStat(domainCharacterStat *DomainCharacterStatDTO) types.DomainCharacterStat {
+func DomainCharacterStatDTOToDomainCharacterStat(domainCharacterStat *DomainCharacterStatDTO) *types.DomainCharacterStat {
    var tableTypeBuffer types.DomainCharacterStat
    
    tableTypeBuffer.Id = domainCharacterStat.Id
@@ -87,5 +87,5 @@ func DomainCharacterStatDTOToDomainCharacterStat(domainCharacterStat *DomainChar
    tableTypeBuffer.IsBaseStat = domainCharacterStat.Attributes.IsBaseStat
    tableTypeBuffer.Title = domainCharacterStat.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

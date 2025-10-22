@@ -72,7 +72,7 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
    }
 }
 
-func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) types.DomainCondition {
+func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) *types.DomainCondition {
    var tableTypeBuffer types.DomainCondition
    
    tableTypeBuffer.Id = domainCondition.Id
@@ -81,5 +81,5 @@ func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) ty
    tableTypeBuffer.IsActive = domainCondition.Attributes.IsActive
    tableTypeBuffer.Title = domainCondition.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

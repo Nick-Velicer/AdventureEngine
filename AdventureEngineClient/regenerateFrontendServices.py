@@ -93,12 +93,12 @@ def produceTSServiceFile(typeName: str):
     def produceSaveItemMethod(tableName: str):
 
         lines = [
-            'export async function save' + typeName + '(obj: ' + typeName + '): Promise<' + typeName + '> {',
+            'export async function save' + typeName + '<T extends ' + typeName + ' | ' + typeName + '[]>(obj: T): Promise<T> {',
             *indentLineBlock([
                 'try {',
                 *indentLineBlock([
                     'const response = await fetch("' + baseApiUrl + 'save' + tableName + '", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});',
-                    'const returnObj = await response.json() as unknown as ' + typeName + ';',
+                    'const returnObj = await response.json() as unknown as T;',
                     'return returnObj;'
                 ]),
                 '}',

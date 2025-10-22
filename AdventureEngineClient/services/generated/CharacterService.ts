@@ -26,10 +26,10 @@ export async function getCharacterbyId(id: number): Promise<Character> {
    }
 }
 
-export async function saveCharacter(obj: Character): Promise<Character> {
+export async function saveCharacter<T extends Character | Character[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveCharacter", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as Character;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

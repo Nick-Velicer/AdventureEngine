@@ -26,10 +26,10 @@ export async function getDomainDiceRollTypebyId(id: number): Promise<DomainDiceR
    }
 }
 
-export async function saveDomainDiceRollType(obj: DomainDiceRollType): Promise<DomainDiceRollType> {
+export async function saveDomainDiceRollType<T extends DomainDiceRollType | DomainDiceRollType[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainDiceRollType", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainDiceRollType;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

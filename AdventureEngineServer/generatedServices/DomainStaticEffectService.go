@@ -20,11 +20,11 @@ func GetDomainStaticEffectById(db *gorm.DB, id int, domainStaticEffect *types.Do
    return result.Error
 }
 
-func SaveDomainStaticEffect(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect) error {
+func SaveDomainStaticEffect(db *gorm.DB, domainStaticEffects []*types.DomainStaticEffect) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainStaticEffect).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainStaticEffects).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainStaticEffect(db *gorm.DB, domainStaticEffect *types.DomainStaticE
       return err
    }
    
-   if domainStaticEffect.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainStaticEffect").Save(domainStaticEffect).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainStaticEffect").Create(domainStaticEffect).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainStaticEffect.Id)
+   if err := tx.Table("DomainStaticEffect").Create(domainStaticEffects).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

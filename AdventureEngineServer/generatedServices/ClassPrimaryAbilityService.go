@@ -20,11 +20,11 @@ func GetClassPrimaryAbilityById(db *gorm.DB, id int, classPrimaryAbility *types.
    return result.Error
 }
 
-func SaveClassPrimaryAbility(db *gorm.DB, classPrimaryAbility *types.ClassPrimaryAbility) error {
+func SaveClassPrimaryAbility(db *gorm.DB, classPrimaryAbilitys []*types.ClassPrimaryAbility) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(classPrimaryAbility).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(classPrimaryAbilitys).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveClassPrimaryAbility(db *gorm.DB, classPrimaryAbility *types.ClassPrimar
       return err
    }
    
-   if classPrimaryAbility.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("ClassPrimaryAbility").Save(classPrimaryAbility).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("ClassPrimaryAbility").Create(classPrimaryAbility).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(classPrimaryAbility.Id)
+   if err := tx.Table("ClassPrimaryAbility").Create(classPrimaryAbilitys).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

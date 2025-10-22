@@ -72,7 +72,7 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
    }
 }
 
-func DomainDiceRollTypeDTOToDomainDiceRollType(domainDiceRollType *DomainDiceRollTypeDTO) types.DomainDiceRollType {
+func DomainDiceRollTypeDTOToDomainDiceRollType(domainDiceRollType *DomainDiceRollTypeDTO) *types.DomainDiceRollType {
    var tableTypeBuffer types.DomainDiceRollType
    
    tableTypeBuffer.Id = domainDiceRollType.Id
@@ -81,5 +81,5 @@ func DomainDiceRollTypeDTOToDomainDiceRollType(domainDiceRollType *DomainDiceRol
    tableTypeBuffer.IsActive = domainDiceRollType.Attributes.IsActive
    tableTypeBuffer.Title = domainDiceRollType.Attributes.Title
    
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

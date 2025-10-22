@@ -26,10 +26,10 @@ export async function getDomainSizebyId(id: number): Promise<DomainSize> {
    }
 }
 
-export async function saveDomainSize(obj: DomainSize): Promise<DomainSize> {
+export async function saveDomainSize<T extends DomainSize | DomainSize[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainSize", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainSize;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

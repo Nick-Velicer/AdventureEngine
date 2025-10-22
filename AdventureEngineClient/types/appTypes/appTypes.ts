@@ -5,6 +5,7 @@ import { IsEqual } from "type-fest";import { SchemaObject } from "../SchemaObjec
 import { Campaign as Base__Campaign } from "../coreTypes/Campaign";
 import { Character as Base__Character } from "../coreTypes/Character";
 import { CharacterDomainCharacterStatInstance as Base__CharacterDomainCharacterStatInstance } from "../coreTypes/CharacterDomainCharacterStatInstance";
+import { CharacterDomainSubClassInstance as Base__CharacterDomainSubClassInstance } from "../coreTypes/CharacterDomainSubClassInstance";
 import { ClassPrimaryAbility as Base__ClassPrimaryAbility } from "../coreTypes/ClassPrimaryAbility";
 import { ClassSave as Base__ClassSave } from "../coreTypes/ClassSave";
 import { ClassSpell as Base__ClassSpell } from "../coreTypes/ClassSpell";
@@ -29,6 +30,7 @@ const BaseAppTypes = {
 	Campaign: {} as Base__Campaign,
 	Character: {} as Base__Character,
 	CharacterDomainCharacterStatInstance: {} as Base__CharacterDomainCharacterStatInstance,
+	CharacterDomainSubClassInstance: {} as Base__CharacterDomainSubClassInstance,
 	ClassPrimaryAbility: {} as Base__ClassPrimaryAbility,
 	ClassSave: {} as Base__ClassSave,
 	ClassSpell: {} as Base__ClassSpell,
@@ -74,6 +76,7 @@ type RecursionGuardedSchemaObject<T extends SchemaObject, G extends (typeof Base
 export type Campaign = RecursionGuardedSchemaObject<Base__Campaign>;
 export type Character = RecursionGuardedSchemaObject<Base__Character>;
 export type CharacterDomainCharacterStatInstance = RecursionGuardedSchemaObject<Base__CharacterDomainCharacterStatInstance>;
+export type CharacterDomainSubClassInstance = RecursionGuardedSchemaObject<Base__CharacterDomainSubClassInstance>;
 export type ClassPrimaryAbility = RecursionGuardedSchemaObject<Base__ClassPrimaryAbility>;
 export type ClassSave = RecursionGuardedSchemaObject<Base__ClassSave>;
 export type ClassSpell = RecursionGuardedSchemaObject<Base__ClassSpell>;
@@ -98,6 +101,7 @@ export const AppTypes = {
 	Campaign: {} as Campaign,
 	Character: {} as Character,
 	CharacterDomainCharacterStatInstance: {} as CharacterDomainCharacterStatInstance,
+	CharacterDomainSubClassInstance: {} as CharacterDomainSubClassInstance,
 	ClassPrimaryAbility: {} as ClassPrimaryAbility,
 	ClassSave: {} as ClassSave,
 	ClassSpell: {} as ClassSpell,

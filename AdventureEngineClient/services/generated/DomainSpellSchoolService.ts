@@ -26,10 +26,10 @@ export async function getDomainSpellSchoolbyId(id: number): Promise<DomainSpellS
    }
 }
 
-export async function saveDomainSpellSchool(obj: DomainSpellSchool): Promise<DomainSpellSchool> {
+export async function saveDomainSpellSchool<T extends DomainSpellSchool | DomainSpellSchool[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainSpellSchool", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainSpellSchool;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

@@ -20,11 +20,11 @@ func GetDomainSizeById(db *gorm.DB, id int, domainSize *types.DomainSize) error 
    return result.Error
 }
 
-func SaveDomainSize(db *gorm.DB, domainSize *types.DomainSize) error {
+func SaveDomainSize(db *gorm.DB, domainSizes []*types.DomainSize) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainSize).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainSizes).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainSize(db *gorm.DB, domainSize *types.DomainSize) error {
       return err
    }
    
-   if domainSize.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainSize").Save(domainSize).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainSize").Create(domainSize).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainSize.Id)
+   if err := tx.Table("DomainSize").Create(domainSizes).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

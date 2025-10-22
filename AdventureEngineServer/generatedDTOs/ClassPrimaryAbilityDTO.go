@@ -86,7 +86,7 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbilit
    }
 }
 
-func ClassPrimaryAbilityDTOToClassPrimaryAbility(classPrimaryAbility *ClassPrimaryAbilityDTO) types.ClassPrimaryAbility {
+func ClassPrimaryAbilityDTOToClassPrimaryAbility(classPrimaryAbility *ClassPrimaryAbilityDTO) *types.ClassPrimaryAbility {
    var tableTypeBuffer types.ClassPrimaryAbility
    
    tableTypeBuffer.Id = classPrimaryAbility.Id
@@ -103,5 +103,5 @@ func ClassPrimaryAbilityDTOToClassPrimaryAbility(classPrimaryAbility *ClassPrima
       tableTypeBuffer.Stat__DomainCharacterStat = classPrimaryAbility.Relationships.ManyToOne.Stat__DomainCharacterStat.Id
    }
 
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

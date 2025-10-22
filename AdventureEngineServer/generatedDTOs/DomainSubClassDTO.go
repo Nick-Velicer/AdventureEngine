@@ -79,7 +79,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
    }
 }
 
-func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) types.DomainSubClass {
+func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) *types.DomainSubClass {
    var tableTypeBuffer types.DomainSubClass
    
    tableTypeBuffer.Id = domainSubClass.Id
@@ -92,5 +92,5 @@ func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) types.
       tableTypeBuffer.ParentClass__DomainClass = domainSubClass.Relationships.ManyToOne.ParentClass__DomainClass.Id
    }
 
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

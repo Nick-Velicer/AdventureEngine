@@ -20,11 +20,11 @@ func GetClassSaveById(db *gorm.DB, id int, classSave *types.ClassSave) error {
    return result.Error
 }
 
-func SaveClassSave(db *gorm.DB, classSave *types.ClassSave) error {
+func SaveClassSave(db *gorm.DB, classSaves []*types.ClassSave) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(classSave).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(classSaves).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveClassSave(db *gorm.DB, classSave *types.ClassSave) error {
       return err
    }
    
-   if classSave.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("ClassSave").Save(classSave).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("ClassSave").Create(classSave).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(classSave.Id)
+   if err := tx.Table("ClassSave").Create(classSaves).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

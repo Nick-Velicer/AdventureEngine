@@ -26,10 +26,10 @@ export async function getDomainClassbyId(id: number): Promise<DomainClass> {
    }
 }
 
-export async function saveDomainClass(obj: DomainClass): Promise<DomainClass> {
+export async function saveDomainClass<T extends DomainClass | DomainClass[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainClass", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
-      const returnObj = await response.json() as unknown as DomainClass;
+      const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
    catch (errors) {

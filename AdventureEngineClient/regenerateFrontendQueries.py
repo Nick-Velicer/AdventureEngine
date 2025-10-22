@@ -32,7 +32,7 @@ def main():
         *indentLineBlock([
             'getAllItems: () => Promise<Array<T>>',
             'getItemById: (id: number) => Promise<T>',
-            'saveItem: (item: T) => Promise<T>'
+            'saveItem: <G extends T | T[]>(item: G) => Promise<G>'
         ]),
         '}',
         '',

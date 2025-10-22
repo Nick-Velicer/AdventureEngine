@@ -15,17 +15,17 @@ import (
    utils "AdventureEngineServer/utils"
 )
 
-func GetCampaigns(ctx *gin.Context, db *gorm.DB) {
-   var serviceBuffer []types.Campaign
-   err := services.GetCampaigns(db, &serviceBuffer)
+func GetCharacterDomainSubClassInstances(ctx *gin.Context, db *gorm.DB) {
+   var serviceBuffer []types.CharacterDomainSubClassInstance
+   err := services.GetCharacterDomainSubClassInstances(db, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
-   var returnBuffer []dtos.CampaignDTO
+   var returnBuffer []dtos.CharacterDomainSubClassInstanceDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.CampaignToCampaignDTO(db, &dbTypeInstance, []string{})
+      pointerToDTO := dtos.CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db, &dbTypeInstance, []string{})
       if (pointerToDTO != nil) {
          returnBuffer = append(returnBuffer, *pointerToDTO)
       }
@@ -33,54 +33,54 @@ func GetCampaigns(ctx *gin.Context, db *gorm.DB) {
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func GetCampaignById(ctx *gin.Context, db *gorm.DB) {
+func GetCharacterDomainSubClassInstanceById(ctx *gin.Context, db *gorm.DB) {
    id := ctx.Param("id")
    idNum, err := strconv.Atoi(id)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var serviceBuffer types.Campaign
-   err = services.GetCampaignById(db, idNum, &serviceBuffer)
+   var serviceBuffer types.CharacterDomainSubClassInstance
+   err = services.GetCharacterDomainSubClassInstanceById(db, idNum, &serviceBuffer)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
-   returnBuffer := dtos.CampaignToCampaignDTO(db, &serviceBuffer, []string{})
+   returnBuffer := dtos.CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db, &serviceBuffer, []string{})
    ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func SaveCampaign(ctx *gin.Context, db *gorm.DB) {
+func SaveCharacterDomainSubClassInstance(ctx *gin.Context, db *gorm.DB) {
    //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
-   var DTOBuffer *dtos.CampaignDTO = &dtos.CampaignDTO{}
-   var batchDTOBuffer []*dtos.CampaignDTO
-   var serviceBuffer []*types.Campaign
+   var DTOBuffer *dtos.CharacterDomainSubClassInstanceDTO = &dtos.CharacterDomainSubClassInstanceDTO{}
+   var batchDTOBuffer []*dtos.CharacterDomainSubClassInstanceDTO
+   var serviceBuffer []*types.CharacterDomainSubClassInstance
    
    //If neither a single item nor a collection can be bound to JSON, fail early
    //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
    if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = []*types.Campaign{dtos.CampaignDTOToCampaign(DTOBuffer)}
-      if err := services.SaveCampaign(db, serviceBuffer); err != nil {
+      serviceBuffer = []*types.CharacterDomainSubClassInstance{dtos.CharacterDomainSubClassInstanceDTOToCharacterDomainSubClassInstance(DTOBuffer)}
+      if err := services.SaveCharacterDomainSubClassInstance(db, serviceBuffer); err != nil {
          ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := dtos.CampaignToCampaignDTO(db, serviceBuffer[0], []string{})
+      returnBuffer := dtos.CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db, serviceBuffer[0], []string{})
       
       ctx.IndentedJSON(http.StatusOK, returnBuffer)
       return
       
    } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.CampaignDTO) *types.Campaign { return dtos.CampaignDTOToCampaign(dto) })
-      if err := services.SaveCampaign(db, serviceBuffer); err != nil {
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.CharacterDomainSubClassInstanceDTO) *types.CharacterDomainSubClassInstance { return dtos.CharacterDomainSubClassInstanceDTOToCharacterDomainSubClassInstance(dto) })
+      if err := services.SaveCharacterDomainSubClassInstance(db, serviceBuffer); err != nil {
          ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.Campaign) *dtos.CampaignDTO { return dtos.CampaignToCampaignDTO(db, dbReturn, []string{}) })
+      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.CharacterDomainSubClassInstance) *dtos.CharacterDomainSubClassInstanceDTO { return dtos.CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db, dbReturn, []string{}) })
       
       ctx.IndentedJSON(http.StatusOK, returnBuffer)
       return

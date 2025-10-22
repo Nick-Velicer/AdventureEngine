@@ -20,11 +20,11 @@ func GetDomainClassById(db *gorm.DB, id int, domainClass *types.DomainClass) err
    return result.Error
 }
 
-func SaveDomainClass(db *gorm.DB, domainClass *types.DomainClass) error {
+func SaveDomainClass(db *gorm.DB, domainClasss []*types.DomainClass) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainClass).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainClasss).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainClass(db *gorm.DB, domainClass *types.DomainClass) error {
       return err
    }
    
-   if domainClass.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainClass").Save(domainClass).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainClass").Create(domainClass).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainClass.Id)
+   if err := tx.Table("DomainClass").Create(domainClasss).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error

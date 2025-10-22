@@ -79,7 +79,7 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
    }
 }
 
-func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) types.DomainSpecies {
+func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) *types.DomainSpecies {
    var tableTypeBuffer types.DomainSpecies
    
    tableTypeBuffer.Id = domainSpecies.Id
@@ -92,5 +92,5 @@ func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) types.Doma
       tableTypeBuffer.CreatureType__DomainCreatureType = domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType.Id
    }
 
-   return tableTypeBuffer
+   return &tableTypeBuffer
 }

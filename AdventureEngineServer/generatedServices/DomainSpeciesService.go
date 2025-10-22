@@ -20,11 +20,11 @@ func GetDomainSpeciesById(db *gorm.DB, id int, domainSpecies *types.DomainSpecie
    return result.Error
 }
 
-func SaveDomainSpecies(db *gorm.DB, domainSpecies *types.DomainSpecies) error {
+func SaveDomainSpecies(db *gorm.DB, domainSpeciess []*types.DomainSpecies) error {
    tx := db.Begin()
    
    if tx.Error != nil {
-   return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainSpecies).Name() + " entity")
+      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainSpeciess).Name() + " entity")
    }
    
    defer func() {
@@ -37,19 +37,9 @@ func SaveDomainSpecies(db *gorm.DB, domainSpecies *types.DomainSpecies) error {
       return err
    }
    
-   if domainSpecies.Id != nil {
-      print("Saving\n")
-      if err := tx.Table("DomainSpecies").Save(domainSpecies).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-   } else {
-      print("Creating\n")
-      if err := tx.Table("DomainSpecies").Create(domainSpecies).Error; err != nil {
-         tx.Rollback()
-         return err
-      }
-      print(domainSpecies.Id)
+   if err := tx.Table("DomainSpecies").Create(domainSpeciess).Error; err != nil {
+      tx.Rollback()
+      return err
    }
    
    return tx.Commit().Error
