@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type DomainClass struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
@@ -23,6 +26,9 @@ type DomainClass struct {
 	// SpellcastingStatDomainCharacterStat corresponds to the JSON schema field
 	// "SpellcastingStat__DomainCharacterStat".
 	SpellcastingStat__DomainCharacterStat *int `json:"SpellcastingStat__DomainCharacterStat" gorm:"column:SpellcastingStat__DomainCharacterStat" mapstructure:"SpellcastingStat__DomainCharacterStat"`
+
+	// SubClassesDomainSubClass corresponds to the JSON schema field
+	// "SubClasses__DomainSubClass".
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`

@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type ClassSave struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// ClassDomainClass corresponds to the JSON schema field "Class__DomainClass".
 	Class__DomainClass *int `json:"Class__DomainClass" gorm:"column:Class__DomainClass" mapstructure:"Class__DomainClass"`
 

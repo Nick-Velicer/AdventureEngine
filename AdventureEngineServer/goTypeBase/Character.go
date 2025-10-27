@@ -3,6 +3,9 @@
 package goTypeBase
 
 type CharacterJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// CampaignCampaign corresponds to the JSON schema field "Campaign__Campaign".
 	CampaignCampaign *float64 `json:"Campaign__Campaign,omitempty" yaml:"Campaign__Campaign,omitempty" mapstructure:"Campaign__Campaign,omitempty"`
 

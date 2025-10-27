@@ -53,3 +53,7 @@ func GetClassSavesByDomainClassId(db *gorm.DB, id int, ClassSaves *[]types.Class
    result := db.Table("ClassSave").Where(map[string]interface{}{"Class__DomainClass": id}).Find(ClassSaves)
    return result.Error
 }
+func GetDomainSubClasssByDomainClassId(db *gorm.DB, id int, DomainSubClasss *[]types.DomainSubClass) error {
+   result := db.Table("DomainSubClass").Where(map[string]interface{}{"ParentClass__DomainClass": id}).Find(DomainSubClasss)
+   return result.Error
+}

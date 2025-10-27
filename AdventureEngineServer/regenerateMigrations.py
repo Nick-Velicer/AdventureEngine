@@ -20,10 +20,17 @@ typeMetas = {}
 
 #global contexts to be able to link generated migrations to other generated tables
 dice = []
+diceRollTypes = []
+diceRollSubTypes = []
 baseStats = []
+actions = []
 spellSchools = []
 spells = []
 classes = []
+subClasses = []
+conditions = []
+classTraits = []
+quantifiers = []
 
 #This will be applied to the beginning of migrations to preserve the dependent order for foreign keys
 migrationOrderNumber = 1
@@ -57,15 +64,27 @@ def main():
 
     regenerateDiceMigration()
 
+    regenerateDomainDiceRollTypeMigration()
+
+    regenerateDomainDiceRollSubTypeMigration()
+
     regenerateBasicStatMigration()
 
+    regenerateActionsMigration()
+
     regenerateDomainClassMigration()
+
+    regenerateDomainSubClassMigration()
+
+    regenerateDomainConditionsMigration()
 
     regenerateSavingThrowsMigration()
 
     regenerateSpellSchoolsMigration()
 
     regenerateSpellsAndClassSpellsMigrations()
+
+    regenerateQuantifiersMigration()
 
     print("Finished regenerating migrations.")
 
@@ -169,7 +188,67 @@ def regenerateDiceMigration():
         } for faceCount in standardFaceCounts]
 
     dice = produceMigrationFileFromObjects("DomainDice", dice)
-   
+
+
+def regenerateDomainDiceRollTypeMigration():
+    
+    global diceRollTypes
+
+    diceRollTypes = [
+        {
+            "Title": "Attack"
+        },
+        {
+            "Title": "Damage"
+        },
+        {
+            "Title": "Initiative"
+        },
+        {
+            "Title": "Check"
+        },
+        {
+            "Title": "Save"
+        },
+    ]
+
+    diceRollTypes = produceMigrationFileFromObjects("DomainDiceRollType", diceRollTypes)
+
+
+def regenerateDomainDiceRollSubTypeMigration():
+    
+    global diceRollTypes
+    global diceRollSubTypes
+
+    diceRollTypes = [
+        {
+            "Title": "Melee Spell",
+            "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack")
+        },
+        {
+            "Title": "Melee Damage",
+            "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack")
+        },
+        {
+            "Title": "Ranged Spell",
+            "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack")
+        },
+        {
+            "Title": "Ranged Damage",
+            "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack")
+        },
+        {
+            "Title": "Sight",
+            "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check")
+        },
+        {
+            "Title": "Hearing",
+            "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check")
+        },
+    ]
+
+    diceRollTypes = produceMigrationFileFromObjects("DomainDiceRollSubType", diceRollSubTypes)
+
 
 def regenerateBasicStatMigration():
     baseStatNames = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
@@ -179,11 +258,124 @@ def regenerateBasicStatMigration():
     baseStats = [
         {
             "Title": title,
+            "AbbreviatedTitle": title[:3].upper(),
             "IsBaseStat": 1,
-            "Abbreviation": title[:3].upper(),
         } for title in baseStatNames]
 
+    baseStats.extend([
+        {
+            "Title": "Gold Amount",
+            "AbbreviatedTitle": "Gold",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Movement Speed",
+            "AbbreviatedTitle": "Speed",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Movement Used",
+            "AbbreviatedTitle": "Moved",
+            "IsBaseStat": 0,
+        },
+    ])
+
     baseStats = produceMigrationFileFromObjects("DomainCharacterStat", baseStats)
+
+
+def regenerateActionsMigration():
+
+    global actions
+    global quantifiers
+
+    actionTitles = [
+        #Movement Actions
+        "Move", "Climb", "Swim", "Crawl", "Stand Up", "Jump", 
+        
+        #Combat/Engagement Actions
+        "Attack", "Grapple", "Shove", "Cast", "Dash", "Disengage", "Help", "Interact", "Use Item", "Equip", "Unequip", "Hide"
+    ]
+
+    actions = [{ "Title": title } for title in actionTitles]
+
+    actions = produceMigrationFileFromObjects("DomainAction", actions)
+
+    quantifiers.extend([
+        {
+            "DeltaPercentage": 0.5,
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Speed"),
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Climb")
+        },
+        {
+            "DeltaPercentage": 0.5,
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Speed"),
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Swim")
+        },
+        {
+            "DeltaPercentage": 0.5,
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Speed"),
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Crawl")
+        },
+        {
+            "DeltaPercentage": 0.5,
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Available"),
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Stand Up")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Attack")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Grapple")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Shove")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Cast")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Dash")
+        },
+        {
+            "DeltaPercentage": 2,
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Speed"),
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Dash")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Disengage")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Help")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Interact")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Use Item")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Equip")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Unequip")
+        },
+        {
+            "IsAction": 1,
+            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Hide")
+        },
+
+    ])
 
 
 def regenerateDomainClassMigration():
@@ -274,6 +466,291 @@ def regenerateDomainClassMigration():
     classes = produceMigrationFileFromObjects("DomainClass", classes)
 
 
+def regenerateDomainSubClassMigration():
+    
+    global classes
+    global subClasses
+
+    #For each subclass, associated quantifiers will be colocated instead of declaring all of each at once (for readability's sake)
+    subClasses = [
+        {
+            "Title": "Path of the Berzerker",
+            "AbbreviatedTitle": "Berzerker",
+            "Description": "Barbarians who walk the Path of the Berserker direct their Rage primarily toward violence. Their path is one of untrammeled fury, and they thrill in the chaos of battle as they allow their Rage to seize and empower them.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian")
+        },
+        {
+            "Title": "College of Lore",
+            "AbbreviatedTitle": "Lore",
+            "Description": "Bards of the College of Lore collect spells and secrets from diverse sources, such as scholarly tomes, mystical rites, and peasant tales. The college's members gather in libraries and universities to share their lore with one another. They also meet at festivals or affairs of state, where they can expose corruption, unravel lies, and poke fun at self-important figures of authority.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Bard")
+        },
+        {
+            "Title": "Life Domain",
+            "AbbreviatedTitle": "Life",
+            "Description": "The Life Domain focuses on the positive energy that helps sustain all life in the multiverse. Clerics who tap into this domain are masters of healing, using that life force to cure many hurts.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Cleric")
+        },
+        {
+            "Title": "Circle of the Land",
+            "AbbreviatedTitle": "Land",
+            "Description": "The Circle of the Land comprises mystics and sages who safeguard ancient knowledge and rites. These Druids meet within sacred circles of trees or standing stones to whisper primal secrets in Druidic. The circle’s wisest members preside as the chief priests of their communities.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Druid")
+        },
+        {
+            "Title": "Champion",
+            "AbbreviatedTitle": "Champion",
+            "Description": "A Champion focuses on the development of martial prowess in a relentless pursuit of victory. Champions combine rigorous training with physical excellence to deal devastating blows, withstand peril, and garner glory. Whether in athletic contests or bloody battle, Champions strive for the crown of the victor.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Fighter")
+        },
+        {
+            "Title": "Warrior of the Open Hand",
+            "AbbreviatedTitle": "Open Hand",
+            "Description": "Warriors of the Open Hand are masters of unarmed combat. They learn techniques to push and trip their opponents and manipulate their own energy to protect themselves from harm.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Monk")
+        },
+        {
+            "Title": "Oath of Devotion",
+            "AbbreviatedTitle": "Devotion",
+            "Description": "The Oath of Devotion binds Paladins to the ideals of justice and order. These Paladins meet the archetype of the knight in shining armor. They hold themselves to the highest standards of conduct, and some—for better or worse—hold the rest of the world to the same standards.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Paladin")
+        },
+        {
+            "Title": "Hunter",
+            "AbbreviatedTitle": "Hunter",
+            "Description": "You stalk prey in the wilds and elsewhere, using your abilities as a Hunter to protect nature and people everywhere from forces that would destroy them.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Ranger")
+        },
+        {
+            "Title": "Thief",
+            "AbbreviatedTitle": "Thief",
+            "Description": "A mix of burglar, treasure hunter, and explorer, you are the epitome of an adventurer. In addition to improving your agility and stealth, you gain abilities useful for delving into ruins and getting maximum benefit from the magic items you find there.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Rogue")
+        },
+        {
+            "Title": "Draconic Sorcery",
+            "AbbreviatedTitle": "Draconic",
+            "Description": "Your innate magic comes from the gift of a dragon. Perhaps an ancient dragon facing death bequeathed some of its magical power to you or your ancestor. You might have absorbed magic from a site infused with dragons’ power. Or perhaps you handled a treasure taken from a dragon’s hoard that was steeped in draconic power. Or you might have a dragon for an ancestor.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Sorcerer")
+        },
+        {
+            "Title": "Fiend Patron",
+            "AbbreviatedTitle": "Fiend Patron",
+            "Description": "Your pact draws on the Lower Planes, the realms of perdition. You might forge a bargain with a demon lord such as Demogorgon or Orcus; an archdevil such as Asmodeus; or a pit fiend, balor, yugoloth, or night hag that is especially mighty. That patron’s aims are evil—the corruption or destruction of all things, ultimately including you—and your path is defined by the extent to which you strive against those aims.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Warlock")
+        },
+        {
+            "Title": "Evoker",
+            "AbbreviatedTitle": "Evoker",
+            "Description": "Your studies focus on magic that creates powerful elemental effects such as bitter cold, searing flame, rolling thunder, crackling lightning, and burning acid. Some Evokers find employment in military forces, serving as artillery to blast armies from afar. Others use their power to protect others, while some seek their own gain.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Wizard")
+        },
+        {
+            "Title": "Artillerist",
+            "AbbreviatedTitle": "Artillerist",
+            "Description": "You specialize in using magic to hurl energy, projectiles, and explosions on a battlefield. This destructive power is valued by armies in the wars on many different worlds, but some members of this specialization seek to build a more peaceful world by using their powers to fight the resurgence of strife.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Artificer")
+        }
+    ]
+
+    classes = produceMigrationFileFromObjects("DomainSubClass", subClasses)
+
+
+def regenerateDomainConditionsMigration():
+
+    global baseStats
+    global conditions
+    global diceRollTypes
+    global quantifiers
+
+    conditions = [
+        {
+            "Title": "Blinded",
+        },
+        {
+            "Title": "Charmed",
+        },
+        {
+            "Title": "Deafened",
+        },
+        {
+            "Title": "Exhausted",
+        },
+        {
+            "Title": "Frightened",
+        },
+        {
+            "Title": "Grappled",
+        },
+        {
+            "Title": "Incapacitated",
+        },
+        {
+            "Title": "Invisible",
+        },
+        {
+            "Title": "Paralyzed",
+        },
+        {
+            "Title": "Petrified",
+        },
+        {
+            "Title": "Poisoned",
+        },
+        {
+            "Title": "Prone",
+        },
+        {
+            "Title": "Restrained",
+        },
+        {
+            "Title": "Stunned",
+        },
+        {
+            "Title": "Unconscious",
+        },
+        {
+            "Title": "Enraged",
+        },
+        {
+            "Title": "Wearing Heavy Armor",
+        },
+        {
+            "Title": "Wearing Medium Armor",
+        },
+        {
+            "Title": "Wearing Light Armor",
+        },
+    ]
+
+    conditions = produceMigrationFileFromObjects("DomainCharacterStat", conditions)
+
+    quantifiers.extend([
+        #region Blinded
+        {
+            "AutomaticFailure": 1,
+            "AppliesToTargets": 1,
+            "Target__DomainDiceRollSubType": getForeignKeyIdForTitle(diceRollTypes, "Sight"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Blinded")
+        },
+        {
+            "GivesDisadvantage": 1,
+            "AppliesToTargets": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Blinded")
+        },
+        {
+            "GivesAdvantage": 1,
+            "AppliesAgainstTargets": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Blinded")
+        },
+        #endregion
+
+        #region Charmed
+        {
+            "Prevents": 1,
+            "AppliesAgainstSourceForTargetsOnly": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
+        },
+        {
+            "GivesAdvantage": 1,
+            "AppliesAgainstTargetsForSourceOnly": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
+        },
+        {
+            "GivesAdvantage": 1,
+            "AppliesAgainstTargetsForSourceOnly": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
+        },
+        {
+            "GivesAdvantage": 1,
+            "AppliesAgainstTargetsForSourceOnly": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
+        },
+        #endregion
+        
+        #region Deafened
+        {
+            "AutomaticFailure": 1,
+            "AppliesToTargets": 1,
+            "Target__DomainDiceRollSubType": getForeignKeyIdForTitle(diceRollTypes, "Hearing"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Deafened")
+        },
+        #endregion
+
+        #region Frightened
+        {
+            "GivesAdvantage": 1,
+            "AppliesAgainstTargetsForSourceOnly": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
+        },
+        {
+            "Prevents": 1,
+            "AppliesAgainstSourceForTargetsOnly": 1,
+            "Target__DomainAction": getForeignKeyIdForTitle(diceRollTypes, "Move"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
+        },
+        #endregion
+
+    ])
+
+
+def regenerateDomainClassTraitAndAssociatedQuantifiersMigration():
+    
+    global classes
+    global subClasses
+    global classTraits
+    global quantifiers
+
+    #region Barbarian 
+    
+    classTraits.extend([
+        {
+            "Title": "Rage",
+            "AbbreviatedTitle": "Rage",
+            "Description": "You can imbue yourself with a primal power called Rage, a force that grants you extraordinary might and resilience.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian")
+        }
+    ])
+
+    #endregion
+
+    classTraits = produceMigrationFileFromObjects("DomainClassTrait", classTraits)
+
+    #region Quantifiers
+
+    #region Barbarian
+
+    quantifiers.extend([
+        {
+            "Quantity": 2,
+            "LevelMinimumRequirement": 1,
+            ""
+
+            "ClassTrait__DomainClassTrait": getForeignKeyIdForTitle(classTraits, "Barbarian") 
+        },
+        #Rage is a bonus action if wearing heavy armor
+        {
+
+        }
+    ])
+
+    #endregion
+
+    #endregion
+
+    
 def regenerateSavingThrowsMigration():
 
     global classes
@@ -549,7 +1026,13 @@ def regenerateSpellsAndClassSpellsMigrations():
             })
 
     produceMigrationFileFromObjects("ClassSpell", spellSchools)
-    
+
+
+def regenerateQuantifiersMigration():
+    global quantifiers
+    quantifiers = produceMigrationFileFromObjects("Quantifier", quantifiers)
+
+
 #endregion
 
 

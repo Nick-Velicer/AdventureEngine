@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type Character struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// CampaignCampaign corresponds to the JSON schema field "Campaign__Campaign".
 	Campaign__Campaign *int `json:"Campaign__Campaign" gorm:"column:Campaign__Campaign" mapstructure:"Campaign__Campaign"`
 

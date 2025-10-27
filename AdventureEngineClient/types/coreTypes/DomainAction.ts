@@ -1,13 +1,14 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
+import { Quantifier } from "./Quantifier";
 
-//Attack, help, disengage, etc.
+//This encompasses available player choices like move/climb as well as formal actions like attack, help, disengage, etc.
 export type DomainAction = ExtendedSchemaObject<{
     Attributes: {
-        UsesAction?: boolean,
-        UsesBonusAction?: boolean,
     },
     Relationships: {
         ManyToOne: {},
-        OneToMany: {}
+        OneToMany: {
+            Quantifiers__Quantifier?: Quantifier[]
+        }
     }
 }>

@@ -17,8 +17,7 @@ baseSwimmingSpeed: number,
 
 export type DomainCharacterStat = ExtendedSchemaObject<{
     Attributes: {
-        IsBaseStat: boolean,
-        Abbreviation: string
+        IsBaseStat: boolean
     },
     Relationships: {
         ManyToOne: {},

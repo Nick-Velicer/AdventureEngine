@@ -45,3 +45,7 @@ func SaveDomainCondition(db *gorm.DB, domainConditions []*types.DomainCondition)
    return tx.Commit().Error
 }
 
+func GetQuantifiersByDomainConditionId(db *gorm.DB, id int, Quantifiers *[]types.Quantifier) error {
+   result := db.Table("Quantifier").Where(map[string]interface{}{"Parent__DomainCondition": id}).Find(Quantifiers)
+   return result.Error
+}

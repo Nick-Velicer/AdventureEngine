@@ -6,14 +6,15 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   
-   
+   utils "AdventureEngineServer/utils"
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
    "slices"
 )
 
 type DomainConditionDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -24,6 +25,7 @@ type DomainConditionDTOManyToOneRelationships struct {
 }
 
 type DomainConditionDTOOneToManyRelationships struct {
+   Quantifiers__Quantifier []*QuantifierDTO
 }
 
 type DomainConditionDTORelationships struct {
@@ -53,11 +55,20 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainCondition).Name())
    
+   var includedQuantifiers__Quantifiers []types.Quantifier
    
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
+      services.GetQuantifiersByDomainConditionId(db, int(*domainCondition.Id), &includedQuantifiers__Quantifiers)
+   } else {
+      includedQuantifiers__Quantifiers = []types.Quantifier{}
+      print("Hit circular catch case for table Quantifier\n")
+   }
+
    
    return &DomainConditionDTO{
       Id: domainCondition.Id,
       Attributes: DomainConditionDTOAttributes{
+         AbbreviatedTitle: domainCondition.AbbreviatedTitle,
          Description: domainCondition.Description,
          
          IsActive: domainCondition.IsActive,
@@ -67,6 +78,7 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
          ManyToOne: DomainConditionDTOManyToOneRelationships {
          },
          OneToMany: DomainConditionDTOOneToManyRelationships {
+            Quantifiers__Quantifier: utils.Map(includedQuantifiers__Quantifiers, func(relationshipElement types.Quantifier) *QuantifierDTO { return QuantifierToQuantifierDTO(db, &relationshipElement, traversedTables) }),
          },
       },
    }
@@ -76,6 +88,7 @@ func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) *t
    var tableTypeBuffer types.DomainCondition
    
    tableTypeBuffer.Id = domainCondition.Id
+   tableTypeBuffer.AbbreviatedTitle = domainCondition.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = domainCondition.Attributes.Description
    
    tableTypeBuffer.IsActive = domainCondition.Attributes.IsActive

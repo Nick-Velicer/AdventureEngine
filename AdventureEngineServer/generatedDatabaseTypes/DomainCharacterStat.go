@@ -3,8 +3,8 @@
 package generatedDatabaseTypes
 
 type DomainCharacterStat struct {
-	// Abbreviation corresponds to the JSON schema field "Abbreviation".
-	Abbreviation string `json:"Abbreviation" gorm:"column:Abbreviation" mapstructure:"Abbreviation"`
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`

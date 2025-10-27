@@ -14,6 +14,7 @@ import (
 )
 
 type DomainStaticEffectDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -58,6 +59,7 @@ func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *
    return &DomainStaticEffectDTO{
       Id: domainStaticEffect.Id,
       Attributes: DomainStaticEffectDTOAttributes{
+         AbbreviatedTitle: domainStaticEffect.AbbreviatedTitle,
          Description: domainStaticEffect.Description,
          
          IsActive: domainStaticEffect.IsActive,
@@ -76,6 +78,7 @@ func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticE
    var tableTypeBuffer types.DomainStaticEffect
    
    tableTypeBuffer.Id = domainStaticEffect.Id
+   tableTypeBuffer.AbbreviatedTitle = domainStaticEffect.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = domainStaticEffect.Attributes.Description
    
    tableTypeBuffer.IsActive = domainStaticEffect.Attributes.IsActive

@@ -14,6 +14,7 @@ import (
 )
 
 type DomainDiceDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -60,6 +61,7 @@ func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traver
    return &DomainDiceDTO{
       Id: domainDice.Id,
       Attributes: DomainDiceDTOAttributes{
+         AbbreviatedTitle: domainDice.AbbreviatedTitle,
          Description: domainDice.Description,
          
          IsActive: domainDice.IsActive,
@@ -80,6 +82,7 @@ func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) *types.DomainDice {
    var tableTypeBuffer types.DomainDice
    
    tableTypeBuffer.Id = domainDice.Id
+   tableTypeBuffer.AbbreviatedTitle = domainDice.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = domainDice.Attributes.Description
    
    tableTypeBuffer.IsActive = domainDice.Attributes.IsActive

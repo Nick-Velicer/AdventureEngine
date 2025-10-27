@@ -3,6 +3,9 @@
 package goTypeBase
 
 type DomainItemJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// CustomEffectText corresponds to the JSON schema field "CustomEffectText".
 	CustomEffectText *string `json:"CustomEffectText,omitempty" yaml:"CustomEffectText,omitempty" mapstructure:"CustomEffectText,omitempty"`
 

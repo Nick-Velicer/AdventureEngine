@@ -6,14 +6,15 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   
-   
+   utils "AdventureEngineServer/utils"
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
    "slices"
 )
 
 type DomainDiceRollTypeDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -24,6 +25,7 @@ type DomainDiceRollTypeDTOManyToOneRelationships struct {
 }
 
 type DomainDiceRollTypeDTOOneToManyRelationships struct {
+   Variants__DomainDiceRollSubType []*DomainDiceRollSubTypeDTO
 }
 
 type DomainDiceRollTypeDTORelationships struct {
@@ -53,11 +55,20 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainDiceRollType).Name())
    
+   var includedVariants__DomainDiceRollSubTypes []types.DomainDiceRollSubType
    
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedVariants__DomainDiceRollSubTypes).Elem().Name())) {
+      services.GetDomainDiceRollSubTypesByDomainDiceRollTypeId(db, int(*domainDiceRollType.Id), &includedVariants__DomainDiceRollSubTypes)
+   } else {
+      includedVariants__DomainDiceRollSubTypes = []types.DomainDiceRollSubType{}
+      print("Hit circular catch case for table DomainDiceRollSubType\n")
+   }
+
    
    return &DomainDiceRollTypeDTO{
       Id: domainDiceRollType.Id,
       Attributes: DomainDiceRollTypeDTOAttributes{
+         AbbreviatedTitle: domainDiceRollType.AbbreviatedTitle,
          Description: domainDiceRollType.Description,
          
          IsActive: domainDiceRollType.IsActive,
@@ -67,6 +78,7 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
          ManyToOne: DomainDiceRollTypeDTOManyToOneRelationships {
          },
          OneToMany: DomainDiceRollTypeDTOOneToManyRelationships {
+            Variants__DomainDiceRollSubType: utils.Map(includedVariants__DomainDiceRollSubTypes, func(relationshipElement types.DomainDiceRollSubType) *DomainDiceRollSubTypeDTO { return DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db, &relationshipElement, traversedTables) }),
          },
       },
    }
@@ -76,6 +88,7 @@ func DomainDiceRollTypeDTOToDomainDiceRollType(domainDiceRollType *DomainDiceRol
    var tableTypeBuffer types.DomainDiceRollType
    
    tableTypeBuffer.Id = domainDiceRollType.Id
+   tableTypeBuffer.AbbreviatedTitle = domainDiceRollType.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = domainDiceRollType.Attributes.Description
    
    tableTypeBuffer.IsActive = domainDiceRollType.Attributes.IsActive

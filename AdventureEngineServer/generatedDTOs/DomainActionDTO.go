@@ -6,26 +6,26 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   
-   
+   utils "AdventureEngineServer/utils"
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
    "slices"
 )
 
 type DomainActionDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
    Title *string
-   UsesAction *bool
-   UsesBonusAction *bool
 }
 
 type DomainActionDTOManyToOneRelationships struct {
 }
 
 type DomainActionDTOOneToManyRelationships struct {
+   Quantifiers__Quantifier []*QuantifierDTO
 }
 
 type DomainActionDTORelationships struct {
@@ -55,22 +55,30 @@ func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainAction).Name())
    
+   var includedQuantifiers__Quantifiers []types.Quantifier
    
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
+      services.GetQuantifiersByDomainActionId(db, int(*domainAction.Id), &includedQuantifiers__Quantifiers)
+   } else {
+      includedQuantifiers__Quantifiers = []types.Quantifier{}
+      print("Hit circular catch case for table Quantifier\n")
+   }
+
    
    return &DomainActionDTO{
       Id: domainAction.Id,
       Attributes: DomainActionDTOAttributes{
+         AbbreviatedTitle: domainAction.AbbreviatedTitle,
          Description: domainAction.Description,
          
          IsActive: domainAction.IsActive,
          Title: domainAction.Title,
-         UsesAction: domainAction.UsesAction,
-         UsesBonusAction: domainAction.UsesBonusAction,
       },
       Relationships: DomainActionDTORelationships{
          ManyToOne: DomainActionDTOManyToOneRelationships {
          },
          OneToMany: DomainActionDTOOneToManyRelationships {
+            Quantifiers__Quantifier: utils.Map(includedQuantifiers__Quantifiers, func(relationshipElement types.Quantifier) *QuantifierDTO { return QuantifierToQuantifierDTO(db, &relationshipElement, traversedTables) }),
          },
       },
    }
@@ -80,12 +88,11 @@ func DomainActionDTOToDomainAction(domainAction *DomainActionDTO) *types.DomainA
    var tableTypeBuffer types.DomainAction
    
    tableTypeBuffer.Id = domainAction.Id
+   tableTypeBuffer.AbbreviatedTitle = domainAction.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = domainAction.Attributes.Description
    
    tableTypeBuffer.IsActive = domainAction.Attributes.IsActive
    tableTypeBuffer.Title = domainAction.Attributes.Title
-   tableTypeBuffer.UsesAction = domainAction.Attributes.UsesAction
-   tableTypeBuffer.UsesBonusAction = domainAction.Attributes.UsesBonusAction
    
    return &tableTypeBuffer
 }

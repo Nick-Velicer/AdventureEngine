@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type DomainSize struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// BaseHexArea corresponds to the JSON schema field "BaseHexArea".
 	BaseHexArea float64 `json:"BaseHexArea" gorm:"column:BaseHexArea" mapstructure:"BaseHexArea"`
 

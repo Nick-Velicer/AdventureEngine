@@ -14,6 +14,7 @@ import (
 )
 
 type ClassSpellDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -70,6 +71,7 @@ func ClassSpellToClassSpellDTO(db *gorm.DB, classSpell *types.ClassSpell, traver
    return &ClassSpellDTO{
       Id: classSpell.Id,
       Attributes: ClassSpellDTOAttributes{
+         AbbreviatedTitle: classSpell.AbbreviatedTitle,
          Description: classSpell.Description,
          
          IsActive: classSpell.IsActive,
@@ -90,6 +92,7 @@ func ClassSpellDTOToClassSpell(classSpell *ClassSpellDTO) *types.ClassSpell {
    var tableTypeBuffer types.ClassSpell
    
    tableTypeBuffer.Id = classSpell.Id
+   tableTypeBuffer.AbbreviatedTitle = classSpell.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = classSpell.Attributes.Description
    
    tableTypeBuffer.IsActive = classSpell.Attributes.IsActive

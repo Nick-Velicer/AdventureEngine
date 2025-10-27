@@ -3,6 +3,9 @@
 package goTypeBase
 
 type DomainActionJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
@@ -12,12 +15,10 @@ type DomainActionJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
+	// QuantifiersQuantifier corresponds to the JSON schema field
+	// "Quantifiers__Quantifier".
+	QuantifiersQuantifier []float64 `json:"Quantifiers__Quantifier,omitempty" yaml:"Quantifiers__Quantifier,omitempty" mapstructure:"Quantifiers__Quantifier,omitempty"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
-
-	// UsesAction corresponds to the JSON schema field "UsesAction".
-	UsesAction *bool `json:"UsesAction,omitempty" yaml:"UsesAction,omitempty" mapstructure:"UsesAction,omitempty"`
-
-	// UsesBonusAction corresponds to the JSON schema field "UsesBonusAction".
-	UsesBonusAction *bool `json:"UsesBonusAction,omitempty" yaml:"UsesBonusAction,omitempty" mapstructure:"UsesBonusAction,omitempty"`
 }

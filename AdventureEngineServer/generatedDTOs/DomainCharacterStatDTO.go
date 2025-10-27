@@ -14,7 +14,7 @@ import (
 )
 
 type DomainCharacterStatDTOAttributes struct {
-   Abbreviation string
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -60,7 +60,7 @@ func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterSta
    return &DomainCharacterStatDTO{
       Id: domainCharacterStat.Id,
       Attributes: DomainCharacterStatDTOAttributes{
-         Abbreviation: domainCharacterStat.Abbreviation,
+         AbbreviatedTitle: domainCharacterStat.AbbreviatedTitle,
          Description: domainCharacterStat.Description,
          
          IsActive: domainCharacterStat.IsActive,
@@ -80,7 +80,7 @@ func DomainCharacterStatDTOToDomainCharacterStat(domainCharacterStat *DomainChar
    var tableTypeBuffer types.DomainCharacterStat
    
    tableTypeBuffer.Id = domainCharacterStat.Id
-   tableTypeBuffer.Abbreviation = domainCharacterStat.Attributes.Abbreviation
+   tableTypeBuffer.AbbreviatedTitle = domainCharacterStat.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = domainCharacterStat.Attributes.Description
    
    tableTypeBuffer.IsActive = domainCharacterStat.Attributes.IsActive

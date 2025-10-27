@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type DomainDiceRollType struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
@@ -14,4 +17,7 @@ type DomainDiceRollType struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// VariantsDomainDiceRollSubType corresponds to the JSON schema field
+	// "Variants__DomainDiceRollSubType".
 }

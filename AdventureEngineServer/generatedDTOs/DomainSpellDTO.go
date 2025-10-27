@@ -14,6 +14,7 @@ import (
 )
 
 type DomainSpellDTOAttributes struct {
+   AbbreviatedTitle *string
    ConcentrationRequired *bool
    DayDuration *float64
    Description *string
@@ -100,6 +101,7 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
    return &DomainSpellDTO{
       Id: domainSpell.Id,
       Attributes: DomainSpellDTOAttributes{
+         AbbreviatedTitle: domainSpell.AbbreviatedTitle,
          ConcentrationRequired: domainSpell.ConcentrationRequired,
          DayDuration: domainSpell.DayDuration,
          Description: domainSpell.Description,
@@ -142,6 +144,7 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) *types.DomainSpell
    var tableTypeBuffer types.DomainSpell
    
    tableTypeBuffer.Id = domainSpell.Id
+   tableTypeBuffer.AbbreviatedTitle = domainSpell.Attributes.AbbreviatedTitle
    tableTypeBuffer.ConcentrationRequired = domainSpell.Attributes.ConcentrationRequired
    tableTypeBuffer.DayDuration = domainSpell.Attributes.DayDuration
    tableTypeBuffer.Description = domainSpell.Attributes.Description

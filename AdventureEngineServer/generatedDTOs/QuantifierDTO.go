@@ -14,10 +14,25 @@ import (
 )
 
 type QuantifierDTOAttributes struct {
-   Delta *float64
+   AbbreviatedTitle *string
+   AppliesAgainstSource *bool
+   AppliesAgainstSourceForTargetsOnly *bool
+   AppliesAgainstTargets *bool
+   AppliesAgainstTargetsForSourceOnly *bool
+   AppliesToSource *bool
+   AppliesToTargets *bool
+   AutomaticFailure *bool
+   DeltaPercentage *float64
+   DeltaQuantity *float64
    Description *string
+   GivesAction *bool
+   GivesAdvantage *bool
+   GivesBonusAction *bool
+   GivesDisadvantage *bool
+   HardSetPercentage *float64
+   HardSetQuantity *float64
    
-   ImpactsSelf *bool
+   ImpactsMovementAmount *bool
    IntoInventory *bool
    IsAction *bool
    IsActive *bool
@@ -33,22 +48,33 @@ type QuantifierDTOAttributes struct {
    Level9SpellSlots *float64
    LevelMaximumRequirement *float64
    LevelMinimumRequirement *float64
-   Quantity *float64
+   Prevents *bool
+   QuantityRestoredOnShortRest *float64
    RefreshOnLongRest *bool
    RefreshOnShortRest *bool
+   ShouldBeEvaluatedAsModifier *bool
+   TargetMaximum *float64
+   TargetMinimum *float64
    Title *string
    UntilLongRest *bool
    UntilShortRest *bool
 }
 
 type QuantifierDTOManyToOneRelationships struct {
-   AddedSpell__DomainSpell *DomainSpellDTO
-   Condition__DomainCondition *DomainConditionDTO
-   DamageType__DomainDamageType *DomainDamageTypeDTO
-   Effect__DomainStaticEffect *DomainStaticEffectDTO
-   ResistanceType__DomainDamageType *DomainDamageTypeDTO
-   Save__DomainCharacterStat *DomainCharacterStatDTO
+   Parent__DomainAction *DomainActionDTO
+   Parent__DomainClass *DomainClassDTO
+   Parent__DomainClassTrait *DomainClassTraitDTO
+   Parent__DomainCondition *DomainConditionDTO
+   Parent__DomainStaticEffect *DomainStaticEffectDTO
+   Parent__DomainSubClass *DomainSubClassDTO
+   Target__DomainAction *DomainActionDTO
    Target__DomainCharacterStat *DomainCharacterStatDTO
+   Target__DomainCondition *DomainConditionDTO
+   Target__DomainDamageType *DomainDamageTypeDTO
+   Target__DomainDiceRollSubType *DomainDiceRollSubTypeDTO
+   Target__DomainDiceRollType *DomainDiceRollTypeDTO
+   Target__DomainSpell *DomainSpellDTO
+   Target__DomainStaticEffect *DomainStaticEffectDTO
 }
 
 type QuantifierDTOOneToManyRelationships struct {
@@ -81,50 +107,100 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
    
    traversedTables = append(traversedTables, reflect.TypeOf(*quantifier).Name())
    
-   var includedAddedSpell__DomainSpell *types.DomainSpell
-   var includedCondition__DomainCondition *types.DomainCondition
-   var includedDamageType__DomainDamageType *types.DomainDamageType
-   var includedEffect__DomainStaticEffect *types.DomainStaticEffect
-   var includedResistanceType__DomainDamageType *types.DomainDamageType
-   var includedSave__DomainCharacterStat *types.DomainCharacterStat
+   var includedParent__DomainAction *types.DomainAction
+   var includedParent__DomainClass *types.DomainClass
+   var includedParent__DomainClassTrait *types.DomainClassTrait
+   var includedParent__DomainCondition *types.DomainCondition
+   var includedParent__DomainStaticEffect *types.DomainStaticEffect
+   var includedParent__DomainSubClass *types.DomainSubClass
+   var includedTarget__DomainAction *types.DomainAction
    var includedTarget__DomainCharacterStat *types.DomainCharacterStat
+   var includedTarget__DomainCondition *types.DomainCondition
+   var includedTarget__DomainDamageType *types.DomainDamageType
+   var includedTarget__DomainDiceRollSubType *types.DomainDiceRollSubType
+   var includedTarget__DomainDiceRollType *types.DomainDiceRollType
+   var includedTarget__DomainSpell *types.DomainSpell
+   var includedTarget__DomainStaticEffect *types.DomainStaticEffect
    
-   if (quantifier.AddedSpell__DomainSpell != nil) {
-      services.GetDomainSpellById(db, int(*quantifier.AddedSpell__DomainSpell), includedAddedSpell__DomainSpell)
+   if (quantifier.Parent__DomainAction != nil) {
+      services.GetDomainActionById(db, int(*quantifier.Parent__DomainAction), includedParent__DomainAction)
    }
 
-   if (quantifier.Condition__DomainCondition != nil) {
-      services.GetDomainConditionById(db, int(*quantifier.Condition__DomainCondition), includedCondition__DomainCondition)
+   if (quantifier.Parent__DomainClass != nil) {
+      services.GetDomainClassById(db, int(*quantifier.Parent__DomainClass), includedParent__DomainClass)
    }
 
-   if (quantifier.DamageType__DomainDamageType != nil) {
-      services.GetDomainDamageTypeById(db, int(*quantifier.DamageType__DomainDamageType), includedDamageType__DomainDamageType)
+   if (quantifier.Parent__DomainClassTrait != nil) {
+      services.GetDomainClassTraitById(db, int(*quantifier.Parent__DomainClassTrait), includedParent__DomainClassTrait)
    }
 
-   if (quantifier.Effect__DomainStaticEffect != nil) {
-      services.GetDomainStaticEffectById(db, int(*quantifier.Effect__DomainStaticEffect), includedEffect__DomainStaticEffect)
+   if (quantifier.Parent__DomainCondition != nil) {
+      services.GetDomainConditionById(db, int(*quantifier.Parent__DomainCondition), includedParent__DomainCondition)
    }
 
-   if (quantifier.ResistanceType__DomainDamageType != nil) {
-      services.GetDomainDamageTypeById(db, int(*quantifier.ResistanceType__DomainDamageType), includedResistanceType__DomainDamageType)
+   if (quantifier.Parent__DomainStaticEffect != nil) {
+      services.GetDomainStaticEffectById(db, int(*quantifier.Parent__DomainStaticEffect), includedParent__DomainStaticEffect)
    }
 
-   if (quantifier.Save__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*quantifier.Save__DomainCharacterStat), includedSave__DomainCharacterStat)
+   if (quantifier.Parent__DomainSubClass != nil) {
+      services.GetDomainSubClassById(db, int(*quantifier.Parent__DomainSubClass), includedParent__DomainSubClass)
+   }
+
+   if (quantifier.Target__DomainAction != nil) {
+      services.GetDomainActionById(db, int(*quantifier.Target__DomainAction), includedTarget__DomainAction)
    }
 
    if (quantifier.Target__DomainCharacterStat != nil) {
       services.GetDomainCharacterStatById(db, int(*quantifier.Target__DomainCharacterStat), includedTarget__DomainCharacterStat)
    }
 
+   if (quantifier.Target__DomainCondition != nil) {
+      services.GetDomainConditionById(db, int(*quantifier.Target__DomainCondition), includedTarget__DomainCondition)
+   }
+
+   if (quantifier.Target__DomainDamageType != nil) {
+      services.GetDomainDamageTypeById(db, int(*quantifier.Target__DomainDamageType), includedTarget__DomainDamageType)
+   }
+
+   if (quantifier.Target__DomainDiceRollSubType != nil) {
+      services.GetDomainDiceRollSubTypeById(db, int(*quantifier.Target__DomainDiceRollSubType), includedTarget__DomainDiceRollSubType)
+   }
+
+   if (quantifier.Target__DomainDiceRollType != nil) {
+      services.GetDomainDiceRollTypeById(db, int(*quantifier.Target__DomainDiceRollType), includedTarget__DomainDiceRollType)
+   }
+
+   if (quantifier.Target__DomainSpell != nil) {
+      services.GetDomainSpellById(db, int(*quantifier.Target__DomainSpell), includedTarget__DomainSpell)
+   }
+
+   if (quantifier.Target__DomainStaticEffect != nil) {
+      services.GetDomainStaticEffectById(db, int(*quantifier.Target__DomainStaticEffect), includedTarget__DomainStaticEffect)
+   }
+
    
    return &QuantifierDTO{
       Id: quantifier.Id,
       Attributes: QuantifierDTOAttributes{
-         Delta: quantifier.Delta,
+         AbbreviatedTitle: quantifier.AbbreviatedTitle,
+         AppliesAgainstSource: quantifier.AppliesAgainstSource,
+         AppliesAgainstSourceForTargetsOnly: quantifier.AppliesAgainstSourceForTargetsOnly,
+         AppliesAgainstTargets: quantifier.AppliesAgainstTargets,
+         AppliesAgainstTargetsForSourceOnly: quantifier.AppliesAgainstTargetsForSourceOnly,
+         AppliesToSource: quantifier.AppliesToSource,
+         AppliesToTargets: quantifier.AppliesToTargets,
+         AutomaticFailure: quantifier.AutomaticFailure,
+         DeltaPercentage: quantifier.DeltaPercentage,
+         DeltaQuantity: quantifier.DeltaQuantity,
          Description: quantifier.Description,
+         GivesAction: quantifier.GivesAction,
+         GivesAdvantage: quantifier.GivesAdvantage,
+         GivesBonusAction: quantifier.GivesBonusAction,
+         GivesDisadvantage: quantifier.GivesDisadvantage,
+         HardSetPercentage: quantifier.HardSetPercentage,
+         HardSetQuantity: quantifier.HardSetQuantity,
          
-         ImpactsSelf: quantifier.ImpactsSelf,
+         ImpactsMovementAmount: quantifier.ImpactsMovementAmount,
          IntoInventory: quantifier.IntoInventory,
          IsAction: quantifier.IsAction,
          IsActive: quantifier.IsActive,
@@ -140,22 +216,33 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
          Level9SpellSlots: quantifier.Level9SpellSlots,
          LevelMaximumRequirement: quantifier.LevelMaximumRequirement,
          LevelMinimumRequirement: quantifier.LevelMinimumRequirement,
-         Quantity: quantifier.Quantity,
+         Prevents: quantifier.Prevents,
+         QuantityRestoredOnShortRest: quantifier.QuantityRestoredOnShortRest,
          RefreshOnLongRest: quantifier.RefreshOnLongRest,
          RefreshOnShortRest: quantifier.RefreshOnShortRest,
+         ShouldBeEvaluatedAsModifier: quantifier.ShouldBeEvaluatedAsModifier,
+         TargetMaximum: quantifier.TargetMaximum,
+         TargetMinimum: quantifier.TargetMinimum,
          Title: quantifier.Title,
          UntilLongRest: quantifier.UntilLongRest,
          UntilShortRest: quantifier.UntilShortRest,
       },
       Relationships: QuantifierDTORelationships{
          ManyToOne: QuantifierDTOManyToOneRelationships {
-            AddedSpell__DomainSpell: DomainSpellToDomainSpellDTO(db, includedAddedSpell__DomainSpell, traversedTables),
-            Condition__DomainCondition: DomainConditionToDomainConditionDTO(db, includedCondition__DomainCondition, traversedTables),
-            DamageType__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, includedDamageType__DomainDamageType, traversedTables),
-            Effect__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, includedEffect__DomainStaticEffect, traversedTables),
-            ResistanceType__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, includedResistanceType__DomainDamageType, traversedTables),
-            Save__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedSave__DomainCharacterStat, traversedTables),
+            Parent__DomainAction: DomainActionToDomainActionDTO(db, includedParent__DomainAction, traversedTables),
+            Parent__DomainClass: DomainClassToDomainClassDTO(db, includedParent__DomainClass, traversedTables),
+            Parent__DomainClassTrait: DomainClassTraitToDomainClassTraitDTO(db, includedParent__DomainClassTrait, traversedTables),
+            Parent__DomainCondition: DomainConditionToDomainConditionDTO(db, includedParent__DomainCondition, traversedTables),
+            Parent__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, includedParent__DomainStaticEffect, traversedTables),
+            Parent__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, includedParent__DomainSubClass, traversedTables),
+            Target__DomainAction: DomainActionToDomainActionDTO(db, includedTarget__DomainAction, traversedTables),
             Target__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedTarget__DomainCharacterStat, traversedTables),
+            Target__DomainCondition: DomainConditionToDomainConditionDTO(db, includedTarget__DomainCondition, traversedTables),
+            Target__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, includedTarget__DomainDamageType, traversedTables),
+            Target__DomainDiceRollSubType: DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db, includedTarget__DomainDiceRollSubType, traversedTables),
+            Target__DomainDiceRollType: DomainDiceRollTypeToDomainDiceRollTypeDTO(db, includedTarget__DomainDiceRollType, traversedTables),
+            Target__DomainSpell: DomainSpellToDomainSpellDTO(db, includedTarget__DomainSpell, traversedTables),
+            Target__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, includedTarget__DomainStaticEffect, traversedTables),
          },
          OneToMany: QuantifierDTOOneToManyRelationships {
          },
@@ -167,10 +254,25 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    var tableTypeBuffer types.Quantifier
    
    tableTypeBuffer.Id = quantifier.Id
-   tableTypeBuffer.Delta = quantifier.Attributes.Delta
+   tableTypeBuffer.AbbreviatedTitle = quantifier.Attributes.AbbreviatedTitle
+   tableTypeBuffer.AppliesAgainstSource = quantifier.Attributes.AppliesAgainstSource
+   tableTypeBuffer.AppliesAgainstSourceForTargetsOnly = quantifier.Attributes.AppliesAgainstSourceForTargetsOnly
+   tableTypeBuffer.AppliesAgainstTargets = quantifier.Attributes.AppliesAgainstTargets
+   tableTypeBuffer.AppliesAgainstTargetsForSourceOnly = quantifier.Attributes.AppliesAgainstTargetsForSourceOnly
+   tableTypeBuffer.AppliesToSource = quantifier.Attributes.AppliesToSource
+   tableTypeBuffer.AppliesToTargets = quantifier.Attributes.AppliesToTargets
+   tableTypeBuffer.AutomaticFailure = quantifier.Attributes.AutomaticFailure
+   tableTypeBuffer.DeltaPercentage = quantifier.Attributes.DeltaPercentage
+   tableTypeBuffer.DeltaQuantity = quantifier.Attributes.DeltaQuantity
    tableTypeBuffer.Description = quantifier.Attributes.Description
+   tableTypeBuffer.GivesAction = quantifier.Attributes.GivesAction
+   tableTypeBuffer.GivesAdvantage = quantifier.Attributes.GivesAdvantage
+   tableTypeBuffer.GivesBonusAction = quantifier.Attributes.GivesBonusAction
+   tableTypeBuffer.GivesDisadvantage = quantifier.Attributes.GivesDisadvantage
+   tableTypeBuffer.HardSetPercentage = quantifier.Attributes.HardSetPercentage
+   tableTypeBuffer.HardSetQuantity = quantifier.Attributes.HardSetQuantity
    
-   tableTypeBuffer.ImpactsSelf = quantifier.Attributes.ImpactsSelf
+   tableTypeBuffer.ImpactsMovementAmount = quantifier.Attributes.ImpactsMovementAmount
    tableTypeBuffer.IntoInventory = quantifier.Attributes.IntoInventory
    tableTypeBuffer.IsAction = quantifier.Attributes.IsAction
    tableTypeBuffer.IsActive = quantifier.Attributes.IsActive
@@ -186,39 +288,71 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    tableTypeBuffer.Level9SpellSlots = quantifier.Attributes.Level9SpellSlots
    tableTypeBuffer.LevelMaximumRequirement = quantifier.Attributes.LevelMaximumRequirement
    tableTypeBuffer.LevelMinimumRequirement = quantifier.Attributes.LevelMinimumRequirement
-   tableTypeBuffer.Quantity = quantifier.Attributes.Quantity
+   tableTypeBuffer.Prevents = quantifier.Attributes.Prevents
+   tableTypeBuffer.QuantityRestoredOnShortRest = quantifier.Attributes.QuantityRestoredOnShortRest
    tableTypeBuffer.RefreshOnLongRest = quantifier.Attributes.RefreshOnLongRest
    tableTypeBuffer.RefreshOnShortRest = quantifier.Attributes.RefreshOnShortRest
+   tableTypeBuffer.ShouldBeEvaluatedAsModifier = quantifier.Attributes.ShouldBeEvaluatedAsModifier
+   tableTypeBuffer.TargetMaximum = quantifier.Attributes.TargetMaximum
+   tableTypeBuffer.TargetMinimum = quantifier.Attributes.TargetMinimum
    tableTypeBuffer.Title = quantifier.Attributes.Title
    tableTypeBuffer.UntilLongRest = quantifier.Attributes.UntilLongRest
    tableTypeBuffer.UntilShortRest = quantifier.Attributes.UntilShortRest
    
-   if (quantifier.Relationships.ManyToOne.AddedSpell__DomainSpell != nil) {
-      tableTypeBuffer.AddedSpell__DomainSpell = quantifier.Relationships.ManyToOne.AddedSpell__DomainSpell.Id
+   if (quantifier.Relationships.ManyToOne.Parent__DomainAction != nil) {
+      tableTypeBuffer.Parent__DomainAction = quantifier.Relationships.ManyToOne.Parent__DomainAction.Id
    }
 
-   if (quantifier.Relationships.ManyToOne.Condition__DomainCondition != nil) {
-      tableTypeBuffer.Condition__DomainCondition = quantifier.Relationships.ManyToOne.Condition__DomainCondition.Id
+   if (quantifier.Relationships.ManyToOne.Parent__DomainClass != nil) {
+      tableTypeBuffer.Parent__DomainClass = quantifier.Relationships.ManyToOne.Parent__DomainClass.Id
    }
 
-   if (quantifier.Relationships.ManyToOne.DamageType__DomainDamageType != nil) {
-      tableTypeBuffer.DamageType__DomainDamageType = quantifier.Relationships.ManyToOne.DamageType__DomainDamageType.Id
+   if (quantifier.Relationships.ManyToOne.Parent__DomainClassTrait != nil) {
+      tableTypeBuffer.Parent__DomainClassTrait = quantifier.Relationships.ManyToOne.Parent__DomainClassTrait.Id
    }
 
-   if (quantifier.Relationships.ManyToOne.Effect__DomainStaticEffect != nil) {
-      tableTypeBuffer.Effect__DomainStaticEffect = quantifier.Relationships.ManyToOne.Effect__DomainStaticEffect.Id
+   if (quantifier.Relationships.ManyToOne.Parent__DomainCondition != nil) {
+      tableTypeBuffer.Parent__DomainCondition = quantifier.Relationships.ManyToOne.Parent__DomainCondition.Id
    }
 
-   if (quantifier.Relationships.ManyToOne.ResistanceType__DomainDamageType != nil) {
-      tableTypeBuffer.ResistanceType__DomainDamageType = quantifier.Relationships.ManyToOne.ResistanceType__DomainDamageType.Id
+   if (quantifier.Relationships.ManyToOne.Parent__DomainStaticEffect != nil) {
+      tableTypeBuffer.Parent__DomainStaticEffect = quantifier.Relationships.ManyToOne.Parent__DomainStaticEffect.Id
    }
 
-   if (quantifier.Relationships.ManyToOne.Save__DomainCharacterStat != nil) {
-      tableTypeBuffer.Save__DomainCharacterStat = quantifier.Relationships.ManyToOne.Save__DomainCharacterStat.Id
+   if (quantifier.Relationships.ManyToOne.Parent__DomainSubClass != nil) {
+      tableTypeBuffer.Parent__DomainSubClass = quantifier.Relationships.ManyToOne.Parent__DomainSubClass.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainAction != nil) {
+      tableTypeBuffer.Target__DomainAction = quantifier.Relationships.ManyToOne.Target__DomainAction.Id
    }
 
    if (quantifier.Relationships.ManyToOne.Target__DomainCharacterStat != nil) {
       tableTypeBuffer.Target__DomainCharacterStat = quantifier.Relationships.ManyToOne.Target__DomainCharacterStat.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainCondition != nil) {
+      tableTypeBuffer.Target__DomainCondition = quantifier.Relationships.ManyToOne.Target__DomainCondition.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainDamageType != nil) {
+      tableTypeBuffer.Target__DomainDamageType = quantifier.Relationships.ManyToOne.Target__DomainDamageType.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainDiceRollSubType != nil) {
+      tableTypeBuffer.Target__DomainDiceRollSubType = quantifier.Relationships.ManyToOne.Target__DomainDiceRollSubType.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainDiceRollType != nil) {
+      tableTypeBuffer.Target__DomainDiceRollType = quantifier.Relationships.ManyToOne.Target__DomainDiceRollType.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainSpell != nil) {
+      tableTypeBuffer.Target__DomainSpell = quantifier.Relationships.ManyToOne.Target__DomainSpell.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainStaticEffect != nil) {
+      tableTypeBuffer.Target__DomainStaticEffect = quantifier.Relationships.ManyToOne.Target__DomainStaticEffect.Id
    }
 
    return &tableTypeBuffer

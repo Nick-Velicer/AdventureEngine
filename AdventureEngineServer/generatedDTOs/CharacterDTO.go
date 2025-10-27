@@ -14,6 +14,7 @@ import (
 )
 
 type CharacterDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -94,6 +95,7 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
    return &CharacterDTO{
       Id: character.Id,
       Attributes: CharacterDTOAttributes{
+         AbbreviatedTitle: character.AbbreviatedTitle,
          Description: character.Description,
          
          IsActive: character.IsActive,
@@ -117,6 +119,7 @@ func CharacterDTOToCharacter(character *CharacterDTO) *types.Character {
    var tableTypeBuffer types.Character
    
    tableTypeBuffer.Id = character.Id
+   tableTypeBuffer.AbbreviatedTitle = character.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = character.Attributes.Description
    
    tableTypeBuffer.IsActive = character.Attributes.IsActive

@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type DomainSpecies struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// CreatureTypeDomainCreatureType corresponds to the JSON schema field
 	// "CreatureType__DomainCreatureType".
 	CreatureType__DomainCreatureType *int `json:"CreatureType__DomainCreatureType" gorm:"column:CreatureType__DomainCreatureType" mapstructure:"CreatureType__DomainCreatureType"`

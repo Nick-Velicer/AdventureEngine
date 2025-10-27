@@ -2,6 +2,7 @@ import { Merge } from "type-fest"
 
 export type BaseAttributes = {
     Title?: string
+    AbbreviatedTitle?: string
     Description?: string
     IsActive?: boolean
 }

@@ -3,6 +3,9 @@
 package goTypeBase
 
 type DomainSpellJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// ClassesClassSpell corresponds to the JSON schema field "Classes__ClassSpell".
 	ClassesClassSpell []float64 `json:"Classes__ClassSpell,omitempty" yaml:"Classes__ClassSpell,omitempty" mapstructure:"Classes__ClassSpell,omitempty"`
 

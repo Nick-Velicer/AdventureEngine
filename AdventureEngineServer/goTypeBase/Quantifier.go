@@ -3,33 +3,67 @@
 package goTypeBase
 
 type QuantifierJson struct {
-	// AddedSpellDomainSpell corresponds to the JSON schema field
-	// "AddedSpell__DomainSpell".
-	AddedSpellDomainSpell *float64 `json:"AddedSpell__DomainSpell,omitempty" yaml:"AddedSpell__DomainSpell,omitempty" mapstructure:"AddedSpell__DomainSpell,omitempty"`
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
 
-	// ConditionDomainCondition corresponds to the JSON schema field
-	// "Condition__DomainCondition".
-	ConditionDomainCondition *float64 `json:"Condition__DomainCondition,omitempty" yaml:"Condition__DomainCondition,omitempty" mapstructure:"Condition__DomainCondition,omitempty"`
+	// AppliesAgainstSource corresponds to the JSON schema field
+	// "AppliesAgainstSource".
+	AppliesAgainstSource *bool `json:"AppliesAgainstSource,omitempty" yaml:"AppliesAgainstSource,omitempty" mapstructure:"AppliesAgainstSource,omitempty"`
 
-	// DamageTypeDomainDamageType corresponds to the JSON schema field
-	// "DamageType__DomainDamageType".
-	DamageTypeDomainDamageType *float64 `json:"DamageType__DomainDamageType,omitempty" yaml:"DamageType__DomainDamageType,omitempty" mapstructure:"DamageType__DomainDamageType,omitempty"`
+	// AppliesAgainstSourceForTargetsOnly corresponds to the JSON schema field
+	// "AppliesAgainstSourceForTargetsOnly".
+	AppliesAgainstSourceForTargetsOnly *bool `json:"AppliesAgainstSourceForTargetsOnly,omitempty" yaml:"AppliesAgainstSourceForTargetsOnly,omitempty" mapstructure:"AppliesAgainstSourceForTargetsOnly,omitempty"`
 
-	// Delta corresponds to the JSON schema field "Delta".
-	Delta *float64 `json:"Delta,omitempty" yaml:"Delta,omitempty" mapstructure:"Delta,omitempty"`
+	// AppliesAgainstTargets corresponds to the JSON schema field
+	// "AppliesAgainstTargets".
+	AppliesAgainstTargets *bool `json:"AppliesAgainstTargets,omitempty" yaml:"AppliesAgainstTargets,omitempty" mapstructure:"AppliesAgainstTargets,omitempty"`
+
+	// AppliesAgainstTargetsForSourceOnly corresponds to the JSON schema field
+	// "AppliesAgainstTargetsForSourceOnly".
+	AppliesAgainstTargetsForSourceOnly *bool `json:"AppliesAgainstTargetsForSourceOnly,omitempty" yaml:"AppliesAgainstTargetsForSourceOnly,omitempty" mapstructure:"AppliesAgainstTargetsForSourceOnly,omitempty"`
+
+	// AppliesToSource corresponds to the JSON schema field "AppliesToSource".
+	AppliesToSource *bool `json:"AppliesToSource,omitempty" yaml:"AppliesToSource,omitempty" mapstructure:"AppliesToSource,omitempty"`
+
+	// AppliesToTargets corresponds to the JSON schema field "AppliesToTargets".
+	AppliesToTargets *bool `json:"AppliesToTargets,omitempty" yaml:"AppliesToTargets,omitempty" mapstructure:"AppliesToTargets,omitempty"`
+
+	// AutomaticFailure corresponds to the JSON schema field "AutomaticFailure".
+	AutomaticFailure *bool `json:"AutomaticFailure,omitempty" yaml:"AutomaticFailure,omitempty" mapstructure:"AutomaticFailure,omitempty"`
+
+	// DeltaPercentage corresponds to the JSON schema field "DeltaPercentage".
+	DeltaPercentage *float64 `json:"DeltaPercentage,omitempty" yaml:"DeltaPercentage,omitempty" mapstructure:"DeltaPercentage,omitempty"`
+
+	// DeltaQuantity corresponds to the JSON schema field "DeltaQuantity".
+	DeltaQuantity *float64 `json:"DeltaQuantity,omitempty" yaml:"DeltaQuantity,omitempty" mapstructure:"DeltaQuantity,omitempty"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
-	// EffectDomainStaticEffect corresponds to the JSON schema field
-	// "Effect__DomainStaticEffect".
-	EffectDomainStaticEffect *float64 `json:"Effect__DomainStaticEffect,omitempty" yaml:"Effect__DomainStaticEffect,omitempty" mapstructure:"Effect__DomainStaticEffect,omitempty"`
+	// GivesAction corresponds to the JSON schema field "GivesAction".
+	GivesAction *bool `json:"GivesAction,omitempty" yaml:"GivesAction,omitempty" mapstructure:"GivesAction,omitempty"`
+
+	// GivesAdvantage corresponds to the JSON schema field "GivesAdvantage".
+	GivesAdvantage *bool `json:"GivesAdvantage,omitempty" yaml:"GivesAdvantage,omitempty" mapstructure:"GivesAdvantage,omitempty"`
+
+	// GivesBonusAction corresponds to the JSON schema field "GivesBonusAction".
+	GivesBonusAction *bool `json:"GivesBonusAction,omitempty" yaml:"GivesBonusAction,omitempty" mapstructure:"GivesBonusAction,omitempty"`
+
+	// GivesDisadvantage corresponds to the JSON schema field "GivesDisadvantage".
+	GivesDisadvantage *bool `json:"GivesDisadvantage,omitempty" yaml:"GivesDisadvantage,omitempty" mapstructure:"GivesDisadvantage,omitempty"`
+
+	// HardSetPercentage corresponds to the JSON schema field "HardSetPercentage".
+	HardSetPercentage *float64 `json:"HardSetPercentage,omitempty" yaml:"HardSetPercentage,omitempty" mapstructure:"HardSetPercentage,omitempty"`
+
+	// HardSetQuantity corresponds to the JSON schema field "HardSetQuantity".
+	HardSetQuantity *float64 `json:"HardSetQuantity,omitempty" yaml:"HardSetQuantity,omitempty" mapstructure:"HardSetQuantity,omitempty"`
 
 	// Id corresponds to the JSON schema field "Id".
 	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
 
-	// ImpactsSelf corresponds to the JSON schema field "ImpactsSelf".
-	ImpactsSelf *bool `json:"ImpactsSelf,omitempty" yaml:"ImpactsSelf,omitempty" mapstructure:"ImpactsSelf,omitempty"`
+	// ImpactsMovementAmount corresponds to the JSON schema field
+	// "ImpactsMovementAmount".
+	ImpactsMovementAmount *bool `json:"ImpactsMovementAmount,omitempty" yaml:"ImpactsMovementAmount,omitempty" mapstructure:"ImpactsMovementAmount,omitempty"`
 
 	// IntoInventory corresponds to the JSON schema field "IntoInventory".
 	IntoInventory *bool `json:"IntoInventory,omitempty" yaml:"IntoInventory,omitempty" mapstructure:"IntoInventory,omitempty"`
@@ -78,8 +112,34 @@ type QuantifierJson struct {
 	// "LevelMinimumRequirement".
 	LevelMinimumRequirement *float64 `json:"LevelMinimumRequirement,omitempty" yaml:"LevelMinimumRequirement,omitempty" mapstructure:"LevelMinimumRequirement,omitempty"`
 
-	// Quantity corresponds to the JSON schema field "Quantity".
-	Quantity *float64 `json:"Quantity,omitempty" yaml:"Quantity,omitempty" mapstructure:"Quantity,omitempty"`
+	// ParentDomainAction corresponds to the JSON schema field "Parent__DomainAction".
+	ParentDomainAction *float64 `json:"Parent__DomainAction,omitempty" yaml:"Parent__DomainAction,omitempty" mapstructure:"Parent__DomainAction,omitempty"`
+
+	// ParentDomainClass corresponds to the JSON schema field "Parent__DomainClass".
+	ParentDomainClass *float64 `json:"Parent__DomainClass,omitempty" yaml:"Parent__DomainClass,omitempty" mapstructure:"Parent__DomainClass,omitempty"`
+
+	// ParentDomainClassTrait corresponds to the JSON schema field
+	// "Parent__DomainClassTrait".
+	ParentDomainClassTrait *float64 `json:"Parent__DomainClassTrait,omitempty" yaml:"Parent__DomainClassTrait,omitempty" mapstructure:"Parent__DomainClassTrait,omitempty"`
+
+	// ParentDomainCondition corresponds to the JSON schema field
+	// "Parent__DomainCondition".
+	ParentDomainCondition *float64 `json:"Parent__DomainCondition,omitempty" yaml:"Parent__DomainCondition,omitempty" mapstructure:"Parent__DomainCondition,omitempty"`
+
+	// ParentDomainStaticEffect corresponds to the JSON schema field
+	// "Parent__DomainStaticEffect".
+	ParentDomainStaticEffect *float64 `json:"Parent__DomainStaticEffect,omitempty" yaml:"Parent__DomainStaticEffect,omitempty" mapstructure:"Parent__DomainStaticEffect,omitempty"`
+
+	// ParentDomainSubClass corresponds to the JSON schema field
+	// "Parent__DomainSubClass".
+	ParentDomainSubClass *float64 `json:"Parent__DomainSubClass,omitempty" yaml:"Parent__DomainSubClass,omitempty" mapstructure:"Parent__DomainSubClass,omitempty"`
+
+	// Prevents corresponds to the JSON schema field "Prevents".
+	Prevents *bool `json:"Prevents,omitempty" yaml:"Prevents,omitempty" mapstructure:"Prevents,omitempty"`
+
+	// QuantityRestoredOnShortRest corresponds to the JSON schema field
+	// "QuantityRestoredOnShortRest".
+	QuantityRestoredOnShortRest *float64 `json:"QuantityRestoredOnShortRest,omitempty" yaml:"QuantityRestoredOnShortRest,omitempty" mapstructure:"QuantityRestoredOnShortRest,omitempty"`
 
 	// RefreshOnLongRest corresponds to the JSON schema field "RefreshOnLongRest".
 	RefreshOnLongRest *bool `json:"RefreshOnLongRest,omitempty" yaml:"RefreshOnLongRest,omitempty" mapstructure:"RefreshOnLongRest,omitempty"`
@@ -87,17 +147,45 @@ type QuantifierJson struct {
 	// RefreshOnShortRest corresponds to the JSON schema field "RefreshOnShortRest".
 	RefreshOnShortRest *bool `json:"RefreshOnShortRest,omitempty" yaml:"RefreshOnShortRest,omitempty" mapstructure:"RefreshOnShortRest,omitempty"`
 
-	// ResistanceTypeDomainDamageType corresponds to the JSON schema field
-	// "ResistanceType__DomainDamageType".
-	ResistanceTypeDomainDamageType *float64 `json:"ResistanceType__DomainDamageType,omitempty" yaml:"ResistanceType__DomainDamageType,omitempty" mapstructure:"ResistanceType__DomainDamageType,omitempty"`
+	// ShouldBeEvaluatedAsModifier corresponds to the JSON schema field
+	// "ShouldBeEvaluatedAsModifier".
+	ShouldBeEvaluatedAsModifier *bool `json:"ShouldBeEvaluatedAsModifier,omitempty" yaml:"ShouldBeEvaluatedAsModifier,omitempty" mapstructure:"ShouldBeEvaluatedAsModifier,omitempty"`
 
-	// SaveDomainCharacterStat corresponds to the JSON schema field
-	// "Save__DomainCharacterStat".
-	SaveDomainCharacterStat *float64 `json:"Save__DomainCharacterStat,omitempty" yaml:"Save__DomainCharacterStat,omitempty" mapstructure:"Save__DomainCharacterStat,omitempty"`
+	// TargetMaximum corresponds to the JSON schema field "TargetMaximum".
+	TargetMaximum *float64 `json:"TargetMaximum,omitempty" yaml:"TargetMaximum,omitempty" mapstructure:"TargetMaximum,omitempty"`
+
+	// TargetMinimum corresponds to the JSON schema field "TargetMinimum".
+	TargetMinimum *float64 `json:"TargetMinimum,omitempty" yaml:"TargetMinimum,omitempty" mapstructure:"TargetMinimum,omitempty"`
+
+	// TargetDomainAction corresponds to the JSON schema field "Target__DomainAction".
+	TargetDomainAction *float64 `json:"Target__DomainAction,omitempty" yaml:"Target__DomainAction,omitempty" mapstructure:"Target__DomainAction,omitempty"`
 
 	// TargetDomainCharacterStat corresponds to the JSON schema field
 	// "Target__DomainCharacterStat".
 	TargetDomainCharacterStat *float64 `json:"Target__DomainCharacterStat,omitempty" yaml:"Target__DomainCharacterStat,omitempty" mapstructure:"Target__DomainCharacterStat,omitempty"`
+
+	// TargetDomainCondition corresponds to the JSON schema field
+	// "Target__DomainCondition".
+	TargetDomainCondition *float64 `json:"Target__DomainCondition,omitempty" yaml:"Target__DomainCondition,omitempty" mapstructure:"Target__DomainCondition,omitempty"`
+
+	// TargetDomainDamageType corresponds to the JSON schema field
+	// "Target__DomainDamageType".
+	TargetDomainDamageType *float64 `json:"Target__DomainDamageType,omitempty" yaml:"Target__DomainDamageType,omitempty" mapstructure:"Target__DomainDamageType,omitempty"`
+
+	// TargetDomainDiceRollSubType corresponds to the JSON schema field
+	// "Target__DomainDiceRollSubType".
+	TargetDomainDiceRollSubType *float64 `json:"Target__DomainDiceRollSubType,omitempty" yaml:"Target__DomainDiceRollSubType,omitempty" mapstructure:"Target__DomainDiceRollSubType,omitempty"`
+
+	// TargetDomainDiceRollType corresponds to the JSON schema field
+	// "Target__DomainDiceRollType".
+	TargetDomainDiceRollType *float64 `json:"Target__DomainDiceRollType,omitempty" yaml:"Target__DomainDiceRollType,omitempty" mapstructure:"Target__DomainDiceRollType,omitempty"`
+
+	// TargetDomainSpell corresponds to the JSON schema field "Target__DomainSpell".
+	TargetDomainSpell *float64 `json:"Target__DomainSpell,omitempty" yaml:"Target__DomainSpell,omitempty" mapstructure:"Target__DomainSpell,omitempty"`
+
+	// TargetDomainStaticEffect corresponds to the JSON schema field
+	// "Target__DomainStaticEffect".
+	TargetDomainStaticEffect *float64 `json:"Target__DomainStaticEffect,omitempty" yaml:"Target__DomainStaticEffect,omitempty" mapstructure:"Target__DomainStaticEffect,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

@@ -3,33 +3,67 @@
 package generatedDatabaseTypes
 
 type Quantifier struct {
-	// AddedSpellDomainSpell corresponds to the JSON schema field
-	// "AddedSpell__DomainSpell".
-	AddedSpell__DomainSpell *int `json:"AddedSpell__DomainSpell" gorm:"column:AddedSpell__DomainSpell" mapstructure:"AddedSpell__DomainSpell"`
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
 
-	// ConditionDomainCondition corresponds to the JSON schema field
-	// "Condition__DomainCondition".
-	Condition__DomainCondition *int `json:"Condition__DomainCondition" gorm:"column:Condition__DomainCondition" mapstructure:"Condition__DomainCondition"`
+	// AppliesAgainstSource corresponds to the JSON schema field
+	// "AppliesAgainstSource".
+	AppliesAgainstSource *bool `json:"AppliesAgainstSource" gorm:"column:AppliesAgainstSource" mapstructure:"AppliesAgainstSource"`
 
-	// DamageTypeDomainDamageType corresponds to the JSON schema field
-	// "DamageType__DomainDamageType".
-	DamageType__DomainDamageType *int `json:"DamageType__DomainDamageType" gorm:"column:DamageType__DomainDamageType" mapstructure:"DamageType__DomainDamageType"`
+	// AppliesAgainstSourceForTargetsOnly corresponds to the JSON schema field
+	// "AppliesAgainstSourceForTargetsOnly".
+	AppliesAgainstSourceForTargetsOnly *bool `json:"AppliesAgainstSourceForTargetsOnly" gorm:"column:AppliesAgainstSourceForTargetsOnly" mapstructure:"AppliesAgainstSourceForTargetsOnly"`
 
-	// Delta corresponds to the JSON schema field "Delta".
-	Delta *float64 `json:"Delta" gorm:"column:Delta" mapstructure:"Delta"`
+	// AppliesAgainstTargets corresponds to the JSON schema field
+	// "AppliesAgainstTargets".
+	AppliesAgainstTargets *bool `json:"AppliesAgainstTargets" gorm:"column:AppliesAgainstTargets" mapstructure:"AppliesAgainstTargets"`
+
+	// AppliesAgainstTargetsForSourceOnly corresponds to the JSON schema field
+	// "AppliesAgainstTargetsForSourceOnly".
+	AppliesAgainstTargetsForSourceOnly *bool `json:"AppliesAgainstTargetsForSourceOnly" gorm:"column:AppliesAgainstTargetsForSourceOnly" mapstructure:"AppliesAgainstTargetsForSourceOnly"`
+
+	// AppliesToSource corresponds to the JSON schema field "AppliesToSource".
+	AppliesToSource *bool `json:"AppliesToSource" gorm:"column:AppliesToSource" mapstructure:"AppliesToSource"`
+
+	// AppliesToTargets corresponds to the JSON schema field "AppliesToTargets".
+	AppliesToTargets *bool `json:"AppliesToTargets" gorm:"column:AppliesToTargets" mapstructure:"AppliesToTargets"`
+
+	// AutomaticFailure corresponds to the JSON schema field "AutomaticFailure".
+	AutomaticFailure *bool `json:"AutomaticFailure" gorm:"column:AutomaticFailure" mapstructure:"AutomaticFailure"`
+
+	// DeltaPercentage corresponds to the JSON schema field "DeltaPercentage".
+	DeltaPercentage *float64 `json:"DeltaPercentage" gorm:"column:DeltaPercentage" mapstructure:"DeltaPercentage"`
+
+	// DeltaQuantity corresponds to the JSON schema field "DeltaQuantity".
+	DeltaQuantity *float64 `json:"DeltaQuantity" gorm:"column:DeltaQuantity" mapstructure:"DeltaQuantity"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
-	// EffectDomainStaticEffect corresponds to the JSON schema field
-	// "Effect__DomainStaticEffect".
-	Effect__DomainStaticEffect *int `json:"Effect__DomainStaticEffect" gorm:"column:Effect__DomainStaticEffect" mapstructure:"Effect__DomainStaticEffect"`
+	// GivesAction corresponds to the JSON schema field "GivesAction".
+	GivesAction *bool `json:"GivesAction" gorm:"column:GivesAction" mapstructure:"GivesAction"`
+
+	// GivesAdvantage corresponds to the JSON schema field "GivesAdvantage".
+	GivesAdvantage *bool `json:"GivesAdvantage" gorm:"column:GivesAdvantage" mapstructure:"GivesAdvantage"`
+
+	// GivesBonusAction corresponds to the JSON schema field "GivesBonusAction".
+	GivesBonusAction *bool `json:"GivesBonusAction" gorm:"column:GivesBonusAction" mapstructure:"GivesBonusAction"`
+
+	// GivesDisadvantage corresponds to the JSON schema field "GivesDisadvantage".
+	GivesDisadvantage *bool `json:"GivesDisadvantage" gorm:"column:GivesDisadvantage" mapstructure:"GivesDisadvantage"`
+
+	// HardSetPercentage corresponds to the JSON schema field "HardSetPercentage".
+	HardSetPercentage *float64 `json:"HardSetPercentage" gorm:"column:HardSetPercentage" mapstructure:"HardSetPercentage"`
+
+	// HardSetQuantity corresponds to the JSON schema field "HardSetQuantity".
+	HardSetQuantity *float64 `json:"HardSetQuantity" gorm:"column:HardSetQuantity" mapstructure:"HardSetQuantity"`
 
 	// Id corresponds to the JSON schema field "Id".
 	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
-	// ImpactsSelf corresponds to the JSON schema field "ImpactsSelf".
-	ImpactsSelf *bool `json:"ImpactsSelf" gorm:"column:ImpactsSelf" mapstructure:"ImpactsSelf"`
+	// ImpactsMovementAmount corresponds to the JSON schema field
+	// "ImpactsMovementAmount".
+	ImpactsMovementAmount *bool `json:"ImpactsMovementAmount" gorm:"column:ImpactsMovementAmount" mapstructure:"ImpactsMovementAmount"`
 
 	// IntoInventory corresponds to the JSON schema field "IntoInventory".
 	IntoInventory *bool `json:"IntoInventory" gorm:"column:IntoInventory" mapstructure:"IntoInventory"`
@@ -78,8 +112,34 @@ type Quantifier struct {
 	// "LevelMinimumRequirement".
 	LevelMinimumRequirement *float64 `json:"LevelMinimumRequirement" gorm:"column:LevelMinimumRequirement" mapstructure:"LevelMinimumRequirement"`
 
-	// Quantity corresponds to the JSON schema field "Quantity".
-	Quantity *float64 `json:"Quantity" gorm:"column:Quantity" mapstructure:"Quantity"`
+	// ParentDomainAction corresponds to the JSON schema field "Parent__DomainAction".
+	Parent__DomainAction *int `json:"Parent__DomainAction" gorm:"column:Parent__DomainAction" mapstructure:"Parent__DomainAction"`
+
+	// ParentDomainClass corresponds to the JSON schema field "Parent__DomainClass".
+	Parent__DomainClass *int `json:"Parent__DomainClass" gorm:"column:Parent__DomainClass" mapstructure:"Parent__DomainClass"`
+
+	// ParentDomainClassTrait corresponds to the JSON schema field
+	// "Parent__DomainClassTrait".
+	Parent__DomainClassTrait *int `json:"Parent__DomainClassTrait" gorm:"column:Parent__DomainClassTrait" mapstructure:"Parent__DomainClassTrait"`
+
+	// ParentDomainCondition corresponds to the JSON schema field
+	// "Parent__DomainCondition".
+	Parent__DomainCondition *int `json:"Parent__DomainCondition" gorm:"column:Parent__DomainCondition" mapstructure:"Parent__DomainCondition"`
+
+	// ParentDomainStaticEffect corresponds to the JSON schema field
+	// "Parent__DomainStaticEffect".
+	Parent__DomainStaticEffect *int `json:"Parent__DomainStaticEffect" gorm:"column:Parent__DomainStaticEffect" mapstructure:"Parent__DomainStaticEffect"`
+
+	// ParentDomainSubClass corresponds to the JSON schema field
+	// "Parent__DomainSubClass".
+	Parent__DomainSubClass *int `json:"Parent__DomainSubClass" gorm:"column:Parent__DomainSubClass" mapstructure:"Parent__DomainSubClass"`
+
+	// Prevents corresponds to the JSON schema field "Prevents".
+	Prevents *bool `json:"Prevents" gorm:"column:Prevents" mapstructure:"Prevents"`
+
+	// QuantityRestoredOnShortRest corresponds to the JSON schema field
+	// "QuantityRestoredOnShortRest".
+	QuantityRestoredOnShortRest *float64 `json:"QuantityRestoredOnShortRest" gorm:"column:QuantityRestoredOnShortRest" mapstructure:"QuantityRestoredOnShortRest"`
 
 	// RefreshOnLongRest corresponds to the JSON schema field "RefreshOnLongRest".
 	RefreshOnLongRest *bool `json:"RefreshOnLongRest" gorm:"column:RefreshOnLongRest" mapstructure:"RefreshOnLongRest"`
@@ -87,17 +147,45 @@ type Quantifier struct {
 	// RefreshOnShortRest corresponds to the JSON schema field "RefreshOnShortRest".
 	RefreshOnShortRest *bool `json:"RefreshOnShortRest" gorm:"column:RefreshOnShortRest" mapstructure:"RefreshOnShortRest"`
 
-	// ResistanceTypeDomainDamageType corresponds to the JSON schema field
-	// "ResistanceType__DomainDamageType".
-	ResistanceType__DomainDamageType *int `json:"ResistanceType__DomainDamageType" gorm:"column:ResistanceType__DomainDamageType" mapstructure:"ResistanceType__DomainDamageType"`
+	// ShouldBeEvaluatedAsModifier corresponds to the JSON schema field
+	// "ShouldBeEvaluatedAsModifier".
+	ShouldBeEvaluatedAsModifier *bool `json:"ShouldBeEvaluatedAsModifier" gorm:"column:ShouldBeEvaluatedAsModifier" mapstructure:"ShouldBeEvaluatedAsModifier"`
 
-	// SaveDomainCharacterStat corresponds to the JSON schema field
-	// "Save__DomainCharacterStat".
-	Save__DomainCharacterStat *int `json:"Save__DomainCharacterStat" gorm:"column:Save__DomainCharacterStat" mapstructure:"Save__DomainCharacterStat"`
+	// TargetMaximum corresponds to the JSON schema field "TargetMaximum".
+	TargetMaximum *float64 `json:"TargetMaximum" gorm:"column:TargetMaximum" mapstructure:"TargetMaximum"`
+
+	// TargetMinimum corresponds to the JSON schema field "TargetMinimum".
+	TargetMinimum *float64 `json:"TargetMinimum" gorm:"column:TargetMinimum" mapstructure:"TargetMinimum"`
+
+	// TargetDomainAction corresponds to the JSON schema field "Target__DomainAction".
+	Target__DomainAction *int `json:"Target__DomainAction" gorm:"column:Target__DomainAction" mapstructure:"Target__DomainAction"`
 
 	// TargetDomainCharacterStat corresponds to the JSON schema field
 	// "Target__DomainCharacterStat".
 	Target__DomainCharacterStat *int `json:"Target__DomainCharacterStat" gorm:"column:Target__DomainCharacterStat" mapstructure:"Target__DomainCharacterStat"`
+
+	// TargetDomainCondition corresponds to the JSON schema field
+	// "Target__DomainCondition".
+	Target__DomainCondition *int `json:"Target__DomainCondition" gorm:"column:Target__DomainCondition" mapstructure:"Target__DomainCondition"`
+
+	// TargetDomainDamageType corresponds to the JSON schema field
+	// "Target__DomainDamageType".
+	Target__DomainDamageType *int `json:"Target__DomainDamageType" gorm:"column:Target__DomainDamageType" mapstructure:"Target__DomainDamageType"`
+
+	// TargetDomainDiceRollSubType corresponds to the JSON schema field
+	// "Target__DomainDiceRollSubType".
+	Target__DomainDiceRollSubType *int `json:"Target__DomainDiceRollSubType" gorm:"column:Target__DomainDiceRollSubType" mapstructure:"Target__DomainDiceRollSubType"`
+
+	// TargetDomainDiceRollType corresponds to the JSON schema field
+	// "Target__DomainDiceRollType".
+	Target__DomainDiceRollType *int `json:"Target__DomainDiceRollType" gorm:"column:Target__DomainDiceRollType" mapstructure:"Target__DomainDiceRollType"`
+
+	// TargetDomainSpell corresponds to the JSON schema field "Target__DomainSpell".
+	Target__DomainSpell *int `json:"Target__DomainSpell" gorm:"column:Target__DomainSpell" mapstructure:"Target__DomainSpell"`
+
+	// TargetDomainStaticEffect corresponds to the JSON schema field
+	// "Target__DomainStaticEffect".
+	Target__DomainStaticEffect *int `json:"Target__DomainStaticEffect" gorm:"column:Target__DomainStaticEffect" mapstructure:"Target__DomainStaticEffect"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`

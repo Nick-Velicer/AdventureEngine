@@ -14,6 +14,7 @@ import (
 )
 
 type CampaignDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -58,6 +59,7 @@ func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTable
    return &CampaignDTO{
       Id: campaign.Id,
       Attributes: CampaignDTOAttributes{
+         AbbreviatedTitle: campaign.AbbreviatedTitle,
          Description: campaign.Description,
          
          IsActive: campaign.IsActive,
@@ -76,6 +78,7 @@ func CampaignDTOToCampaign(campaign *CampaignDTO) *types.Campaign {
    var tableTypeBuffer types.Campaign
    
    tableTypeBuffer.Id = campaign.Id
+   tableTypeBuffer.AbbreviatedTitle = campaign.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = campaign.Attributes.Description
    
    tableTypeBuffer.IsActive = campaign.Attributes.IsActive

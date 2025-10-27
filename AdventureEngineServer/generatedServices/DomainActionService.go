@@ -45,3 +45,7 @@ func SaveDomainAction(db *gorm.DB, domainActions []*types.DomainAction) error {
    return tx.Commit().Error
 }
 
+func GetQuantifiersByDomainActionId(db *gorm.DB, id int, Quantifiers *[]types.Quantifier) error {
+   result := db.Table("Quantifier").Where(map[string]interface{}{"Parent__DomainAction": id}).Find(Quantifiers)
+   return result.Error
+}

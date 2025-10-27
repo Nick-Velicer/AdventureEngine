@@ -14,6 +14,7 @@ import (
 )
 
 type DomainClassDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -28,6 +29,7 @@ type DomainClassDTOManyToOneRelationships struct {
 type DomainClassDTOOneToManyRelationships struct {
    PrimaryStats__ClassPrimaryAbility []*ClassPrimaryAbilityDTO
    Saves__ClassSave []*ClassSaveDTO
+   SubClasses__DomainSubClass []*DomainSubClassDTO
 }
 
 type DomainClassDTORelationships struct {
@@ -61,6 +63,7 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
    var includedSpellcastingStat__DomainCharacterStat *types.DomainCharacterStat
    var includedPrimaryStats__ClassPrimaryAbilitys []types.ClassPrimaryAbility
    var includedSaves__ClassSaves []types.ClassSave
+   var includedSubClasses__DomainSubClasss []types.DomainSubClass
    
    if (domainClass.HitDie__DomainDice != nil) {
       services.GetDomainDiceById(db, int(*domainClass.HitDie__DomainDice), includedHitDie__DomainDice)
@@ -84,10 +87,18 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
       print("Hit circular catch case for table ClassSave\n")
    }
 
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedSubClasses__DomainSubClasss).Elem().Name())) {
+      services.GetDomainSubClasssByDomainClassId(db, int(*domainClass.Id), &includedSubClasses__DomainSubClasss)
+   } else {
+      includedSubClasses__DomainSubClasss = []types.DomainSubClass{}
+      print("Hit circular catch case for table DomainSubClass\n")
+   }
+
    
    return &DomainClassDTO{
       Id: domainClass.Id,
       Attributes: DomainClassDTOAttributes{
+         AbbreviatedTitle: domainClass.AbbreviatedTitle,
          Description: domainClass.Description,
          
          IsActive: domainClass.IsActive,
@@ -101,6 +112,7 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
          OneToMany: DomainClassDTOOneToManyRelationships {
             PrimaryStats__ClassPrimaryAbility: utils.Map(includedPrimaryStats__ClassPrimaryAbilitys, func(relationshipElement types.ClassPrimaryAbility) *ClassPrimaryAbilityDTO { return ClassPrimaryAbilityToClassPrimaryAbilityDTO(db, &relationshipElement, traversedTables) }),
             Saves__ClassSave: utils.Map(includedSaves__ClassSaves, func(relationshipElement types.ClassSave) *ClassSaveDTO { return ClassSaveToClassSaveDTO(db, &relationshipElement, traversedTables) }),
+            SubClasses__DomainSubClass: utils.Map(includedSubClasses__DomainSubClasss, func(relationshipElement types.DomainSubClass) *DomainSubClassDTO { return DomainSubClassToDomainSubClassDTO(db, &relationshipElement, traversedTables) }),
          },
       },
    }
@@ -110,6 +122,7 @@ func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) *types.DomainClass
    var tableTypeBuffer types.DomainClass
    
    tableTypeBuffer.Id = domainClass.Id
+   tableTypeBuffer.AbbreviatedTitle = domainClass.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = domainClass.Attributes.Description
    
    tableTypeBuffer.IsActive = domainClass.Attributes.IsActive

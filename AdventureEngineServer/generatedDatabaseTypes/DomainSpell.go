@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type DomainSpell struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// ClassesClassSpell corresponds to the JSON schema field "Classes__ClassSpell".
 
 	// ConcentrationRequired corresponds to the JSON schema field

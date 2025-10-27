@@ -3,6 +3,9 @@
 package goTypeBase
 
 type DomainDiceRollTypeJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
@@ -14,4 +17,8 @@ type DomainDiceRollTypeJson struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// VariantsDomainDiceRollSubType corresponds to the JSON schema field
+	// "Variants__DomainDiceRollSubType".
+	VariantsDomainDiceRollSubType []float64 `json:"Variants__DomainDiceRollSubType,omitempty" yaml:"Variants__DomainDiceRollSubType,omitempty" mapstructure:"Variants__DomainDiceRollSubType,omitempty"`
 }

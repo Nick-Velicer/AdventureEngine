@@ -14,6 +14,7 @@ import (
 )
 
 type ClassSaveDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -70,6 +71,7 @@ func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedT
    return &ClassSaveDTO{
       Id: classSave.Id,
       Attributes: ClassSaveDTOAttributes{
+         AbbreviatedTitle: classSave.AbbreviatedTitle,
          Description: classSave.Description,
          
          IsActive: classSave.IsActive,
@@ -90,6 +92,7 @@ func ClassSaveDTOToClassSave(classSave *ClassSaveDTO) *types.ClassSave {
    var tableTypeBuffer types.ClassSave
    
    tableTypeBuffer.Id = classSave.Id
+   tableTypeBuffer.AbbreviatedTitle = classSave.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = classSave.Attributes.Description
    
    tableTypeBuffer.IsActive = classSave.Attributes.IsActive

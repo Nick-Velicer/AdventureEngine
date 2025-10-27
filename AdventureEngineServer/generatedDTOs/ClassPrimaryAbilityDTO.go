@@ -14,6 +14,7 @@ import (
 )
 
 type ClassPrimaryAbilityDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -70,6 +71,7 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbilit
    return &ClassPrimaryAbilityDTO{
       Id: classPrimaryAbility.Id,
       Attributes: ClassPrimaryAbilityDTOAttributes{
+         AbbreviatedTitle: classPrimaryAbility.AbbreviatedTitle,
          Description: classPrimaryAbility.Description,
          
          IsActive: classPrimaryAbility.IsActive,
@@ -90,6 +92,7 @@ func ClassPrimaryAbilityDTOToClassPrimaryAbility(classPrimaryAbility *ClassPrima
    var tableTypeBuffer types.ClassPrimaryAbility
    
    tableTypeBuffer.Id = classPrimaryAbility.Id
+   tableTypeBuffer.AbbreviatedTitle = classPrimaryAbility.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = classPrimaryAbility.Attributes.Description
    
    tableTypeBuffer.IsActive = classPrimaryAbility.Attributes.IsActive

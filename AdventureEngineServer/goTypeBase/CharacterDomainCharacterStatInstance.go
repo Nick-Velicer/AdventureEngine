@@ -3,6 +3,9 @@
 package goTypeBase
 
 type CharacterDomainCharacterStatInstanceJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// CharacterCharacter corresponds to the JSON schema field "Character__Character".
 	CharacterCharacter *float64 `json:"Character__Character,omitempty" yaml:"Character__Character,omitempty" mapstructure:"Character__Character,omitempty"`
 

@@ -14,6 +14,7 @@ import (
 )
 
 type DomainSubClassDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -64,6 +65,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
    return &DomainSubClassDTO{
       Id: domainSubClass.Id,
       Attributes: DomainSubClassDTOAttributes{
+         AbbreviatedTitle: domainSubClass.AbbreviatedTitle,
          Description: domainSubClass.Description,
          
          IsActive: domainSubClass.IsActive,
@@ -83,6 +85,7 @@ func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) *types
    var tableTypeBuffer types.DomainSubClass
    
    tableTypeBuffer.Id = domainSubClass.Id
+   tableTypeBuffer.AbbreviatedTitle = domainSubClass.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = domainSubClass.Attributes.Description
    
    tableTypeBuffer.IsActive = domainSubClass.Attributes.IsActive

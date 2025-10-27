@@ -14,6 +14,7 @@ import (
 )
 
 type CharacterDomainCharacterStatInstanceDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -71,6 +72,7 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
    return &CharacterDomainCharacterStatInstanceDTO{
       Id: characterDomainCharacterStatInstance.Id,
       Attributes: CharacterDomainCharacterStatInstanceDTOAttributes{
+         AbbreviatedTitle: characterDomainCharacterStatInstance.AbbreviatedTitle,
          Description: characterDomainCharacterStatInstance.Description,
          
          IsActive: characterDomainCharacterStatInstance.IsActive,
@@ -92,6 +94,7 @@ func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstan
    var tableTypeBuffer types.CharacterDomainCharacterStatInstance
    
    tableTypeBuffer.Id = characterDomainCharacterStatInstance.Id
+   tableTypeBuffer.AbbreviatedTitle = characterDomainCharacterStatInstance.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = characterDomainCharacterStatInstance.Attributes.Description
    
    tableTypeBuffer.IsActive = characterDomainCharacterStatInstance.Attributes.IsActive

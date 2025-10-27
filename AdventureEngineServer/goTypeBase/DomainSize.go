@@ -3,6 +3,9 @@
 package goTypeBase
 
 type DomainSizeJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// BaseHexArea corresponds to the JSON schema field "BaseHexArea".
 	BaseHexArea float64 `json:"BaseHexArea" yaml:"BaseHexArea" mapstructure:"BaseHexArea"`
 

@@ -3,6 +3,9 @@
 package goTypeBase
 
 type ClassPrimaryAbilityJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// ClassDomainClass corresponds to the JSON schema field "Class__DomainClass".
 	ClassDomainClass *float64 `json:"Class__DomainClass,omitempty" yaml:"Class__DomainClass,omitempty" mapstructure:"Class__DomainClass,omitempty"`
 

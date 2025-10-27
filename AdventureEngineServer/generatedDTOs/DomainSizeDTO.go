@@ -14,6 +14,7 @@ import (
 )
 
 type DomainSizeDTOAttributes struct {
+   AbbreviatedTitle *string
    BaseHexArea float64
    BaseTileArea float64
    Description *string
@@ -61,6 +62,7 @@ func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traver
    return &DomainSizeDTO{
       Id: domainSize.Id,
       Attributes: DomainSizeDTOAttributes{
+         AbbreviatedTitle: domainSize.AbbreviatedTitle,
          BaseHexArea: domainSize.BaseHexArea,
          BaseTileArea: domainSize.BaseTileArea,
          Description: domainSize.Description,
@@ -82,6 +84,7 @@ func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) *types.DomainSize {
    var tableTypeBuffer types.DomainSize
    
    tableTypeBuffer.Id = domainSize.Id
+   tableTypeBuffer.AbbreviatedTitle = domainSize.Attributes.AbbreviatedTitle
    tableTypeBuffer.BaseHexArea = domainSize.Attributes.BaseHexArea
    tableTypeBuffer.BaseTileArea = domainSize.Attributes.BaseTileArea
    tableTypeBuffer.Description = domainSize.Attributes.Description

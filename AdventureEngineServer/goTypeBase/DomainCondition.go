@@ -3,6 +3,9 @@
 package goTypeBase
 
 type DomainConditionJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
@@ -11,6 +14,10 @@ type DomainConditionJson struct {
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
+
+	// QuantifiersQuantifier corresponds to the JSON schema field
+	// "Quantifiers__Quantifier".
+	QuantifiersQuantifier []float64 `json:"Quantifiers__Quantifier,omitempty" yaml:"Quantifiers__Quantifier,omitempty" mapstructure:"Quantifiers__Quantifier,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

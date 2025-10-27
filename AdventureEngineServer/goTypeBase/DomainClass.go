@@ -3,6 +3,9 @@
 package goTypeBase
 
 type DomainClassJson struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
@@ -25,6 +28,10 @@ type DomainClassJson struct {
 	// SpellcastingStatDomainCharacterStat corresponds to the JSON schema field
 	// "SpellcastingStat__DomainCharacterStat".
 	SpellcastingStatDomainCharacterStat *float64 `json:"SpellcastingStat__DomainCharacterStat,omitempty" yaml:"SpellcastingStat__DomainCharacterStat,omitempty" mapstructure:"SpellcastingStat__DomainCharacterStat,omitempty"`
+
+	// SubClassesDomainSubClass corresponds to the JSON schema field
+	// "SubClasses__DomainSubClass".
+	SubClassesDomainSubClass []float64 `json:"SubClasses__DomainSubClass,omitempty" yaml:"SubClasses__DomainSubClass,omitempty" mapstructure:"SubClasses__DomainSubClass,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

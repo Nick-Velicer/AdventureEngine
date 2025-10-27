@@ -14,6 +14,7 @@ import (
 )
 
 type DomainSpellSchoolDTOAttributes struct {
+   AbbreviatedTitle *string
    Description *string
    
    IsActive *bool
@@ -58,6 +59,7 @@ func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *typ
    return &DomainSpellSchoolDTO{
       Id: domainSpellSchool.Id,
       Attributes: DomainSpellSchoolDTOAttributes{
+         AbbreviatedTitle: domainSpellSchool.AbbreviatedTitle,
          Description: domainSpellSchool.Description,
          
          IsActive: domainSpellSchool.IsActive,
@@ -76,6 +78,7 @@ func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoo
    var tableTypeBuffer types.DomainSpellSchool
    
    tableTypeBuffer.Id = domainSpellSchool.Id
+   tableTypeBuffer.AbbreviatedTitle = domainSpellSchool.Attributes.AbbreviatedTitle
    tableTypeBuffer.Description = domainSpellSchool.Attributes.Description
    
    tableTypeBuffer.IsActive = domainSpellSchool.Attributes.IsActive

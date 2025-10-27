@@ -45,3 +45,7 @@ func SaveDomainDiceRollType(db *gorm.DB, domainDiceRollTypes []*types.DomainDice
    return tx.Commit().Error
 }
 
+func GetDomainDiceRollSubTypesByDomainDiceRollTypeId(db *gorm.DB, id int, DomainDiceRollSubTypes *[]types.DomainDiceRollSubType) error {
+   result := db.Table("DomainDiceRollSubType").Where(map[string]interface{}{"SuperType__DomainDiceRollType": id}).Find(DomainDiceRollSubTypes)
+   return result.Error
+}

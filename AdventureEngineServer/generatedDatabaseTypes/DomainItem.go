@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type DomainItem struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// CustomEffectText corresponds to the JSON schema field "CustomEffectText".
 	CustomEffectText *string `json:"CustomEffectText" gorm:"column:CustomEffectText" mapstructure:"CustomEffectText"`
 

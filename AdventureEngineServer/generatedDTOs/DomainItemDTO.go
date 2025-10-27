@@ -14,6 +14,7 @@ import (
 )
 
 type DomainItemDTOAttributes struct {
+   AbbreviatedTitle *string
    CustomEffectText *string
    Description *string
    
@@ -61,6 +62,7 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
    return &DomainItemDTO{
       Id: domainItem.Id,
       Attributes: DomainItemDTOAttributes{
+         AbbreviatedTitle: domainItem.AbbreviatedTitle,
          CustomEffectText: domainItem.CustomEffectText,
          Description: domainItem.Description,
          
@@ -82,6 +84,7 @@ func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) *types.DomainItem {
    var tableTypeBuffer types.DomainItem
    
    tableTypeBuffer.Id = domainItem.Id
+   tableTypeBuffer.AbbreviatedTitle = domainItem.Attributes.AbbreviatedTitle
    tableTypeBuffer.CustomEffectText = domainItem.Attributes.CustomEffectText
    tableTypeBuffer.Description = domainItem.Attributes.Description
    

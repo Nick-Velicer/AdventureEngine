@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type DomainAction struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
@@ -12,12 +15,9 @@ type DomainAction struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
+	// QuantifiersQuantifier corresponds to the JSON schema field
+	// "Quantifiers__Quantifier".
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
-
-	// UsesAction corresponds to the JSON schema field "UsesAction".
-	UsesAction *bool `json:"UsesAction" gorm:"column:UsesAction" mapstructure:"UsesAction"`
-
-	// UsesBonusAction corresponds to the JSON schema field "UsesBonusAction".
-	UsesBonusAction *bool `json:"UsesBonusAction" gorm:"column:UsesBonusAction" mapstructure:"UsesBonusAction"`
 }

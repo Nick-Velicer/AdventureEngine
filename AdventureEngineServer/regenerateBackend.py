@@ -131,7 +131,7 @@ def main():
 
 #The following expect a dictionary in the return shape specified for produceParsedTypes
 def produceCreateTableStatement(tableName: str, typeMeta: dict):
-
+    
     def generateForeignKeyConstraintSnippet(columnName: str, targetTable: str):
         #The id name is currently locked as 'Id' from generation further up
 
@@ -308,7 +308,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
         *indentLineBlock([
             'types "AdventureEngineServer/generatedDatabaseTypes"',
             'utils "AdventureEngineServer/utils"' if len(typeMeta["relationships"]["oneToMany"]) > 0 else '',
-            'services "AdventureEngineServer/generatedServices"' if len(typeMeta["relationships"]["manyToOne"]) > 0 else '',
+            'services "AdventureEngineServer/generatedServices"' if len(typeMeta["relationships"]["manyToOne"]) > 0 or len(typeMeta["relationships"]["oneToMany"]) > 0 else '',
   	        '"gorm.io/gorm"',
             '"reflect"',
             '"slices"'

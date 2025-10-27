@@ -1,22 +1,15 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
+import { DomainDiceRollSubType } from "./DomainDiceRollSubType";
 
-//Melee/ranged Weapon Attack rolls
-    
-//Melee/ranged Spell attack rolls
-    
-//Melee/ranged Weapon Damage rolls
-    
-//Melee/ranged Spell Damage rolls
-    
-//Initiative
-    
-//Ability checks/saves
+//Attack, Damage, Initiative, Save rolls (subvariants are in DomainDiceRollType for more specific situational checks)
 
 export type DomainDiceRollType = ExtendedSchemaObject<{
     Attributes: {
     },
     Relationships: {
         ManyToOne: {},
-        OneToMany: {}
+        OneToMany: {
+            Variants__DomainDiceRollSubType: DomainDiceRollSubType[]
+        }
     }
 }>

@@ -3,6 +3,9 @@
 package generatedDatabaseTypes
 
 type CharacterDomainSubClassInstance struct {
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
 	// CharacterCharacter corresponds to the JSON schema field "Character__Character".
 	Character__Character *int `json:"Character__Character" gorm:"column:Character__Character" mapstructure:"Character__Character"`
 

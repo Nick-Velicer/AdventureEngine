@@ -3,8 +3,8 @@
 package goTypeBase
 
 type DomainCharacterStatJson struct {
-	// Abbreviation corresponds to the JSON schema field "Abbreviation".
-	Abbreviation string `json:"Abbreviation" yaml:"Abbreviation" mapstructure:"Abbreviation"`
+	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
+	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
