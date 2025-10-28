@@ -7,7 +7,7 @@ export type DomainSubClass = ExtendedSchemaObject<{
     }
     Relationships: {
         ManyToOne: {  
-            ParentClass__DomainClass?: DomainClass
+            Class__DomainClass?: DomainClass
         },
         OneToMany: {}
     }

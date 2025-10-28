@@ -22,7 +22,7 @@ type DomainSubClassDTOAttributes struct {
 }
 
 type DomainSubClassDTOManyToOneRelationships struct {
-   ParentClass__DomainClass *DomainClassDTO
+   Class__DomainClass *DomainClassDTO
 }
 
 type DomainSubClassDTOOneToManyRelationships struct {
@@ -55,10 +55,10 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSubClass).Name())
    
-   var includedParentClass__DomainClass *types.DomainClass
+   var includedClass__DomainClass *types.DomainClass
    
-   if (domainSubClass.ParentClass__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*domainSubClass.ParentClass__DomainClass), includedParentClass__DomainClass)
+   if (domainSubClass.Class__DomainClass != nil) {
+      services.GetDomainClassById(db, int(*domainSubClass.Class__DomainClass), includedClass__DomainClass)
    }
 
    
@@ -73,7 +73,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
       },
       Relationships: DomainSubClassDTORelationships{
          ManyToOne: DomainSubClassDTOManyToOneRelationships {
-            ParentClass__DomainClass: DomainClassToDomainClassDTO(db, includedParentClass__DomainClass, traversedTables),
+            Class__DomainClass: DomainClassToDomainClassDTO(db, includedClass__DomainClass, traversedTables),
          },
          OneToMany: DomainSubClassDTOOneToManyRelationships {
          },
@@ -91,8 +91,8 @@ func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) *types
    tableTypeBuffer.IsActive = domainSubClass.Attributes.IsActive
    tableTypeBuffer.Title = domainSubClass.Attributes.Title
    
-   if (domainSubClass.Relationships.ManyToOne.ParentClass__DomainClass != nil) {
-      tableTypeBuffer.ParentClass__DomainClass = domainSubClass.Relationships.ManyToOne.ParentClass__DomainClass.Id
+   if (domainSubClass.Relationships.ManyToOne.Class__DomainClass != nil) {
+      tableTypeBuffer.Class__DomainClass = domainSubClass.Relationships.ManyToOne.Class__DomainClass.Id
    }
 
    return &tableTypeBuffer

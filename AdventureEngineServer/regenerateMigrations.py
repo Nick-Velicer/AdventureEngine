@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import re
+import math
 import pprint
 from utils.utils import produceDatabaseTargetType, produceParsedType, goToSqlTypeConversions
 
@@ -35,6 +36,10 @@ quantifiers = []
 #This will be applied to the beginning of migrations to preserve the dependent order for foreign keys
 migrationOrderNumber = 1
 
+#This is tracked in main to be able to add leading zeros and preserve the initialization order of migration files
+#otherwise the numeric order will be processed lexographically instead of in numeric order
+migrationTotal = 0
+
 
 def main():
     #Since this is a development time tool, we can get away with depending on some of the
@@ -62,29 +67,27 @@ def main():
     #Migrations are created in order of foreign key dependency, with later generations relying
     #on the state of previously generated tables to link (providing better fk safety)
 
-    regenerateDiceMigration()
+    migrationFunctions = [
+        regenerateDiceMigration,
+        regenerateDomainDiceRollTypeMigration,
+        regenerateDomainDiceRollSubTypeMigration,
+        regenerateBasicStatMigration,
+        regenerateActionsMigration,
+        regenerateDomainClassMigration,
+        regenerateDomainSubClassMigration,
+        regenerateDomainConditionsMigration,
+        regenerateSavingThrowsMigration,
+        regenerateSpellSchoolsMigration,
+        regenerateSpellsAndClassSpellsMigrations,
+        regenerateQuantifiersMigration
+    ]
 
-    regenerateDomainDiceRollTypeMigration()
+    global migrationTotal
 
-    regenerateDomainDiceRollSubTypeMigration()
+    migrationTotal = len(migrationFunctions)
 
-    regenerateBasicStatMigration()
-
-    regenerateActionsMigration()
-
-    regenerateDomainClassMigration()
-
-    regenerateDomainSubClassMigration()
-
-    regenerateDomainConditionsMigration()
-
-    regenerateSavingThrowsMigration()
-
-    regenerateSpellSchoolsMigration()
-
-    regenerateSpellsAndClassSpellsMigrations()
-
-    regenerateQuantifiersMigration()
+    for migrationFunction in migrationFunctions:
+        migrationFunction()
 
     print("Finished regenerating migrations.")
 
@@ -148,6 +151,7 @@ def produceMigrationFileFromObjects(tableName: str, objects: list):
     #writing to a global context.
 
     global migrationOrderNumber
+    global migrationTotal
 
     #Generating ids for each item, this will overwrite any passed in id
     objects = [{**obj, **{
@@ -156,7 +160,7 @@ def produceMigrationFileFromObjects(tableName: str, objects: list):
     }} for index, obj in enumerate(objects)]
 
     lines = produceInsertStatementsForObjects(tableName, typeMetas[tableName], objects)
-    writeInsertLines(migrationsBaseDir + '/' + str(migrationOrderNumber) + '__' + tableName + '.sql', lines)
+    writeInsertLines(migrationsBaseDir + '/' + str(migrationOrderNumber).zfill(math.floor(math.log(migrationTotal))) + '__' + tableName + '.sql', lines)
     print(tableName + " migration successfully generated.")
 
     migrationOrderNumber += 1

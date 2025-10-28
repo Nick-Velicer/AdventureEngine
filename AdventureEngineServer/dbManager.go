@@ -45,7 +45,6 @@ func createDB() *gorm.DB {
 	db, _ := sql.Open("sqlite3", dbPath)
 
 	executeMigrationFromFile(db, "./testCreates.sql")
-	executeMigrationFromFile(db, "./testInserts.sql")
 
 	migrationsPath := "./generatedMigrations"
 

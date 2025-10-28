@@ -6,6 +6,9 @@ type DomainSubClass struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
 
+	// ClassDomainClass corresponds to the JSON schema field "Class__DomainClass".
+	Class__DomainClass *int `json:"Class__DomainClass" gorm:"column:Class__DomainClass" mapstructure:"Class__DomainClass"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
@@ -14,10 +17,6 @@ type DomainSubClass struct {
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
-
-	// ParentClassDomainClass corresponds to the JSON schema field
-	// "ParentClass__DomainClass".
-	ParentClass__DomainClass *int `json:"ParentClass__DomainClass" gorm:"column:ParentClass__DomainClass" mapstructure:"ParentClass__DomainClass"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
