@@ -23,6 +23,7 @@ typeMetas = {}
 dice = []
 diceRollTypes = []
 diceRollSubTypes = []
+damageTypes = []
 baseStats = []
 actions = []
 spellSchools = []
@@ -74,6 +75,7 @@ def main():
         regenerateBasicStatMigration,
         regenerateActionsMigration,
         regenerateDomainClassMigration,
+        regenerateDamageTypesMigration,
         regenerateDomainSubClassMigration,
         regenerateDomainConditionsMigration,
         regenerateSavingThrowsMigration,
@@ -282,6 +284,41 @@ def regenerateBasicStatMigration():
             "AbbreviatedTitle": "Moved",
             "IsBaseStat": 0,
         },
+        {
+            "Title": "Actions",
+            "AbbreviatedTitle": "Actions",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Actions Used",
+            "AbbreviatedTitle": "Used",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Bonus Actions",
+            "AbbreviatedTitle": "Bonus Actions",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Bonus Actions Used",
+            "AbbreviatedTitle": "Used",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Reactions",
+            "AbbreviatedTitle": "Reactions",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Reactions Used",
+            "AbbreviatedTitle": "Used",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Weight",
+            "AbbreviatedTitle": "Weight",
+            "IsBaseStat": 0,
+        },
     ])
 
     baseStats = produceMigrationFileFromObjects("DomainCharacterStat", baseStats)
@@ -290,14 +327,18 @@ def regenerateBasicStatMigration():
 def regenerateActionsMigration():
 
     global actions
+    global baseStats
     global quantifiers
 
     actionTitles = [
         #Movement Actions
-        "Move", "Climb", "Swim", "Crawl", "Stand Up", "Jump", 
+        "Move", "Climb", "Swim", "Crawl", "Stand Up", "Jump"
         
         #Combat/Engagement Actions
-        "Attack", "Grapple", "Shove", "Cast", "Dash", "Disengage", "Help", "Interact", "Use Item", "Equip", "Unequip", "Hide"
+        "Attack", "Grapple", "Shove", "Cast", "Dash", "Disengage", "Help", "Interact", "Use Item", "Equip", "Unequip", "Hide",
+
+        #Non-Combat Actions
+        "Speak"
     ]
 
     actions = [{ "Title": title } for title in actionTitles]
@@ -306,75 +347,92 @@ def regenerateActionsMigration():
 
     quantifiers.extend([
         {
+            "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Speed"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Speed"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Climb")
         },
         {
+            "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Speed"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Speed"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Swim")
         },
         {
+            "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Speed"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Speed"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Crawl")
         },
         {
+            "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Available"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Available"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Stand Up")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Attack")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Grapple")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Shove")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Cast")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Dash")
         },
         {
+            "AppliesToSource": 1,
             "DeltaPercentage": 2,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(conditions, "Movement Speed"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Speed"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Dash")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Disengage")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Help")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Interact")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Use Item")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Equip")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Unequip")
         },
         {
+            "AppliesToSource": 1,
             "IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Hide")
         },
@@ -560,9 +618,35 @@ def regenerateDomainSubClassMigration():
     classes = produceMigrationFileFromObjects("DomainSubClass", subClasses)
 
 
+def regenerateDamageTypesMigration():
+    global damageTypes
+
+    damageTypeTitles = [
+        "Piercing",
+        "Bludgeoning",
+        "Slashing",
+        "Cold",
+        "Fire",
+        "Lightning",
+        "Thunder",
+        "Poison",
+        "Acid",
+        "Necrotic",
+        "Radiant",
+        "Force",
+        "Psychic"
+    ]
+
+    damageTypes = [{ "Title": title } for title in damageTypeTitles]
+
+    damageTypes = produceMigrationFileFromObjects("DomainDamageType", damageTypes)
+
+
 def regenerateDomainConditionsMigration():
 
     global baseStats
+    global actions
+    global damageTypes
     global conditions
     global diceRollTypes
     global quantifiers
@@ -625,9 +709,15 @@ def regenerateDomainConditionsMigration():
         {
             "Title": "Wearing Light Armor",
         },
+        {
+            "Title": "Seen",
+        },
+        {
+            "Title": "Heard",
+        },
     ]
 
-    conditions = produceMigrationFileFromObjects("DomainCharacterStat", conditions)
+    conditions = produceMigrationFileFromObjects("DomainCondition", conditions)
 
     quantifiers.extend([
         #region Blinded
@@ -653,7 +743,7 @@ def regenerateDomainConditionsMigration():
 
         #region Charmed
         {
-            "Prevents": 1,
+            "PreventsApplying": 1,
             "AppliesAgainstSourceForTargetsOnly": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
@@ -694,19 +784,344 @@ def regenerateDomainConditionsMigration():
         {
             "GivesAdvantage": 1,
             "AppliesAgainstTargetsForSourceOnly": 1,
-            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
-            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(actions, "Check"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Frightened")
         },
         {
-            "Prevents": 1,
+            "PreventsApplying": 1,
             "AppliesAgainstSourceForTargetsOnly": 1,
-            "Target__DomainAction": getForeignKeyIdForTitle(diceRollTypes, "Move"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
-            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
+            "Target__DomainAction": getForeignKeyIdForTitle(actions, "Move"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Frightened")
         },
         #endregion
 
+        #region Grappled
+        {
+            "AppliesToTargets": 1,
+            "PreventsApplying": 1,
+            "Target__DomainAction": getForeignKeyIdForTitle(actions, "Move"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Grappled")
+        },
+        {
+            "AppliesToSource": 1,
+            "Range": 5,
+        },
+        #endregion
+
+        #region Incapacitated
+        {
+            "AppliesToTargets": 1,
+            "HardSetQuantity": 0,
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Actions"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Reactions"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Incapacitated")
+        },
+        {
+            "AppliesAgainstTarget": 1,
+            "PreventsApplying": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Grappled"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Incapacitated")
+        },
+        #endregion
+
+        #region Invisible
+        {
+            "AppliesToTargets": 1,
+            "PreventsRecieving": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Seen"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Reactions"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Invisible")
+        },
+        {
+            "AppliesAgainstTarget": 1,
+            "GivesDisadvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Invisible")
+        },
+        {
+            "AppliesToTargets": 1,
+            "GivesAdvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Invisible")
+        },
+        #endregion
+
+        #region Paralyzed
+        {
+            "AppliesToTargets": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Incapacitated"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
+        },
+        {
+            "AppliesToTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
+        },
+        {
+            "AppliesToTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
+        },
+        {
+            "AppliesToTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
+        },
+        {
+            "AppliesToTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
+        },
+        {
+            "AppliesAgainstTargets": 1,
+            "GivesAdvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
+        },
+        {
+            "AppliesAgainstTargets": 1,
+            "AutomaticCritical": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Range": 5,
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
+        },
+        #endregion
+
+        #region Petrified
+        {
+            "AppliesToTargets": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Incapacitated"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        {
+            "AppliesToTargets": 1,
+            "DeltaPercentage": 10,
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Weight"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        {
+            "AppliesToTargets": 1,
+            "PreventsApplying": 1,
+            "Target__DomainAction": getForeignKeyIdForTitle(actions, "Move"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        {
+            "AppliesToTargets": 1,
+            "PreventsApplying": 1,
+            "Target__DomainAction": getForeignKeyIdForTitle(actions, "Speak"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        {
+            "AppliesAgainstTargets": 1,
+            "GivesAdvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        {
+            "AppliesToTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        {
+            "AppliesToTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        {
+            "AppliesToTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        {
+            "AppliesToTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        *[
+            {
+            "AppliesToTargets": 1,
+            "GivesResistance": 1,
+            "Target__DomainDamageType": damageType["Id"],
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+            } for damageType in damageTypes
+        ],
+        {
+            "AppliesAgainstTargets": 1,
+            "PreventsRecieving": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Poisoned"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
+        },
+        #endregion
+
+        #region Poisoned
+        {
+            "AppliesToTargets": 1,
+            "GivesDisadvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Poisoned")
+        },
+        {
+            "AppliesToTargets": 1,
+            "GivesDisadvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Poisoned")
+        },
+        #endregion
+
+        #region Prone
+        *[
+            {
+            "AppliesToTargets": 1,
+            "PreventsApplying": 1,
+            "Target__DomainAction": action["Id"],
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Prone")
+            } for action in actions if action["Title"] in ["Move", "Climb", "Jump", "Swim"]
+        ],
+        {
+            "AppliesToTargets": 1,
+            "GivesDisadvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Prone")
+        },
+        {
+            "AppliesToTargets": 1,
+            "RemovedOn": 1,
+            "Target__DomainAction": getForeignKeyIdForTitle(actions, "Stand Up"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Prone")
+        },
+        #endregion
+
+        #region Restrained
+        *[
+            {
+            "AppliesToTargets": 1,
+            "PreventsApplying": 1,
+            "Target__DomainAction": action["Id"],
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Restrained")
+            } for action in actions if action["Title"] in ["Move", "Climb", "Jump", "Swim"]
+        ],
+        {
+            "AppliesAgainstTargets": 1,
+            "GivesAdvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Restrained")
+        },
+        {
+            "AppliesToTargets": 1,
+            "GivesDisadvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Restrained")
+        },
+        {
+            "AppliesToTargets": 1,
+            "GivesDisadvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Restrained")
+        },
+        #endregion
+
+        #region Stunned
+        {
+            "AppliesToTargets": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Incapacitated"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Stunned")
+        },
+        *[
+            {
+            "AppliesToTargets": 1,
+            "PreventsApplying": 1,
+            "Target__DomainAction": action["Id"],
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Stunned")
+            } for action in actions if action["Title"] in ["Move", "Climb", "Jump", "Swim", "Speak"]
+        ],
+        {
+            "AppliesAgainstTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Stunned")
+        },
+        {
+            "AppliesAgainstTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Stunned")
+        },
+        {
+            "AppliesAgainstTargets": 1,
+            "GivesAdvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Stunned")
+        },
+        #endregion
+
+        #region Unconscious
+        {
+            "AppliesToTargets": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Incapacitated"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
+        },
+        {
+            "AppliesToTargets": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Prone"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
+        },
+        *[
+            {
+            "AppliesToTargets": 1,
+            "PreventsApplying": 1,
+            "Target__DomainAction": action["Id"],
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
+            } for action in actions if action["Title"] in ["Move", "Climb", "Jump", "Swim", "Speak"]
+        ],
+        {
+            "AppliesAgainstTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
+        },
+        {
+            "AppliesAgainstTargets": 1,
+            "AutomaticFailure": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
+            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
+        },
+        {
+            "AppliesAgainstTargets": 1,
+            "GivesAdvantage": 1,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
+        },
+        {
+            "AppliesAgainstTargets": 1,
+            "AutomaticCritical": 1,
+            "Range": 5,
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
+        }
+        #endregion
+
+        #TODO The exhaustion condition at some point when I've got more of a mind to figure out leveled quantitifiers for conditions and spells and such
     ])
 
 

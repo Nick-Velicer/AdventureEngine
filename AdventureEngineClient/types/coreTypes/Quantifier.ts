@@ -14,7 +14,7 @@ import { DomainSubClass } from "./DomainSubClass";
 export type Quantifier = ExtendedSchemaObject<{
     Attributes: {
         //Whether or not this ends up overriding another quantifier with it's non-null values from some conditional mapping
-        ShouldBeEvaluatedAsModifier?: boolean,
+        ShouldReplace?: boolean,
         //Such a value/property now becomes this
         HardSetQuantity?: number,
         HardSetPercentage?: number,
@@ -40,7 +40,12 @@ export type Quantifier = ExtendedSchemaObject<{
         GivesAdvantage?: boolean,
         GivesDisadvantage?: boolean,
         AutomaticFailure?: boolean,
-        Prevents?: boolean,
+        AutomaticCritical?: boolean,
+        PreventsReceiving?: boolean,
+        PreventsApplying?: boolean,
+        Removes?: boolean,
+        RemovedOn?: boolean,
+        GivesResistance?: boolean,
         IntoInventory?: boolean,
         IsAction?: boolean,
         IsBonusAction?: boolean,
@@ -56,6 +61,7 @@ export type Quantifier = ExtendedSchemaObject<{
         Level7SpellSlots?: number,
         Level8SpellSlots?: number,
         Level9SpellSlots?: number,
+        Range?: number,
     },
     Relationships: {
         ManyToOne: {
