@@ -37,7 +37,7 @@ func SaveQuantifier(db *gorm.DB, quantifiers []*types.Quantifier) error {
       return err
    }
    
-   if err := tx.Table("Quantifier").Create(quantifiers).Error; err != nil {
+   if err := tx.Table("Quantifier").Save(quantifiers).Error; err != nil {
       tx.Rollback()
       return err
    }

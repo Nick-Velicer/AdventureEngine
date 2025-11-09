@@ -58,10 +58,10 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
    var includedVariants__DomainDiceRollSubTypes []types.DomainDiceRollSubType
    
    if (slices.Contains(traversedTables, reflect.TypeOf(includedVariants__DomainDiceRollSubTypes).Elem().Name())) {
-      services.GetDomainDiceRollSubTypesByDomainDiceRollTypeId(db, int(*domainDiceRollType.Id), &includedVariants__DomainDiceRollSubTypes)
-   } else {
       includedVariants__DomainDiceRollSubTypes = []types.DomainDiceRollSubType{}
       print("Hit circular catch case for table DomainDiceRollSubType\n")
+   } else {
+      services.GetDomainDiceRollSubTypesByDomainDiceRollTypeId(db, int(*domainDiceRollType.Id), &includedVariants__DomainDiceRollSubTypes)
    }
 
    

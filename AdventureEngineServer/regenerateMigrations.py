@@ -64,6 +64,10 @@ def main():
 
     if not os.path.exists(migrationsBaseDir):
         os.makedirs(migrationsBaseDir)
+    else:
+        for f in os.listdir(migrationsBaseDir):
+            os.remove(migrationsBaseDir + "/" + f)
+        print("Cleaned migrations directory.")
 
     #Migrations are created in order of foreign key dependency, with later generations relying
     #on the state of previously generated tables to link (providing better fk safety)
@@ -817,7 +821,7 @@ def regenerateDomainConditionsMigration():
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Incapacitated")
         },
         {
-            "AppliesAgainstTarget": 1,
+            "AppliesAgainstTargets": 1,
             "PreventsApplying": 1,
             "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Grappled"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Incapacitated")
@@ -827,13 +831,13 @@ def regenerateDomainConditionsMigration():
         #region Invisible
         {
             "AppliesToTargets": 1,
-            "PreventsRecieving": 1,
+            "PreventsReceiving": 1,
             "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Seen"),
             "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Reactions"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Invisible")
         },
         {
-            "AppliesAgainstTarget": 1,
+            "AppliesAgainstTargets": 1,
             "GivesDisadvantage": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Invisible")
@@ -963,7 +967,7 @@ def regenerateDomainConditionsMigration():
         ],
         {
             "AppliesAgainstTargets": 1,
-            "PreventsRecieving": 1,
+            "PreventsReceiving": 1,
             "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Poisoned"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
         },

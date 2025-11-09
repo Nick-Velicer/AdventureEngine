@@ -9,8 +9,8 @@ export type DomainItem = ExtendedSchemaObject<{
     },
     Relationships: {
         ManyToOne: {
-            OneHandedQuantifier: Quantifier,
-            TwoHandedQuantifier: Quantifier,
+            OneHanded__Quantifier: Quantifier,
+            TwoHanded__Quantifier: Quantifier,
         },
         OneToMany: {}
     }

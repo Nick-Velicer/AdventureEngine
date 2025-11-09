@@ -37,7 +37,7 @@ func SaveDomainDiceRollSubType(db *gorm.DB, domainDiceRollSubTypes []*types.Doma
       return err
    }
    
-   if err := tx.Table("DomainDiceRollSubType").Create(domainDiceRollSubTypes).Error; err != nil {
+   if err := tx.Table("DomainDiceRollSubType").Save(domainDiceRollSubTypes).Error; err != nil {
       tx.Rollback()
       return err
    }

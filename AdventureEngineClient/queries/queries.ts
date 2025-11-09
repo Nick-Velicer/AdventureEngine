@@ -20,10 +20,7 @@ export function composeQueryBuilderContext<
    }) => ReturnType<T>,
    U extends <G extends SchemaObject>(opts: {
       mutation: (...args : any[]) => Promise<G>
-      onSettled: () => any
-      //Eventually a more general onSuccess interface name would be nice
-      //but for now this is a reasonable expectation and saves some headache
-      //from having an extra translation step when the Pinia handlers are injected.
+      onSuccess: (data: G | G[], ...args: any[]) => any
    }) => ReturnType<U>,
    C extends () => ReturnType<C>,
    Q extends (cacheContext: ReturnType<C>, keys: string[]) => any,
@@ -47,11 +44,18 @@ export function composeQueryBuilderContext<
             query: () => services.Campaign.getItemById(id)
          });
       },
-      useSaveCampaignMutation: (obj: Parameters<typeof services.Campaign.saveItem>[0]) => {
+      useSaveCampaignMutation: <H extends Parameters<typeof services.Campaign.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.Campaign.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getCampaigns", "getCampaignById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getCampaigns",
+                  "getCampaignById",
+               ]);
+            }
          });
       },
       
@@ -68,11 +72,24 @@ export function composeQueryBuilderContext<
             query: () => services.Character.getItemById(id)
          });
       },
-      useSaveCharacterMutation: (obj: Parameters<typeof services.Character.saveItem>[0]) => {
+      useSaveCharacterMutation: <H extends Parameters<typeof services.Character.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.Character.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getCharacters", "getCharacterById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getCharacters",
+                  "getCharacterById",
+                  "getDomainSizes",
+                  "getDomainSpeciess",
+                  "getCampaigns",
+                  "getDomainSizeById",
+                  "getDomainSpeciesById",
+                  "getCampaignById",
+               ]);
+            }
          });
       },
       
@@ -89,11 +106,54 @@ export function composeQueryBuilderContext<
             query: () => services.CharacterDomainCharacterStatInstance.getItemById(id)
          });
       },
-      useSaveCharacterDomainCharacterStatInstanceMutation: (obj: Parameters<typeof services.CharacterDomainCharacterStatInstance.saveItem>[0]) => {
+      useSaveCharacterDomainCharacterStatInstanceMutation: <H extends Parameters<typeof services.CharacterDomainCharacterStatInstance.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.CharacterDomainCharacterStatInstance.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getCharacterDomainCharacterStatInstances", "getCharacterDomainCharacterStatInstanceById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getCharacterDomainCharacterStatInstances",
+                  "getCharacterDomainCharacterStatInstanceById",
+                  "getCharacters",
+                  "getDomainCharacterStats",
+                  "getCharacterById",
+                  "getDomainCharacterStatById",
+               ]);
+            }
+         });
+      },
+      
+      //CharacterDomainConditionInstance
+      useGetCharacterDomainConditionInstancesQuery: () => queryHandler({
+         key: ["getCharacterDomainConditionInstances"],
+         query: () => services.CharacterDomainConditionInstance.getAllItems()
+      }),
+      useGetCharacterDomainConditionInstanceByIdQuery: (id: number) => {
+         //For some reason queries with args does not work without the extra function body/return.
+         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
+         return queryHandler({
+            key: ["getCharacterDomainConditionInstanceById", id.toString()],
+            query: () => services.CharacterDomainConditionInstance.getItemById(id)
+         });
+      },
+      useSaveCharacterDomainConditionInstanceMutation: <H extends Parameters<typeof services.CharacterDomainConditionInstance.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.CharacterDomainConditionInstance.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getCharacterDomainConditionInstances",
+                  "getCharacterDomainConditionInstanceById",
+                  "getCharacters",
+                  "getDomainConditions",
+                  "getCharacterById",
+                  "getDomainConditionById",
+               ]);
+            }
          });
       },
       
@@ -110,11 +170,22 @@ export function composeQueryBuilderContext<
             query: () => services.CharacterDomainSubClassInstance.getItemById(id)
          });
       },
-      useSaveCharacterDomainSubClassInstanceMutation: (obj: Parameters<typeof services.CharacterDomainSubClassInstance.saveItem>[0]) => {
+      useSaveCharacterDomainSubClassInstanceMutation: <H extends Parameters<typeof services.CharacterDomainSubClassInstance.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.CharacterDomainSubClassInstance.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getCharacterDomainSubClassInstances", "getCharacterDomainSubClassInstanceById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getCharacterDomainSubClassInstances",
+                  "getCharacterDomainSubClassInstanceById",
+                  "getCharacters",
+                  "getDomainSubClasss",
+                  "getCharacterById",
+                  "getDomainSubClassById",
+               ]);
+            }
          });
       },
       
@@ -131,11 +202,22 @@ export function composeQueryBuilderContext<
             query: () => services.ClassPrimaryAbility.getItemById(id)
          });
       },
-      useSaveClassPrimaryAbilityMutation: (obj: Parameters<typeof services.ClassPrimaryAbility.saveItem>[0]) => {
+      useSaveClassPrimaryAbilityMutation: <H extends Parameters<typeof services.ClassPrimaryAbility.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.ClassPrimaryAbility.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getClassPrimaryAbilitys", "getClassPrimaryAbilityById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getClassPrimaryAbilitys",
+                  "getClassPrimaryAbilityById",
+                  "getDomainClasss",
+                  "getDomainCharacterStats",
+                  "getDomainClassById",
+                  "getDomainCharacterStatById",
+               ]);
+            }
          });
       },
       
@@ -152,11 +234,22 @@ export function composeQueryBuilderContext<
             query: () => services.ClassSave.getItemById(id)
          });
       },
-      useSaveClassSaveMutation: (obj: Parameters<typeof services.ClassSave.saveItem>[0]) => {
+      useSaveClassSaveMutation: <H extends Parameters<typeof services.ClassSave.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.ClassSave.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getClassSaves", "getClassSaveById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getClassSaves",
+                  "getClassSaveById",
+                  "getDomainClasss",
+                  "getDomainCharacterStats",
+                  "getDomainClassById",
+                  "getDomainCharacterStatById",
+               ]);
+            }
          });
       },
       
@@ -173,11 +266,22 @@ export function composeQueryBuilderContext<
             query: () => services.ClassSpell.getItemById(id)
          });
       },
-      useSaveClassSpellMutation: (obj: Parameters<typeof services.ClassSpell.saveItem>[0]) => {
+      useSaveClassSpellMutation: <H extends Parameters<typeof services.ClassSpell.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.ClassSpell.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getClassSpells", "getClassSpellById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getClassSpells",
+                  "getClassSpellById",
+                  "getDomainClasss",
+                  "getDomainSpells",
+                  "getDomainClassById",
+                  "getDomainSpellById",
+               ]);
+            }
          });
       },
       
@@ -194,11 +298,18 @@ export function composeQueryBuilderContext<
             query: () => services.DomainAction.getItemById(id)
          });
       },
-      useSaveDomainActionMutation: (obj: Parameters<typeof services.DomainAction.saveItem>[0]) => {
+      useSaveDomainActionMutation: <H extends Parameters<typeof services.DomainAction.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainAction.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainActions", "getDomainActionById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainActions",
+                  "getDomainActionById",
+               ]);
+            }
          });
       },
       
@@ -215,11 +326,18 @@ export function composeQueryBuilderContext<
             query: () => services.DomainCharacterStat.getItemById(id)
          });
       },
-      useSaveDomainCharacterStatMutation: (obj: Parameters<typeof services.DomainCharacterStat.saveItem>[0]) => {
+      useSaveDomainCharacterStatMutation: <H extends Parameters<typeof services.DomainCharacterStat.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainCharacterStat.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainCharacterStats", "getDomainCharacterStatById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainCharacterStats",
+                  "getDomainCharacterStatById",
+               ]);
+            }
          });
       },
       
@@ -236,11 +354,86 @@ export function composeQueryBuilderContext<
             query: () => services.DomainClass.getItemById(id)
          });
       },
-      useSaveDomainClassMutation: (obj: Parameters<typeof services.DomainClass.saveItem>[0]) => {
+      useSaveDomainClassMutation: <H extends Parameters<typeof services.DomainClass.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainClass.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainClasss", "getDomainClassById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainClasss",
+                  "getDomainClassById",
+                  "getDomainDices",
+                  "getDomainCharacterStats",
+                  "getDomainDiceById",
+                  "getDomainCharacterStatById",
+               ]);
+            }
+         });
+      },
+      
+      //DomainClassResource
+      useGetDomainClassResourcesQuery: () => queryHandler({
+         key: ["getDomainClassResources"],
+         query: () => services.DomainClassResource.getAllItems()
+      }),
+      useGetDomainClassResourceByIdQuery: (id: number) => {
+         //For some reason queries with args does not work without the extra function body/return.
+         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
+         return queryHandler({
+            key: ["getDomainClassResourceById", id.toString()],
+            query: () => services.DomainClassResource.getItemById(id)
+         });
+      },
+      useSaveDomainClassResourceMutation: <H extends Parameters<typeof services.DomainClassResource.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainClassResource.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainClassResources",
+                  "getDomainClassResourceById",
+                  "getDomainClasss",
+                  "getDomainSubClasss",
+                  "getDomainClassById",
+                  "getDomainSubClassById",
+               ]);
+            }
+         });
+      },
+      
+      //DomainClassTrait
+      useGetDomainClassTraitsQuery: () => queryHandler({
+         key: ["getDomainClassTraits"],
+         query: () => services.DomainClassTrait.getAllItems()
+      }),
+      useGetDomainClassTraitByIdQuery: (id: number) => {
+         //For some reason queries with args does not work without the extra function body/return.
+         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
+         return queryHandler({
+            key: ["getDomainClassTraitById", id.toString()],
+            query: () => services.DomainClassTrait.getItemById(id)
+         });
+      },
+      useSaveDomainClassTraitMutation: <H extends Parameters<typeof services.DomainClassTrait.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainClassTrait.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainClassTraits",
+                  "getDomainClassTraitById",
+                  "getDomainSubClasss",
+                  "getDomainClasss",
+                  "getDomainSubClassById",
+                  "getDomainClassById",
+               ]);
+            }
          });
       },
       
@@ -257,11 +450,18 @@ export function composeQueryBuilderContext<
             query: () => services.DomainCondition.getItemById(id)
          });
       },
-      useSaveDomainConditionMutation: (obj: Parameters<typeof services.DomainCondition.saveItem>[0]) => {
+      useSaveDomainConditionMutation: <H extends Parameters<typeof services.DomainCondition.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainCondition.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainConditions", "getDomainConditionById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainConditions",
+                  "getDomainConditionById",
+               ]);
+            }
          });
       },
       
@@ -278,11 +478,18 @@ export function composeQueryBuilderContext<
             query: () => services.DomainCreatureType.getItemById(id)
          });
       },
-      useSaveDomainCreatureTypeMutation: (obj: Parameters<typeof services.DomainCreatureType.saveItem>[0]) => {
+      useSaveDomainCreatureTypeMutation: <H extends Parameters<typeof services.DomainCreatureType.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainCreatureType.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainCreatureTypes", "getDomainCreatureTypeById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainCreatureTypes",
+                  "getDomainCreatureTypeById",
+               ]);
+            }
          });
       },
       
@@ -299,11 +506,18 @@ export function composeQueryBuilderContext<
             query: () => services.DomainDamageType.getItemById(id)
          });
       },
-      useSaveDomainDamageTypeMutation: (obj: Parameters<typeof services.DomainDamageType.saveItem>[0]) => {
+      useSaveDomainDamageTypeMutation: <H extends Parameters<typeof services.DomainDamageType.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainDamageType.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainDamageTypes", "getDomainDamageTypeById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainDamageTypes",
+                  "getDomainDamageTypeById",
+               ]);
+            }
          });
       },
       
@@ -320,11 +534,48 @@ export function composeQueryBuilderContext<
             query: () => services.DomainDice.getItemById(id)
          });
       },
-      useSaveDomainDiceMutation: (obj: Parameters<typeof services.DomainDice.saveItem>[0]) => {
+      useSaveDomainDiceMutation: <H extends Parameters<typeof services.DomainDice.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainDice.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainDices", "getDomainDiceById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainDices",
+                  "getDomainDiceById",
+               ]);
+            }
+         });
+      },
+      
+      //DomainDiceRollSubType
+      useGetDomainDiceRollSubTypesQuery: () => queryHandler({
+         key: ["getDomainDiceRollSubTypes"],
+         query: () => services.DomainDiceRollSubType.getAllItems()
+      }),
+      useGetDomainDiceRollSubTypeByIdQuery: (id: number) => {
+         //For some reason queries with args does not work without the extra function body/return.
+         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
+         return queryHandler({
+            key: ["getDomainDiceRollSubTypeById", id.toString()],
+            query: () => services.DomainDiceRollSubType.getItemById(id)
+         });
+      },
+      useSaveDomainDiceRollSubTypeMutation: <H extends Parameters<typeof services.DomainDiceRollSubType.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainDiceRollSubType.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainDiceRollSubTypes",
+                  "getDomainDiceRollSubTypeById",
+                  "getDomainDiceRollTypes",
+                  "getDomainDiceRollTypeById",
+               ]);
+            }
          });
       },
       
@@ -341,11 +592,18 @@ export function composeQueryBuilderContext<
             query: () => services.DomainDiceRollType.getItemById(id)
          });
       },
-      useSaveDomainDiceRollTypeMutation: (obj: Parameters<typeof services.DomainDiceRollType.saveItem>[0]) => {
+      useSaveDomainDiceRollTypeMutation: <H extends Parameters<typeof services.DomainDiceRollType.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainDiceRollType.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainDiceRollTypes", "getDomainDiceRollTypeById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainDiceRollTypes",
+                  "getDomainDiceRollTypeById",
+               ]);
+            }
          });
       },
       
@@ -362,11 +620,22 @@ export function composeQueryBuilderContext<
             query: () => services.DomainItem.getItemById(id)
          });
       },
-      useSaveDomainItemMutation: (obj: Parameters<typeof services.DomainItem.saveItem>[0]) => {
+      useSaveDomainItemMutation: <H extends Parameters<typeof services.DomainItem.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainItem.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainItems", "getDomainItemById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainItems",
+                  "getDomainItemById",
+                  "getQuantifiers",
+                  "getQuantifiers",
+                  "getQuantifierById",
+                  "getQuantifierById",
+               ]);
+            }
          });
       },
       
@@ -383,11 +652,18 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSize.getItemById(id)
          });
       },
-      useSaveDomainSizeMutation: (obj: Parameters<typeof services.DomainSize.saveItem>[0]) => {
+      useSaveDomainSizeMutation: <H extends Parameters<typeof services.DomainSize.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainSize.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainSizes", "getDomainSizeById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainSizes",
+                  "getDomainSizeById",
+               ]);
+            }
          });
       },
       
@@ -404,11 +680,20 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSpecies.getItemById(id)
          });
       },
-      useSaveDomainSpeciesMutation: (obj: Parameters<typeof services.DomainSpecies.saveItem>[0]) => {
+      useSaveDomainSpeciesMutation: <H extends Parameters<typeof services.DomainSpecies.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainSpecies.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainSpeciess", "getDomainSpeciesById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainSpeciess",
+                  "getDomainSpeciesById",
+                  "getDomainCreatureTypes",
+                  "getDomainCreatureTypeById",
+               ]);
+            }
          });
       },
       
@@ -425,11 +710,22 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSpell.getItemById(id)
          });
       },
-      useSaveDomainSpellMutation: (obj: Parameters<typeof services.DomainSpell.saveItem>[0]) => {
+      useSaveDomainSpellMutation: <H extends Parameters<typeof services.DomainSpell.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainSpell.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainSpells", "getDomainSpellById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainSpells",
+                  "getDomainSpellById",
+                  "getDomainSpellSchools",
+                  "getDomainDices",
+                  "getDomainSpellSchoolById",
+                  "getDomainDiceById",
+               ]);
+            }
          });
       },
       
@@ -446,11 +742,18 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSpellSchool.getItemById(id)
          });
       },
-      useSaveDomainSpellSchoolMutation: (obj: Parameters<typeof services.DomainSpellSchool.saveItem>[0]) => {
+      useSaveDomainSpellSchoolMutation: <H extends Parameters<typeof services.DomainSpellSchool.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainSpellSchool.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainSpellSchools", "getDomainSpellSchoolById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainSpellSchools",
+                  "getDomainSpellSchoolById",
+               ]);
+            }
          });
       },
       
@@ -467,11 +770,18 @@ export function composeQueryBuilderContext<
             query: () => services.DomainStaticEffect.getItemById(id)
          });
       },
-      useSaveDomainStaticEffectMutation: (obj: Parameters<typeof services.DomainStaticEffect.saveItem>[0]) => {
+      useSaveDomainStaticEffectMutation: <H extends Parameters<typeof services.DomainStaticEffect.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainStaticEffect.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainStaticEffects", "getDomainStaticEffectById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainStaticEffects",
+                  "getDomainStaticEffectById",
+               ]);
+            }
          });
       },
       
@@ -488,11 +798,54 @@ export function composeQueryBuilderContext<
             query: () => services.DomainSubClass.getItemById(id)
          });
       },
-      useSaveDomainSubClassMutation: (obj: Parameters<typeof services.DomainSubClass.saveItem>[0]) => {
+      useSaveDomainSubClassMutation: <H extends Parameters<typeof services.DomainSubClass.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.DomainSubClass.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getDomainSubClasss", "getDomainSubClassById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainSubClasss",
+                  "getDomainSubClassById",
+                  "getDomainClasss",
+                  "getDomainClassById",
+               ]);
+            }
+         });
+      },
+      
+      //EvaluatedConditional
+      useGetEvaluatedConditionalsQuery: () => queryHandler({
+         key: ["getEvaluatedConditionals"],
+         query: () => services.EvaluatedConditional.getAllItems()
+      }),
+      useGetEvaluatedConditionalByIdQuery: (id: number) => {
+         //For some reason queries with args does not work without the extra function body/return.
+         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
+         return queryHandler({
+            key: ["getEvaluatedConditionalById", id.toString()],
+            query: () => services.EvaluatedConditional.getItemById(id)
+         });
+      },
+      useSaveEvaluatedConditionalMutation: <H extends Parameters<typeof services.EvaluatedConditional.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.EvaluatedConditional.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getEvaluatedConditionals",
+                  "getEvaluatedConditionalById",
+                  "getDomainConditions",
+                  "getQuantifiers",
+                  "getQuantifiers",
+                  "getDomainConditionById",
+                  "getQuantifierById",
+                  "getQuantifierById",
+               ]);
+            }
          });
       },
       
@@ -509,11 +862,46 @@ export function composeQueryBuilderContext<
             query: () => services.Quantifier.getItemById(id)
          });
       },
-      useSaveQuantifierMutation: (obj: Parameters<typeof services.Quantifier.saveItem>[0]) => {
+      useSaveQuantifierMutation: <H extends Parameters<typeof services.Quantifier.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
             mutation: () => services.Quantifier.saveItem(obj),
-            onSettled: async () => queryInvalidator(queryCache, ["getQuantifiers", "getQuantifierById"])
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getQuantifiers",
+                  "getQuantifierById",
+                  "getDomainActions",
+                  "getDomainStaticEffects",
+                  "getDomainConditions",
+                  "getDomainClassTraits",
+                  "getDomainSubClasss",
+                  "getDomainClasss",
+                  "getDomainStaticEffects",
+                  "getDomainCharacterStats",
+                  "getDomainDiceRollTypes",
+                  "getDomainDiceRollSubTypes",
+                  "getDomainActions",
+                  "getDomainSpells",
+                  "getDomainConditions",
+                  "getDomainDamageTypes",
+                  "getDomainActionById",
+                  "getDomainStaticEffectById",
+                  "getDomainConditionById",
+                  "getDomainClassTraitById",
+                  "getDomainSubClassById",
+                  "getDomainClassById",
+                  "getDomainStaticEffectById",
+                  "getDomainCharacterStatById",
+                  "getDomainDiceRollTypeById",
+                  "getDomainDiceRollSubTypeById",
+                  "getDomainActionById",
+                  "getDomainSpellById",
+                  "getDomainConditionById",
+                  "getDomainDamageTypeById",
+               ]);
+            }
          });
       },
       

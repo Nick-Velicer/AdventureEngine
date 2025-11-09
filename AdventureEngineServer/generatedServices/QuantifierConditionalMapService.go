@@ -37,7 +37,7 @@ func SaveQuantifierConditionalMap(db *gorm.DB, quantifierConditionalMaps []*type
       return err
    }
    
-   if err := tx.Table("QuantifierConditionalMap").Create(quantifierConditionalMaps).Error; err != nil {
+   if err := tx.Table("QuantifierConditionalMap").Save(quantifierConditionalMaps).Error; err != nil {
       tx.Rollback()
       return err
    }

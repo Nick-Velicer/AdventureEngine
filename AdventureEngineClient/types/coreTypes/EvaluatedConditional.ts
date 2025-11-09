@@ -6,8 +6,13 @@ import { Quantifier } from "./Quantifier";
 
 //If such a domain condition is active, provide a set of modified values to use for the given base quantifier
 //Auxuiliary mapping tables can be added if we need compound conditionals or more complex modifiers
-export type QuantifierConditionalMap = ExtendedSchemaObject<{
-    Attributes: {},
+export type EvaluatedConditional = ExtendedSchemaObject<{
+    Attributes: {
+        //If this should be evaluated when the parent action/event/occurrence happens, and has an outcome dependent on it
+        evaluatedOnEvent?: boolean,
+        //If this should be always checked whenever the associated effect/item is evaluated
+        evaluatedStatically?: boolean,
+    },
     Relationships: {
         ManyToOne: {
             IsTrue__DomainCondition: DomainCondition

@@ -2,12 +2,9 @@
 
 package generatedDatabaseTypes
 
-type DomainItem struct {
+type DomainClassResource struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
-
-	// CustomEffectText corresponds to the JSON schema field "CustomEffectText".
-	CustomEffectText *string `json:"CustomEffectText" gorm:"column:CustomEffectText" mapstructure:"CustomEffectText"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
@@ -18,14 +15,13 @@ type DomainItem struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
-	// OneHandedQuantifier corresponds to the JSON schema field
-	// "OneHanded__Quantifier".
-	OneHanded__Quantifier *int `json:"OneHanded__Quantifier" gorm:"column:OneHanded__Quantifier" mapstructure:"OneHanded__Quantifier"`
+	// ParentDomainClass corresponds to the JSON schema field "Parent__DomainClass".
+	Parent__DomainClass *int `json:"Parent__DomainClass" gorm:"column:Parent__DomainClass" mapstructure:"Parent__DomainClass"`
+
+	// ParentDomainSubClass corresponds to the JSON schema field
+	// "Parent__DomainSubClass".
+	Parent__DomainSubClass *int `json:"Parent__DomainSubClass" gorm:"column:Parent__DomainSubClass" mapstructure:"Parent__DomainSubClass"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
-
-	// TwoHandedQuantifier corresponds to the JSON schema field
-	// "TwoHanded__Quantifier".
-	TwoHanded__Quantifier *int `json:"TwoHanded__Quantifier" gorm:"column:TwoHanded__Quantifier" mapstructure:"TwoHanded__Quantifier"`
 }

@@ -28,6 +28,9 @@ type QuantifierJson struct {
 	// AppliesToTargets corresponds to the JSON schema field "AppliesToTargets".
 	AppliesToTargets *bool `json:"AppliesToTargets,omitempty" yaml:"AppliesToTargets,omitempty" mapstructure:"AppliesToTargets,omitempty"`
 
+	// AutomaticCritical corresponds to the JSON schema field "AutomaticCritical".
+	AutomaticCritical *bool `json:"AutomaticCritical,omitempty" yaml:"AutomaticCritical,omitempty" mapstructure:"AutomaticCritical,omitempty"`
+
 	// AutomaticFailure corresponds to the JSON schema field "AutomaticFailure".
 	AutomaticFailure *bool `json:"AutomaticFailure,omitempty" yaml:"AutomaticFailure,omitempty" mapstructure:"AutomaticFailure,omitempty"`
 
@@ -51,6 +54,9 @@ type QuantifierJson struct {
 
 	// GivesDisadvantage corresponds to the JSON schema field "GivesDisadvantage".
 	GivesDisadvantage *bool `json:"GivesDisadvantage,omitempty" yaml:"GivesDisadvantage,omitempty" mapstructure:"GivesDisadvantage,omitempty"`
+
+	// GivesResistance corresponds to the JSON schema field "GivesResistance".
+	GivesResistance *bool `json:"GivesResistance,omitempty" yaml:"GivesResistance,omitempty" mapstructure:"GivesResistance,omitempty"`
 
 	// HardSetPercentage corresponds to the JSON schema field "HardSetPercentage".
 	HardSetPercentage *float64 `json:"HardSetPercentage,omitempty" yaml:"HardSetPercentage,omitempty" mapstructure:"HardSetPercentage,omitempty"`
@@ -134,12 +140,18 @@ type QuantifierJson struct {
 	// "Parent__DomainSubClass".
 	ParentDomainSubClass *float64 `json:"Parent__DomainSubClass,omitempty" yaml:"Parent__DomainSubClass,omitempty" mapstructure:"Parent__DomainSubClass,omitempty"`
 
-	// Prevents corresponds to the JSON schema field "Prevents".
-	Prevents *bool `json:"Prevents,omitempty" yaml:"Prevents,omitempty" mapstructure:"Prevents,omitempty"`
+	// PreventsApplying corresponds to the JSON schema field "PreventsApplying".
+	PreventsApplying *bool `json:"PreventsApplying,omitempty" yaml:"PreventsApplying,omitempty" mapstructure:"PreventsApplying,omitempty"`
+
+	// PreventsReceiving corresponds to the JSON schema field "PreventsReceiving".
+	PreventsReceiving *bool `json:"PreventsReceiving,omitempty" yaml:"PreventsReceiving,omitempty" mapstructure:"PreventsReceiving,omitempty"`
 
 	// QuantityRestoredOnShortRest corresponds to the JSON schema field
 	// "QuantityRestoredOnShortRest".
 	QuantityRestoredOnShortRest *float64 `json:"QuantityRestoredOnShortRest,omitempty" yaml:"QuantityRestoredOnShortRest,omitempty" mapstructure:"QuantityRestoredOnShortRest,omitempty"`
+
+	// Range corresponds to the JSON schema field "Range".
+	Range *float64 `json:"Range,omitempty" yaml:"Range,omitempty" mapstructure:"Range,omitempty"`
 
 	// RefreshOnLongRest corresponds to the JSON schema field "RefreshOnLongRest".
 	RefreshOnLongRest *bool `json:"RefreshOnLongRest,omitempty" yaml:"RefreshOnLongRest,omitempty" mapstructure:"RefreshOnLongRest,omitempty"`
@@ -147,9 +159,14 @@ type QuantifierJson struct {
 	// RefreshOnShortRest corresponds to the JSON schema field "RefreshOnShortRest".
 	RefreshOnShortRest *bool `json:"RefreshOnShortRest,omitempty" yaml:"RefreshOnShortRest,omitempty" mapstructure:"RefreshOnShortRest,omitempty"`
 
-	// ShouldBeEvaluatedAsModifier corresponds to the JSON schema field
-	// "ShouldBeEvaluatedAsModifier".
-	ShouldBeEvaluatedAsModifier *bool `json:"ShouldBeEvaluatedAsModifier,omitempty" yaml:"ShouldBeEvaluatedAsModifier,omitempty" mapstructure:"ShouldBeEvaluatedAsModifier,omitempty"`
+	// RemovedOn corresponds to the JSON schema field "RemovedOn".
+	RemovedOn *bool `json:"RemovedOn,omitempty" yaml:"RemovedOn,omitempty" mapstructure:"RemovedOn,omitempty"`
+
+	// Removes corresponds to the JSON schema field "Removes".
+	Removes *bool `json:"Removes,omitempty" yaml:"Removes,omitempty" mapstructure:"Removes,omitempty"`
+
+	// ShouldReplace corresponds to the JSON schema field "ShouldReplace".
+	ShouldReplace *bool `json:"ShouldReplace,omitempty" yaml:"ShouldReplace,omitempty" mapstructure:"ShouldReplace,omitempty"`
 
 	// TargetMaximum corresponds to the JSON schema field "TargetMaximum".
 	TargetMaximum *float64 `json:"TargetMaximum,omitempty" yaml:"TargetMaximum,omitempty" mapstructure:"TargetMaximum,omitempty"`

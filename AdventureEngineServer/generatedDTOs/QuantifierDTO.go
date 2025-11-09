@@ -21,6 +21,7 @@ type QuantifierDTOAttributes struct {
    AppliesAgainstTargetsForSourceOnly *bool
    AppliesToSource *bool
    AppliesToTargets *bool
+   AutomaticCritical *bool
    AutomaticFailure *bool
    DeltaPercentage *float64
    DeltaQuantity *float64
@@ -29,6 +30,7 @@ type QuantifierDTOAttributes struct {
    GivesAdvantage *bool
    GivesBonusAction *bool
    GivesDisadvantage *bool
+   GivesResistance *bool
    HardSetPercentage *float64
    HardSetQuantity *float64
    
@@ -48,11 +50,15 @@ type QuantifierDTOAttributes struct {
    Level9SpellSlots *float64
    LevelMaximumRequirement *float64
    LevelMinimumRequirement *float64
-   Prevents *bool
+   PreventsApplying *bool
+   PreventsReceiving *bool
    QuantityRestoredOnShortRest *float64
+   Range *float64
    RefreshOnLongRest *bool
    RefreshOnShortRest *bool
-   ShouldBeEvaluatedAsModifier *bool
+   RemovedOn *bool
+   Removes *bool
+   ShouldReplace *bool
    TargetMaximum *float64
    TargetMinimum *float64
    Title *string
@@ -189,6 +195,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
          AppliesAgainstTargetsForSourceOnly: quantifier.AppliesAgainstTargetsForSourceOnly,
          AppliesToSource: quantifier.AppliesToSource,
          AppliesToTargets: quantifier.AppliesToTargets,
+         AutomaticCritical: quantifier.AutomaticCritical,
          AutomaticFailure: quantifier.AutomaticFailure,
          DeltaPercentage: quantifier.DeltaPercentage,
          DeltaQuantity: quantifier.DeltaQuantity,
@@ -197,6 +204,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
          GivesAdvantage: quantifier.GivesAdvantage,
          GivesBonusAction: quantifier.GivesBonusAction,
          GivesDisadvantage: quantifier.GivesDisadvantage,
+         GivesResistance: quantifier.GivesResistance,
          HardSetPercentage: quantifier.HardSetPercentage,
          HardSetQuantity: quantifier.HardSetQuantity,
          
@@ -216,11 +224,15 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
          Level9SpellSlots: quantifier.Level9SpellSlots,
          LevelMaximumRequirement: quantifier.LevelMaximumRequirement,
          LevelMinimumRequirement: quantifier.LevelMinimumRequirement,
-         Prevents: quantifier.Prevents,
+         PreventsApplying: quantifier.PreventsApplying,
+         PreventsReceiving: quantifier.PreventsReceiving,
          QuantityRestoredOnShortRest: quantifier.QuantityRestoredOnShortRest,
+         Range: quantifier.Range,
          RefreshOnLongRest: quantifier.RefreshOnLongRest,
          RefreshOnShortRest: quantifier.RefreshOnShortRest,
-         ShouldBeEvaluatedAsModifier: quantifier.ShouldBeEvaluatedAsModifier,
+         RemovedOn: quantifier.RemovedOn,
+         Removes: quantifier.Removes,
+         ShouldReplace: quantifier.ShouldReplace,
          TargetMaximum: quantifier.TargetMaximum,
          TargetMinimum: quantifier.TargetMinimum,
          Title: quantifier.Title,
@@ -261,6 +273,7 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    tableTypeBuffer.AppliesAgainstTargetsForSourceOnly = quantifier.Attributes.AppliesAgainstTargetsForSourceOnly
    tableTypeBuffer.AppliesToSource = quantifier.Attributes.AppliesToSource
    tableTypeBuffer.AppliesToTargets = quantifier.Attributes.AppliesToTargets
+   tableTypeBuffer.AutomaticCritical = quantifier.Attributes.AutomaticCritical
    tableTypeBuffer.AutomaticFailure = quantifier.Attributes.AutomaticFailure
    tableTypeBuffer.DeltaPercentage = quantifier.Attributes.DeltaPercentage
    tableTypeBuffer.DeltaQuantity = quantifier.Attributes.DeltaQuantity
@@ -269,6 +282,7 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    tableTypeBuffer.GivesAdvantage = quantifier.Attributes.GivesAdvantage
    tableTypeBuffer.GivesBonusAction = quantifier.Attributes.GivesBonusAction
    tableTypeBuffer.GivesDisadvantage = quantifier.Attributes.GivesDisadvantage
+   tableTypeBuffer.GivesResistance = quantifier.Attributes.GivesResistance
    tableTypeBuffer.HardSetPercentage = quantifier.Attributes.HardSetPercentage
    tableTypeBuffer.HardSetQuantity = quantifier.Attributes.HardSetQuantity
    
@@ -288,11 +302,15 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    tableTypeBuffer.Level9SpellSlots = quantifier.Attributes.Level9SpellSlots
    tableTypeBuffer.LevelMaximumRequirement = quantifier.Attributes.LevelMaximumRequirement
    tableTypeBuffer.LevelMinimumRequirement = quantifier.Attributes.LevelMinimumRequirement
-   tableTypeBuffer.Prevents = quantifier.Attributes.Prevents
+   tableTypeBuffer.PreventsApplying = quantifier.Attributes.PreventsApplying
+   tableTypeBuffer.PreventsReceiving = quantifier.Attributes.PreventsReceiving
    tableTypeBuffer.QuantityRestoredOnShortRest = quantifier.Attributes.QuantityRestoredOnShortRest
+   tableTypeBuffer.Range = quantifier.Attributes.Range
    tableTypeBuffer.RefreshOnLongRest = quantifier.Attributes.RefreshOnLongRest
    tableTypeBuffer.RefreshOnShortRest = quantifier.Attributes.RefreshOnShortRest
-   tableTypeBuffer.ShouldBeEvaluatedAsModifier = quantifier.Attributes.ShouldBeEvaluatedAsModifier
+   tableTypeBuffer.RemovedOn = quantifier.Attributes.RemovedOn
+   tableTypeBuffer.Removes = quantifier.Attributes.Removes
+   tableTypeBuffer.ShouldReplace = quantifier.Attributes.ShouldReplace
    tableTypeBuffer.TargetMaximum = quantifier.Attributes.TargetMaximum
    tableTypeBuffer.TargetMinimum = quantifier.Attributes.TargetMinimum
    tableTypeBuffer.Title = quantifier.Attributes.Title

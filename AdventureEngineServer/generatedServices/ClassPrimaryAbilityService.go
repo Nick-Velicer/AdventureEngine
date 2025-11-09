@@ -37,7 +37,7 @@ func SaveClassPrimaryAbility(db *gorm.DB, classPrimaryAbilitys []*types.ClassPri
       return err
    }
    
-   if err := tx.Table("ClassPrimaryAbility").Create(classPrimaryAbilitys).Error; err != nil {
+   if err := tx.Table("ClassPrimaryAbility").Save(classPrimaryAbilitys).Error; err != nil {
       tx.Rollback()
       return err
    }

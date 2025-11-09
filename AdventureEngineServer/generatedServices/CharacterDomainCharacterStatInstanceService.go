@@ -37,7 +37,7 @@ func SaveCharacterDomainCharacterStatInstance(db *gorm.DB, characterDomainCharac
       return err
    }
    
-   if err := tx.Table("CharacterDomainCharacterStatInstance").Create(characterDomainCharacterStatInstances).Error; err != nil {
+   if err := tx.Table("CharacterDomainCharacterStatInstance").Save(characterDomainCharacterStatInstances).Error; err != nil {
       tx.Rollback()
       return err
    }

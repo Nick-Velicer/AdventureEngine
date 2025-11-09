@@ -74,24 +74,24 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedPrimaryStats__ClassPrimaryAbilitys).Elem().Name())) {
-      services.GetClassPrimaryAbilitysByDomainClassId(db, int(*domainClass.Id), &includedPrimaryStats__ClassPrimaryAbilitys)
-   } else {
       includedPrimaryStats__ClassPrimaryAbilitys = []types.ClassPrimaryAbility{}
       print("Hit circular catch case for table ClassPrimaryAbility\n")
+   } else {
+      services.GetClassPrimaryAbilitysByDomainClassId(db, int(*domainClass.Id), &includedPrimaryStats__ClassPrimaryAbilitys)
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedSaves__ClassSaves).Elem().Name())) {
-      services.GetClassSavesByDomainClassId(db, int(*domainClass.Id), &includedSaves__ClassSaves)
-   } else {
       includedSaves__ClassSaves = []types.ClassSave{}
       print("Hit circular catch case for table ClassSave\n")
+   } else {
+      services.GetClassSavesByDomainClassId(db, int(*domainClass.Id), &includedSaves__ClassSaves)
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedSubClasses__DomainSubClasss).Elem().Name())) {
-      services.GetDomainSubClasssByDomainClassId(db, int(*domainClass.Id), &includedSubClasses__DomainSubClasss)
-   } else {
       includedSubClasses__DomainSubClasss = []types.DomainSubClass{}
       print("Hit circular catch case for table DomainSubClass\n")
+   } else {
+      services.GetDomainSubClasssByDomainClassId(db, int(*domainClass.Id), &includedSubClasses__DomainSubClasss)
    }
 
    

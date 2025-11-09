@@ -37,7 +37,7 @@ func SaveClassSpell(db *gorm.DB, classSpells []*types.ClassSpell) error {
       return err
    }
    
-   if err := tx.Table("ClassSpell").Create(classSpells).Error; err != nil {
+   if err := tx.Table("ClassSpell").Save(classSpells).Error; err != nil {
       tx.Rollback()
       return err
    }

@@ -7,7 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
-   
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "reflect"
    "slices"
@@ -19,12 +19,12 @@ type DomainItemDTOAttributes struct {
    Description *string
    
    IsActive *bool
-   OneHandedQuantifier *float64
    Title *string
-   TwoHandedQuantifier *float64
 }
 
 type DomainItemDTOManyToOneRelationships struct {
+   OneHanded__Quantifier *QuantifierDTO
+   TwoHanded__Quantifier *QuantifierDTO
 }
 
 type DomainItemDTOOneToManyRelationships struct {
@@ -57,7 +57,17 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainItem).Name())
    
+   var includedOneHanded__Quantifier *types.Quantifier
+   var includedTwoHanded__Quantifier *types.Quantifier
    
+   if (domainItem.OneHanded__Quantifier != nil) {
+      services.GetQuantifierById(db, int(*domainItem.OneHanded__Quantifier), includedOneHanded__Quantifier)
+   }
+
+   if (domainItem.TwoHanded__Quantifier != nil) {
+      services.GetQuantifierById(db, int(*domainItem.TwoHanded__Quantifier), includedTwoHanded__Quantifier)
+   }
+
    
    return &DomainItemDTO{
       Id: domainItem.Id,
@@ -67,12 +77,12 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
          Description: domainItem.Description,
          
          IsActive: domainItem.IsActive,
-         OneHandedQuantifier: domainItem.OneHandedQuantifier,
          Title: domainItem.Title,
-         TwoHandedQuantifier: domainItem.TwoHandedQuantifier,
       },
       Relationships: DomainItemDTORelationships{
          ManyToOne: DomainItemDTOManyToOneRelationships {
+            OneHanded__Quantifier: QuantifierToQuantifierDTO(db, includedOneHanded__Quantifier, traversedTables),
+            TwoHanded__Quantifier: QuantifierToQuantifierDTO(db, includedTwoHanded__Quantifier, traversedTables),
          },
          OneToMany: DomainItemDTOOneToManyRelationships {
          },
@@ -89,9 +99,15 @@ func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) *types.DomainItem {
    tableTypeBuffer.Description = domainItem.Attributes.Description
    
    tableTypeBuffer.IsActive = domainItem.Attributes.IsActive
-   tableTypeBuffer.OneHandedQuantifier = domainItem.Attributes.OneHandedQuantifier
    tableTypeBuffer.Title = domainItem.Attributes.Title
-   tableTypeBuffer.TwoHandedQuantifier = domainItem.Attributes.TwoHandedQuantifier
    
+   if (domainItem.Relationships.ManyToOne.OneHanded__Quantifier != nil) {
+      tableTypeBuffer.OneHanded__Quantifier = domainItem.Relationships.ManyToOne.OneHanded__Quantifier.Id
+   }
+
+   if (domainItem.Relationships.ManyToOne.TwoHanded__Quantifier != nil) {
+      tableTypeBuffer.TwoHanded__Quantifier = domainItem.Relationships.ManyToOne.TwoHanded__Quantifier.Id
+   }
+
    return &tableTypeBuffer
 }

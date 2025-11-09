@@ -91,10 +91,10 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedClasses__ClassSpells).Elem().Name())) {
-      services.GetClassSpellsByDomainSpellId(db, int(*domainSpell.Id), &includedClasses__ClassSpells)
-   } else {
       includedClasses__ClassSpells = []types.ClassSpell{}
       print("Hit circular catch case for table ClassSpell\n")
+   } else {
+      services.GetClassSpellsByDomainSpellId(db, int(*domainSpell.Id), &includedClasses__ClassSpells)
    }
 
    

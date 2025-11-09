@@ -37,7 +37,7 @@ func SaveCampaign(db *gorm.DB, campaigns []*types.Campaign) error {
       return err
    }
    
-   if err := tx.Table("Campaign").Create(campaigns).Error; err != nil {
+   if err := tx.Table("Campaign").Save(campaigns).Error; err != nil {
       tx.Rollback()
       return err
    }

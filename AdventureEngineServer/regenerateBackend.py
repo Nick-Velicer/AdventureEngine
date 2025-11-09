@@ -267,10 +267,10 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                 ],
                 *[
                     'if (slices.Contains(traversedTables, reflect.TypeOf(included' + relationship + 's).Elem().Name())) {\n' +
-                    '      services.Get' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'sBy' + tableName + 'Id(' + dbArgName + ', int(*' + tableName[0].lower() + tableName[1:] + '.Id),' + ' &included' + relationship + 's)\n'  +
-                    '   } else {\n' +
                     '      included' + relationship + 's = []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '{}\n' +
                     '      print("Hit circular catch case for table ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '\\n")\n' +
+                    '   } else {\n' +
+                    '      services.Get' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'sBy' + tableName + 'Id(' + dbArgName + ', int(*' + tableName[0].lower() + tableName[1:] + '.Id),' + ' &included' + relationship + 's)\n'  +
                     '   }\n'
                     for relationship in typeMeta["relationships"]['oneToMany']
                 ],
@@ -385,7 +385,7 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                 ]),
                 '}',
                 '',
-                'if err := tx.Table("' + tableName + '").Create(' + objectArgName + 's).Error; err != nil {',
+                'if err := tx.Table("' + tableName + '").Save(' + objectArgName + 's).Error; err != nil {',
                 *indentLineBlock([
                     'tx.Rollback()',
                     'return err',

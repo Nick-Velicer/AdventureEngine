@@ -37,7 +37,7 @@ func SaveDomainClassTrait(db *gorm.DB, domainClassTraits []*types.DomainClassTra
       return err
    }
    
-   if err := tx.Table("DomainClassTrait").Create(domainClassTraits).Error; err != nil {
+   if err := tx.Table("DomainClassTrait").Save(domainClassTraits).Error; err != nil {
       tx.Rollback()
       return err
    }

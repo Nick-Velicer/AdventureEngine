@@ -70,10 +70,10 @@ func DomainClassTraitToDomainClassTraitDTO(db *gorm.DB, domainClassTrait *types.
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
-      services.GetQuantifiersByDomainClassTraitId(db, int(*domainClassTrait.Id), &includedQuantifiers__Quantifiers)
-   } else {
       includedQuantifiers__Quantifiers = []types.Quantifier{}
       print("Hit circular catch case for table Quantifier\n")
+   } else {
+      services.GetQuantifiersByDomainClassTraitId(db, int(*domainClassTrait.Id), &includedQuantifiers__Quantifiers)
    }
 
    

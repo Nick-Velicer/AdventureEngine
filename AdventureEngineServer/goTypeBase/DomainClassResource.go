@@ -2,12 +2,9 @@
 
 package goTypeBase
 
-type DomainItemJson struct {
+type DomainClassResourceJson struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
-
-	// CustomEffectText corresponds to the JSON schema field "CustomEffectText".
-	CustomEffectText *string `json:"CustomEffectText,omitempty" yaml:"CustomEffectText,omitempty" mapstructure:"CustomEffectText,omitempty"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
@@ -18,14 +15,13 @@ type DomainItemJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
-	// OneHandedQuantifier corresponds to the JSON schema field
-	// "OneHanded__Quantifier".
-	OneHandedQuantifier *float64 `json:"OneHanded__Quantifier,omitempty" yaml:"OneHanded__Quantifier,omitempty" mapstructure:"OneHanded__Quantifier,omitempty"`
+	// ParentDomainClass corresponds to the JSON schema field "Parent__DomainClass".
+	ParentDomainClass *float64 `json:"Parent__DomainClass,omitempty" yaml:"Parent__DomainClass,omitempty" mapstructure:"Parent__DomainClass,omitempty"`
+
+	// ParentDomainSubClass corresponds to the JSON schema field
+	// "Parent__DomainSubClass".
+	ParentDomainSubClass *float64 `json:"Parent__DomainSubClass,omitempty" yaml:"Parent__DomainSubClass,omitempty" mapstructure:"Parent__DomainSubClass,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
-
-	// TwoHandedQuantifier corresponds to the JSON schema field
-	// "TwoHanded__Quantifier".
-	TwoHandedQuantifier *float64 `json:"TwoHanded__Quantifier,omitempty" yaml:"TwoHanded__Quantifier,omitempty" mapstructure:"TwoHanded__Quantifier,omitempty"`
 }

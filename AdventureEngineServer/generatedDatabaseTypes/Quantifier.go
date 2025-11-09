@@ -28,6 +28,9 @@ type Quantifier struct {
 	// AppliesToTargets corresponds to the JSON schema field "AppliesToTargets".
 	AppliesToTargets *bool `json:"AppliesToTargets" gorm:"column:AppliesToTargets" mapstructure:"AppliesToTargets"`
 
+	// AutomaticCritical corresponds to the JSON schema field "AutomaticCritical".
+	AutomaticCritical *bool `json:"AutomaticCritical" gorm:"column:AutomaticCritical" mapstructure:"AutomaticCritical"`
+
 	// AutomaticFailure corresponds to the JSON schema field "AutomaticFailure".
 	AutomaticFailure *bool `json:"AutomaticFailure" gorm:"column:AutomaticFailure" mapstructure:"AutomaticFailure"`
 
@@ -51,6 +54,9 @@ type Quantifier struct {
 
 	// GivesDisadvantage corresponds to the JSON schema field "GivesDisadvantage".
 	GivesDisadvantage *bool `json:"GivesDisadvantage" gorm:"column:GivesDisadvantage" mapstructure:"GivesDisadvantage"`
+
+	// GivesResistance corresponds to the JSON schema field "GivesResistance".
+	GivesResistance *bool `json:"GivesResistance" gorm:"column:GivesResistance" mapstructure:"GivesResistance"`
 
 	// HardSetPercentage corresponds to the JSON schema field "HardSetPercentage".
 	HardSetPercentage *float64 `json:"HardSetPercentage" gorm:"column:HardSetPercentage" mapstructure:"HardSetPercentage"`
@@ -134,12 +140,18 @@ type Quantifier struct {
 	// "Parent__DomainSubClass".
 	Parent__DomainSubClass *int `json:"Parent__DomainSubClass" gorm:"column:Parent__DomainSubClass" mapstructure:"Parent__DomainSubClass"`
 
-	// Prevents corresponds to the JSON schema field "Prevents".
-	Prevents *bool `json:"Prevents" gorm:"column:Prevents" mapstructure:"Prevents"`
+	// PreventsApplying corresponds to the JSON schema field "PreventsApplying".
+	PreventsApplying *bool `json:"PreventsApplying" gorm:"column:PreventsApplying" mapstructure:"PreventsApplying"`
+
+	// PreventsReceiving corresponds to the JSON schema field "PreventsReceiving".
+	PreventsReceiving *bool `json:"PreventsReceiving" gorm:"column:PreventsReceiving" mapstructure:"PreventsReceiving"`
 
 	// QuantityRestoredOnShortRest corresponds to the JSON schema field
 	// "QuantityRestoredOnShortRest".
 	QuantityRestoredOnShortRest *float64 `json:"QuantityRestoredOnShortRest" gorm:"column:QuantityRestoredOnShortRest" mapstructure:"QuantityRestoredOnShortRest"`
+
+	// Range corresponds to the JSON schema field "Range".
+	Range *float64 `json:"Range" gorm:"column:Range" mapstructure:"Range"`
 
 	// RefreshOnLongRest corresponds to the JSON schema field "RefreshOnLongRest".
 	RefreshOnLongRest *bool `json:"RefreshOnLongRest" gorm:"column:RefreshOnLongRest" mapstructure:"RefreshOnLongRest"`
@@ -147,9 +159,14 @@ type Quantifier struct {
 	// RefreshOnShortRest corresponds to the JSON schema field "RefreshOnShortRest".
 	RefreshOnShortRest *bool `json:"RefreshOnShortRest" gorm:"column:RefreshOnShortRest" mapstructure:"RefreshOnShortRest"`
 
-	// ShouldBeEvaluatedAsModifier corresponds to the JSON schema field
-	// "ShouldBeEvaluatedAsModifier".
-	ShouldBeEvaluatedAsModifier *bool `json:"ShouldBeEvaluatedAsModifier" gorm:"column:ShouldBeEvaluatedAsModifier" mapstructure:"ShouldBeEvaluatedAsModifier"`
+	// RemovedOn corresponds to the JSON schema field "RemovedOn".
+	RemovedOn *bool `json:"RemovedOn" gorm:"column:RemovedOn" mapstructure:"RemovedOn"`
+
+	// Removes corresponds to the JSON schema field "Removes".
+	Removes *bool `json:"Removes" gorm:"column:Removes" mapstructure:"Removes"`
+
+	// ShouldReplace corresponds to the JSON schema field "ShouldReplace".
+	ShouldReplace *bool `json:"ShouldReplace" gorm:"column:ShouldReplace" mapstructure:"ShouldReplace"`
 
 	// TargetMaximum corresponds to the JSON schema field "TargetMaximum".
 	TargetMaximum *float64 `json:"TargetMaximum" gorm:"column:TargetMaximum" mapstructure:"TargetMaximum"`

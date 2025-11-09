@@ -13,6 +13,7 @@ import { ClassSpell as Base__ClassSpell } from "../coreTypes/ClassSpell";
 import { DomainAction as Base__DomainAction } from "../coreTypes/DomainAction";
 import { DomainCharacterStat as Base__DomainCharacterStat } from "../coreTypes/DomainCharacterStat";
 import { DomainClass as Base__DomainClass } from "../coreTypes/DomainClass";
+import { DomainClassResource as Base__DomainClassResource } from "../coreTypes/DomainClassResource";
 import { DomainClassTrait as Base__DomainClassTrait } from "../coreTypes/DomainClassTrait";
 import { DomainCondition as Base__DomainCondition } from "../coreTypes/DomainCondition";
 import { DomainCreatureType as Base__DomainCreatureType } from "../coreTypes/DomainCreatureType";
@@ -27,8 +28,8 @@ import { DomainSpell as Base__DomainSpell } from "../coreTypes/DomainSpell";
 import { DomainSpellSchool as Base__DomainSpellSchool } from "../coreTypes/DomainSpellSchool";
 import { DomainStaticEffect as Base__DomainStaticEffect } from "../coreTypes/DomainStaticEffect";
 import { DomainSubClass as Base__DomainSubClass } from "../coreTypes/DomainSubClass";
+import { EvaluatedConditional as Base__EvaluatedConditional } from "../coreTypes/EvaluatedConditional";
 import { Quantifier as Base__Quantifier } from "../coreTypes/Quantifier";
-import { QuantifierConditionalMap as Base__QuantifierConditionalMap } from "../coreTypes/QuantifierConditionalMap";
 
 const BaseAppTypes = {
 	Campaign: {} as Base__Campaign,
@@ -42,6 +43,7 @@ const BaseAppTypes = {
 	DomainAction: {} as Base__DomainAction,
 	DomainCharacterStat: {} as Base__DomainCharacterStat,
 	DomainClass: {} as Base__DomainClass,
+	DomainClassResource: {} as Base__DomainClassResource,
 	DomainClassTrait: {} as Base__DomainClassTrait,
 	DomainCondition: {} as Base__DomainCondition,
 	DomainCreatureType: {} as Base__DomainCreatureType,
@@ -56,8 +58,8 @@ const BaseAppTypes = {
 	DomainSpellSchool: {} as Base__DomainSpellSchool,
 	DomainStaticEffect: {} as Base__DomainStaticEffect,
 	DomainSubClass: {} as Base__DomainSubClass,
+	EvaluatedConditional: {} as Base__EvaluatedConditional,
 	Quantifier: {} as Base__Quantifier,
-	QuantifierConditionalMap: {} as Base__QuantifierConditionalMap,
 } as const satisfies Record<string, SchemaObject> 
 
 
@@ -92,6 +94,7 @@ export type ClassSpell = RecursionGuardedSchemaObject<Base__ClassSpell>;
 export type DomainAction = RecursionGuardedSchemaObject<Base__DomainAction>;
 export type DomainCharacterStat = RecursionGuardedSchemaObject<Base__DomainCharacterStat>;
 export type DomainClass = RecursionGuardedSchemaObject<Base__DomainClass>;
+export type DomainClassResource = RecursionGuardedSchemaObject<Base__DomainClassResource>;
 export type DomainClassTrait = RecursionGuardedSchemaObject<Base__DomainClassTrait>;
 export type DomainCondition = RecursionGuardedSchemaObject<Base__DomainCondition>;
 export type DomainCreatureType = RecursionGuardedSchemaObject<Base__DomainCreatureType>;
@@ -106,8 +109,8 @@ export type DomainSpell = RecursionGuardedSchemaObject<Base__DomainSpell>;
 export type DomainSpellSchool = RecursionGuardedSchemaObject<Base__DomainSpellSchool>;
 export type DomainStaticEffect = RecursionGuardedSchemaObject<Base__DomainStaticEffect>;
 export type DomainSubClass = RecursionGuardedSchemaObject<Base__DomainSubClass>;
+export type EvaluatedConditional = RecursionGuardedSchemaObject<Base__EvaluatedConditional>;
 export type Quantifier = RecursionGuardedSchemaObject<Base__Quantifier>;
-export type QuantifierConditionalMap = RecursionGuardedSchemaObject<Base__QuantifierConditionalMap>;
 
 export const AppTypes = {
 	Campaign: {} as Campaign,
@@ -121,6 +124,7 @@ export const AppTypes = {
 	DomainAction: {} as DomainAction,
 	DomainCharacterStat: {} as DomainCharacterStat,
 	DomainClass: {} as DomainClass,
+	DomainClassResource: {} as DomainClassResource,
 	DomainClassTrait: {} as DomainClassTrait,
 	DomainCondition: {} as DomainCondition,
 	DomainCreatureType: {} as DomainCreatureType,
@@ -135,6 +139,6 @@ export const AppTypes = {
 	DomainSpellSchool: {} as DomainSpellSchool,
 	DomainStaticEffect: {} as DomainStaticEffect,
 	DomainSubClass: {} as DomainSubClass,
+	EvaluatedConditional: {} as EvaluatedConditional,
 	Quantifier: {} as Quantifier,
-	QuantifierConditionalMap: {} as QuantifierConditionalMap,
 } as const satisfies Record<string, SchemaObject> 

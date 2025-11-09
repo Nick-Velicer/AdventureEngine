@@ -37,7 +37,7 @@ func SaveDomainSize(db *gorm.DB, domainSizes []*types.DomainSize) error {
       return err
    }
    
-   if err := tx.Table("DomainSize").Create(domainSizes).Error; err != nil {
+   if err := tx.Table("DomainSize").Save(domainSizes).Error; err != nil {
       tx.Rollback()
       return err
    }

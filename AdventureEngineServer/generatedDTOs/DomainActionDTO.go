@@ -58,10 +58,10 @@ func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction
    var includedQuantifiers__Quantifiers []types.Quantifier
    
    if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
-      services.GetQuantifiersByDomainActionId(db, int(*domainAction.Id), &includedQuantifiers__Quantifiers)
-   } else {
       includedQuantifiers__Quantifiers = []types.Quantifier{}
       print("Hit circular catch case for table Quantifier\n")
+   } else {
+      services.GetQuantifiersByDomainActionId(db, int(*domainAction.Id), &includedQuantifiers__Quantifiers)
    }
 
    

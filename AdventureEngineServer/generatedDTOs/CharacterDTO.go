@@ -78,17 +78,17 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedStats__CharacterDomainCharacterStatInstances).Elem().Name())) {
-      services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStats__CharacterDomainCharacterStatInstances)
-   } else {
       includedStats__CharacterDomainCharacterStatInstances = []types.CharacterDomainCharacterStatInstance{}
       print("Hit circular catch case for table CharacterDomainCharacterStatInstance\n")
+   } else {
+      services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStats__CharacterDomainCharacterStatInstances)
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedSubClasses__CharacterDomainSubClassInstances).Elem().Name())) {
-      services.GetCharacterDomainSubClassInstancesByCharacterId(db, int(*character.Id), &includedSubClasses__CharacterDomainSubClassInstances)
-   } else {
       includedSubClasses__CharacterDomainSubClassInstances = []types.CharacterDomainSubClassInstance{}
       print("Hit circular catch case for table CharacterDomainSubClassInstance\n")
+   } else {
+      services.GetCharacterDomainSubClassInstancesByCharacterId(db, int(*character.Id), &includedSubClasses__CharacterDomainSubClassInstances)
    }
 
    
