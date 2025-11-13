@@ -241,34 +241,37 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                 '',
                 'if (' + objectArgName + ' == nil) {',
                 *indentLineBlock([
-                    'print("Nil pointer passed to DTO conversion for table ' + tableName + '\\n")',
+                    'fmt.Println("Nil pointer passed to DTO conversion for table ' + tableName + '")',
                     'return nil'
                 ]),
                 '}',
                 '',
                 'if (slices.Contains(traversedTables, reflect.TypeOf(*' + objectArgName + ').Name())) {',
                 *indentLineBlock([
-                    'print("Hit circular catch case for table ' + tableName + '\\n")',
+                    'fmt.Println("Hit circular catch case for table ' + tableName + '")',
                     'return nil'
                 ]),
                 '}',
                 '',
                 'traversedTables = append(traversedTables, reflect.TypeOf(*' + objectArgName + ').Name())',
                 '',
-                *['var included' + relationship + ' *types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
+                *['var included' + relationship + ' types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
                 *['var included' + relationship + 's []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['oneToMany']],
                 '',
                 *[
                     #Not technically using the indentLineBlock convention, but python doesn't like the extra inner looping/unpacking so this is relatively a reasonable tradeoff
                     'if (' + objectArgName + '.' + relationship + ' != nil) {\n' +
-                    '      services.Get' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), included' + relationship + ')\n'  +
+                    '      if err := services.Get' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), &included' + relationship + '); err != nil {\n'  +
+                    '         fmt.Println("Error fetching many-to-one table ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + ':")\n' + 
+                    '         fmt.Println(err)\n' + 
+                    '      }\n' +
                     '   }\n'
                     for relationship in typeMeta["relationships"]['manyToOne']
                 ],
                 *[
                     'if (slices.Contains(traversedTables, reflect.TypeOf(included' + relationship + 's).Elem().Name())) {\n' +
                     '      included' + relationship + 's = []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '{}\n' +
-                    '      print("Hit circular catch case for table ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '\\n")\n' +
+                    '      fmt.Println("Hit circular catch case for table ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '")\n' +
                     '   } else {\n' +
                     '      services.Get' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'sBy' + tableName + 'Id(' + dbArgName + ', int(*' + tableName[0].lower() + tableName[1:] + '.Id),' + ' &included' + relationship + 's)\n'  +
                     '   }\n'
@@ -284,7 +287,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                     'Relationships: ' + tableName + 'DTORelationships{',
                     *indentLineBlock([
                         'ManyToOne: ' + tableName + 'DTOManyToOneRelationships {',
-                        *indentLineBlock([relationship + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', included' + relationship + ', traversedTables),' for relationship in typeMeta["relationships"]['manyToOne']]),
+                        *indentLineBlock([relationship + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + ', traversedTables),' for relationship in typeMeta["relationships"]['manyToOne']]),
                         '},',
                         'OneToMany: ' + tableName + 'DTOOneToManyRelationships {',
                         *indentLineBlock([relationship + ': utils.Map(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &relationshipElement, traversedTables) }),' for relationship in typeMeta["relationships"]['oneToMany']]),
@@ -310,6 +313,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
             'utils "AdventureEngineServer/utils"' if len(typeMeta["relationships"]["oneToMany"]) > 0 else '',
             'services "AdventureEngineServer/generatedServices"' if len(typeMeta["relationships"]["manyToOne"]) > 0 or len(typeMeta["relationships"]["oneToMany"]) > 0 else '',
   	        '"gorm.io/gorm"',
+            '"fmt"',
             '"reflect"',
             '"slices"'
         ]),

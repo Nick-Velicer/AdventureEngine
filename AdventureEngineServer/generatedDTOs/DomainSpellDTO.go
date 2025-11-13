@@ -9,6 +9,7 @@ import (
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -67,32 +68,38 @@ type DomainSpellDTO struct {
 func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, traversedTables []string) *DomainSpellDTO {
    
    if (domainSpell == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainSpell\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainSpell")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpell).Name())) {
-      print("Hit circular catch case for table DomainSpell\n")
+      fmt.Println("Hit circular catch case for table DomainSpell")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSpell).Name())
    
-   var includedDamageScaling__DomainDice *types.DomainDice
-   var includedSchool__DomainSpellSchool *types.DomainSpellSchool
+   var includedDamageScaling__DomainDice types.DomainDice
+   var includedSchool__DomainSpellSchool types.DomainSpellSchool
    var includedClasses__ClassSpells []types.ClassSpell
    
    if (domainSpell.DamageScaling__DomainDice != nil) {
-      services.GetDomainDiceById(db, int(*domainSpell.DamageScaling__DomainDice), includedDamageScaling__DomainDice)
+      if err := services.GetDomainDiceById(db, int(*domainSpell.DamageScaling__DomainDice), &includedDamageScaling__DomainDice); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainDice:")
+         fmt.Println(err)
+      }
    }
 
    if (domainSpell.School__DomainSpellSchool != nil) {
-      services.GetDomainSpellSchoolById(db, int(*domainSpell.School__DomainSpellSchool), includedSchool__DomainSpellSchool)
+      if err := services.GetDomainSpellSchoolById(db, int(*domainSpell.School__DomainSpellSchool), &includedSchool__DomainSpellSchool); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainSpellSchool:")
+         fmt.Println(err)
+      }
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedClasses__ClassSpells).Elem().Name())) {
       includedClasses__ClassSpells = []types.ClassSpell{}
-      print("Hit circular catch case for table ClassSpell\n")
+      fmt.Println("Hit circular catch case for table ClassSpell")
    } else {
       services.GetClassSpellsByDomainSpellId(db, int(*domainSpell.Id), &includedClasses__ClassSpells)
    }
@@ -130,8 +137,8 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
       },
       Relationships: DomainSpellDTORelationships{
          ManyToOne: DomainSpellDTOManyToOneRelationships {
-            DamageScaling__DomainDice: DomainDiceToDomainDiceDTO(db, includedDamageScaling__DomainDice, traversedTables),
-            School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, includedSchool__DomainSpellSchool, traversedTables),
+            DamageScaling__DomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScaling__DomainDice, traversedTables),
+            School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchool__DomainSpellSchool, traversedTables),
          },
          OneToMany: DomainSpellDTOOneToManyRelationships {
             Classes__ClassSpell: utils.Map(includedClasses__ClassSpells, func(relationshipElement types.ClassSpell) *ClassSpellDTO { return ClassSpellToClassSpellDTO(db, &relationshipElement, traversedTables) }),

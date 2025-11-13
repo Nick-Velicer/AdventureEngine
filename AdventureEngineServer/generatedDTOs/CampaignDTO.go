@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -43,12 +44,12 @@ type CampaignDTO struct {
 func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTables []string) *CampaignDTO {
    
    if (campaign == nil) {
-      print("Nil pointer passed to DTO conversion for table Campaign\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table Campaign")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*campaign).Name())) {
-      print("Hit circular catch case for table Campaign\n")
+      fmt.Println("Hit circular catch case for table Campaign")
       return nil
    }
    

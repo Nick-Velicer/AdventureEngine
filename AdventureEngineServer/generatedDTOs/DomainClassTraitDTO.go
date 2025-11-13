@@ -9,6 +9,7 @@ import (
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -46,32 +47,38 @@ type DomainClassTraitDTO struct {
 func DomainClassTraitToDomainClassTraitDTO(db *gorm.DB, domainClassTrait *types.DomainClassTrait, traversedTables []string) *DomainClassTraitDTO {
    
    if (domainClassTrait == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainClassTrait\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainClassTrait")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainClassTrait).Name())) {
-      print("Hit circular catch case for table DomainClassTrait\n")
+      fmt.Println("Hit circular catch case for table DomainClassTrait")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainClassTrait).Name())
    
-   var includedClass__DomainClass *types.DomainClass
-   var includedSubClass__DomainSubClass *types.DomainSubClass
+   var includedClass__DomainClass types.DomainClass
+   var includedSubClass__DomainSubClass types.DomainSubClass
    var includedQuantifiers__Quantifiers []types.Quantifier
    
    if (domainClassTrait.Class__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*domainClassTrait.Class__DomainClass), includedClass__DomainClass)
+      if err := services.GetDomainClassById(db, int(*domainClassTrait.Class__DomainClass), &includedClass__DomainClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainClass:")
+         fmt.Println(err)
+      }
    }
 
    if (domainClassTrait.SubClass__DomainSubClass != nil) {
-      services.GetDomainSubClassById(db, int(*domainClassTrait.SubClass__DomainSubClass), includedSubClass__DomainSubClass)
+      if err := services.GetDomainSubClassById(db, int(*domainClassTrait.SubClass__DomainSubClass), &includedSubClass__DomainSubClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainSubClass:")
+         fmt.Println(err)
+      }
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
       includedQuantifiers__Quantifiers = []types.Quantifier{}
-      print("Hit circular catch case for table Quantifier\n")
+      fmt.Println("Hit circular catch case for table Quantifier")
    } else {
       services.GetQuantifiersByDomainClassTraitId(db, int(*domainClassTrait.Id), &includedQuantifiers__Quantifiers)
    }
@@ -88,8 +95,8 @@ func DomainClassTraitToDomainClassTraitDTO(db *gorm.DB, domainClassTrait *types.
       },
       Relationships: DomainClassTraitDTORelationships{
          ManyToOne: DomainClassTraitDTOManyToOneRelationships {
-            Class__DomainClass: DomainClassToDomainClassDTO(db, includedClass__DomainClass, traversedTables),
-            SubClass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, includedSubClass__DomainSubClass, traversedTables),
+            Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
+            SubClass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubClass__DomainSubClass, traversedTables),
          },
          OneToMany: DomainClassTraitDTOOneToManyRelationships {
             Quantifiers__Quantifier: utils.Map(includedQuantifiers__Quantifiers, func(relationshipElement types.Quantifier) *QuantifierDTO { return QuantifierToQuantifierDTO(db, &relationshipElement, traversedTables) }),

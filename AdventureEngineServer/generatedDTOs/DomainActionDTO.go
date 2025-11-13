@@ -9,6 +9,7 @@ import (
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -44,12 +45,12 @@ type DomainActionDTO struct {
 func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction, traversedTables []string) *DomainActionDTO {
    
    if (domainAction == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainAction\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainAction")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainAction).Name())) {
-      print("Hit circular catch case for table DomainAction\n")
+      fmt.Println("Hit circular catch case for table DomainAction")
       return nil
    }
    
@@ -59,7 +60,7 @@ func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction
    
    if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
       includedQuantifiers__Quantifiers = []types.Quantifier{}
-      print("Hit circular catch case for table Quantifier\n")
+      fmt.Println("Hit circular catch case for table Quantifier")
    } else {
       services.GetQuantifiersByDomainActionId(db, int(*domainAction.Id), &includedQuantifiers__Quantifiers)
    }

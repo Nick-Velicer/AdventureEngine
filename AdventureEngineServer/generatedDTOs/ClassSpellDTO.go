@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -45,26 +46,32 @@ type ClassSpellDTO struct {
 func ClassSpellToClassSpellDTO(db *gorm.DB, classSpell *types.ClassSpell, traversedTables []string) *ClassSpellDTO {
    
    if (classSpell == nil) {
-      print("Nil pointer passed to DTO conversion for table ClassSpell\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table ClassSpell")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*classSpell).Name())) {
-      print("Hit circular catch case for table ClassSpell\n")
+      fmt.Println("Hit circular catch case for table ClassSpell")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*classSpell).Name())
    
-   var includedClass__DomainClass *types.DomainClass
-   var includedSpell__DomainSpell *types.DomainSpell
+   var includedClass__DomainClass types.DomainClass
+   var includedSpell__DomainSpell types.DomainSpell
    
    if (classSpell.Class__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*classSpell.Class__DomainClass), includedClass__DomainClass)
+      if err := services.GetDomainClassById(db, int(*classSpell.Class__DomainClass), &includedClass__DomainClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainClass:")
+         fmt.Println(err)
+      }
    }
 
    if (classSpell.Spell__DomainSpell != nil) {
-      services.GetDomainSpellById(db, int(*classSpell.Spell__DomainSpell), includedSpell__DomainSpell)
+      if err := services.GetDomainSpellById(db, int(*classSpell.Spell__DomainSpell), &includedSpell__DomainSpell); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainSpell:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -79,8 +86,8 @@ func ClassSpellToClassSpellDTO(db *gorm.DB, classSpell *types.ClassSpell, traver
       },
       Relationships: ClassSpellDTORelationships{
          ManyToOne: ClassSpellDTOManyToOneRelationships {
-            Class__DomainClass: DomainClassToDomainClassDTO(db, includedClass__DomainClass, traversedTables),
-            Spell__DomainSpell: DomainSpellToDomainSpellDTO(db, includedSpell__DomainSpell, traversedTables),
+            Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
+            Spell__DomainSpell: DomainSpellToDomainSpellDTO(db, &includedSpell__DomainSpell, traversedTables),
          },
          OneToMany: ClassSpellDTOOneToManyRelationships {
          },

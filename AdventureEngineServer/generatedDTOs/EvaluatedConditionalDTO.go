@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -48,31 +49,40 @@ type EvaluatedConditionalDTO struct {
 func EvaluatedConditionalToEvaluatedConditionalDTO(db *gorm.DB, evaluatedConditional *types.EvaluatedConditional, traversedTables []string) *EvaluatedConditionalDTO {
    
    if (evaluatedConditional == nil) {
-      print("Nil pointer passed to DTO conversion for table EvaluatedConditional\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table EvaluatedConditional")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*evaluatedConditional).Name())) {
-      print("Hit circular catch case for table EvaluatedConditional\n")
+      fmt.Println("Hit circular catch case for table EvaluatedConditional")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*evaluatedConditional).Name())
    
-   var includedBase__Quantifier *types.Quantifier
-   var includedIsTrue__DomainCondition *types.DomainCondition
-   var includedModifier__Quantifier *types.Quantifier
+   var includedBase__Quantifier types.Quantifier
+   var includedIsTrue__DomainCondition types.DomainCondition
+   var includedModifier__Quantifier types.Quantifier
    
    if (evaluatedConditional.Base__Quantifier != nil) {
-      services.GetQuantifierById(db, int(*evaluatedConditional.Base__Quantifier), includedBase__Quantifier)
+      if err := services.GetQuantifierById(db, int(*evaluatedConditional.Base__Quantifier), &includedBase__Quantifier); err != nil {
+         fmt.Println("Error fetching many-to-one table Quantifier:")
+         fmt.Println(err)
+      }
    }
 
    if (evaluatedConditional.IsTrue__DomainCondition != nil) {
-      services.GetDomainConditionById(db, int(*evaluatedConditional.IsTrue__DomainCondition), includedIsTrue__DomainCondition)
+      if err := services.GetDomainConditionById(db, int(*evaluatedConditional.IsTrue__DomainCondition), &includedIsTrue__DomainCondition); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainCondition:")
+         fmt.Println(err)
+      }
    }
 
    if (evaluatedConditional.Modifier__Quantifier != nil) {
-      services.GetQuantifierById(db, int(*evaluatedConditional.Modifier__Quantifier), includedModifier__Quantifier)
+      if err := services.GetQuantifierById(db, int(*evaluatedConditional.Modifier__Quantifier), &includedModifier__Quantifier); err != nil {
+         fmt.Println("Error fetching many-to-one table Quantifier:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -89,9 +99,9 @@ func EvaluatedConditionalToEvaluatedConditionalDTO(db *gorm.DB, evaluatedConditi
       },
       Relationships: EvaluatedConditionalDTORelationships{
          ManyToOne: EvaluatedConditionalDTOManyToOneRelationships {
-            Base__Quantifier: QuantifierToQuantifierDTO(db, includedBase__Quantifier, traversedTables),
-            IsTrue__DomainCondition: DomainConditionToDomainConditionDTO(db, includedIsTrue__DomainCondition, traversedTables),
-            Modifier__Quantifier: QuantifierToQuantifierDTO(db, includedModifier__Quantifier, traversedTables),
+            Base__Quantifier: QuantifierToQuantifierDTO(db, &includedBase__Quantifier, traversedTables),
+            IsTrue__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedIsTrue__DomainCondition, traversedTables),
+            Modifier__Quantifier: QuantifierToQuantifierDTO(db, &includedModifier__Quantifier, traversedTables),
          },
          OneToMany: EvaluatedConditionalDTOOneToManyRelationships {
          },

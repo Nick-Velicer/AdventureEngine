@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -43,12 +44,12 @@ type DomainCreatureTypeDTO struct {
 func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *types.DomainCreatureType, traversedTables []string) *DomainCreatureTypeDTO {
    
    if (domainCreatureType == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainCreatureType\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainCreatureType")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainCreatureType).Name())) {
-      print("Hit circular catch case for table DomainCreatureType\n")
+      fmt.Println("Hit circular catch case for table DomainCreatureType")
       return nil
    }
    

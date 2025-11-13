@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -102,86 +103,128 @@ type QuantifierDTO struct {
 func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traversedTables []string) *QuantifierDTO {
    
    if (quantifier == nil) {
-      print("Nil pointer passed to DTO conversion for table Quantifier\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table Quantifier")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*quantifier).Name())) {
-      print("Hit circular catch case for table Quantifier\n")
+      fmt.Println("Hit circular catch case for table Quantifier")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*quantifier).Name())
    
-   var includedParent__DomainAction *types.DomainAction
-   var includedParent__DomainClass *types.DomainClass
-   var includedParent__DomainClassTrait *types.DomainClassTrait
-   var includedParent__DomainCondition *types.DomainCondition
-   var includedParent__DomainStaticEffect *types.DomainStaticEffect
-   var includedParent__DomainSubClass *types.DomainSubClass
-   var includedTarget__DomainAction *types.DomainAction
-   var includedTarget__DomainCharacterStat *types.DomainCharacterStat
-   var includedTarget__DomainCondition *types.DomainCondition
-   var includedTarget__DomainDamageType *types.DomainDamageType
-   var includedTarget__DomainDiceRollSubType *types.DomainDiceRollSubType
-   var includedTarget__DomainDiceRollType *types.DomainDiceRollType
-   var includedTarget__DomainSpell *types.DomainSpell
-   var includedTarget__DomainStaticEffect *types.DomainStaticEffect
+   var includedParent__DomainAction types.DomainAction
+   var includedParent__DomainClass types.DomainClass
+   var includedParent__DomainClassTrait types.DomainClassTrait
+   var includedParent__DomainCondition types.DomainCondition
+   var includedParent__DomainStaticEffect types.DomainStaticEffect
+   var includedParent__DomainSubClass types.DomainSubClass
+   var includedTarget__DomainAction types.DomainAction
+   var includedTarget__DomainCharacterStat types.DomainCharacterStat
+   var includedTarget__DomainCondition types.DomainCondition
+   var includedTarget__DomainDamageType types.DomainDamageType
+   var includedTarget__DomainDiceRollSubType types.DomainDiceRollSubType
+   var includedTarget__DomainDiceRollType types.DomainDiceRollType
+   var includedTarget__DomainSpell types.DomainSpell
+   var includedTarget__DomainStaticEffect types.DomainStaticEffect
    
    if (quantifier.Parent__DomainAction != nil) {
-      services.GetDomainActionById(db, int(*quantifier.Parent__DomainAction), includedParent__DomainAction)
+      if err := services.GetDomainActionById(db, int(*quantifier.Parent__DomainAction), &includedParent__DomainAction); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainAction:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Parent__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*quantifier.Parent__DomainClass), includedParent__DomainClass)
+      if err := services.GetDomainClassById(db, int(*quantifier.Parent__DomainClass), &includedParent__DomainClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainClass:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Parent__DomainClassTrait != nil) {
-      services.GetDomainClassTraitById(db, int(*quantifier.Parent__DomainClassTrait), includedParent__DomainClassTrait)
+      if err := services.GetDomainClassTraitById(db, int(*quantifier.Parent__DomainClassTrait), &includedParent__DomainClassTrait); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainClassTrait:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Parent__DomainCondition != nil) {
-      services.GetDomainConditionById(db, int(*quantifier.Parent__DomainCondition), includedParent__DomainCondition)
+      if err := services.GetDomainConditionById(db, int(*quantifier.Parent__DomainCondition), &includedParent__DomainCondition); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainCondition:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Parent__DomainStaticEffect != nil) {
-      services.GetDomainStaticEffectById(db, int(*quantifier.Parent__DomainStaticEffect), includedParent__DomainStaticEffect)
+      if err := services.GetDomainStaticEffectById(db, int(*quantifier.Parent__DomainStaticEffect), &includedParent__DomainStaticEffect); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainStaticEffect:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Parent__DomainSubClass != nil) {
-      services.GetDomainSubClassById(db, int(*quantifier.Parent__DomainSubClass), includedParent__DomainSubClass)
+      if err := services.GetDomainSubClassById(db, int(*quantifier.Parent__DomainSubClass), &includedParent__DomainSubClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainSubClass:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Target__DomainAction != nil) {
-      services.GetDomainActionById(db, int(*quantifier.Target__DomainAction), includedTarget__DomainAction)
+      if err := services.GetDomainActionById(db, int(*quantifier.Target__DomainAction), &includedTarget__DomainAction); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainAction:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Target__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*quantifier.Target__DomainCharacterStat), includedTarget__DomainCharacterStat)
+      if err := services.GetDomainCharacterStatById(db, int(*quantifier.Target__DomainCharacterStat), &includedTarget__DomainCharacterStat); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainCharacterStat:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Target__DomainCondition != nil) {
-      services.GetDomainConditionById(db, int(*quantifier.Target__DomainCondition), includedTarget__DomainCondition)
+      if err := services.GetDomainConditionById(db, int(*quantifier.Target__DomainCondition), &includedTarget__DomainCondition); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainCondition:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Target__DomainDamageType != nil) {
-      services.GetDomainDamageTypeById(db, int(*quantifier.Target__DomainDamageType), includedTarget__DomainDamageType)
+      if err := services.GetDomainDamageTypeById(db, int(*quantifier.Target__DomainDamageType), &includedTarget__DomainDamageType); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainDamageType:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Target__DomainDiceRollSubType != nil) {
-      services.GetDomainDiceRollSubTypeById(db, int(*quantifier.Target__DomainDiceRollSubType), includedTarget__DomainDiceRollSubType)
+      if err := services.GetDomainDiceRollSubTypeById(db, int(*quantifier.Target__DomainDiceRollSubType), &includedTarget__DomainDiceRollSubType); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainDiceRollSubType:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Target__DomainDiceRollType != nil) {
-      services.GetDomainDiceRollTypeById(db, int(*quantifier.Target__DomainDiceRollType), includedTarget__DomainDiceRollType)
+      if err := services.GetDomainDiceRollTypeById(db, int(*quantifier.Target__DomainDiceRollType), &includedTarget__DomainDiceRollType); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainDiceRollType:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Target__DomainSpell != nil) {
-      services.GetDomainSpellById(db, int(*quantifier.Target__DomainSpell), includedTarget__DomainSpell)
+      if err := services.GetDomainSpellById(db, int(*quantifier.Target__DomainSpell), &includedTarget__DomainSpell); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainSpell:")
+         fmt.Println(err)
+      }
    }
 
    if (quantifier.Target__DomainStaticEffect != nil) {
-      services.GetDomainStaticEffectById(db, int(*quantifier.Target__DomainStaticEffect), includedTarget__DomainStaticEffect)
+      if err := services.GetDomainStaticEffectById(db, int(*quantifier.Target__DomainStaticEffect), &includedTarget__DomainStaticEffect); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainStaticEffect:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -241,20 +284,20 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
       },
       Relationships: QuantifierDTORelationships{
          ManyToOne: QuantifierDTOManyToOneRelationships {
-            Parent__DomainAction: DomainActionToDomainActionDTO(db, includedParent__DomainAction, traversedTables),
-            Parent__DomainClass: DomainClassToDomainClassDTO(db, includedParent__DomainClass, traversedTables),
-            Parent__DomainClassTrait: DomainClassTraitToDomainClassTraitDTO(db, includedParent__DomainClassTrait, traversedTables),
-            Parent__DomainCondition: DomainConditionToDomainConditionDTO(db, includedParent__DomainCondition, traversedTables),
-            Parent__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, includedParent__DomainStaticEffect, traversedTables),
-            Parent__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, includedParent__DomainSubClass, traversedTables),
-            Target__DomainAction: DomainActionToDomainActionDTO(db, includedTarget__DomainAction, traversedTables),
-            Target__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedTarget__DomainCharacterStat, traversedTables),
-            Target__DomainCondition: DomainConditionToDomainConditionDTO(db, includedTarget__DomainCondition, traversedTables),
-            Target__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, includedTarget__DomainDamageType, traversedTables),
-            Target__DomainDiceRollSubType: DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db, includedTarget__DomainDiceRollSubType, traversedTables),
-            Target__DomainDiceRollType: DomainDiceRollTypeToDomainDiceRollTypeDTO(db, includedTarget__DomainDiceRollType, traversedTables),
-            Target__DomainSpell: DomainSpellToDomainSpellDTO(db, includedTarget__DomainSpell, traversedTables),
-            Target__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, includedTarget__DomainStaticEffect, traversedTables),
+            Parent__DomainAction: DomainActionToDomainActionDTO(db, &includedParent__DomainAction, traversedTables),
+            Parent__DomainClass: DomainClassToDomainClassDTO(db, &includedParent__DomainClass, traversedTables),
+            Parent__DomainClassTrait: DomainClassTraitToDomainClassTraitDTO(db, &includedParent__DomainClassTrait, traversedTables),
+            Parent__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedParent__DomainCondition, traversedTables),
+            Parent__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedParent__DomainStaticEffect, traversedTables),
+            Parent__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedParent__DomainSubClass, traversedTables),
+            Target__DomainAction: DomainActionToDomainActionDTO(db, &includedTarget__DomainAction, traversedTables),
+            Target__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedTarget__DomainCharacterStat, traversedTables),
+            Target__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedTarget__DomainCondition, traversedTables),
+            Target__DomainDamageType: DomainDamageTypeToDomainDamageTypeDTO(db, &includedTarget__DomainDamageType, traversedTables),
+            Target__DomainDiceRollSubType: DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db, &includedTarget__DomainDiceRollSubType, traversedTables),
+            Target__DomainDiceRollType: DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &includedTarget__DomainDiceRollType, traversedTables),
+            Target__DomainSpell: DomainSpellToDomainSpellDTO(db, &includedTarget__DomainSpell, traversedTables),
+            Target__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedTarget__DomainStaticEffect, traversedTables),
          },
          OneToMany: QuantifierDTOOneToManyRelationships {
          },

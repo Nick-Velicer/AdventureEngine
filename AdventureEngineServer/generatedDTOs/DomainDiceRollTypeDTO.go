@@ -9,6 +9,7 @@ import (
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -44,12 +45,12 @@ type DomainDiceRollTypeDTO struct {
 func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *types.DomainDiceRollType, traversedTables []string) *DomainDiceRollTypeDTO {
    
    if (domainDiceRollType == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainDiceRollType\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainDiceRollType")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainDiceRollType).Name())) {
-      print("Hit circular catch case for table DomainDiceRollType\n")
+      fmt.Println("Hit circular catch case for table DomainDiceRollType")
       return nil
    }
    
@@ -59,7 +60,7 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
    
    if (slices.Contains(traversedTables, reflect.TypeOf(includedVariants__DomainDiceRollSubTypes).Elem().Name())) {
       includedVariants__DomainDiceRollSubTypes = []types.DomainDiceRollSubType{}
-      print("Hit circular catch case for table DomainDiceRollSubType\n")
+      fmt.Println("Hit circular catch case for table DomainDiceRollSubType")
    } else {
       services.GetDomainDiceRollSubTypesByDomainDiceRollTypeId(db, int(*domainDiceRollType.Id), &includedVariants__DomainDiceRollSubTypes)
    }

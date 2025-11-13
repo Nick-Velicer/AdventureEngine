@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -44,21 +45,24 @@ type DomainDiceRollSubTypeDTO struct {
 func DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db *gorm.DB, domainDiceRollSubType *types.DomainDiceRollSubType, traversedTables []string) *DomainDiceRollSubTypeDTO {
    
    if (domainDiceRollSubType == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainDiceRollSubType\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainDiceRollSubType")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainDiceRollSubType).Name())) {
-      print("Hit circular catch case for table DomainDiceRollSubType\n")
+      fmt.Println("Hit circular catch case for table DomainDiceRollSubType")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainDiceRollSubType).Name())
    
-   var includedSuperType__DomainDiceRollType *types.DomainDiceRollType
+   var includedSuperType__DomainDiceRollType types.DomainDiceRollType
    
    if (domainDiceRollSubType.SuperType__DomainDiceRollType != nil) {
-      services.GetDomainDiceRollTypeById(db, int(*domainDiceRollSubType.SuperType__DomainDiceRollType), includedSuperType__DomainDiceRollType)
+      if err := services.GetDomainDiceRollTypeById(db, int(*domainDiceRollSubType.SuperType__DomainDiceRollType), &includedSuperType__DomainDiceRollType); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainDiceRollType:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -73,7 +77,7 @@ func DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db *gorm.DB, domainDiceRoll
       },
       Relationships: DomainDiceRollSubTypeDTORelationships{
          ManyToOne: DomainDiceRollSubTypeDTOManyToOneRelationships {
-            SuperType__DomainDiceRollType: DomainDiceRollTypeToDomainDiceRollTypeDTO(db, includedSuperType__DomainDiceRollType, traversedTables),
+            SuperType__DomainDiceRollType: DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &includedSuperType__DomainDiceRollType, traversedTables),
          },
          OneToMany: DomainDiceRollSubTypeDTOOneToManyRelationships {
          },

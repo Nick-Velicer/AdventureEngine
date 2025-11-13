@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -45,26 +46,32 @@ type DomainClassResourceDTO struct {
 func DomainClassResourceToDomainClassResourceDTO(db *gorm.DB, domainClassResource *types.DomainClassResource, traversedTables []string) *DomainClassResourceDTO {
    
    if (domainClassResource == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainClassResource\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainClassResource")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainClassResource).Name())) {
-      print("Hit circular catch case for table DomainClassResource\n")
+      fmt.Println("Hit circular catch case for table DomainClassResource")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainClassResource).Name())
    
-   var includedParent__DomainClass *types.DomainClass
-   var includedParent__DomainSubClass *types.DomainSubClass
+   var includedParent__DomainClass types.DomainClass
+   var includedParent__DomainSubClass types.DomainSubClass
    
    if (domainClassResource.Parent__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*domainClassResource.Parent__DomainClass), includedParent__DomainClass)
+      if err := services.GetDomainClassById(db, int(*domainClassResource.Parent__DomainClass), &includedParent__DomainClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainClass:")
+         fmt.Println(err)
+      }
    }
 
    if (domainClassResource.Parent__DomainSubClass != nil) {
-      services.GetDomainSubClassById(db, int(*domainClassResource.Parent__DomainSubClass), includedParent__DomainSubClass)
+      if err := services.GetDomainSubClassById(db, int(*domainClassResource.Parent__DomainSubClass), &includedParent__DomainSubClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainSubClass:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -79,8 +86,8 @@ func DomainClassResourceToDomainClassResourceDTO(db *gorm.DB, domainClassResourc
       },
       Relationships: DomainClassResourceDTORelationships{
          ManyToOne: DomainClassResourceDTOManyToOneRelationships {
-            Parent__DomainClass: DomainClassToDomainClassDTO(db, includedParent__DomainClass, traversedTables),
-            Parent__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, includedParent__DomainSubClass, traversedTables),
+            Parent__DomainClass: DomainClassToDomainClassDTO(db, &includedParent__DomainClass, traversedTables),
+            Parent__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedParent__DomainSubClass, traversedTables),
          },
          OneToMany: DomainClassResourceDTOOneToManyRelationships {
          },

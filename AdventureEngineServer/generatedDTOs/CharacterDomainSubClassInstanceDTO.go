@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -46,26 +47,32 @@ type CharacterDomainSubClassInstanceDTO struct {
 func CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db *gorm.DB, characterDomainSubClassInstance *types.CharacterDomainSubClassInstance, traversedTables []string) *CharacterDomainSubClassInstanceDTO {
    
    if (characterDomainSubClassInstance == nil) {
-      print("Nil pointer passed to DTO conversion for table CharacterDomainSubClassInstance\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table CharacterDomainSubClassInstance")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*characterDomainSubClassInstance).Name())) {
-      print("Hit circular catch case for table CharacterDomainSubClassInstance\n")
+      fmt.Println("Hit circular catch case for table CharacterDomainSubClassInstance")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainSubClassInstance).Name())
    
-   var includedCharacter__Character *types.Character
-   var includedSubClass__DomainSubClass *types.DomainSubClass
+   var includedCharacter__Character types.Character
+   var includedSubClass__DomainSubClass types.DomainSubClass
    
    if (characterDomainSubClassInstance.Character__Character != nil) {
-      services.GetCharacterById(db, int(*characterDomainSubClassInstance.Character__Character), includedCharacter__Character)
+      if err := services.GetCharacterById(db, int(*characterDomainSubClassInstance.Character__Character), &includedCharacter__Character); err != nil {
+         fmt.Println("Error fetching many-to-one table Character:")
+         fmt.Println(err)
+      }
    }
 
    if (characterDomainSubClassInstance.SubClass__DomainSubClass != nil) {
-      services.GetDomainSubClassById(db, int(*characterDomainSubClassInstance.SubClass__DomainSubClass), includedSubClass__DomainSubClass)
+      if err := services.GetDomainSubClassById(db, int(*characterDomainSubClassInstance.SubClass__DomainSubClass), &includedSubClass__DomainSubClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainSubClass:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -81,8 +88,8 @@ func CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db *gor
       },
       Relationships: CharacterDomainSubClassInstanceDTORelationships{
          ManyToOne: CharacterDomainSubClassInstanceDTOManyToOneRelationships {
-            Character__Character: CharacterToCharacterDTO(db, includedCharacter__Character, traversedTables),
-            SubClass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, includedSubClass__DomainSubClass, traversedTables),
+            Character__Character: CharacterToCharacterDTO(db, &includedCharacter__Character, traversedTables),
+            SubClass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubClass__DomainSubClass, traversedTables),
          },
          OneToMany: CharacterDomainSubClassInstanceDTOOneToManyRelationships {
          },

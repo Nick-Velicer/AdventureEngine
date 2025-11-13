@@ -2,12 +2,13 @@
 import { NSwitch, NButton } from 'naive-ui'
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 import ThemeSelector from './ThemeSelector.vue';
-import type { Character } from '../../../types/appTypes/appTypes';
+import type { Character, CharacterDomainCharacterStatInstance, DomainCharacterStat } from '../../../types/appTypes/appTypes';
 
 const store = composedAppInjectionContexts.store();
 
-const saveCharacter = composedAppInjectionContexts.queries.useSaveCharacterMutation;
-const saveCharacterStats = composedAppInjectionContexts.queries.useSaveCharacterDomainCharacterStatInstanceMutation;
+const getStatsQuery = composedAppInjectionContexts.queries.useGetDomainCharacterStatsQuery;
+const saveCharacterMutation = composedAppInjectionContexts.queries.useSaveCharacterMutation;
+const saveCharacterStatsMutation = composedAppInjectionContexts.queries.useSaveCharacterDomainCharacterStatInstanceMutation;
 
 async function populateTestCharacter() {
 
@@ -17,25 +18,43 @@ async function populateTestCharacter() {
             Title: "Test Character 1",
         },
         Relationships: {
-            OneToMany: {},
             ManyToOne: {},
-        }
-    }
-
-    const character2: Character = {
-        Id: undefined,
-        Attributes: {
-            Title: "Test Character 2",
-        },
-        Relationships: {
-            OneToMany: {},
-            ManyToOne: {},
+            OneToMany: {}
         }
     }
     
-    const response = await saveCharacter([character, character2]).mutate();
+    const saveCharacter = saveCharacterMutation(character, dispatchStatsSave).mutate;
 
-    console.log(response);
+    const response = await saveCharacter();
+}
+
+async function dispatchStatsSave(character: Character) {
+
+    const getStats = getStatsQuery().refresh;
+    
+    const stats = await getStats();
+
+    const baseStats = (stats.data as Array<DomainCharacterStat>).filter(stat => stat.Attributes.IsBaseStat === true);
+
+    const saveStats = saveCharacterStatsMutation(
+        baseStats.map((stat, index) => ({
+            Id: undefined,
+            Attributes: {
+                Value: index + 10
+            },
+            Relationships: {
+                ManyToOne: {
+                    Character__Character: character,
+                    Stat__DomainCharacterStat: stat
+                },
+                OneToMany: {}
+            }
+
+        } as CharacterDomainCharacterStatInstance)),
+        (data: any) => console.log(data)
+    ).mutate;
+
+    const response = await saveStats();
 }
 
 </script>

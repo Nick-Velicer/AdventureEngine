@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -46,26 +47,32 @@ type CharacterDomainCharacterStatInstanceDTO struct {
 func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance, traversedTables []string) *CharacterDomainCharacterStatInstanceDTO {
    
    if (characterDomainCharacterStatInstance == nil) {
-      print("Nil pointer passed to DTO conversion for table CharacterDomainCharacterStatInstance\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table CharacterDomainCharacterStatInstance")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())) {
-      print("Hit circular catch case for table CharacterDomainCharacterStatInstance\n")
+      fmt.Println("Hit circular catch case for table CharacterDomainCharacterStatInstance")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())
    
-   var includedCharacter__Character *types.Character
-   var includedStat__DomainCharacterStat *types.DomainCharacterStat
+   var includedCharacter__Character types.Character
+   var includedStat__DomainCharacterStat types.DomainCharacterStat
    
    if (characterDomainCharacterStatInstance.Character__Character != nil) {
-      services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), includedCharacter__Character)
+      if err := services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), &includedCharacter__Character); err != nil {
+         fmt.Println("Error fetching many-to-one table Character:")
+         fmt.Println(err)
+      }
    }
 
    if (characterDomainCharacterStatInstance.Stat__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.Stat__DomainCharacterStat), includedStat__DomainCharacterStat)
+      if err := services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.Stat__DomainCharacterStat), &includedStat__DomainCharacterStat); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainCharacterStat:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -81,8 +88,8 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
          ManyToOne: CharacterDomainCharacterStatInstanceDTOManyToOneRelationships {
-            Character__Character: CharacterToCharacterDTO(db, includedCharacter__Character, traversedTables),
-            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedStat__DomainCharacterStat, traversedTables),
+            Character__Character: CharacterToCharacterDTO(db, &includedCharacter__Character, traversedTables),
+            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: CharacterDomainCharacterStatInstanceDTOOneToManyRelationships {
          },

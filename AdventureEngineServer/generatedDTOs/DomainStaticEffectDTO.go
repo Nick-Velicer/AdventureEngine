@@ -9,6 +9,7 @@ import (
    
    
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -43,12 +44,12 @@ type DomainStaticEffectDTO struct {
 func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect, traversedTables []string) *DomainStaticEffectDTO {
    
    if (domainStaticEffect == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainStaticEffect\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainStaticEffect")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainStaticEffect).Name())) {
-      print("Hit circular catch case for table DomainStaticEffect\n")
+      fmt.Println("Hit circular catch case for table DomainStaticEffect")
       return nil
    }
    

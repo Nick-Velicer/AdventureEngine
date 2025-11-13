@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -44,21 +45,24 @@ type DomainSpeciesDTO struct {
 func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies, traversedTables []string) *DomainSpeciesDTO {
    
    if (domainSpecies == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainSpecies\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainSpecies")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpecies).Name())) {
-      print("Hit circular catch case for table DomainSpecies\n")
+      fmt.Println("Hit circular catch case for table DomainSpecies")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSpecies).Name())
    
-   var includedCreatureType__DomainCreatureType *types.DomainCreatureType
+   var includedCreatureType__DomainCreatureType types.DomainCreatureType
    
    if (domainSpecies.CreatureType__DomainCreatureType != nil) {
-      services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureType__DomainCreatureType), includedCreatureType__DomainCreatureType)
+      if err := services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureType__DomainCreatureType), &includedCreatureType__DomainCreatureType); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainCreatureType:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -73,7 +77,7 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
       },
       Relationships: DomainSpeciesDTORelationships{
          ManyToOne: DomainSpeciesDTOManyToOneRelationships {
-            CreatureType__DomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, includedCreatureType__DomainCreatureType, traversedTables),
+            CreatureType__DomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureType__DomainCreatureType, traversedTables),
          },
          OneToMany: DomainSpeciesDTOOneToManyRelationships {
          },

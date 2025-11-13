@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -46,26 +47,32 @@ type DomainItemDTO struct {
 func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traversedTables []string) *DomainItemDTO {
    
    if (domainItem == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainItem\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainItem")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainItem).Name())) {
-      print("Hit circular catch case for table DomainItem\n")
+      fmt.Println("Hit circular catch case for table DomainItem")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainItem).Name())
    
-   var includedOneHanded__Quantifier *types.Quantifier
-   var includedTwoHanded__Quantifier *types.Quantifier
+   var includedOneHanded__Quantifier types.Quantifier
+   var includedTwoHanded__Quantifier types.Quantifier
    
    if (domainItem.OneHanded__Quantifier != nil) {
-      services.GetQuantifierById(db, int(*domainItem.OneHanded__Quantifier), includedOneHanded__Quantifier)
+      if err := services.GetQuantifierById(db, int(*domainItem.OneHanded__Quantifier), &includedOneHanded__Quantifier); err != nil {
+         fmt.Println("Error fetching many-to-one table Quantifier:")
+         fmt.Println(err)
+      }
    }
 
    if (domainItem.TwoHanded__Quantifier != nil) {
-      services.GetQuantifierById(db, int(*domainItem.TwoHanded__Quantifier), includedTwoHanded__Quantifier)
+      if err := services.GetQuantifierById(db, int(*domainItem.TwoHanded__Quantifier), &includedTwoHanded__Quantifier); err != nil {
+         fmt.Println("Error fetching many-to-one table Quantifier:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -81,8 +88,8 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
       },
       Relationships: DomainItemDTORelationships{
          ManyToOne: DomainItemDTOManyToOneRelationships {
-            OneHanded__Quantifier: QuantifierToQuantifierDTO(db, includedOneHanded__Quantifier, traversedTables),
-            TwoHanded__Quantifier: QuantifierToQuantifierDTO(db, includedTwoHanded__Quantifier, traversedTables),
+            OneHanded__Quantifier: QuantifierToQuantifierDTO(db, &includedOneHanded__Quantifier, traversedTables),
+            TwoHanded__Quantifier: QuantifierToQuantifierDTO(db, &includedTwoHanded__Quantifier, traversedTables),
          },
          OneToMany: DomainItemDTOOneToManyRelationships {
          },

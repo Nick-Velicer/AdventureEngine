@@ -9,6 +9,7 @@ import (
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -48,45 +49,54 @@ type CharacterDTO struct {
 func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedTables []string) *CharacterDTO {
    
    if (character == nil) {
-      print("Nil pointer passed to DTO conversion for table Character\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table Character")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*character).Name())) {
-      print("Hit circular catch case for table Character\n")
+      fmt.Println("Hit circular catch case for table Character")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*character).Name())
    
-   var includedCampaign__Campaign *types.Campaign
-   var includedCurrentSize__DomainSize *types.DomainSize
-   var includedSpecies__DomainSpecies *types.DomainSpecies
+   var includedCampaign__Campaign types.Campaign
+   var includedCurrentSize__DomainSize types.DomainSize
+   var includedSpecies__DomainSpecies types.DomainSpecies
    var includedStats__CharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
    var includedSubClasses__CharacterDomainSubClassInstances []types.CharacterDomainSubClassInstance
    
    if (character.Campaign__Campaign != nil) {
-      services.GetCampaignById(db, int(*character.Campaign__Campaign), includedCampaign__Campaign)
+      if err := services.GetCampaignById(db, int(*character.Campaign__Campaign), &includedCampaign__Campaign); err != nil {
+         fmt.Println("Error fetching many-to-one table Campaign:")
+         fmt.Println(err)
+      }
    }
 
    if (character.CurrentSize__DomainSize != nil) {
-      services.GetDomainSizeById(db, int(*character.CurrentSize__DomainSize), includedCurrentSize__DomainSize)
+      if err := services.GetDomainSizeById(db, int(*character.CurrentSize__DomainSize), &includedCurrentSize__DomainSize); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainSize:")
+         fmt.Println(err)
+      }
    }
 
    if (character.Species__DomainSpecies != nil) {
-      services.GetDomainSpeciesById(db, int(*character.Species__DomainSpecies), includedSpecies__DomainSpecies)
+      if err := services.GetDomainSpeciesById(db, int(*character.Species__DomainSpecies), &includedSpecies__DomainSpecies); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainSpecies:")
+         fmt.Println(err)
+      }
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedStats__CharacterDomainCharacterStatInstances).Elem().Name())) {
       includedStats__CharacterDomainCharacterStatInstances = []types.CharacterDomainCharacterStatInstance{}
-      print("Hit circular catch case for table CharacterDomainCharacterStatInstance\n")
+      fmt.Println("Hit circular catch case for table CharacterDomainCharacterStatInstance")
    } else {
       services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStats__CharacterDomainCharacterStatInstances)
    }
 
    if (slices.Contains(traversedTables, reflect.TypeOf(includedSubClasses__CharacterDomainSubClassInstances).Elem().Name())) {
       includedSubClasses__CharacterDomainSubClassInstances = []types.CharacterDomainSubClassInstance{}
-      print("Hit circular catch case for table CharacterDomainSubClassInstance\n")
+      fmt.Println("Hit circular catch case for table CharacterDomainSubClassInstance")
    } else {
       services.GetCharacterDomainSubClassInstancesByCharacterId(db, int(*character.Id), &includedSubClasses__CharacterDomainSubClassInstances)
    }
@@ -103,9 +113,9 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
       },
       Relationships: CharacterDTORelationships{
          ManyToOne: CharacterDTOManyToOneRelationships {
-            Campaign__Campaign: CampaignToCampaignDTO(db, includedCampaign__Campaign, traversedTables),
-            CurrentSize__DomainSize: DomainSizeToDomainSizeDTO(db, includedCurrentSize__DomainSize, traversedTables),
-            Species__DomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, includedSpecies__DomainSpecies, traversedTables),
+            Campaign__Campaign: CampaignToCampaignDTO(db, &includedCampaign__Campaign, traversedTables),
+            CurrentSize__DomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSize__DomainSize, traversedTables),
+            Species__DomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpecies__DomainSpecies, traversedTables),
          },
          OneToMany: CharacterDTOOneToManyRelationships {
             Stats__CharacterDomainCharacterStatInstance: utils.Map(includedStats__CharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, traversedTables) }),

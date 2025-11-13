@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -45,26 +46,32 @@ type ClassPrimaryAbilityDTO struct {
 func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbility *types.ClassPrimaryAbility, traversedTables []string) *ClassPrimaryAbilityDTO {
    
    if (classPrimaryAbility == nil) {
-      print("Nil pointer passed to DTO conversion for table ClassPrimaryAbility\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table ClassPrimaryAbility")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*classPrimaryAbility).Name())) {
-      print("Hit circular catch case for table ClassPrimaryAbility\n")
+      fmt.Println("Hit circular catch case for table ClassPrimaryAbility")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*classPrimaryAbility).Name())
    
-   var includedClass__DomainClass *types.DomainClass
-   var includedStat__DomainCharacterStat *types.DomainCharacterStat
+   var includedClass__DomainClass types.DomainClass
+   var includedStat__DomainCharacterStat types.DomainCharacterStat
    
    if (classPrimaryAbility.Class__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*classPrimaryAbility.Class__DomainClass), includedClass__DomainClass)
+      if err := services.GetDomainClassById(db, int(*classPrimaryAbility.Class__DomainClass), &includedClass__DomainClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainClass:")
+         fmt.Println(err)
+      }
    }
 
    if (classPrimaryAbility.Stat__DomainCharacterStat != nil) {
-      services.GetDomainCharacterStatById(db, int(*classPrimaryAbility.Stat__DomainCharacterStat), includedStat__DomainCharacterStat)
+      if err := services.GetDomainCharacterStatById(db, int(*classPrimaryAbility.Stat__DomainCharacterStat), &includedStat__DomainCharacterStat); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainCharacterStat:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -79,8 +86,8 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbilit
       },
       Relationships: ClassPrimaryAbilityDTORelationships{
          ManyToOne: ClassPrimaryAbilityDTOManyToOneRelationships {
-            Class__DomainClass: DomainClassToDomainClassDTO(db, includedClass__DomainClass, traversedTables),
-            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, includedStat__DomainCharacterStat, traversedTables),
+            Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
+            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: ClassPrimaryAbilityDTOOneToManyRelationships {
          },

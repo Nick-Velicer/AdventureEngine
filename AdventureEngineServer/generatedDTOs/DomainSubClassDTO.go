@@ -9,6 +9,7 @@ import (
    
    services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
+   "fmt"
    "reflect"
    "slices"
 )
@@ -44,21 +45,24 @@ type DomainSubClassDTO struct {
 func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass, traversedTables []string) *DomainSubClassDTO {
    
    if (domainSubClass == nil) {
-      print("Nil pointer passed to DTO conversion for table DomainSubClass\n")
+      fmt.Println("Nil pointer passed to DTO conversion for table DomainSubClass")
       return nil
    }
    
    if (slices.Contains(traversedTables, reflect.TypeOf(*domainSubClass).Name())) {
-      print("Hit circular catch case for table DomainSubClass\n")
+      fmt.Println("Hit circular catch case for table DomainSubClass")
       return nil
    }
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSubClass).Name())
    
-   var includedClass__DomainClass *types.DomainClass
+   var includedClass__DomainClass types.DomainClass
    
    if (domainSubClass.Class__DomainClass != nil) {
-      services.GetDomainClassById(db, int(*domainSubClass.Class__DomainClass), includedClass__DomainClass)
+      if err := services.GetDomainClassById(db, int(*domainSubClass.Class__DomainClass), &includedClass__DomainClass); err != nil {
+         fmt.Println("Error fetching many-to-one table DomainClass:")
+         fmt.Println(err)
+      }
    }
 
    
@@ -73,7 +77,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
       },
       Relationships: DomainSubClassDTORelationships{
          ManyToOne: DomainSubClassDTOManyToOneRelationships {
-            Class__DomainClass: DomainClassToDomainClassDTO(db, includedClass__DomainClass, traversedTables),
+            Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
          },
          OneToMany: DomainSubClassDTOOneToManyRelationships {
          },
