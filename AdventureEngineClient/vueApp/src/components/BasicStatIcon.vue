@@ -17,7 +17,10 @@ const props = defineProps<PropsType>();
 
 const store = composedAppInjectionContexts.store();
 
-const statToIconMapping = {
+//Ideally this would be treated as a super for realsies const with keys,
+//but we're cheating and assuming values of a domain table (that will probably never change)
+//so there's not a super ideal way to make absolutely sure these values will actually be there
+const statToIconMapping: Record<string, string> = {
     Strength: Dumbbell1Outlined,
     Dexterity: Brush2Outlined,
     Constitution: HeartOutlined,
@@ -29,7 +32,10 @@ const statToIconMapping = {
 </script>
 
 <template>
-    <Lineicons :icon="statToIconMapping[props.basicStatName]" :size="24" :color="store.reactiveThemeElement('--text-color-primary')" :stroke-width="1.5" />
+    <Lineicons v-if="statToIconMapping[props.basicStatName] != undefined" :icon="statToIconMapping[props.basicStatName]" :size="24" :color="store.reactiveThemeElement('--text-color-primary')" :stroke-width="1.5" />
+    <div v-else>
+        Unknown Basic Stat
+    </div>     
 </template>
 
 <style scoped>

@@ -19,8 +19,6 @@ const store = composedAppInjectionContexts.store();
 <style scoped>
     .navMenuContainer {
         display: flex;
-        margin-left: auto;
-        margin-right: auto;
         width: fit-content;
         gap: v-bind("store.reactiveThemeElement("--spacing-large")");
         background-color: v-bind("store.reactiveThemeElement("--color-background")");

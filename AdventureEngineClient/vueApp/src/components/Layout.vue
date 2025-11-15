@@ -13,18 +13,19 @@ const store = composedAppInjectionContexts.store();
 
 <template>
     <div class="topLevelContainer scrollWrapper">
-        <header class="flex w-full h-fit items-center py-2">
-            <DevTools/>
+        <header class="headerContainer">
+            <div class="flex-1 flex items-center gap-2">
+                <DevTools/>
+            </div>
             <NavMenu/>
+            <div class="flex-1"/>
         </header>
-        <div class="scrollArea">
-            <main>
-                <slot></slot>
-            </main>
-            <footer class="footerContainer">
-                Footer Content
-            </footer>
-        </div>
+        <main class="scrollArea flex-1">
+            <slot></slot>
+        </main>
+        <footer class="footerContainer">
+            Footer Content
+        </footer>
     </div>
     
 </template>
@@ -32,9 +33,24 @@ const store = composedAppInjectionContexts.store();
 <style scoped>
 
 .topLevelContainer {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: v-bind("store.reactiveThemeElement("--spacing-small")");
     background-color: v-bind("store.reactiveThemeElement("--color-background")");
     color: v-bind("store.reactiveThemeElement("--text-color-primary")");
     font-family: v-bind("store.reactiveThemeElement("--font-family-body")");
+}
+
+.headerContainer {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.footerContainer {
+
 }
 
 

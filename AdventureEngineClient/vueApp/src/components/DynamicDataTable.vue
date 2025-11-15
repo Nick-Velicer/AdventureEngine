@@ -24,9 +24,6 @@ console.log(query.value);
 <template>
     <n-button v-on:click="() => console.log(query)">See Query Result</n-button>
     <n-button v-on:click="() => query.refetch()">Test Query Refresh</n-button>
-    <div>
-        {{ query?.toString() }}
-    </div>
     <div v-if="query?.value?.isPending === true">
         Loading...
     </div>

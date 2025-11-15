@@ -10,10 +10,12 @@ export const composedAppInjectionContexts = {
         useQuery, 
         useMutation, 
         useQueryCache,
-        (cacheContext: QueryCache, keys: string[]) => cacheContext.invalidateQueries({
-            key: keys,
-            exact: true
-        }), 
+        (cacheContext: QueryCache, keys: string[]) => {
+            keys.forEach(key => cacheContext.invalidateQueries({
+                key: [key],
+                exact: false
+            }))
+        },
         generatedInjectableServices
     ),
     store: defineStore('globalStore', {
