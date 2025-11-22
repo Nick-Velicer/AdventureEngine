@@ -16,10 +16,12 @@ import (
 
 type DomainSpeciesDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type DomainSpeciesDTOManyToOneRelationships struct {
@@ -70,10 +72,12 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
       Id: domainSpecies.Id,
       Attributes: DomainSpeciesDTOAttributes{
          AbbreviatedTitle: domainSpecies.AbbreviatedTitle,
+         CreatedAt: domainSpecies.CreatedAt,
          Description: domainSpecies.Description,
          
          IsActive: domainSpecies.IsActive,
          Title: domainSpecies.Title,
+         UpdatedAt: domainSpecies.UpdatedAt,
       },
       Relationships: DomainSpeciesDTORelationships{
          ManyToOne: DomainSpeciesDTOManyToOneRelationships {
@@ -90,10 +94,12 @@ func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) *types.Dom
    
    tableTypeBuffer.Id = domainSpecies.Id
    tableTypeBuffer.AbbreviatedTitle = domainSpecies.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = domainSpecies.Attributes.CreatedAt
    tableTypeBuffer.Description = domainSpecies.Attributes.Description
    
    tableTypeBuffer.IsActive = domainSpecies.Attributes.IsActive
    tableTypeBuffer.Title = domainSpecies.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainSpecies.Attributes.UpdatedAt
    
    if (domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType != nil) {
       tableTypeBuffer.CreatureType__DomainCreatureType = domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType.Id

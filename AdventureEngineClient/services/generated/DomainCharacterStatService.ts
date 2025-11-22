@@ -3,10 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainCharacterStat } from "../../types/appTypes/appTypes";
+import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
 
-export async function getDomainCharacterStats(): Promise<DomainCharacterStat[]> {
+export async function getDomainCharacterStats(filter?: FilterAST<DomainCharacterStat>): Promise<DomainCharacterStat[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainCharacterStats");
+      const response = await fetch("http://localhost:8080/getDomainCharacterStats" + produceFilterExtensionFromAST(filter));
       const returnObj = await response.json() as unknown as Array<DomainCharacterStat>;
       return returnObj;
    }

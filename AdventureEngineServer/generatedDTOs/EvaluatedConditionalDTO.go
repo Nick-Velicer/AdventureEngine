@@ -16,10 +16,12 @@ import (
 
 type EvaluatedConditionalDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
    EvaluatedOnEvent *bool
    EvaluatedStatically *bool
 }
@@ -90,10 +92,12 @@ func EvaluatedConditionalToEvaluatedConditionalDTO(db *gorm.DB, evaluatedConditi
       Id: evaluatedConditional.Id,
       Attributes: EvaluatedConditionalDTOAttributes{
          AbbreviatedTitle: evaluatedConditional.AbbreviatedTitle,
+         CreatedAt: evaluatedConditional.CreatedAt,
          Description: evaluatedConditional.Description,
          
          IsActive: evaluatedConditional.IsActive,
          Title: evaluatedConditional.Title,
+         UpdatedAt: evaluatedConditional.UpdatedAt,
          EvaluatedOnEvent: evaluatedConditional.EvaluatedOnEvent,
          EvaluatedStatically: evaluatedConditional.EvaluatedStatically,
       },
@@ -114,10 +118,12 @@ func EvaluatedConditionalDTOToEvaluatedConditional(evaluatedConditional *Evaluat
    
    tableTypeBuffer.Id = evaluatedConditional.Id
    tableTypeBuffer.AbbreviatedTitle = evaluatedConditional.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = evaluatedConditional.Attributes.CreatedAt
    tableTypeBuffer.Description = evaluatedConditional.Attributes.Description
    
    tableTypeBuffer.IsActive = evaluatedConditional.Attributes.IsActive
    tableTypeBuffer.Title = evaluatedConditional.Attributes.Title
+   tableTypeBuffer.UpdatedAt = evaluatedConditional.Attributes.UpdatedAt
    tableTypeBuffer.EvaluatedOnEvent = evaluatedConditional.Attributes.EvaluatedOnEvent
    tableTypeBuffer.EvaluatedStatically = evaluatedConditional.Attributes.EvaluatedStatically
    

@@ -16,10 +16,12 @@ import (
 
 type DomainDiceRollSubTypeDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type DomainDiceRollSubTypeDTOManyToOneRelationships struct {
@@ -70,10 +72,12 @@ func DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db *gorm.DB, domainDiceRoll
       Id: domainDiceRollSubType.Id,
       Attributes: DomainDiceRollSubTypeDTOAttributes{
          AbbreviatedTitle: domainDiceRollSubType.AbbreviatedTitle,
+         CreatedAt: domainDiceRollSubType.CreatedAt,
          Description: domainDiceRollSubType.Description,
          
          IsActive: domainDiceRollSubType.IsActive,
          Title: domainDiceRollSubType.Title,
+         UpdatedAt: domainDiceRollSubType.UpdatedAt,
       },
       Relationships: DomainDiceRollSubTypeDTORelationships{
          ManyToOne: DomainDiceRollSubTypeDTOManyToOneRelationships {
@@ -90,10 +94,12 @@ func DomainDiceRollSubTypeDTOToDomainDiceRollSubType(domainDiceRollSubType *Doma
    
    tableTypeBuffer.Id = domainDiceRollSubType.Id
    tableTypeBuffer.AbbreviatedTitle = domainDiceRollSubType.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = domainDiceRollSubType.Attributes.CreatedAt
    tableTypeBuffer.Description = domainDiceRollSubType.Attributes.Description
    
    tableTypeBuffer.IsActive = domainDiceRollSubType.Attributes.IsActive
    tableTypeBuffer.Title = domainDiceRollSubType.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainDiceRollSubType.Attributes.UpdatedAt
    
    if (domainDiceRollSubType.Relationships.ManyToOne.SuperType__DomainDiceRollType != nil) {
       tableTypeBuffer.SuperType__DomainDiceRollType = domainDiceRollSubType.Relationships.ManyToOne.SuperType__DomainDiceRollType.Id

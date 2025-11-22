@@ -16,10 +16,12 @@ import (
 
 type CharacterDomainCharacterStatInstanceDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
    Value float64
 }
 
@@ -80,10 +82,12 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
       Id: characterDomainCharacterStatInstance.Id,
       Attributes: CharacterDomainCharacterStatInstanceDTOAttributes{
          AbbreviatedTitle: characterDomainCharacterStatInstance.AbbreviatedTitle,
+         CreatedAt: characterDomainCharacterStatInstance.CreatedAt,
          Description: characterDomainCharacterStatInstance.Description,
          
          IsActive: characterDomainCharacterStatInstance.IsActive,
          Title: characterDomainCharacterStatInstance.Title,
+         UpdatedAt: characterDomainCharacterStatInstance.UpdatedAt,
          Value: characterDomainCharacterStatInstance.Value,
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
@@ -102,10 +106,12 @@ func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstan
    
    tableTypeBuffer.Id = characterDomainCharacterStatInstance.Id
    tableTypeBuffer.AbbreviatedTitle = characterDomainCharacterStatInstance.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = characterDomainCharacterStatInstance.Attributes.CreatedAt
    tableTypeBuffer.Description = characterDomainCharacterStatInstance.Attributes.Description
    
    tableTypeBuffer.IsActive = characterDomainCharacterStatInstance.Attributes.IsActive
    tableTypeBuffer.Title = characterDomainCharacterStatInstance.Attributes.Title
+   tableTypeBuffer.UpdatedAt = characterDomainCharacterStatInstance.Attributes.UpdatedAt
    tableTypeBuffer.Value = characterDomainCharacterStatInstance.Attributes.Value
    
    if (characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character != nil) {

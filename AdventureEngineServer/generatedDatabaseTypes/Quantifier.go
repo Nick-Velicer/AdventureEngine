@@ -34,6 +34,9 @@ type Quantifier struct {
 	// AutomaticFailure corresponds to the JSON schema field "AutomaticFailure".
 	AutomaticFailure *bool `json:"AutomaticFailure" gorm:"column:AutomaticFailure" mapstructure:"AutomaticFailure"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
 	// DeltaPercentage corresponds to the JSON schema field "DeltaPercentage".
 	DeltaPercentage *float64 `json:"DeltaPercentage" gorm:"column:DeltaPercentage" mapstructure:"DeltaPercentage"`
 
@@ -212,4 +215,7 @@ type Quantifier struct {
 
 	// UntilShortRest corresponds to the JSON schema field "UntilShortRest".
 	UntilShortRest *bool `json:"UntilShortRest" gorm:"column:UntilShortRest" mapstructure:"UntilShortRest"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 }

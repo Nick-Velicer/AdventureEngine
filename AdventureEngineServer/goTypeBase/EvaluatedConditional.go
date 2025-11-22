@@ -9,6 +9,9 @@ type EvaluatedConditionalJson struct {
 	// BaseQuantifier corresponds to the JSON schema field "Base__Quantifier".
 	BaseQuantifier *float64 `json:"Base__Quantifier,omitempty" yaml:"Base__Quantifier,omitempty" mapstructure:"Base__Quantifier,omitempty"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
@@ -27,6 +30,9 @@ type EvaluatedConditionalJson struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
 
 	// EvaluatedOnEvent corresponds to the JSON schema field "evaluatedOnEvent".
 	EvaluatedOnEvent *bool `json:"evaluatedOnEvent,omitempty" yaml:"evaluatedOnEvent,omitempty" mapstructure:"evaluatedOnEvent,omitempty"`

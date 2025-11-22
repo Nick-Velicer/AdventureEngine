@@ -16,10 +16,12 @@ import (
 
 type DomainDiceRollTypeDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type DomainDiceRollTypeDTOManyToOneRelationships struct {
@@ -70,10 +72,12 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
       Id: domainDiceRollType.Id,
       Attributes: DomainDiceRollTypeDTOAttributes{
          AbbreviatedTitle: domainDiceRollType.AbbreviatedTitle,
+         CreatedAt: domainDiceRollType.CreatedAt,
          Description: domainDiceRollType.Description,
          
          IsActive: domainDiceRollType.IsActive,
          Title: domainDiceRollType.Title,
+         UpdatedAt: domainDiceRollType.UpdatedAt,
       },
       Relationships: DomainDiceRollTypeDTORelationships{
          ManyToOne: DomainDiceRollTypeDTOManyToOneRelationships {
@@ -90,10 +94,12 @@ func DomainDiceRollTypeDTOToDomainDiceRollType(domainDiceRollType *DomainDiceRol
    
    tableTypeBuffer.Id = domainDiceRollType.Id
    tableTypeBuffer.AbbreviatedTitle = domainDiceRollType.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = domainDiceRollType.Attributes.CreatedAt
    tableTypeBuffer.Description = domainDiceRollType.Attributes.Description
    
    tableTypeBuffer.IsActive = domainDiceRollType.Attributes.IsActive
    tableTypeBuffer.Title = domainDiceRollType.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainDiceRollType.Attributes.UpdatedAt
    
    return &tableTypeBuffer
 }

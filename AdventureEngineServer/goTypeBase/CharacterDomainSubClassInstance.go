@@ -9,6 +9,9 @@ type CharacterDomainSubClassInstanceJson struct {
 	// CharacterCharacter corresponds to the JSON schema field "Character__Character".
 	CharacterCharacter *float64 `json:"Character__Character,omitempty" yaml:"Character__Character,omitempty" mapstructure:"Character__Character,omitempty"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
@@ -27,4 +30,7 @@ type CharacterDomainSubClassInstanceJson struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
 }

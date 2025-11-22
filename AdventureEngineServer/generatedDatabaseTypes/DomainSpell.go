@@ -12,6 +12,9 @@ type DomainSpell struct {
 	// "ConcentrationRequired".
 	ConcentrationRequired *bool `json:"ConcentrationRequired" gorm:"column:ConcentrationRequired" mapstructure:"ConcentrationRequired"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
 	// DamageScalingDomainDice corresponds to the JSON schema field
 	// "DamageScaling__DomainDice".
 	DamageScaling__DomainDice *int `json:"DamageScaling__DomainDice" gorm:"column:DamageScaling__DomainDice" mapstructure:"DamageScaling__DomainDice"`
@@ -93,4 +96,7 @@ type DomainSpell struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 }

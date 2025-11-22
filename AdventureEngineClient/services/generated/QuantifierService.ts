@@ -3,10 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type Quantifier } from "../../types/appTypes/appTypes";
+import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
 
-export async function getQuantifiers(): Promise<Quantifier[]> {
+export async function getQuantifiers(filter?: FilterAST<Quantifier>): Promise<Quantifier[]> {
    try {
-      const response = await fetch("http://localhost:8080/getQuantifiers");
+      const response = await fetch("http://localhost:8080/getQuantifiers" + produceFilterExtensionFromAST(filter));
       const returnObj = await response.json() as unknown as Array<Quantifier>;
       return returnObj;
    }

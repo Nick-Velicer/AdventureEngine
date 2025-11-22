@@ -13,6 +13,9 @@ type DomainSpellJson struct {
 	// "ConcentrationRequired".
 	ConcentrationRequired *bool `json:"ConcentrationRequired,omitempty" yaml:"ConcentrationRequired,omitempty" mapstructure:"ConcentrationRequired,omitempty"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
+
 	// DamageScalingDomainDice corresponds to the JSON schema field
 	// "DamageScaling__DomainDice".
 	DamageScalingDomainDice *float64 `json:"DamageScaling__DomainDice,omitempty" yaml:"DamageScaling__DomainDice,omitempty" mapstructure:"DamageScaling__DomainDice,omitempty"`
@@ -94,4 +97,7 @@ type DomainSpellJson struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
 }

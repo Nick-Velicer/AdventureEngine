@@ -9,6 +9,9 @@ type DomainSubClass struct {
 	// ClassDomainClass corresponds to the JSON schema field "Class__DomainClass".
 	Class__DomainClass *int `json:"Class__DomainClass" gorm:"column:Class__DomainClass" mapstructure:"Class__DomainClass"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
@@ -20,4 +23,7 @@ type DomainSubClass struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 }

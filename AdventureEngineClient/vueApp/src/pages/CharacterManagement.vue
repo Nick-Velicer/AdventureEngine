@@ -4,10 +4,13 @@ import CharacterStatDisplay from '../components/CharacterStatDisplay.vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts'
 import type { UseQueryReturn } from '@pinia/colada';
 import BasicStatIcon from '../components/BasicStatIcon.vue';
-import type { UnwrapRef } from 'vue';
+import { onMounted, watch, type UnwrapRef } from 'vue';
+import { useRoute } from 'vue-router';
 
 const state = composedAppInjectionContexts.store();
-const characterQuery = composedAppInjectionContexts.queries.useGetCharacterByIdQuery(1) as UseQueryReturn<Character>;
+const route = useRoute();
+
+const characterQuery = composedAppInjectionContexts.queries.useGetCharacterByIdQuery(parseInt(route.params.id as string)) as UseQueryReturn<Character>;
 
 </script>
 

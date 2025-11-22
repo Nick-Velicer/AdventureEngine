@@ -17,6 +17,7 @@ import (
 type DomainSpellDTOAttributes struct {
    AbbreviatedTitle *string
    ConcentrationRequired *bool
+   CreatedAt *string
    DayDuration *float64
    Description *string
    HasSomaticRequirement *bool
@@ -41,6 +42,7 @@ type DomainSpellDTOAttributes struct {
    RoundDuration *float64
    TargetsSelf *bool
    Title *string
+   UpdatedAt *string
 }
 
 type DomainSpellDTOManyToOneRelationships struct {
@@ -110,6 +112,7 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
       Attributes: DomainSpellDTOAttributes{
          AbbreviatedTitle: domainSpell.AbbreviatedTitle,
          ConcentrationRequired: domainSpell.ConcentrationRequired,
+         CreatedAt: domainSpell.CreatedAt,
          DayDuration: domainSpell.DayDuration,
          Description: domainSpell.Description,
          HasSomaticRequirement: domainSpell.HasSomaticRequirement,
@@ -134,6 +137,7 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
          RoundDuration: domainSpell.RoundDuration,
          TargetsSelf: domainSpell.TargetsSelf,
          Title: domainSpell.Title,
+         UpdatedAt: domainSpell.UpdatedAt,
       },
       Relationships: DomainSpellDTORelationships{
          ManyToOne: DomainSpellDTOManyToOneRelationships {
@@ -153,6 +157,7 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) *types.DomainSpell
    tableTypeBuffer.Id = domainSpell.Id
    tableTypeBuffer.AbbreviatedTitle = domainSpell.Attributes.AbbreviatedTitle
    tableTypeBuffer.ConcentrationRequired = domainSpell.Attributes.ConcentrationRequired
+   tableTypeBuffer.CreatedAt = domainSpell.Attributes.CreatedAt
    tableTypeBuffer.DayDuration = domainSpell.Attributes.DayDuration
    tableTypeBuffer.Description = domainSpell.Attributes.Description
    tableTypeBuffer.HasSomaticRequirement = domainSpell.Attributes.HasSomaticRequirement
@@ -177,6 +182,7 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) *types.DomainSpell
    tableTypeBuffer.RoundDuration = domainSpell.Attributes.RoundDuration
    tableTypeBuffer.TargetsSelf = domainSpell.Attributes.TargetsSelf
    tableTypeBuffer.Title = domainSpell.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainSpell.Attributes.UpdatedAt
    
    if (domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice != nil) {
       tableTypeBuffer.DamageScaling__DomainDice = domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice.Id

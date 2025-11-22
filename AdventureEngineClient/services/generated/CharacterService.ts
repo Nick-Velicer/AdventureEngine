@@ -3,10 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type Character } from "../../types/appTypes/appTypes";
+import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
 
-export async function getCharacters(): Promise<Character[]> {
+export async function getCharacters(filter?: FilterAST<Character>): Promise<Character[]> {
    try {
-      const response = await fetch("http://localhost:8080/getCharacters");
+      const response = await fetch("http://localhost:8080/getCharacters" + produceFilterExtensionFromAST(filter));
       const returnObj = await response.json() as unknown as Array<Character>;
       return returnObj;
    }

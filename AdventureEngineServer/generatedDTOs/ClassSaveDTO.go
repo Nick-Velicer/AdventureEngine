@@ -16,10 +16,12 @@ import (
 
 type ClassSaveDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type ClassSaveDTOManyToOneRelationships struct {
@@ -79,10 +81,12 @@ func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedT
       Id: classSave.Id,
       Attributes: ClassSaveDTOAttributes{
          AbbreviatedTitle: classSave.AbbreviatedTitle,
+         CreatedAt: classSave.CreatedAt,
          Description: classSave.Description,
          
          IsActive: classSave.IsActive,
          Title: classSave.Title,
+         UpdatedAt: classSave.UpdatedAt,
       },
       Relationships: ClassSaveDTORelationships{
          ManyToOne: ClassSaveDTOManyToOneRelationships {
@@ -100,10 +104,12 @@ func ClassSaveDTOToClassSave(classSave *ClassSaveDTO) *types.ClassSave {
    
    tableTypeBuffer.Id = classSave.Id
    tableTypeBuffer.AbbreviatedTitle = classSave.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = classSave.Attributes.CreatedAt
    tableTypeBuffer.Description = classSave.Attributes.Description
    
    tableTypeBuffer.IsActive = classSave.Attributes.IsActive
    tableTypeBuffer.Title = classSave.Attributes.Title
+   tableTypeBuffer.UpdatedAt = classSave.Attributes.UpdatedAt
    
    if (classSave.Relationships.ManyToOne.Class__DomainClass != nil) {
       tableTypeBuffer.Class__DomainClass = classSave.Relationships.ManyToOne.Class__DomainClass.Id

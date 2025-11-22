@@ -9,6 +9,9 @@ type CharacterJson struct {
 	// CampaignCampaign corresponds to the JSON schema field "Campaign__Campaign".
 	CampaignCampaign *float64 `json:"Campaign__Campaign,omitempty" yaml:"Campaign__Campaign,omitempty" mapstructure:"Campaign__Campaign,omitempty"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
+
 	// CurrentSizeDomainSize corresponds to the JSON schema field
 	// "CurrentSize__DomainSize".
 	CurrentSizeDomainSize *float64 `json:"CurrentSize__DomainSize,omitempty" yaml:"CurrentSize__DomainSize,omitempty" mapstructure:"CurrentSize__DomainSize,omitempty"`
@@ -36,4 +39,7 @@ type CharacterJson struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
 }

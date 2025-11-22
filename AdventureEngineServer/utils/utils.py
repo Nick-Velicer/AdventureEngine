@@ -7,7 +7,8 @@ goToSqlTypeConversions = {
     'bool': 'NUMBER',
     '*bool': 'NUMBER',
     '*float64': 'REAL',
-    'float64' : 'REAL'
+    'float64' : 'REAL',
+    '*time.Time': 'TEXT',
 }
 
 def reformatRelationshipName(relationshipName: str, correspondingTable: str):

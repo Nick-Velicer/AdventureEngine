@@ -3,10 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type ClassSave } from "../../types/appTypes/appTypes";
+import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
 
-export async function getClassSaves(): Promise<ClassSave[]> {
+export async function getClassSaves(filter?: FilterAST<ClassSave>): Promise<ClassSave[]> {
    try {
-      const response = await fetch("http://localhost:8080/getClassSaves");
+      const response = await fetch("http://localhost:8080/getClassSaves" + produceFilterExtensionFromAST(filter));
       const returnObj = await response.json() as unknown as Array<ClassSave>;
       return returnObj;
    }

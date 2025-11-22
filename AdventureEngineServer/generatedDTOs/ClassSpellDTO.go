@@ -16,10 +16,12 @@ import (
 
 type ClassSpellDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type ClassSpellDTOManyToOneRelationships struct {
@@ -79,10 +81,12 @@ func ClassSpellToClassSpellDTO(db *gorm.DB, classSpell *types.ClassSpell, traver
       Id: classSpell.Id,
       Attributes: ClassSpellDTOAttributes{
          AbbreviatedTitle: classSpell.AbbreviatedTitle,
+         CreatedAt: classSpell.CreatedAt,
          Description: classSpell.Description,
          
          IsActive: classSpell.IsActive,
          Title: classSpell.Title,
+         UpdatedAt: classSpell.UpdatedAt,
       },
       Relationships: ClassSpellDTORelationships{
          ManyToOne: ClassSpellDTOManyToOneRelationships {
@@ -100,10 +104,12 @@ func ClassSpellDTOToClassSpell(classSpell *ClassSpellDTO) *types.ClassSpell {
    
    tableTypeBuffer.Id = classSpell.Id
    tableTypeBuffer.AbbreviatedTitle = classSpell.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = classSpell.Attributes.CreatedAt
    tableTypeBuffer.Description = classSpell.Attributes.Description
    
    tableTypeBuffer.IsActive = classSpell.Attributes.IsActive
    tableTypeBuffer.Title = classSpell.Attributes.Title
+   tableTypeBuffer.UpdatedAt = classSpell.Attributes.UpdatedAt
    
    if (classSpell.Relationships.ManyToOne.Class__DomainClass != nil) {
       tableTypeBuffer.Class__DomainClass = classSpell.Relationships.ManyToOne.Class__DomainClass.Id

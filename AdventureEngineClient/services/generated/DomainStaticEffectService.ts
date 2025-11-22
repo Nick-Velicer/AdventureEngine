@@ -3,10 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainStaticEffect } from "../../types/appTypes/appTypes";
+import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
 
-export async function getDomainStaticEffects(): Promise<DomainStaticEffect[]> {
+export async function getDomainStaticEffects(filter?: FilterAST<DomainStaticEffect>): Promise<DomainStaticEffect[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainStaticEffects");
+      const response = await fetch("http://localhost:8080/getDomainStaticEffects" + produceFilterExtensionFromAST(filter));
       const returnObj = await response.json() as unknown as Array<DomainStaticEffect>;
       return returnObj;
    }

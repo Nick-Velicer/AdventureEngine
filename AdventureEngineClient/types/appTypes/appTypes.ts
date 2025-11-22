@@ -30,6 +30,7 @@ import { DomainStaticEffect as Base__DomainStaticEffect } from "../coreTypes/Dom
 import { DomainSubClass as Base__DomainSubClass } from "../coreTypes/DomainSubClass";
 import { EvaluatedConditional as Base__EvaluatedConditional } from "../coreTypes/EvaluatedConditional";
 import { Quantifier as Base__Quantifier } from "../coreTypes/Quantifier";
+import { User as Base__User } from "../coreTypes/User";
 
 const BaseAppTypes = {
 	Campaign: {} as Base__Campaign,
@@ -60,6 +61,7 @@ const BaseAppTypes = {
 	DomainSubClass: {} as Base__DomainSubClass,
 	EvaluatedConditional: {} as Base__EvaluatedConditional,
 	Quantifier: {} as Base__Quantifier,
+	User: {} as Base__User,
 } as const satisfies Record<string, SchemaObject> 
 
 
@@ -111,6 +113,7 @@ export type DomainStaticEffect = RecursionGuardedSchemaObject<Base__DomainStatic
 export type DomainSubClass = RecursionGuardedSchemaObject<Base__DomainSubClass>;
 export type EvaluatedConditional = RecursionGuardedSchemaObject<Base__EvaluatedConditional>;
 export type Quantifier = RecursionGuardedSchemaObject<Base__Quantifier>;
+export type User = RecursionGuardedSchemaObject<Base__User>;
 
 export const AppTypes = {
 	Campaign: {} as Campaign,
@@ -141,4 +144,5 @@ export const AppTypes = {
 	DomainSubClass: {} as DomainSubClass,
 	EvaluatedConditional: {} as EvaluatedConditional,
 	Quantifier: {} as Quantifier,
+	User: {} as User,
 } as const satisfies Record<string, SchemaObject> 

@@ -3,10 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type Campaign } from "../../types/appTypes/appTypes";
+import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
 
-export async function getCampaigns(): Promise<Campaign[]> {
+export async function getCampaigns(filter?: FilterAST<Campaign>): Promise<Campaign[]> {
    try {
-      const response = await fetch("http://localhost:8080/getCampaigns");
+      const response = await fetch("http://localhost:8080/getCampaigns" + produceFilterExtensionFromAST(filter));
       const returnObj = await response.json() as unknown as Array<Campaign>;
       return returnObj;
    }

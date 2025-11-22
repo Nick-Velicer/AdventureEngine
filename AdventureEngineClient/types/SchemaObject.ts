@@ -5,6 +5,8 @@ export type BaseAttributes = {
     AbbreviatedTitle?: string
     Description?: string
     IsActive?: boolean
+    CreatedAt?: string
+    UpdatedAt?: string
 }
 
 export type SchemaObject = {

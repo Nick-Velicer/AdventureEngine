@@ -9,6 +9,9 @@ type CharacterDomainCharacterStatInstance struct {
 	// CharacterCharacter corresponds to the JSON schema field "Character__Character".
 	Character__Character *int `json:"Character__Character" gorm:"column:Character__Character" mapstructure:"Character__Character"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
@@ -24,6 +27,9 @@ type CharacterDomainCharacterStatInstance struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 
 	// Value corresponds to the JSON schema field "Value".
 	Value float64 `json:"Value" gorm:"column:Value" mapstructure:"Value"`

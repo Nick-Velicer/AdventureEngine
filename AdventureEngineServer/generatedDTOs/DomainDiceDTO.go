@@ -16,12 +16,14 @@ import (
 
 type DomainDiceDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Maximum float64
    Minimum float64
    Title *string
+   UpdatedAt *string
 }
 
 type DomainDiceDTOManyToOneRelationships struct {
@@ -63,12 +65,14 @@ func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traver
       Id: domainDice.Id,
       Attributes: DomainDiceDTOAttributes{
          AbbreviatedTitle: domainDice.AbbreviatedTitle,
+         CreatedAt: domainDice.CreatedAt,
          Description: domainDice.Description,
          
          IsActive: domainDice.IsActive,
          Maximum: domainDice.Maximum,
          Minimum: domainDice.Minimum,
          Title: domainDice.Title,
+         UpdatedAt: domainDice.UpdatedAt,
       },
       Relationships: DomainDiceDTORelationships{
          ManyToOne: DomainDiceDTOManyToOneRelationships {
@@ -84,12 +88,14 @@ func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) *types.DomainDice {
    
    tableTypeBuffer.Id = domainDice.Id
    tableTypeBuffer.AbbreviatedTitle = domainDice.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = domainDice.Attributes.CreatedAt
    tableTypeBuffer.Description = domainDice.Attributes.Description
    
    tableTypeBuffer.IsActive = domainDice.Attributes.IsActive
    tableTypeBuffer.Maximum = domainDice.Attributes.Maximum
    tableTypeBuffer.Minimum = domainDice.Attributes.Minimum
    tableTypeBuffer.Title = domainDice.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainDice.Attributes.UpdatedAt
    
    return &tableTypeBuffer
 }

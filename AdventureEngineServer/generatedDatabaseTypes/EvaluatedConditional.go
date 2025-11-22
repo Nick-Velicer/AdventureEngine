@@ -9,6 +9,9 @@ type EvaluatedConditional struct {
 	// BaseQuantifier corresponds to the JSON schema field "Base__Quantifier".
 	Base__Quantifier *int `json:"Base__Quantifier" gorm:"column:Base__Quantifier" mapstructure:"Base__Quantifier"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
@@ -27,6 +30,9 @@ type EvaluatedConditional struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 
 	// EvaluatedOnEvent corresponds to the JSON schema field "evaluatedOnEvent".
 	EvaluatedOnEvent *bool `json:"evaluatedOnEvent" gorm:"column:evaluatedOnEvent" mapstructure:"evaluatedOnEvent"`

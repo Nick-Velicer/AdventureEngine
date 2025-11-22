@@ -3,10 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type ClassPrimaryAbility } from "../../types/appTypes/appTypes";
+import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
 
-export async function getClassPrimaryAbilitys(): Promise<ClassPrimaryAbility[]> {
+export async function getClassPrimaryAbilitys(filter?: FilterAST<ClassPrimaryAbility>): Promise<ClassPrimaryAbility[]> {
    try {
-      const response = await fetch("http://localhost:8080/getClassPrimaryAbilitys");
+      const response = await fetch("http://localhost:8080/getClassPrimaryAbilitys" + produceFilterExtensionFromAST(filter));
       const returnObj = await response.json() as unknown as Array<ClassPrimaryAbility>;
       return returnObj;
    }

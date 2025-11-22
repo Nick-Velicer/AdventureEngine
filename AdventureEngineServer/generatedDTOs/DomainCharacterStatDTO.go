@@ -16,11 +16,13 @@ import (
 
 type DomainCharacterStatDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    IsBaseStat bool
    Title *string
+   UpdatedAt *string
 }
 
 type DomainCharacterStatDTOManyToOneRelationships struct {
@@ -62,11 +64,13 @@ func DomainCharacterStatToDomainCharacterStatDTO(db *gorm.DB, domainCharacterSta
       Id: domainCharacterStat.Id,
       Attributes: DomainCharacterStatDTOAttributes{
          AbbreviatedTitle: domainCharacterStat.AbbreviatedTitle,
+         CreatedAt: domainCharacterStat.CreatedAt,
          Description: domainCharacterStat.Description,
          
          IsActive: domainCharacterStat.IsActive,
          IsBaseStat: domainCharacterStat.IsBaseStat,
          Title: domainCharacterStat.Title,
+         UpdatedAt: domainCharacterStat.UpdatedAt,
       },
       Relationships: DomainCharacterStatDTORelationships{
          ManyToOne: DomainCharacterStatDTOManyToOneRelationships {
@@ -82,11 +86,13 @@ func DomainCharacterStatDTOToDomainCharacterStat(domainCharacterStat *DomainChar
    
    tableTypeBuffer.Id = domainCharacterStat.Id
    tableTypeBuffer.AbbreviatedTitle = domainCharacterStat.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = domainCharacterStat.Attributes.CreatedAt
    tableTypeBuffer.Description = domainCharacterStat.Attributes.Description
    
    tableTypeBuffer.IsActive = domainCharacterStat.Attributes.IsActive
    tableTypeBuffer.IsBaseStat = domainCharacterStat.Attributes.IsBaseStat
    tableTypeBuffer.Title = domainCharacterStat.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainCharacterStat.Attributes.UpdatedAt
    
    return &tableTypeBuffer
 }

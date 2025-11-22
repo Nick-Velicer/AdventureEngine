@@ -18,11 +18,13 @@ type DomainSizeDTOAttributes struct {
    AbbreviatedTitle *string
    BaseHexArea float64
    BaseTileArea float64
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    SizeOrder float64
    Title *string
+   UpdatedAt *string
 }
 
 type DomainSizeDTOManyToOneRelationships struct {
@@ -66,11 +68,13 @@ func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traver
          AbbreviatedTitle: domainSize.AbbreviatedTitle,
          BaseHexArea: domainSize.BaseHexArea,
          BaseTileArea: domainSize.BaseTileArea,
+         CreatedAt: domainSize.CreatedAt,
          Description: domainSize.Description,
          
          IsActive: domainSize.IsActive,
          SizeOrder: domainSize.SizeOrder,
          Title: domainSize.Title,
+         UpdatedAt: domainSize.UpdatedAt,
       },
       Relationships: DomainSizeDTORelationships{
          ManyToOne: DomainSizeDTOManyToOneRelationships {
@@ -88,11 +92,13 @@ func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) *types.DomainSize {
    tableTypeBuffer.AbbreviatedTitle = domainSize.Attributes.AbbreviatedTitle
    tableTypeBuffer.BaseHexArea = domainSize.Attributes.BaseHexArea
    tableTypeBuffer.BaseTileArea = domainSize.Attributes.BaseTileArea
+   tableTypeBuffer.CreatedAt = domainSize.Attributes.CreatedAt
    tableTypeBuffer.Description = domainSize.Attributes.Description
    
    tableTypeBuffer.IsActive = domainSize.Attributes.IsActive
    tableTypeBuffer.SizeOrder = domainSize.Attributes.SizeOrder
    tableTypeBuffer.Title = domainSize.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainSize.Attributes.UpdatedAt
    
    return &tableTypeBuffer
 }

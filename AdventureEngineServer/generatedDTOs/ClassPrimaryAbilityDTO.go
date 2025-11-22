@@ -16,10 +16,12 @@ import (
 
 type ClassPrimaryAbilityDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type ClassPrimaryAbilityDTOManyToOneRelationships struct {
@@ -79,10 +81,12 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(db *gorm.DB, classPrimaryAbilit
       Id: classPrimaryAbility.Id,
       Attributes: ClassPrimaryAbilityDTOAttributes{
          AbbreviatedTitle: classPrimaryAbility.AbbreviatedTitle,
+         CreatedAt: classPrimaryAbility.CreatedAt,
          Description: classPrimaryAbility.Description,
          
          IsActive: classPrimaryAbility.IsActive,
          Title: classPrimaryAbility.Title,
+         UpdatedAt: classPrimaryAbility.UpdatedAt,
       },
       Relationships: ClassPrimaryAbilityDTORelationships{
          ManyToOne: ClassPrimaryAbilityDTOManyToOneRelationships {
@@ -100,10 +104,12 @@ func ClassPrimaryAbilityDTOToClassPrimaryAbility(classPrimaryAbility *ClassPrima
    
    tableTypeBuffer.Id = classPrimaryAbility.Id
    tableTypeBuffer.AbbreviatedTitle = classPrimaryAbility.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = classPrimaryAbility.Attributes.CreatedAt
    tableTypeBuffer.Description = classPrimaryAbility.Attributes.Description
    
    tableTypeBuffer.IsActive = classPrimaryAbility.Attributes.IsActive
    tableTypeBuffer.Title = classPrimaryAbility.Attributes.Title
+   tableTypeBuffer.UpdatedAt = classPrimaryAbility.Attributes.UpdatedAt
    
    if (classPrimaryAbility.Relationships.ManyToOne.Class__DomainClass != nil) {
       tableTypeBuffer.Class__DomainClass = classPrimaryAbility.Relationships.ManyToOne.Class__DomainClass.Id

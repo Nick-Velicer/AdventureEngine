@@ -6,7 +6,7 @@ import { AppTypes } from "../types/appTypes/appTypes";
 import type { SchemaObject } from "../types/SchemaObject";
 
 export type ServiceInterface<T> = {
-   getAllItems: () => Promise<Array<T>>
+   getAllItems: (...params: any) => Promise<Array<T>>
    getItemById: (id: number) => Promise<T>
    saveItem: <G extends T | T[]>(item: G) => Promise<G>
 }
@@ -32,13 +32,13 @@ export function composeQueryBuilderContext<
 ) {
    return {
       //Campaign
-      useGetCampaignsQuery: () => queryHandler({
-         key: ["getCampaigns"],
-         query: () => services.Campaign.getAllItems()
-      }),
+      useGetCampaignsQuery: <H extends Parameters<typeof services.Campaign.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getCampaigns", params?.toString()],
+            query: () => services.Campaign.getAllItems(...params)
+         });
+      },
       useGetCampaignByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getCampaignById", id.toString()],
             query: () => services.Campaign.getItemById(id)
@@ -60,13 +60,13 @@ export function composeQueryBuilderContext<
       },
       
       //Character
-      useGetCharactersQuery: () => queryHandler({
-         key: ["getCharacters"],
-         query: () => services.Character.getAllItems()
-      }),
+      useGetCharactersQuery: <H extends Parameters<typeof services.Character.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getCharacters", params?.toString()],
+            query: () => services.Character.getAllItems(...params)
+         });
+      },
       useGetCharacterByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getCharacterById", id.toString()],
             query: () => services.Character.getItemById(id)
@@ -94,13 +94,13 @@ export function composeQueryBuilderContext<
       },
       
       //CharacterDomainCharacterStatInstance
-      useGetCharacterDomainCharacterStatInstancesQuery: () => queryHandler({
-         key: ["getCharacterDomainCharacterStatInstances"],
-         query: () => services.CharacterDomainCharacterStatInstance.getAllItems()
-      }),
+      useGetCharacterDomainCharacterStatInstancesQuery: <H extends Parameters<typeof services.CharacterDomainCharacterStatInstance.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getCharacterDomainCharacterStatInstances", params?.toString()],
+            query: () => services.CharacterDomainCharacterStatInstance.getAllItems(...params)
+         });
+      },
       useGetCharacterDomainCharacterStatInstanceByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getCharacterDomainCharacterStatInstanceById", id.toString()],
             query: () => services.CharacterDomainCharacterStatInstance.getItemById(id)
@@ -126,13 +126,13 @@ export function composeQueryBuilderContext<
       },
       
       //CharacterDomainConditionInstance
-      useGetCharacterDomainConditionInstancesQuery: () => queryHandler({
-         key: ["getCharacterDomainConditionInstances"],
-         query: () => services.CharacterDomainConditionInstance.getAllItems()
-      }),
+      useGetCharacterDomainConditionInstancesQuery: <H extends Parameters<typeof services.CharacterDomainConditionInstance.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getCharacterDomainConditionInstances", params?.toString()],
+            query: () => services.CharacterDomainConditionInstance.getAllItems(...params)
+         });
+      },
       useGetCharacterDomainConditionInstanceByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getCharacterDomainConditionInstanceById", id.toString()],
             query: () => services.CharacterDomainConditionInstance.getItemById(id)
@@ -158,13 +158,13 @@ export function composeQueryBuilderContext<
       },
       
       //CharacterDomainSubClassInstance
-      useGetCharacterDomainSubClassInstancesQuery: () => queryHandler({
-         key: ["getCharacterDomainSubClassInstances"],
-         query: () => services.CharacterDomainSubClassInstance.getAllItems()
-      }),
+      useGetCharacterDomainSubClassInstancesQuery: <H extends Parameters<typeof services.CharacterDomainSubClassInstance.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getCharacterDomainSubClassInstances", params?.toString()],
+            query: () => services.CharacterDomainSubClassInstance.getAllItems(...params)
+         });
+      },
       useGetCharacterDomainSubClassInstanceByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getCharacterDomainSubClassInstanceById", id.toString()],
             query: () => services.CharacterDomainSubClassInstance.getItemById(id)
@@ -190,13 +190,13 @@ export function composeQueryBuilderContext<
       },
       
       //ClassPrimaryAbility
-      useGetClassPrimaryAbilitysQuery: () => queryHandler({
-         key: ["getClassPrimaryAbilitys"],
-         query: () => services.ClassPrimaryAbility.getAllItems()
-      }),
+      useGetClassPrimaryAbilitysQuery: <H extends Parameters<typeof services.ClassPrimaryAbility.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getClassPrimaryAbilitys", params?.toString()],
+            query: () => services.ClassPrimaryAbility.getAllItems(...params)
+         });
+      },
       useGetClassPrimaryAbilityByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getClassPrimaryAbilityById", id.toString()],
             query: () => services.ClassPrimaryAbility.getItemById(id)
@@ -222,13 +222,13 @@ export function composeQueryBuilderContext<
       },
       
       //ClassSave
-      useGetClassSavesQuery: () => queryHandler({
-         key: ["getClassSaves"],
-         query: () => services.ClassSave.getAllItems()
-      }),
+      useGetClassSavesQuery: <H extends Parameters<typeof services.ClassSave.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getClassSaves", params?.toString()],
+            query: () => services.ClassSave.getAllItems(...params)
+         });
+      },
       useGetClassSaveByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getClassSaveById", id.toString()],
             query: () => services.ClassSave.getItemById(id)
@@ -254,13 +254,13 @@ export function composeQueryBuilderContext<
       },
       
       //ClassSpell
-      useGetClassSpellsQuery: () => queryHandler({
-         key: ["getClassSpells"],
-         query: () => services.ClassSpell.getAllItems()
-      }),
+      useGetClassSpellsQuery: <H extends Parameters<typeof services.ClassSpell.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getClassSpells", params?.toString()],
+            query: () => services.ClassSpell.getAllItems(...params)
+         });
+      },
       useGetClassSpellByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getClassSpellById", id.toString()],
             query: () => services.ClassSpell.getItemById(id)
@@ -286,13 +286,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainAction
-      useGetDomainActionsQuery: () => queryHandler({
-         key: ["getDomainActions"],
-         query: () => services.DomainAction.getAllItems()
-      }),
+      useGetDomainActionsQuery: <H extends Parameters<typeof services.DomainAction.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainActions", params?.toString()],
+            query: () => services.DomainAction.getAllItems(...params)
+         });
+      },
       useGetDomainActionByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainActionById", id.toString()],
             query: () => services.DomainAction.getItemById(id)
@@ -314,13 +314,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainCharacterStat
-      useGetDomainCharacterStatsQuery: () => queryHandler({
-         key: ["getDomainCharacterStats"],
-         query: () => services.DomainCharacterStat.getAllItems()
-      }),
+      useGetDomainCharacterStatsQuery: <H extends Parameters<typeof services.DomainCharacterStat.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainCharacterStats", params?.toString()],
+            query: () => services.DomainCharacterStat.getAllItems(...params)
+         });
+      },
       useGetDomainCharacterStatByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainCharacterStatById", id.toString()],
             query: () => services.DomainCharacterStat.getItemById(id)
@@ -342,13 +342,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainClass
-      useGetDomainClasssQuery: () => queryHandler({
-         key: ["getDomainClasss"],
-         query: () => services.DomainClass.getAllItems()
-      }),
+      useGetDomainClasssQuery: <H extends Parameters<typeof services.DomainClass.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainClasss", params?.toString()],
+            query: () => services.DomainClass.getAllItems(...params)
+         });
+      },
       useGetDomainClassByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainClassById", id.toString()],
             query: () => services.DomainClass.getItemById(id)
@@ -374,13 +374,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainClassResource
-      useGetDomainClassResourcesQuery: () => queryHandler({
-         key: ["getDomainClassResources"],
-         query: () => services.DomainClassResource.getAllItems()
-      }),
+      useGetDomainClassResourcesQuery: <H extends Parameters<typeof services.DomainClassResource.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainClassResources", params?.toString()],
+            query: () => services.DomainClassResource.getAllItems(...params)
+         });
+      },
       useGetDomainClassResourceByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainClassResourceById", id.toString()],
             query: () => services.DomainClassResource.getItemById(id)
@@ -406,13 +406,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainClassTrait
-      useGetDomainClassTraitsQuery: () => queryHandler({
-         key: ["getDomainClassTraits"],
-         query: () => services.DomainClassTrait.getAllItems()
-      }),
+      useGetDomainClassTraitsQuery: <H extends Parameters<typeof services.DomainClassTrait.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainClassTraits", params?.toString()],
+            query: () => services.DomainClassTrait.getAllItems(...params)
+         });
+      },
       useGetDomainClassTraitByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainClassTraitById", id.toString()],
             query: () => services.DomainClassTrait.getItemById(id)
@@ -438,13 +438,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainCondition
-      useGetDomainConditionsQuery: () => queryHandler({
-         key: ["getDomainConditions"],
-         query: () => services.DomainCondition.getAllItems()
-      }),
+      useGetDomainConditionsQuery: <H extends Parameters<typeof services.DomainCondition.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainConditions", params?.toString()],
+            query: () => services.DomainCondition.getAllItems(...params)
+         });
+      },
       useGetDomainConditionByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainConditionById", id.toString()],
             query: () => services.DomainCondition.getItemById(id)
@@ -466,13 +466,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainCreatureType
-      useGetDomainCreatureTypesQuery: () => queryHandler({
-         key: ["getDomainCreatureTypes"],
-         query: () => services.DomainCreatureType.getAllItems()
-      }),
+      useGetDomainCreatureTypesQuery: <H extends Parameters<typeof services.DomainCreatureType.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainCreatureTypes", params?.toString()],
+            query: () => services.DomainCreatureType.getAllItems(...params)
+         });
+      },
       useGetDomainCreatureTypeByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainCreatureTypeById", id.toString()],
             query: () => services.DomainCreatureType.getItemById(id)
@@ -494,13 +494,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainDamageType
-      useGetDomainDamageTypesQuery: () => queryHandler({
-         key: ["getDomainDamageTypes"],
-         query: () => services.DomainDamageType.getAllItems()
-      }),
+      useGetDomainDamageTypesQuery: <H extends Parameters<typeof services.DomainDamageType.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainDamageTypes", params?.toString()],
+            query: () => services.DomainDamageType.getAllItems(...params)
+         });
+      },
       useGetDomainDamageTypeByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainDamageTypeById", id.toString()],
             query: () => services.DomainDamageType.getItemById(id)
@@ -522,13 +522,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainDice
-      useGetDomainDicesQuery: () => queryHandler({
-         key: ["getDomainDices"],
-         query: () => services.DomainDice.getAllItems()
-      }),
+      useGetDomainDicesQuery: <H extends Parameters<typeof services.DomainDice.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainDices", params?.toString()],
+            query: () => services.DomainDice.getAllItems(...params)
+         });
+      },
       useGetDomainDiceByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainDiceById", id.toString()],
             query: () => services.DomainDice.getItemById(id)
@@ -550,13 +550,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainDiceRollSubType
-      useGetDomainDiceRollSubTypesQuery: () => queryHandler({
-         key: ["getDomainDiceRollSubTypes"],
-         query: () => services.DomainDiceRollSubType.getAllItems()
-      }),
+      useGetDomainDiceRollSubTypesQuery: <H extends Parameters<typeof services.DomainDiceRollSubType.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainDiceRollSubTypes", params?.toString()],
+            query: () => services.DomainDiceRollSubType.getAllItems(...params)
+         });
+      },
       useGetDomainDiceRollSubTypeByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainDiceRollSubTypeById", id.toString()],
             query: () => services.DomainDiceRollSubType.getItemById(id)
@@ -580,13 +580,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainDiceRollType
-      useGetDomainDiceRollTypesQuery: () => queryHandler({
-         key: ["getDomainDiceRollTypes"],
-         query: () => services.DomainDiceRollType.getAllItems()
-      }),
+      useGetDomainDiceRollTypesQuery: <H extends Parameters<typeof services.DomainDiceRollType.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainDiceRollTypes", params?.toString()],
+            query: () => services.DomainDiceRollType.getAllItems(...params)
+         });
+      },
       useGetDomainDiceRollTypeByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainDiceRollTypeById", id.toString()],
             query: () => services.DomainDiceRollType.getItemById(id)
@@ -608,13 +608,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainItem
-      useGetDomainItemsQuery: () => queryHandler({
-         key: ["getDomainItems"],
-         query: () => services.DomainItem.getAllItems()
-      }),
+      useGetDomainItemsQuery: <H extends Parameters<typeof services.DomainItem.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainItems", params?.toString()],
+            query: () => services.DomainItem.getAllItems(...params)
+         });
+      },
       useGetDomainItemByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainItemById", id.toString()],
             query: () => services.DomainItem.getItemById(id)
@@ -640,13 +640,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainSize
-      useGetDomainSizesQuery: () => queryHandler({
-         key: ["getDomainSizes"],
-         query: () => services.DomainSize.getAllItems()
-      }),
+      useGetDomainSizesQuery: <H extends Parameters<typeof services.DomainSize.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainSizes", params?.toString()],
+            query: () => services.DomainSize.getAllItems(...params)
+         });
+      },
       useGetDomainSizeByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainSizeById", id.toString()],
             query: () => services.DomainSize.getItemById(id)
@@ -668,13 +668,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainSpecies
-      useGetDomainSpeciessQuery: () => queryHandler({
-         key: ["getDomainSpeciess"],
-         query: () => services.DomainSpecies.getAllItems()
-      }),
+      useGetDomainSpeciessQuery: <H extends Parameters<typeof services.DomainSpecies.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainSpeciess", params?.toString()],
+            query: () => services.DomainSpecies.getAllItems(...params)
+         });
+      },
       useGetDomainSpeciesByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainSpeciesById", id.toString()],
             query: () => services.DomainSpecies.getItemById(id)
@@ -698,13 +698,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainSpell
-      useGetDomainSpellsQuery: () => queryHandler({
-         key: ["getDomainSpells"],
-         query: () => services.DomainSpell.getAllItems()
-      }),
+      useGetDomainSpellsQuery: <H extends Parameters<typeof services.DomainSpell.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainSpells", params?.toString()],
+            query: () => services.DomainSpell.getAllItems(...params)
+         });
+      },
       useGetDomainSpellByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainSpellById", id.toString()],
             query: () => services.DomainSpell.getItemById(id)
@@ -730,13 +730,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainSpellSchool
-      useGetDomainSpellSchoolsQuery: () => queryHandler({
-         key: ["getDomainSpellSchools"],
-         query: () => services.DomainSpellSchool.getAllItems()
-      }),
+      useGetDomainSpellSchoolsQuery: <H extends Parameters<typeof services.DomainSpellSchool.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainSpellSchools", params?.toString()],
+            query: () => services.DomainSpellSchool.getAllItems(...params)
+         });
+      },
       useGetDomainSpellSchoolByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainSpellSchoolById", id.toString()],
             query: () => services.DomainSpellSchool.getItemById(id)
@@ -758,13 +758,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainStaticEffect
-      useGetDomainStaticEffectsQuery: () => queryHandler({
-         key: ["getDomainStaticEffects"],
-         query: () => services.DomainStaticEffect.getAllItems()
-      }),
+      useGetDomainStaticEffectsQuery: <H extends Parameters<typeof services.DomainStaticEffect.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainStaticEffects", params?.toString()],
+            query: () => services.DomainStaticEffect.getAllItems(...params)
+         });
+      },
       useGetDomainStaticEffectByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainStaticEffectById", id.toString()],
             query: () => services.DomainStaticEffect.getItemById(id)
@@ -786,13 +786,13 @@ export function composeQueryBuilderContext<
       },
       
       //DomainSubClass
-      useGetDomainSubClasssQuery: () => queryHandler({
-         key: ["getDomainSubClasss"],
-         query: () => services.DomainSubClass.getAllItems()
-      }),
+      useGetDomainSubClasssQuery: <H extends Parameters<typeof services.DomainSubClass.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainSubClasss", params?.toString()],
+            query: () => services.DomainSubClass.getAllItems(...params)
+         });
+      },
       useGetDomainSubClassByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getDomainSubClassById", id.toString()],
             query: () => services.DomainSubClass.getItemById(id)
@@ -816,13 +816,13 @@ export function composeQueryBuilderContext<
       },
       
       //EvaluatedConditional
-      useGetEvaluatedConditionalsQuery: () => queryHandler({
-         key: ["getEvaluatedConditionals"],
-         query: () => services.EvaluatedConditional.getAllItems()
-      }),
+      useGetEvaluatedConditionalsQuery: <H extends Parameters<typeof services.EvaluatedConditional.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getEvaluatedConditionals", params?.toString()],
+            query: () => services.EvaluatedConditional.getAllItems(...params)
+         });
+      },
       useGetEvaluatedConditionalByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getEvaluatedConditionalById", id.toString()],
             query: () => services.EvaluatedConditional.getItemById(id)
@@ -850,13 +850,13 @@ export function composeQueryBuilderContext<
       },
       
       //Quantifier
-      useGetQuantifiersQuery: () => queryHandler({
-         key: ["getQuantifiers"],
-         query: () => services.Quantifier.getAllItems()
-      }),
+      useGetQuantifiersQuery: <H extends Parameters<typeof services.Quantifier.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getQuantifiers", params?.toString()],
+            query: () => services.Quantifier.getAllItems(...params)
+         });
+      },
       useGetQuantifierByIdQuery: (id: number) => {
-         //For some reason queries with args does not work without the extra function body/return.
-         //Not a huge deal, but apparently a Colada quirk for dynamic-ish queries
          return queryHandler({
             key: ["getQuantifierById", id.toString()],
             query: () => services.Quantifier.getItemById(id)
@@ -900,6 +900,34 @@ export function composeQueryBuilderContext<
                   "getDomainSpellById",
                   "getDomainConditionById",
                   "getDomainDamageTypeById",
+               ]);
+            }
+         });
+      },
+      
+      //User
+      useGetUsersQuery: <H extends Parameters<typeof services.User.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getUsers", params?.toString()],
+            query: () => services.User.getAllItems(...params)
+         });
+      },
+      useGetUserByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getUserById", id.toString()],
+            query: () => services.User.getItemById(id)
+         });
+      },
+      useSaveUserMutation: <H extends Parameters<typeof services.User.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.User.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });

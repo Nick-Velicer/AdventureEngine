@@ -16,12 +16,14 @@ import (
 
 type CharacterDomainConditionInstanceDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Source string
    Target string
    Title *string
+   UpdatedAt *string
 }
 
 type CharacterDomainConditionInstanceDTOManyToOneRelationships struct {
@@ -81,12 +83,14 @@ func CharacterDomainConditionInstanceToCharacterDomainConditionInstanceDTO(db *g
       Id: characterDomainConditionInstance.Id,
       Attributes: CharacterDomainConditionInstanceDTOAttributes{
          AbbreviatedTitle: characterDomainConditionInstance.AbbreviatedTitle,
+         CreatedAt: characterDomainConditionInstance.CreatedAt,
          Description: characterDomainConditionInstance.Description,
          
          IsActive: characterDomainConditionInstance.IsActive,
          Source: characterDomainConditionInstance.Source,
          Target: characterDomainConditionInstance.Target,
          Title: characterDomainConditionInstance.Title,
+         UpdatedAt: characterDomainConditionInstance.UpdatedAt,
       },
       Relationships: CharacterDomainConditionInstanceDTORelationships{
          ManyToOne: CharacterDomainConditionInstanceDTOManyToOneRelationships {
@@ -104,12 +108,14 @@ func CharacterDomainConditionInstanceDTOToCharacterDomainConditionInstance(chara
    
    tableTypeBuffer.Id = characterDomainConditionInstance.Id
    tableTypeBuffer.AbbreviatedTitle = characterDomainConditionInstance.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = characterDomainConditionInstance.Attributes.CreatedAt
    tableTypeBuffer.Description = characterDomainConditionInstance.Attributes.Description
    
    tableTypeBuffer.IsActive = characterDomainConditionInstance.Attributes.IsActive
    tableTypeBuffer.Source = characterDomainConditionInstance.Attributes.Source
    tableTypeBuffer.Target = characterDomainConditionInstance.Attributes.Target
    tableTypeBuffer.Title = characterDomainConditionInstance.Attributes.Title
+   tableTypeBuffer.UpdatedAt = characterDomainConditionInstance.Attributes.UpdatedAt
    
    if (characterDomainConditionInstance.Relationships.ManyToOne.Character__Character != nil) {
       tableTypeBuffer.Character__Character = characterDomainConditionInstance.Relationships.ManyToOne.Character__Character.Id

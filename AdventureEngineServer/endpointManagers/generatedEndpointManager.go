@@ -103,4 +103,7 @@ func ApplyGeneratedEndpoints(router *gin.Engine, db *gorm.DB) {
    router.GET("/getQuantifierConditionalMaps", produceDBContextInjectedEndpoint(router, db, controllers.GetQuantifierConditionalMaps))
    router.GET("/getQuantifierConditionalMap/:id", produceDBContextInjectedEndpoint(router, db, controllers.GetQuantifierConditionalMapById))
    router.POST("/saveQuantifierConditionalMap", produceDBContextInjectedEndpoint(router, db, controllers.SaveQuantifierConditionalMap))
+   router.GET("/getUsers", produceDBContextInjectedEndpoint(router, db, controllers.GetUsers))
+   router.GET("/getUser/:id", produceDBContextInjectedEndpoint(router, db, controllers.GetUserById))
+   router.POST("/saveUser", produceDBContextInjectedEndpoint(router, db, controllers.SaveUser))
 }

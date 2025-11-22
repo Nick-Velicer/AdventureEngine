@@ -3,10 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainDice } from "../../types/appTypes/appTypes";
+import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
 
-export async function getDomainDices(): Promise<DomainDice[]> {
+export async function getDomainDices(filter?: FilterAST<DomainDice>): Promise<DomainDice[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainDices");
+      const response = await fetch("http://localhost:8080/getDomainDices" + produceFilterExtensionFromAST(filter));
       const returnObj = await response.json() as unknown as Array<DomainDice>;
       return returnObj;
    }

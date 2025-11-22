@@ -16,10 +16,12 @@ import (
 
 type DomainStaticEffectDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type DomainStaticEffectDTOManyToOneRelationships struct {
@@ -61,10 +63,12 @@ func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *
       Id: domainStaticEffect.Id,
       Attributes: DomainStaticEffectDTOAttributes{
          AbbreviatedTitle: domainStaticEffect.AbbreviatedTitle,
+         CreatedAt: domainStaticEffect.CreatedAt,
          Description: domainStaticEffect.Description,
          
          IsActive: domainStaticEffect.IsActive,
          Title: domainStaticEffect.Title,
+         UpdatedAt: domainStaticEffect.UpdatedAt,
       },
       Relationships: DomainStaticEffectDTORelationships{
          ManyToOne: DomainStaticEffectDTOManyToOneRelationships {
@@ -80,10 +84,12 @@ func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticE
    
    tableTypeBuffer.Id = domainStaticEffect.Id
    tableTypeBuffer.AbbreviatedTitle = domainStaticEffect.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = domainStaticEffect.Attributes.CreatedAt
    tableTypeBuffer.Description = domainStaticEffect.Attributes.Description
    
    tableTypeBuffer.IsActive = domainStaticEffect.Attributes.IsActive
    tableTypeBuffer.Title = domainStaticEffect.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainStaticEffect.Attributes.UpdatedAt
    
    return &tableTypeBuffer
 }

@@ -13,6 +13,9 @@ type CharacterDomainConditionInstance struct {
 	// "Condition__DomainCondition".
 	Condition__DomainCondition *int `json:"Condition__DomainCondition" gorm:"column:Condition__DomainCondition" mapstructure:"Condition__DomainCondition"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
@@ -30,4 +33,7 @@ type CharacterDomainConditionInstance struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 }

@@ -16,11 +16,13 @@ import (
 
 type DomainItemDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    CustomEffectText *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type DomainItemDTOManyToOneRelationships struct {
@@ -80,11 +82,13 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
       Id: domainItem.Id,
       Attributes: DomainItemDTOAttributes{
          AbbreviatedTitle: domainItem.AbbreviatedTitle,
+         CreatedAt: domainItem.CreatedAt,
          CustomEffectText: domainItem.CustomEffectText,
          Description: domainItem.Description,
          
          IsActive: domainItem.IsActive,
          Title: domainItem.Title,
+         UpdatedAt: domainItem.UpdatedAt,
       },
       Relationships: DomainItemDTORelationships{
          ManyToOne: DomainItemDTOManyToOneRelationships {
@@ -102,11 +106,13 @@ func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) *types.DomainItem {
    
    tableTypeBuffer.Id = domainItem.Id
    tableTypeBuffer.AbbreviatedTitle = domainItem.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = domainItem.Attributes.CreatedAt
    tableTypeBuffer.CustomEffectText = domainItem.Attributes.CustomEffectText
    tableTypeBuffer.Description = domainItem.Attributes.Description
    
    tableTypeBuffer.IsActive = domainItem.Attributes.IsActive
    tableTypeBuffer.Title = domainItem.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainItem.Attributes.UpdatedAt
    
    if (domainItem.Relationships.ManyToOne.OneHanded__Quantifier != nil) {
       tableTypeBuffer.OneHanded__Quantifier = domainItem.Relationships.ManyToOne.OneHanded__Quantifier.Id

@@ -6,6 +6,9 @@ type DomainItem struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
 	// CustomEffectText corresponds to the JSON schema field "CustomEffectText".
 	CustomEffectText *string `json:"CustomEffectText" gorm:"column:CustomEffectText" mapstructure:"CustomEffectText"`
 
@@ -28,4 +31,7 @@ type DomainItem struct {
 	// TwoHandedQuantifier corresponds to the JSON schema field
 	// "TwoHanded__Quantifier".
 	TwoHanded__Quantifier *int `json:"TwoHanded__Quantifier" gorm:"column:TwoHanded__Quantifier" mapstructure:"TwoHanded__Quantifier"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 }

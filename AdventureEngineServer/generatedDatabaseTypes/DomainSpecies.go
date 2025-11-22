@@ -6,6 +6,9 @@ type DomainSpecies struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
 	// CreatureTypeDomainCreatureType corresponds to the JSON schema field
 	// "CreatureType__DomainCreatureType".
 	CreatureType__DomainCreatureType *int `json:"CreatureType__DomainCreatureType" gorm:"column:CreatureType__DomainCreatureType" mapstructure:"CreatureType__DomainCreatureType"`
@@ -21,4 +24,7 @@ type DomainSpecies struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 }

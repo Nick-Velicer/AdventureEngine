@@ -16,11 +16,13 @@ import (
 
 type CharacterDomainSubClassInstanceDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Level float64
    Title *string
+   UpdatedAt *string
 }
 
 type CharacterDomainSubClassInstanceDTOManyToOneRelationships struct {
@@ -80,11 +82,13 @@ func CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db *gor
       Id: characterDomainSubClassInstance.Id,
       Attributes: CharacterDomainSubClassInstanceDTOAttributes{
          AbbreviatedTitle: characterDomainSubClassInstance.AbbreviatedTitle,
+         CreatedAt: characterDomainSubClassInstance.CreatedAt,
          Description: characterDomainSubClassInstance.Description,
          
          IsActive: characterDomainSubClassInstance.IsActive,
          Level: characterDomainSubClassInstance.Level,
          Title: characterDomainSubClassInstance.Title,
+         UpdatedAt: characterDomainSubClassInstance.UpdatedAt,
       },
       Relationships: CharacterDomainSubClassInstanceDTORelationships{
          ManyToOne: CharacterDomainSubClassInstanceDTOManyToOneRelationships {
@@ -102,11 +106,13 @@ func CharacterDomainSubClassInstanceDTOToCharacterDomainSubClassInstance(charact
    
    tableTypeBuffer.Id = characterDomainSubClassInstance.Id
    tableTypeBuffer.AbbreviatedTitle = characterDomainSubClassInstance.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = characterDomainSubClassInstance.Attributes.CreatedAt
    tableTypeBuffer.Description = characterDomainSubClassInstance.Attributes.Description
    
    tableTypeBuffer.IsActive = characterDomainSubClassInstance.Attributes.IsActive
    tableTypeBuffer.Level = characterDomainSubClassInstance.Attributes.Level
    tableTypeBuffer.Title = characterDomainSubClassInstance.Attributes.Title
+   tableTypeBuffer.UpdatedAt = characterDomainSubClassInstance.Attributes.UpdatedAt
    
    if (characterDomainSubClassInstance.Relationships.ManyToOne.Character__Character != nil) {
       tableTypeBuffer.Character__Character = characterDomainSubClassInstance.Relationships.ManyToOne.Character__Character.Id

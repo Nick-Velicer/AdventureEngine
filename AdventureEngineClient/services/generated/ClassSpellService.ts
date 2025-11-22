@@ -3,10 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type ClassSpell } from "../../types/appTypes/appTypes";
+import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
 
-export async function getClassSpells(): Promise<ClassSpell[]> {
+export async function getClassSpells(filter?: FilterAST<ClassSpell>): Promise<ClassSpell[]> {
    try {
-      const response = await fetch("http://localhost:8080/getClassSpells");
+      const response = await fetch("http://localhost:8080/getClassSpells" + produceFilterExtensionFromAST(filter));
       const returnObj = await response.json() as unknown as Array<ClassSpell>;
       return returnObj;
    }

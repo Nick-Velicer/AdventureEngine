@@ -9,6 +9,9 @@ type Character struct {
 	// CampaignCampaign corresponds to the JSON schema field "Campaign__Campaign".
 	Campaign__Campaign *int `json:"Campaign__Campaign" gorm:"column:Campaign__Campaign" mapstructure:"Campaign__Campaign"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
 	// CurrentSizeDomainSize corresponds to the JSON schema field
 	// "CurrentSize__DomainSize".
 	CurrentSize__DomainSize *int `json:"CurrentSize__DomainSize" gorm:"column:CurrentSize__DomainSize" mapstructure:"CurrentSize__DomainSize"`
@@ -34,4 +37,7 @@ type Character struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 }

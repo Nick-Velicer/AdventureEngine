@@ -16,10 +16,12 @@ import (
 
 type DomainClassDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type DomainClassDTOManyToOneRelationships struct {
@@ -106,10 +108,12 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
       Id: domainClass.Id,
       Attributes: DomainClassDTOAttributes{
          AbbreviatedTitle: domainClass.AbbreviatedTitle,
+         CreatedAt: domainClass.CreatedAt,
          Description: domainClass.Description,
          
          IsActive: domainClass.IsActive,
          Title: domainClass.Title,
+         UpdatedAt: domainClass.UpdatedAt,
       },
       Relationships: DomainClassDTORelationships{
          ManyToOne: DomainClassDTOManyToOneRelationships {
@@ -130,10 +134,12 @@ func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) *types.DomainClass
    
    tableTypeBuffer.Id = domainClass.Id
    tableTypeBuffer.AbbreviatedTitle = domainClass.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = domainClass.Attributes.CreatedAt
    tableTypeBuffer.Description = domainClass.Attributes.Description
    
    tableTypeBuffer.IsActive = domainClass.Attributes.IsActive
    tableTypeBuffer.Title = domainClass.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainClass.Attributes.UpdatedAt
    
    if (domainClass.Relationships.ManyToOne.HitDie__DomainDice != nil) {
       tableTypeBuffer.HitDie__DomainDice = domainClass.Relationships.ManyToOne.HitDie__DomainDice.Id

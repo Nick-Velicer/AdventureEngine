@@ -16,10 +16,12 @@ import (
 
 type DomainConditionDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
    Title *string
+   UpdatedAt *string
 }
 
 type DomainConditionDTOManyToOneRelationships struct {
@@ -70,10 +72,12 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
       Id: domainCondition.Id,
       Attributes: DomainConditionDTOAttributes{
          AbbreviatedTitle: domainCondition.AbbreviatedTitle,
+         CreatedAt: domainCondition.CreatedAt,
          Description: domainCondition.Description,
          
          IsActive: domainCondition.IsActive,
          Title: domainCondition.Title,
+         UpdatedAt: domainCondition.UpdatedAt,
       },
       Relationships: DomainConditionDTORelationships{
          ManyToOne: DomainConditionDTOManyToOneRelationships {
@@ -90,10 +94,12 @@ func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) *t
    
    tableTypeBuffer.Id = domainCondition.Id
    tableTypeBuffer.AbbreviatedTitle = domainCondition.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = domainCondition.Attributes.CreatedAt
    tableTypeBuffer.Description = domainCondition.Attributes.Description
    
    tableTypeBuffer.IsActive = domainCondition.Attributes.IsActive
    tableTypeBuffer.Title = domainCondition.Attributes.Title
+   tableTypeBuffer.UpdatedAt = domainCondition.Attributes.UpdatedAt
    
    return &tableTypeBuffer
 }

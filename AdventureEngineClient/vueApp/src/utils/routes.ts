@@ -1,7 +1,9 @@
 import type { Component } from "vue";
-import CharacterManagement from "../pages/CharacterManagement.vue"
-import TableManagement from "../pages/TableManagement.vue"
+import CharacterManagement from "../pages/CharacterManagement.vue";
+import TableManagement from "../pages/TableManagement.vue";
 import NotFoundPage from "../pages/NotFoundPage.vue";
+import Home from "../pages/Home.vue";
+import CampaignManagement from "../pages/CampaignManagement.vue";
 
 type RouteMeta = {
     path: `/${string}`,
@@ -12,9 +14,21 @@ type RouteMeta = {
 
 export const routes = [
     { 
-        path: '/CharacterManagement', 
+        path: '/Home', 
+        component: Home,
+        title: "Home",
+        primaryNavigation: true
+    },
+    { 
+        path: '/CharacterManagement/:id', 
         component: CharacterManagement,
         title: "Character Management",
+        primaryNavigation: true
+    },
+    { 
+        path: '/CampaignManagement/:id', 
+        component: CampaignManagement,
+        title: "Campaign Management",
         primaryNavigation: true
     },
     { 

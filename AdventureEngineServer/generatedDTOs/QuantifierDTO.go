@@ -24,6 +24,7 @@ type QuantifierDTOAttributes struct {
    AppliesToTargets *bool
    AutomaticCritical *bool
    AutomaticFailure *bool
+   CreatedAt *string
    DeltaPercentage *float64
    DeltaQuantity *float64
    Description *string
@@ -65,6 +66,7 @@ type QuantifierDTOAttributes struct {
    Title *string
    UntilLongRest *bool
    UntilShortRest *bool
+   UpdatedAt *string
 }
 
 type QuantifierDTOManyToOneRelationships struct {
@@ -240,6 +242,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
          AppliesToTargets: quantifier.AppliesToTargets,
          AutomaticCritical: quantifier.AutomaticCritical,
          AutomaticFailure: quantifier.AutomaticFailure,
+         CreatedAt: quantifier.CreatedAt,
          DeltaPercentage: quantifier.DeltaPercentage,
          DeltaQuantity: quantifier.DeltaQuantity,
          Description: quantifier.Description,
@@ -281,6 +284,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
          Title: quantifier.Title,
          UntilLongRest: quantifier.UntilLongRest,
          UntilShortRest: quantifier.UntilShortRest,
+         UpdatedAt: quantifier.UpdatedAt,
       },
       Relationships: QuantifierDTORelationships{
          ManyToOne: QuantifierDTOManyToOneRelationships {
@@ -318,6 +322,7 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    tableTypeBuffer.AppliesToTargets = quantifier.Attributes.AppliesToTargets
    tableTypeBuffer.AutomaticCritical = quantifier.Attributes.AutomaticCritical
    tableTypeBuffer.AutomaticFailure = quantifier.Attributes.AutomaticFailure
+   tableTypeBuffer.CreatedAt = quantifier.Attributes.CreatedAt
    tableTypeBuffer.DeltaPercentage = quantifier.Attributes.DeltaPercentage
    tableTypeBuffer.DeltaQuantity = quantifier.Attributes.DeltaQuantity
    tableTypeBuffer.Description = quantifier.Attributes.Description
@@ -359,6 +364,7 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    tableTypeBuffer.Title = quantifier.Attributes.Title
    tableTypeBuffer.UntilLongRest = quantifier.Attributes.UntilLongRest
    tableTypeBuffer.UntilShortRest = quantifier.Attributes.UntilShortRest
+   tableTypeBuffer.UpdatedAt = quantifier.Attributes.UpdatedAt
    
    if (quantifier.Relationships.ManyToOne.Parent__DomainAction != nil) {
       tableTypeBuffer.Parent__DomainAction = quantifier.Relationships.ManyToOne.Parent__DomainAction.Id

@@ -34,6 +34,9 @@ type QuantifierJson struct {
 	// AutomaticFailure corresponds to the JSON schema field "AutomaticFailure".
 	AutomaticFailure *bool `json:"AutomaticFailure,omitempty" yaml:"AutomaticFailure,omitempty" mapstructure:"AutomaticFailure,omitempty"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
+
 	// DeltaPercentage corresponds to the JSON schema field "DeltaPercentage".
 	DeltaPercentage *float64 `json:"DeltaPercentage,omitempty" yaml:"DeltaPercentage,omitempty" mapstructure:"DeltaPercentage,omitempty"`
 
@@ -212,4 +215,7 @@ type QuantifierJson struct {
 
 	// UntilShortRest corresponds to the JSON schema field "UntilShortRest".
 	UntilShortRest *bool `json:"UntilShortRest,omitempty" yaml:"UntilShortRest,omitempty" mapstructure:"UntilShortRest,omitempty"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
 }

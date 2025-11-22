@@ -16,10 +16,13 @@ import (
 
 type CampaignDTOAttributes struct {
    AbbreviatedTitle *string
+   CreatedAt *string
    Description *string
    
    IsActive *bool
+   Notes string
    Title *string
+   UpdatedAt *string
 }
 
 type CampaignDTOManyToOneRelationships struct {
@@ -61,10 +64,13 @@ func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTable
       Id: campaign.Id,
       Attributes: CampaignDTOAttributes{
          AbbreviatedTitle: campaign.AbbreviatedTitle,
+         CreatedAt: campaign.CreatedAt,
          Description: campaign.Description,
          
          IsActive: campaign.IsActive,
+         Notes: campaign.Notes,
          Title: campaign.Title,
+         UpdatedAt: campaign.UpdatedAt,
       },
       Relationships: CampaignDTORelationships{
          ManyToOne: CampaignDTOManyToOneRelationships {
@@ -80,10 +86,13 @@ func CampaignDTOToCampaign(campaign *CampaignDTO) *types.Campaign {
    
    tableTypeBuffer.Id = campaign.Id
    tableTypeBuffer.AbbreviatedTitle = campaign.Attributes.AbbreviatedTitle
+   tableTypeBuffer.CreatedAt = campaign.Attributes.CreatedAt
    tableTypeBuffer.Description = campaign.Attributes.Description
    
    tableTypeBuffer.IsActive = campaign.Attributes.IsActive
+   tableTypeBuffer.Notes = campaign.Attributes.Notes
    tableTypeBuffer.Title = campaign.Attributes.Title
+   tableTypeBuffer.UpdatedAt = campaign.Attributes.UpdatedAt
    
    return &tableTypeBuffer
 }

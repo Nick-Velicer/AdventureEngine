@@ -6,6 +6,9 @@ type DomainSpeciesJson struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
 
+	// CreatedAt corresponds to the JSON schema field "CreatedAt".
+	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
+
 	// CreatureTypeDomainCreatureType corresponds to the JSON schema field
 	// "CreatureType__DomainCreatureType".
 	CreatureTypeDomainCreatureType *float64 `json:"CreatureType__DomainCreatureType,omitempty" yaml:"CreatureType__DomainCreatureType,omitempty" mapstructure:"CreatureType__DomainCreatureType,omitempty"`
@@ -21,4 +24,7 @@ type DomainSpeciesJson struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
+	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
 }

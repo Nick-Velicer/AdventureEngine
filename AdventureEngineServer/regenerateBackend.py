@@ -315,7 +315,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
   	        '"gorm.io/gorm"',
             '"fmt"',
             '"reflect"',
-            '"slices"'
+            '"slices"',
         ]),
         ')',
         '',

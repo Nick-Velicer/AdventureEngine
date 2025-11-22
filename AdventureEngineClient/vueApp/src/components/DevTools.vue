@@ -2,33 +2,71 @@
 import { NSwitch, NButton } from 'naive-ui'
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 import ThemeSelector from './ThemeSelector.vue';
-import type { Character, CharacterDomainCharacterStatInstance, DomainCharacterStat } from '../../../types/appTypes/appTypes';
+import type { Campaign, Character, CharacterDomainCharacterStatInstance, DomainCharacterStat } from '../../../types/appTypes/appTypes';
 
 const store = composedAppInjectionContexts.store();
 
 const getStatsQuery = composedAppInjectionContexts.queries.useGetDomainCharacterStatsQuery;
+const saveCampaignMutation = composedAppInjectionContexts.queries.useSaveCampaignMutation;
 const saveCharacterMutation = composedAppInjectionContexts.queries.useSaveCharacterMutation;
 const saveCharacterStatsMutation = composedAppInjectionContexts.queries.useSaveCharacterDomainCharacterStatInstanceMutation;
 
-async function populateTestCharacter() {
 
-    const character: Character = {
+
+async function dispatchCampaignsSave() {
+
+    const saveCampaigns = saveCampaignMutation(
+        [
+            {
+                Id: undefined,
+                Attributes: {
+                    Title: "Campaign 1"
+                },
+                Relationships: {
+                    ManyToOne: {},
+                    OneToMany: {}
+                }
+
+            },
+            {
+                Id: undefined,
+                Attributes: {
+                    Title: "Campaign 2"
+                },
+                Relationships: {
+                    ManyToOne: {},
+                    OneToMany: {}
+                }
+
+            },
+        ],
+        dispatchCharactersSave
+    ).mutate;
+
+    const response = await saveCampaigns();
+}
+
+async function dispatchCharactersSave(campaigns: Campaign[]) {
+
+    const characters: Character[] = campaigns.map(campaign => ({
         Id: undefined,
         Attributes: {
             Title: "Test Character 1",
         },
         Relationships: {
-            ManyToOne: {},
+            ManyToOne: {
+                Campaign__Campaign: campaign
+            },
             OneToMany: {}
         }
-    }
+    }));
     
-    const saveCharacter = saveCharacterMutation(character, dispatchStatsSave).mutate;
+    const saveCharacter = saveCharacterMutation(characters, dispatchStatsSave).mutate;
 
     const response = await saveCharacter();
 }
 
-async function dispatchStatsSave(character: Character) {
+async function dispatchStatsSave(characters: Character[]) {
 
     const getStats = getStatsQuery().refresh;
     
@@ -37,7 +75,7 @@ async function dispatchStatsSave(character: Character) {
     const baseStats = (stats.data as Array<DomainCharacterStat>).filter(stat => stat.Attributes.IsBaseStat === true);
 
     const saveStats = saveCharacterStatsMutation(
-        baseStats.map((stat, index) => ({
+        characters.map(character => baseStats.map((stat, index) => ({
             Id: undefined,
             Attributes: {
                 Value: index + 10
@@ -49,8 +87,7 @@ async function dispatchStatsSave(character: Character) {
                 },
                 OneToMany: {}
             }
-
-        } as CharacterDomainCharacterStatInstance)),
+        } as CharacterDomainCharacterStatInstance))).flat(Infinity),
         (data: any) => console.log(data)
     ).mutate;
 
@@ -61,7 +98,7 @@ async function dispatchStatsSave(character: Character) {
 
 <template>
     <ThemeSelector/>
-    <n-button v-on:click="populateTestCharacter">Character Init</n-button>
+    <n-button v-on:click="dispatchCampaignsSave">Test Data Init</n-button>
 </template>
 
 <style scoped>

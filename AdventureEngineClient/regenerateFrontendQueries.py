@@ -40,7 +40,7 @@ def main():
         '',
         'export type ServiceInterface<T> = {',
         *indentLineBlock([
-            'getAllItems: () => Promise<Array<T>>',
+            'getAllItems: (...params: any) => Promise<Array<T>>',
             'getItemById: (id: number) => Promise<T>',
             'saveItem: <G extends T | T[]>(item: G) => Promise<G>'
         ]),
@@ -177,12 +177,16 @@ def produceQueryLinesForType(typeName: str, typeMeta: dict):
 
     def produceGetCollectionQuery(tableName: str):
         lines = [
-            'useGet' + tableName + 'sQuery: () => queryHandler({',
+            'useGet' + tableName + 'sQuery: <H extends Parameters<typeof services.' + tableName + '.getAllItems>>(...params: H) => {',
+            *indentLineBlock([
+                'return queryHandler({',
                 *indentLineBlock([
-                    'key: ["get' + tableName + 's"],',
-                    'query: () => services.' + tableName + '.getAllItems()',
+                    'key: ["get' + tableName + 's", params?.toString()],',
+                    'query: () => services.' + tableName + '.getAllItems(...params)',
                 ]),
-            '}),',
+                '});'
+            ]),
+            '},',
         ]
 
         return lines
@@ -191,8 +195,6 @@ def produceQueryLinesForType(typeName: str, typeMeta: dict):
         lines = [
             'useGet' + tableName + 'ByIdQuery: (id: number) => {',
             *indentLineBlock([
-                '//For some reason queries with args does not work without the extra function body/return.',
-                '//Not a huge deal, but apparently a Colada quirk for dynamic-ish queries',
                 'return queryHandler({',
                 *indentLineBlock([
                     'key: ["get' + tableName + 'ById", id.toString()],',
