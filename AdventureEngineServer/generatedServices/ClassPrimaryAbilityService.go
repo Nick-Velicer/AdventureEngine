@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetClassPrimaryAbilitys(db *gorm.DB, classPrimaryAbilitys *[]types.ClassPrimaryAbility) error {
-   result := db.Table("ClassPrimaryAbility").Find(classPrimaryAbilitys)
+func GetClassPrimaryAbilitys(db *gorm.DB, classPrimaryAbilitys *[]types.ClassPrimaryAbility, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("ClassPrimaryAbility"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(classPrimaryAbilitys)
    return result.Error
 }
 

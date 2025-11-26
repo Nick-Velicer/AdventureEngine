@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetUsers(db *gorm.DB, users *[]types.User) error {
-   result := db.Table("User").Find(users)
+func GetUsers(db *gorm.DB, users *[]types.User, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("User"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(users)
    return result.Error
 }
 

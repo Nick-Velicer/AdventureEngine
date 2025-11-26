@@ -4,11 +4,13 @@
 
 package generatedControllers
 import (
+   "fmt"
    "github.com/gin-gonic/gin"
    "github.com/gin-gonic/gin/binding"
    "gorm.io/gorm"
-   "strconv"
    "net/http"
+   "regexp"
+   "strconv"
    services "AdventureEngineServer/generatedServices"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
@@ -16,8 +18,25 @@ import (
 )
 
 func GetCampaigns(ctx *gin.Context, db *gorm.DB) {
+   queryParams := ctx.Request.URL.Query()
+   
+   //Since we can have multiple filters, that sometimes doesn't play nicely with
+   //Gin's parameter pulling, so they need to be isolated manually.
+   re := regexp.MustCompile(`filter\[`)
+   filterParams := make(map[string]string)
+   for key, value := range queryParams {
+      if re.MatchString(key) && len(value) == 1 {
+         filterParams[key] = value[0]
+      } else {
+         fmt.Println("Unexpected filter configuration for " + key + ", skipping:")
+         fmt.Println(value)
+      }
+   }
+   
+   parsedFilters := utils.ParseFilterURLExpression(filterParams)
+   
    var serviceBuffer []types.Campaign
-   err := services.GetCampaigns(db, &serviceBuffer)
+   err := services.GetCampaigns(db, &serviceBuffer, &parsedFilters)
    if err != nil {
       ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
       return

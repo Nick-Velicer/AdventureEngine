@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetDomainSizes(db *gorm.DB, domainSizes *[]types.DomainSize) error {
-   result := db.Table("DomainSize").Find(domainSizes)
+func GetDomainSizes(db *gorm.DB, domainSizes *[]types.DomainSize, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("DomainSize"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(domainSizes)
    return result.Error
 }
 

@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetQuantifierConditionalMaps(db *gorm.DB, quantifierConditionalMaps *[]types.QuantifierConditionalMap) error {
-   result := db.Table("QuantifierConditionalMap").Find(quantifierConditionalMaps)
+func GetQuantifierConditionalMaps(db *gorm.DB, quantifierConditionalMaps *[]types.QuantifierConditionalMap, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("QuantifierConditionalMap"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(quantifierConditionalMaps)
    return result.Error
 }
 

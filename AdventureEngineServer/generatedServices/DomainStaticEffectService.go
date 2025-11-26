@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetDomainStaticEffects(db *gorm.DB, domainStaticEffects *[]types.DomainStaticEffect) error {
-   result := db.Table("DomainStaticEffect").Find(domainStaticEffects)
+func GetDomainStaticEffects(db *gorm.DB, domainStaticEffects *[]types.DomainStaticEffect, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("DomainStaticEffect"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(domainStaticEffects)
    return result.Error
 }
 

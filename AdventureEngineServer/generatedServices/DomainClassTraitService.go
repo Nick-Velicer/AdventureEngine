@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetDomainClassTraits(db *gorm.DB, domainClassTraits *[]types.DomainClassTrait) error {
-   result := db.Table("DomainClassTrait").Find(domainClassTraits)
+func GetDomainClassTraits(db *gorm.DB, domainClassTraits *[]types.DomainClassTrait, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("DomainClassTrait"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(domainClassTraits)
    return result.Error
 }
 

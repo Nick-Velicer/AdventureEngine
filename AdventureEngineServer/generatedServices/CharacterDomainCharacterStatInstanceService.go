@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetCharacterDomainCharacterStatInstances(db *gorm.DB, characterDomainCharacterStatInstances *[]types.CharacterDomainCharacterStatInstance) error {
-   result := db.Table("CharacterDomainCharacterStatInstance").Find(characterDomainCharacterStatInstances)
+func GetCharacterDomainCharacterStatInstances(db *gorm.DB, characterDomainCharacterStatInstances *[]types.CharacterDomainCharacterStatInstance, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("CharacterDomainCharacterStatInstance"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(characterDomainCharacterStatInstances)
    return result.Error
 }
 

@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetEvaluatedConditionals(db *gorm.DB, evaluatedConditionals *[]types.EvaluatedConditional) error {
-   result := db.Table("EvaluatedConditional").Find(evaluatedConditionals)
+func GetEvaluatedConditionals(db *gorm.DB, evaluatedConditionals *[]types.EvaluatedConditional, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("EvaluatedConditional"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(evaluatedConditionals)
    return result.Error
 }
 

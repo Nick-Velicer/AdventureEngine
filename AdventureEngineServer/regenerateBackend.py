@@ -407,9 +407,15 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
     def produceServiceGetAllMethod(tableName: str):
     
         lines = [
-            'func Get' + tableName + 's(' + dbArgName + ' *gorm.DB, ' + objectArgName  + 's *[]types.' + tableName + ') error {',
+            'func Get' + tableName + 's(' + dbArgName + ' *gorm.DB, ' + objectArgName  + 's *[]types.' + tableName + ', filters *[]utils.FilterExpression) error {',
             *indentLineBlock([
-	            'result := db.Table("' + tableName + '").Find(' + objectArgName + 's)',
+                'filteredContext, err := utils.FilterTableContext(db.Table("' + tableName + '"), filters)',
+                'if err != nil {',
+                *indentLineBlock([
+                    'return err',
+                ]),
+                '}',
+	            'result := filteredContext.Find(' + objectArgName + 's)',
                 'return result.Error',  
             ]),
             '}'
@@ -461,9 +467,10 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
         'import (',
         *indentLineBlock([
             '"errors"',
+  	        '"gorm.io/gorm"',
             '"reflect"',
             'types "AdventureEngineServer/generatedDatabaseTypes"',
-  	        '"gorm.io/gorm"'
+            'utils "AdventureEngineServer/utils"'
         ]),
         ')',
         '',
@@ -493,8 +500,31 @@ def produceControllerFileForType(tableName: str):
         lines = [
             'func Get' + tableName + 's(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
             *indentLineBlock([
+                'queryParams := ' + contextArgName + '.Request.URL.Query()',
+                '',
+                '//Since we can have multiple filters, that sometimes doesn\'t play nicely with',
+                '//Gin\'s parameter pulling, so they need to be isolated manually.',
+                're := regexp.MustCompile(`filter\\[`)',
+                'filterParams := make(map[string]string)',
+                'for key, value := range queryParams {',
+                *indentLineBlock([
+                    'if re.MatchString(key) && len(value) == 1 {',
+                    *indentLineBlock([
+                        'filterParams[key] = value[0]'
+                    ]),
+                    '} else {',
+                    *indentLineBlock([
+                        'fmt.Println("Unexpected filter configuration for " + key + ", skipping:")',
+                        'fmt.Println(value)'
+                    ]),
+                    '}'
+                ]),
+                '}',
+                '',
+                'parsedFilters := utils.ParseFilterURLExpression(filterParams)',
+                '',
                 'var serviceBuffer []types.' + tableName,
-                'err := services.Get' + tableName + 's(' + dbArgName + ', &serviceBuffer)',
+                'err := services.Get' + tableName + 's(' + dbArgName + ', &serviceBuffer, &parsedFilters)',
                 'if err != nil {',
                 *indentLineBlock([
                     'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
@@ -619,11 +649,13 @@ def produceControllerFileForType(tableName: str):
         'package generatedControllers',
         'import (',
         *indentLineBlock([
+            '"fmt"',
   	        '"github.com/gin-gonic/gin"',
             '"github.com/gin-gonic/gin/binding"',
   	        '"gorm.io/gorm"',
-            '"strconv"',
             '"net/http"',
+            '"regexp"',
+            '"strconv"',
             'services "AdventureEngineServer/generatedServices"',
             'types "AdventureEngineServer/generatedDatabaseTypes"',
             'dtos "AdventureEngineServer/generatedDTOs"',

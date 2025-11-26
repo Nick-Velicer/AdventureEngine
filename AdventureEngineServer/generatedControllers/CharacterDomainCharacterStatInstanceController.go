@@ -3,96 +3,109 @@
 //Edits made here will not persist after backend regeneration.
 
 package generatedControllers
-
 import (
-	dtos "AdventureEngineServer/generatedDTOs"
-	types "AdventureEngineServer/generatedDatabaseTypes"
-	services "AdventureEngineServer/generatedServices"
-	utils "AdventureEngineServer/utils"
-	"net/http"
-	"strconv"
-
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
-	"gorm.io/gorm"
+   "fmt"
+   "github.com/gin-gonic/gin"
+   "github.com/gin-gonic/gin/binding"
+   "gorm.io/gorm"
+   "net/http"
+   "regexp"
+   "strconv"
+   services "AdventureEngineServer/generatedServices"
+   types "AdventureEngineServer/generatedDatabaseTypes"
+   dtos "AdventureEngineServer/generatedDTOs"
+   utils "AdventureEngineServer/utils"
 )
 
 func GetCharacterDomainCharacterStatInstances(ctx *gin.Context, db *gorm.DB) {
-	var serviceBuffer []types.CharacterDomainCharacterStatInstance
-	err := services.GetCharacterDomainCharacterStatInstances(db, &serviceBuffer)
-	if err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	var returnBuffer []dtos.CharacterDomainCharacterStatInstanceDTO
-	for _, dbTypeInstance := range serviceBuffer {
-		pointerToDTO := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &dbTypeInstance, []string{})
-		if pointerToDTO != nil {
-			returnBuffer = append(returnBuffer, *pointerToDTO)
-		}
-	}
-	ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   queryParams := ctx.Request.URL.Query()
+   
+   //Since we can have multiple filters, that sometimes doesn't play nicely with
+   //Gin's parameter pulling, so they need to be isolated manually.
+   re := regexp.MustCompile(`filter\[`)
+   filterParams := make(map[string]string)
+   for key, value := range queryParams {
+      if re.MatchString(key) && len(value) == 1 {
+         filterParams[key] = value[0]
+      } else {
+         fmt.Println("Unexpected filter configuration for " + key + ", skipping:")
+         fmt.Println(value)
+      }
+   }
+   
+   parsedFilters := utils.ParseFilterURLExpression(filterParams)
+   
+   var serviceBuffer []types.CharacterDomainCharacterStatInstance
+   err := services.GetCharacterDomainCharacterStatInstances(db, &serviceBuffer, &parsedFilters)
+   if err != nil {
+      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   
+   var returnBuffer []dtos.CharacterDomainCharacterStatInstanceDTO
+   for _, dbTypeInstance := range serviceBuffer {
+      pointerToDTO := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &dbTypeInstance, []string{})
+      if (pointerToDTO != nil) {
+         returnBuffer = append(returnBuffer, *pointerToDTO)
+      }
+   }
+   ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func GetCharacterDomainCharacterStatInstanceById(ctx *gin.Context, db *gorm.DB) {
-	id := ctx.Param("id")
-	idNum, err := strconv.Atoi(id)
-	if err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-		return
-	}
-	var serviceBuffer types.CharacterDomainCharacterStatInstance
-	err = services.GetCharacterDomainCharacterStatInstanceById(db, idNum, &serviceBuffer)
-	if err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	returnBuffer := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &serviceBuffer, []string{})
-	ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   id := ctx.Param("id")
+   idNum, err := strconv.Atoi(id)
+   if err != nil {
+      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   var serviceBuffer types.CharacterDomainCharacterStatInstance
+   err = services.GetCharacterDomainCharacterStatInstanceById(db, idNum, &serviceBuffer)
+   if err != nil {
+      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   
+   returnBuffer := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &serviceBuffer, []string{})
+   ctx.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
 func SaveCharacterDomainCharacterStatInstance(ctx *gin.Context, db *gorm.DB) {
-	//Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
-	var DTOBuffer *dtos.CharacterDomainCharacterStatInstanceDTO = &dtos.CharacterDomainCharacterStatInstanceDTO{}
-	var batchDTOBuffer []*dtos.CharacterDomainCharacterStatInstanceDTO
-	var serviceBuffer []*types.CharacterDomainCharacterStatInstance
-
-	//If neither a single item nor a collection can be bound to JSON, fail early
-	//ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
-	if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
-
-		serviceBuffer = []*types.CharacterDomainCharacterStatInstance{dtos.CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstance(DTOBuffer)}
-		if err := services.SaveCharacterDomainCharacterStatInstance(db, serviceBuffer); err != nil {
-			ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		returnBuffer := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, serviceBuffer[0], []string{})
-
-		ctx.IndentedJSON(http.StatusOK, returnBuffer)
-		return
-
-	} else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
-
-		serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.CharacterDomainCharacterStatInstanceDTO) *types.CharacterDomainCharacterStatInstance {
-			return dtos.CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstance(dto)
-		})
-		if err := services.SaveCharacterDomainCharacterStatInstance(db, serviceBuffer); err != nil {
-			ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.CharacterDomainCharacterStatInstance) *dtos.CharacterDomainCharacterStatInstanceDTO {
-			return dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, dbReturn, []string{})
-		})
-
-		ctx.IndentedJSON(http.StatusOK, returnBuffer)
-		return
-
-	} else {
-		ctx.IndentedJSON(http.StatusBadRequest, err.Error())
-		return
-	}
+   //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
+   var DTOBuffer *dtos.CharacterDomainCharacterStatInstanceDTO = &dtos.CharacterDomainCharacterStatInstanceDTO{}
+   var batchDTOBuffer []*dtos.CharacterDomainCharacterStatInstanceDTO
+   var serviceBuffer []*types.CharacterDomainCharacterStatInstance
+   
+   //If neither a single item nor a collection can be bound to JSON, fail early
+   //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
+   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = []*types.CharacterDomainCharacterStatInstance{dtos.CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstance(DTOBuffer)}
+      if err := services.SaveCharacterDomainCharacterStatInstance(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, serviceBuffer[0], []string{})
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+      
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.CharacterDomainCharacterStatInstanceDTO) *types.CharacterDomainCharacterStatInstance { return dtos.CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstance(dto) })
+      if err := services.SaveCharacterDomainCharacterStatInstance(db, serviceBuffer); err != nil {
+         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.CharacterDomainCharacterStatInstance) *dtos.CharacterDomainCharacterStatInstanceDTO { return dtos.CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, dbReturn, []string{}) })
+      
+      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      return
+      
+   } else {
+      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      return
+   }
 }

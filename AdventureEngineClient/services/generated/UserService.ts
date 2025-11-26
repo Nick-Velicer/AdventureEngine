@@ -3,11 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type User } from "../../types/appTypes/appTypes";
-import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getUsers(filter?: FilterAST<User>): Promise<User[]> {
+export async function getUsers(filter?: FilterCollection<User>): Promise<User[]> {
    try {
-      const response = await fetch("http://localhost:8080/getUsers" + produceFilterExtensionFromAST(filter));
+      const response = await fetch("http://localhost:8080/getUsers?" + produceFilterParamsFromExpression(filter));
       const returnObj = await response.json() as unknown as Array<User>;
       return returnObj;
    }

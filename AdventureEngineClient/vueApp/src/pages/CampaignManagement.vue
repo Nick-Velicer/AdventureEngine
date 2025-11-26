@@ -3,7 +3,7 @@ import type { UseQueryReturn } from '@pinia/colada';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts.ts';
 import type { Campaign, Character } from '../../../types/appTypes/appTypes.ts';
 import { useRoute } from 'vue-router';
-import type { FilterAST } from '../../../services/filterUtils.ts';
+import type { FilterCollection } from '../../../services/filterUtils.ts';
 import { NButton } from 'naive-ui';
 import { getCharacters } from '../../../services/generated/CharacterService.ts';
 
@@ -12,20 +12,13 @@ const route = useRoute();
 
 const campaignId = parseInt(route.params.id as string);
 //Filter and get characters for campaign
-const characterQuery = composedAppInjectionContexts.queries.useGetCharactersQuery({
-	"AND": [
-		{
-			field: "Campaign__Campaign",
-			operator: "==",
-			filterValue: campaignId.toString()
-		},
-		{
-			field: "IsActive",
-			operator: "==",
-			filterValue: "1"
-		}
-	]
-} as FilterAST<Character>) as UseQueryReturn<Character>;
+const characterQuery = composedAppInjectionContexts.queries.useGetCharactersQuery([
+	{
+		field: "Campaign__Campaign",
+		operator: "eq",
+		filterValue: campaignId.toString()
+	}
+] as FilterCollection<Character>) as UseQueryReturn<Character>;
 
 </script>
 

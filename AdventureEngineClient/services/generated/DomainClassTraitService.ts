@@ -3,11 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainClassTrait } from "../../types/appTypes/appTypes";
-import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainClassTraits(filter?: FilterAST<DomainClassTrait>): Promise<DomainClassTrait[]> {
+export async function getDomainClassTraits(filter?: FilterCollection<DomainClassTrait>): Promise<DomainClassTrait[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainClassTraits" + produceFilterExtensionFromAST(filter));
+      const response = await fetch("http://localhost:8080/getDomainClassTraits?" + produceFilterParamsFromExpression(filter));
       const returnObj = await response.json() as unknown as Array<DomainClassTrait>;
       return returnObj;
    }

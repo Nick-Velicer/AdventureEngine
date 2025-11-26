@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetCharacters(db *gorm.DB, characters *[]types.Character) error {
-   result := db.Table("Character").Find(characters)
+func GetCharacters(db *gorm.DB, characters *[]types.Character, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("Character"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(characters)
    return result.Error
 }
 

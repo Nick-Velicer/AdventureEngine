@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetDomainConditions(db *gorm.DB, domainConditions *[]types.DomainCondition) error {
-   result := db.Table("DomainCondition").Find(domainConditions)
+func GetDomainConditions(db *gorm.DB, domainConditions *[]types.DomainCondition, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("DomainCondition"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(domainConditions)
    return result.Error
 }
 

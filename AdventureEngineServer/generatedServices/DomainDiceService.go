@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetDomainDices(db *gorm.DB, domainDices *[]types.DomainDice) error {
-   result := db.Table("DomainDice").Find(domainDices)
+func GetDomainDices(db *gorm.DB, domainDices *[]types.DomainDice, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("DomainDice"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(domainDices)
    return result.Error
 }
 

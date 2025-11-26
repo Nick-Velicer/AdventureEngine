@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetCampaigns(db *gorm.DB, campaigns *[]types.Campaign) error {
-   result := db.Table("Campaign").Find(campaigns)
+func GetCampaigns(db *gorm.DB, campaigns *[]types.Campaign, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("Campaign"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(campaigns)
    return result.Error
 }
 

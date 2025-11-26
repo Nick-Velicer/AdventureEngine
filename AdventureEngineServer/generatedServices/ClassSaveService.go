@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetClassSaves(db *gorm.DB, classSaves *[]types.ClassSave) error {
-   result := db.Table("ClassSave").Find(classSaves)
+func GetClassSaves(db *gorm.DB, classSaves *[]types.ClassSave, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("ClassSave"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(classSaves)
    return result.Error
 }
 

@@ -3,11 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type CharacterDomainConditionInstance } from "../../types/appTypes/appTypes";
-import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getCharacterDomainConditionInstances(filter?: FilterAST<CharacterDomainConditionInstance>): Promise<CharacterDomainConditionInstance[]> {
+export async function getCharacterDomainConditionInstances(filter?: FilterCollection<CharacterDomainConditionInstance>): Promise<CharacterDomainConditionInstance[]> {
    try {
-      const response = await fetch("http://localhost:8080/getCharacterDomainConditionInstances" + produceFilterExtensionFromAST(filter));
+      const response = await fetch("http://localhost:8080/getCharacterDomainConditionInstances?" + produceFilterParamsFromExpression(filter));
       const returnObj = await response.json() as unknown as Array<CharacterDomainConditionInstance>;
       return returnObj;
    }

@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetDomainDiceRollSubTypes(db *gorm.DB, domainDiceRollSubTypes *[]types.DomainDiceRollSubType) error {
-   result := db.Table("DomainDiceRollSubType").Find(domainDiceRollSubTypes)
+func GetDomainDiceRollSubTypes(db *gorm.DB, domainDiceRollSubTypes *[]types.DomainDiceRollSubType, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("DomainDiceRollSubType"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(domainDiceRollSubTypes)
    return result.Error
 }
 

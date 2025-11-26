@@ -3,11 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type EvaluatedConditional } from "../../types/appTypes/appTypes";
-import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getEvaluatedConditionals(filter?: FilterAST<EvaluatedConditional>): Promise<EvaluatedConditional[]> {
+export async function getEvaluatedConditionals(filter?: FilterCollection<EvaluatedConditional>): Promise<EvaluatedConditional[]> {
    try {
-      const response = await fetch("http://localhost:8080/getEvaluatedConditionals" + produceFilterExtensionFromAST(filter));
+      const response = await fetch("http://localhost:8080/getEvaluatedConditionals?" + produceFilterParamsFromExpression(filter));
       const returnObj = await response.json() as unknown as Array<EvaluatedConditional>;
       return returnObj;
    }

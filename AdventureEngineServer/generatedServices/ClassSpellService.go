@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetClassSpells(db *gorm.DB, classSpells *[]types.ClassSpell) error {
-   result := db.Table("ClassSpell").Find(classSpells)
+func GetClassSpells(db *gorm.DB, classSpells *[]types.ClassSpell, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("ClassSpell"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(classSpells)
    return result.Error
 }
 

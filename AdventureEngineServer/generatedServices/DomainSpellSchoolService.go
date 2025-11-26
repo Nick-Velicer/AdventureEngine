@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetDomainSpellSchools(db *gorm.DB, domainSpellSchools *[]types.DomainSpellSchool) error {
-   result := db.Table("DomainSpellSchool").Find(domainSpellSchools)
+func GetDomainSpellSchools(db *gorm.DB, domainSpellSchools *[]types.DomainSpellSchool, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("DomainSpellSchool"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(domainSpellSchools)
    return result.Error
 }
 

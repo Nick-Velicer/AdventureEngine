@@ -3,11 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainClassResource } from "../../types/appTypes/appTypes";
-import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainClassResources(filter?: FilterAST<DomainClassResource>): Promise<DomainClassResource[]> {
+export async function getDomainClassResources(filter?: FilterCollection<DomainClassResource>): Promise<DomainClassResource[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainClassResources" + produceFilterExtensionFromAST(filter));
+      const response = await fetch("http://localhost:8080/getDomainClassResources?" + produceFilterParamsFromExpression(filter));
       const returnObj = await response.json() as unknown as Array<DomainClassResource>;
       return returnObj;
    }

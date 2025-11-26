@@ -3,11 +3,11 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainDiceRollType } from "../../types/appTypes/appTypes";
-import { type FilterAST, produceFilterExtensionFromAST} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainDiceRollTypes(filter?: FilterAST<DomainDiceRollType>): Promise<DomainDiceRollType[]> {
+export async function getDomainDiceRollTypes(filter?: FilterCollection<DomainDiceRollType>): Promise<DomainDiceRollType[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainDiceRollTypes" + produceFilterExtensionFromAST(filter));
+      const response = await fetch("http://localhost:8080/getDomainDiceRollTypes?" + produceFilterParamsFromExpression(filter));
       const returnObj = await response.json() as unknown as Array<DomainDiceRollType>;
       return returnObj;
    }

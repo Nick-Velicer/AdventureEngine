@@ -5,13 +5,18 @@
 package generatedServices
 import (
    "errors"
+   "gorm.io/gorm"
    "reflect"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   "gorm.io/gorm"
+   utils "AdventureEngineServer/utils"
 )
 
-func GetQuantifiers(db *gorm.DB, quantifiers *[]types.Quantifier) error {
-   result := db.Table("Quantifier").Find(quantifiers)
+func GetQuantifiers(db *gorm.DB, quantifiers *[]types.Quantifier, filters *[]utils.FilterExpression) error {
+   filteredContext, err := utils.FilterTableContext(db.Table("Quantifier"), filters)
+   if err != nil {
+      return err
+   }
+   result := filteredContext.Find(quantifiers)
    return result.Error
 }
 
