@@ -5,9 +5,10 @@
 import { type Quantifier } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getQuantifiers(filter?: FilterCollection<Quantifier>): Promise<Quantifier[]> {
+export async function getQuantifiers(filters?: FilterCollection<Quantifier>): Promise<Quantifier[]> {
    try {
-      const response = await fetch("http://localhost:8080/getQuantifiers?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getQuantifiers" + filterString);
       const returnObj = await response.json() as unknown as Array<Quantifier>;
       return returnObj;
    }

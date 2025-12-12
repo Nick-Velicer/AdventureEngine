@@ -5,9 +5,10 @@
 import { type Campaign } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getCampaigns(filter?: FilterCollection<Campaign>): Promise<Campaign[]> {
+export async function getCampaigns(filters?: FilterCollection<Campaign>): Promise<Campaign[]> {
    try {
-      const response = await fetch("http://localhost:8080/getCampaigns?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getCampaigns" + filterString);
       const returnObj = await response.json() as unknown as Array<Campaign>;
       return returnObj;
    }

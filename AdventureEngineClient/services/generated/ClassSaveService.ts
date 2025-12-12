@@ -5,9 +5,10 @@
 import { type ClassSave } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getClassSaves(filter?: FilterCollection<ClassSave>): Promise<ClassSave[]> {
+export async function getClassSaves(filters?: FilterCollection<ClassSave>): Promise<ClassSave[]> {
    try {
-      const response = await fetch("http://localhost:8080/getClassSaves?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getClassSaves" + filterString);
       const returnObj = await response.json() as unknown as Array<ClassSave>;
       return returnObj;
    }

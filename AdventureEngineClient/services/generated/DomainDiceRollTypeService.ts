@@ -5,9 +5,10 @@
 import { type DomainDiceRollType } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainDiceRollTypes(filter?: FilterCollection<DomainDiceRollType>): Promise<DomainDiceRollType[]> {
+export async function getDomainDiceRollTypes(filters?: FilterCollection<DomainDiceRollType>): Promise<DomainDiceRollType[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainDiceRollTypes?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getDomainDiceRollTypes" + filterString);
       const returnObj = await response.json() as unknown as Array<DomainDiceRollType>;
       return returnObj;
    }

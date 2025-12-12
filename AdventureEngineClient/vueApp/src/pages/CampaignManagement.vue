@@ -18,7 +18,7 @@ const characterQuery = composedAppInjectionContexts.queries.useGetCharactersQuer
 		operator: "eq",
 		filterValue: campaignId.toString()
 	}
-] as FilterCollection<Character>) as UseQueryReturn<Character>;
+]) as UseQueryReturn<Character>;
 
 </script>
 

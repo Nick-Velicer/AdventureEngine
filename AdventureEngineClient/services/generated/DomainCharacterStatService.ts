@@ -5,9 +5,10 @@
 import { type DomainCharacterStat } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainCharacterStats(filter?: FilterCollection<DomainCharacterStat>): Promise<DomainCharacterStat[]> {
+export async function getDomainCharacterStats(filters?: FilterCollection<DomainCharacterStat>): Promise<DomainCharacterStat[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainCharacterStats?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getDomainCharacterStats" + filterString);
       const returnObj = await response.json() as unknown as Array<DomainCharacterStat>;
       return returnObj;
    }

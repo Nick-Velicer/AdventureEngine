@@ -5,9 +5,10 @@
 import { type ClassPrimaryAbility } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getClassPrimaryAbilitys(filter?: FilterCollection<ClassPrimaryAbility>): Promise<ClassPrimaryAbility[]> {
+export async function getClassPrimaryAbilitys(filters?: FilterCollection<ClassPrimaryAbility>): Promise<ClassPrimaryAbility[]> {
    try {
-      const response = await fetch("http://localhost:8080/getClassPrimaryAbilitys?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getClassPrimaryAbilitys" + filterString);
       const returnObj = await response.json() as unknown as Array<ClassPrimaryAbility>;
       return returnObj;
    }

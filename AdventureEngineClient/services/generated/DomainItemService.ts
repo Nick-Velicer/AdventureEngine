@@ -5,9 +5,10 @@
 import { type DomainItem } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainItems(filter?: FilterCollection<DomainItem>): Promise<DomainItem[]> {
+export async function getDomainItems(filters?: FilterCollection<DomainItem>): Promise<DomainItem[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainItems?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getDomainItems" + filterString);
       const returnObj = await response.json() as unknown as Array<DomainItem>;
       return returnObj;
    }

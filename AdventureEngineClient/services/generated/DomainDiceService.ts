@@ -5,9 +5,10 @@
 import { type DomainDice } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainDices(filter?: FilterCollection<DomainDice>): Promise<DomainDice[]> {
+export async function getDomainDices(filters?: FilterCollection<DomainDice>): Promise<DomainDice[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainDices?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getDomainDices" + filterString);
       const returnObj = await response.json() as unknown as Array<DomainDice>;
       return returnObj;
    }

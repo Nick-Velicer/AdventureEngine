@@ -5,9 +5,10 @@
 import { type DomainSubClass } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainSubClasss(filter?: FilterCollection<DomainSubClass>): Promise<DomainSubClass[]> {
+export async function getDomainSubClasss(filters?: FilterCollection<DomainSubClass>): Promise<DomainSubClass[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainSubClasss?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getDomainSubClasss" + filterString);
       const returnObj = await response.json() as unknown as Array<DomainSubClass>;
       return returnObj;
    }

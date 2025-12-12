@@ -5,9 +5,10 @@
 import { type DomainStaticEffect } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainStaticEffects(filter?: FilterCollection<DomainStaticEffect>): Promise<DomainStaticEffect[]> {
+export async function getDomainStaticEffects(filters?: FilterCollection<DomainStaticEffect>): Promise<DomainStaticEffect[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainStaticEffects?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getDomainStaticEffects" + filterString);
       const returnObj = await response.json() as unknown as Array<DomainStaticEffect>;
       return returnObj;
    }

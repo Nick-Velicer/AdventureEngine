@@ -5,9 +5,10 @@
 import { type DomainSize } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainSizes(filter?: FilterCollection<DomainSize>): Promise<DomainSize[]> {
+export async function getDomainSizes(filters?: FilterCollection<DomainSize>): Promise<DomainSize[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainSizes?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getDomainSizes" + filterString);
       const returnObj = await response.json() as unknown as Array<DomainSize>;
       return returnObj;
    }

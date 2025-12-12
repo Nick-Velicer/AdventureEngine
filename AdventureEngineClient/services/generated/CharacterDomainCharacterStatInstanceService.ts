@@ -5,9 +5,10 @@
 import { type CharacterDomainCharacterStatInstance } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getCharacterDomainCharacterStatInstances(filter?: FilterCollection<CharacterDomainCharacterStatInstance>): Promise<CharacterDomainCharacterStatInstance[]> {
+export async function getCharacterDomainCharacterStatInstances(filters?: FilterCollection<CharacterDomainCharacterStatInstance>): Promise<CharacterDomainCharacterStatInstance[]> {
    try {
-      const response = await fetch("http://localhost:8080/getCharacterDomainCharacterStatInstances?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getCharacterDomainCharacterStatInstances" + filterString);
       const returnObj = await response.json() as unknown as Array<CharacterDomainCharacterStatInstance>;
       return returnObj;
    }

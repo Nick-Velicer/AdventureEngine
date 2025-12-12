@@ -47,11 +47,12 @@ def produceTSServiceFile(typeName: str):
 
     def produceGetCollectionMethod(tableName: str):
         lines = [
-            'export async function get' + typeName + 's(filter?: FilterCollection<' + typeName + '>): Promise<' + typeName + '[]> {',
+            'export async function get' + typeName + 's(filters?: FilterCollection<' + typeName + '>): Promise<' + typeName + '[]> {',
             *indentLineBlock([
                 'try {',
                 *indentLineBlock([
-                    'const response = await fetch("' + baseApiUrl + 'get' + tableName + 's?" + produceFilterParamsFromExpression(filter));',
+                    'const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";',
+                    'const response = await fetch("' + baseApiUrl + 'get' + tableName + 's" + filterString);',
                     'const returnObj = await response.json() as unknown as Array<' + typeName + '>;',
                     'return returnObj;'
                 ]),

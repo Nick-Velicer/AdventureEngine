@@ -5,9 +5,10 @@
 import { type ClassSpell } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getClassSpells(filter?: FilterCollection<ClassSpell>): Promise<ClassSpell[]> {
+export async function getClassSpells(filters?: FilterCollection<ClassSpell>): Promise<ClassSpell[]> {
    try {
-      const response = await fetch("http://localhost:8080/getClassSpells?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getClassSpells" + filterString);
       const returnObj = await response.json() as unknown as Array<ClassSpell>;
       return returnObj;
    }

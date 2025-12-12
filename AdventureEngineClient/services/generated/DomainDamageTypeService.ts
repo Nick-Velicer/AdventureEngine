@@ -5,9 +5,10 @@
 import { type DomainDamageType } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainDamageTypes(filter?: FilterCollection<DomainDamageType>): Promise<DomainDamageType[]> {
+export async function getDomainDamageTypes(filters?: FilterCollection<DomainDamageType>): Promise<DomainDamageType[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainDamageTypes?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getDomainDamageTypes" + filterString);
       const returnObj = await response.json() as unknown as Array<DomainDamageType>;
       return returnObj;
    }

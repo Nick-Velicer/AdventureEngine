@@ -5,9 +5,10 @@
 import { type Character } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getCharacters(filter?: FilterCollection<Character>): Promise<Character[]> {
+export async function getCharacters(filters?: FilterCollection<Character>): Promise<Character[]> {
    try {
-      const response = await fetch("http://localhost:8080/getCharacters?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getCharacters" + filterString);
       const returnObj = await response.json() as unknown as Array<Character>;
       return returnObj;
    }

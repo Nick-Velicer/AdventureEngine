@@ -5,9 +5,10 @@
 import { type CharacterDomainConditionInstance } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getCharacterDomainConditionInstances(filter?: FilterCollection<CharacterDomainConditionInstance>): Promise<CharacterDomainConditionInstance[]> {
+export async function getCharacterDomainConditionInstances(filters?: FilterCollection<CharacterDomainConditionInstance>): Promise<CharacterDomainConditionInstance[]> {
    try {
-      const response = await fetch("http://localhost:8080/getCharacterDomainConditionInstances?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getCharacterDomainConditionInstances" + filterString);
       const returnObj = await response.json() as unknown as Array<CharacterDomainConditionInstance>;
       return returnObj;
    }

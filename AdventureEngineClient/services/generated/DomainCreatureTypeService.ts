@@ -5,9 +5,10 @@
 import { type DomainCreatureType } from "../../types/appTypes/appTypes";
 import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
 
-export async function getDomainCreatureTypes(filter?: FilterCollection<DomainCreatureType>): Promise<DomainCreatureType[]> {
+export async function getDomainCreatureTypes(filters?: FilterCollection<DomainCreatureType>): Promise<DomainCreatureType[]> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainCreatureTypes?" + produceFilterParamsFromExpression(filter));
+      const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
+      const response = await fetch("http://localhost:8080/getDomainCreatureTypes" + filterString);
       const returnObj = await response.json() as unknown as Array<DomainCreatureType>;
       return returnObj;
    }
