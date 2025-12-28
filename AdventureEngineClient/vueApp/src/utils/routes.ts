@@ -23,13 +23,19 @@ export const routes = [
         path: '/CharacterManagement/:id', 
         component: CharacterManagement,
         title: "Character Management",
-        primaryNavigation: true
+        primaryNavigation: false
     },
     { 
         path: '/CampaignManagement/:id', 
         component: CampaignManagement,
         title: "Campaign Management",
-        primaryNavigation: true
+        primaryNavigation: false
+    },
+    { 
+        path: '/Login', 
+        component: CampaignManagement,
+        title: "Campaign Management",
+        primaryNavigation: false
     },
     { 
         path: '/TableManagement', 

@@ -1,8 +1,7 @@
 *.db
 __pycache__/
-__pycache__/*
 generatedMigrations/
-generatedMigrations/*
 AdventureEngineServer*
 migrationVenv/
-migrationVenv/*
+certs/
+*.cnf

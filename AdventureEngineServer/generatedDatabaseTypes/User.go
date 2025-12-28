@@ -18,9 +18,15 @@ type User struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
+	// Password corresponds to the JSON schema field "Password".
+	Password *string `json:"Password" gorm:"column:Password" mapstructure:"Password"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
+
+	// Username corresponds to the JSON schema field "Username".
+	Username *string `json:"Username" gorm:"column:Username" mapstructure:"Username"`
 }

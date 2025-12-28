@@ -17,6 +17,7 @@ func main() {
 	endpointManagers.ApplyCustomEndpoints(router, db)
 
 	router.Run("localhost:8080")
+	//router.RunTLS(":8080", "certs/server.crt", "certs/server.key")
 }
 
 func applyCORSSettings(router *gin.Engine) {

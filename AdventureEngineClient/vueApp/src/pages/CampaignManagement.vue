@@ -20,6 +20,8 @@ const characterQuery = composedAppInjectionContexts.queries.useGetCharactersQuer
 	}
 ]) as UseQueryReturn<Character>;
 
+const characterNavLink = (characterId: number ) => "/CharacterManagement/" + characterId.toString() 
+
 </script>
 
 <template>
@@ -32,9 +34,9 @@ const characterQuery = composedAppInjectionContexts.queries.useGetCharactersQuer
 			<div>
 				Current Campaign Id: {{ campaignId}}
 			</div>
-			<div v-bind:style="{display: 'flex', gap: '2rem'}">
-				<div v-for="character in characterQuery.data.value" v-text="character.Title"/>
-			</div>
+			<RouterLink v-for="character in characterQuery.data.value" :to="characterNavLink(character.Id!)">
+				{{ character.Attributes.Title }}
+			</RouterLink>
 		</div>
 	</section>
 	

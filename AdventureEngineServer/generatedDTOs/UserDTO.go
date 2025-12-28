@@ -20,8 +20,10 @@ type UserDTOAttributes struct {
    Description *string
    
    IsActive *bool
+   Password *string
    Title *string
    UpdatedAt *string
+   Username *string
 }
 
 type UserDTOManyToOneRelationships struct {
@@ -67,8 +69,10 @@ func UserToUserDTO(db *gorm.DB, user *types.User, traversedTables []string) *Use
          Description: user.Description,
          
          IsActive: user.IsActive,
+         Password: user.Password,
          Title: user.Title,
          UpdatedAt: user.UpdatedAt,
+         Username: user.Username,
       },
       Relationships: UserDTORelationships{
          ManyToOne: UserDTOManyToOneRelationships {
@@ -88,8 +92,10 @@ func UserDTOToUser(user *UserDTO) *types.User {
    tableTypeBuffer.Description = user.Attributes.Description
    
    tableTypeBuffer.IsActive = user.Attributes.IsActive
+   tableTypeBuffer.Password = user.Attributes.Password
    tableTypeBuffer.Title = user.Attributes.Title
    tableTypeBuffer.UpdatedAt = user.Attributes.UpdatedAt
+   tableTypeBuffer.Username = user.Attributes.Username
    
    return &tableTypeBuffer
 }

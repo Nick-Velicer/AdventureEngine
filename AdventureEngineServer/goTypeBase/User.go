@@ -18,9 +18,15 @@ type UserJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
+	// Password corresponds to the JSON schema field "Password".
+	Password *string `json:"Password,omitempty" yaml:"Password,omitempty" mapstructure:"Password,omitempty"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
+
+	// Username corresponds to the JSON schema field "Username".
+	Username *string `json:"Username,omitempty" yaml:"Username,omitempty" mapstructure:"Username,omitempty"`
 }
