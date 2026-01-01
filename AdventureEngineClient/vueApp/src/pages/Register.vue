@@ -13,14 +13,23 @@ const state = composedAppInjectionContexts.store();
             type="text"
             placeholder="Username"
         />
+        <div>
+            Some password restrictions!
+        </div>
 		<n-input
             type="password"
             show-password-on="mousedown"
             placeholder="Password"
         />
-        <RouterLink to="/Register">
-            Register
+        <n-input
+            type="password"
+            show-password-on="mousedown"
+            placeholder="Confirm Password"
+        />
+        <RouterLink to="/Login">
+            Regular Login
         </RouterLink>
+
 
 	</section>
 </template>

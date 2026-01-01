@@ -16,7 +16,7 @@ const appContext = createApp(App);
 
 const router = createRouter({
 	history: createWebHistory(),
-	routes,
+	routes
 });
 
 if (import.meta.hot) {
