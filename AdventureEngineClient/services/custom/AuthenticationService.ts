@@ -30,3 +30,27 @@ export async function registerUser(username: string, password: string): Promise<
    }
 }
 
+export async function loginUser(username: string, password: string): Promise<null> {
+   try {
+      const response = await fetch("http://localhost:8080/login", {
+         method: "POST", 
+         headers: {"Content-Type": "application/json"}, 
+         body: JSON.stringify({
+            Attributes: {
+               Username: username,
+               Password: password
+            },
+            Relationships: {
+               OneToMany: {},
+               ManyToOne: {}
+            }
+         } as User)
+      });
+      const returnObj = await response.json();
+      return returnObj;
+   }
+   catch (errors) {
+      throw errors
+   }
+}
+

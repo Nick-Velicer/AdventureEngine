@@ -65,6 +65,8 @@ func register(ctx *gin.Context, db *gorm.DB) {
 	//Hash and save the new user entity
 	hashedPassword, err := utils.HashPassword(*user.Password)
 
+	fmt.Println(hashedPassword)
+
 	if err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
@@ -110,8 +112,14 @@ func login(ctx *gin.Context, db *gorm.DB) {
 	var foundUsers = []types.User{}
 
 	services.GetUsers(db, &foundUsers, &[]utils.FilterExpression{
-		{Field: "Username", Operator: "eq", FilterValue: *user.Password},
+		{Field: "Username", Operator: "eq", FilterValue: *user.Username},
 	})
+
+	fmt.Println(foundUsers)
+	fmt.Println(foundUsers[0])
+	fmt.Println(foundUsers[0].Username)
+	fmt.Println(foundUsers[0].Password)
+	fmt.Println(*foundUsers[0].Password)
 
 	if len(foundUsers) > 1 {
 		ctx.IndentedJSON(http.StatusInternalServerError, "Somehow multiple users have the same username?!")
@@ -126,5 +134,5 @@ func login(ctx *gin.Context, db *gorm.DB) {
 
 	//Now that we're good, generate a new session token (eventually)
 
-	ctx.IndentedJSON(http.StatusOK, nil)
+	ctx.IndentedJSON(http.StatusOK, "Yippee, that worked!")
 }
