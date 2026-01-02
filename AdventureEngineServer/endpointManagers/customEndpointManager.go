@@ -1,7 +1,7 @@
 package endpointManagers
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -33,40 +33,51 @@ func register(ctx *gin.Context, db *gorm.DB) {
 
 	//Make sure we have the fields we care about
 	if user.Username == nil {
-		ctx.IndentedJSON(http.StatusBadRequest, errors.New("No username provided"))
+		ctx.IndentedJSON(http.StatusBadRequest, "No username provided")
 		return
 	}
 
 	if user.Password == nil {
-		ctx.IndentedJSON(http.StatusBadRequest, errors.New("No password provided"))
+		ctx.IndentedJSON(http.StatusBadRequest, "No password provided")
 		return
 	}
 
 	//Make sure there is not an existing user with the given username
 	var foundUsers = []types.User{}
 
-	services.GetUsers(db, &foundUsers, &[]utils.FilterExpression{
+	err := services.GetUsers(db, &foundUsers, &[]utils.FilterExpression{
 		{Field: "Username", Operator: "eq", FilterValue: *user.Password},
 	})
 
-	if len(foundUsers) > 0 {
-		ctx.IndentedJSON(http.StatusBadRequest, errors.New("User with username already exists"))
+	if err != nil {
+		fmt.Println(err)
+		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	if len(foundUsers) > 0 {
+		ctx.IndentedJSON(http.StatusBadRequest, "User with username already exists")
+		return
+	}
+
+	fmt.Println("hashing")
 
 	//Hash and save the new user entity
 	hashedPassword, err := utils.HashPassword(*user.Password)
 
 	if err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err)
+		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	user.Password = &hashedPassword
 
+	fmt.Println("Finished hashing")
+
 	serviceBuffer := []*types.User{user}
 
 	if err := services.SaveUser(db, serviceBuffer); err != nil {
+		fmt.Println("Error while saving")
 		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -87,12 +98,12 @@ func login(ctx *gin.Context, db *gorm.DB) {
 	user := dtos.UserDTOToUser(DTOBuffer)
 
 	if user.Username == nil {
-		ctx.IndentedJSON(http.StatusBadRequest, errors.New("No username provided"))
+		ctx.IndentedJSON(http.StatusBadRequest, "No username provided")
 		return
 	}
 
 	if user.Password == nil {
-		ctx.IndentedJSON(http.StatusBadRequest, errors.New("No password provided"))
+		ctx.IndentedJSON(http.StatusBadRequest, "No password provided")
 		return
 	}
 
@@ -103,13 +114,13 @@ func login(ctx *gin.Context, db *gorm.DB) {
 	})
 
 	if len(foundUsers) > 1 {
-		ctx.IndentedJSON(http.StatusInternalServerError, errors.New("Somehow multiple users have the same username?!"))
+		ctx.IndentedJSON(http.StatusInternalServerError, "Somehow multiple users have the same username?!")
 		return
 	}
 
 	//Actually validate the given provided credentials
 	if !utils.VerifyPassword(*user.Password, *foundUsers[0].Password) {
-		ctx.IndentedJSON(http.StatusUnauthorized, errors.New("Incorrect password"))
+		ctx.IndentedJSON(http.StatusUnauthorized, "Incorrect password")
 		return
 	}
 

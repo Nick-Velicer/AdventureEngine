@@ -1,39 +1,138 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
-import { NInput } from 'naive-ui';
+import { NInput, NForm, NFormItem, type FormItemRule, NButton, type FormInst, type FormValidationError, useMessage, type FormRules } from 'naive-ui';
+import type { User } from '../../../types/appTypes/appTypes';
+import { registerUser } from '../../../services/custom/AuthenticationService';
 
+const message = useMessage();
 
-const state = composedAppInjectionContexts.store();
+//The controlled inputs for user should not be in the store,
+//that will be reserved for the active user/session info
+
+const formDefault = {
+  username: undefined as string | undefined,
+  password: undefined as string | undefined,
+  secondaryPassword: undefined as string | undefined
+};
+
+const registrationFormBuffer = ref(formDefault);
+
+const formRef = ref<FormInst | null>(null);
+
+const rules: FormRules = {
+    username: [
+        {
+            required: true,
+            validator(rule: FormItemRule, value: string) {
+                if (!value) {
+                    return new Error('A username is required')
+                }
+                return true;
+            },
+            trigger: ['input', 'blur']
+        }
+    ],
+    password: [
+        {
+            required: true,
+            message: 'Password is required',
+            trigger: ['input', 'blur']
+        }
+    ],
+    secondaryPassword: [
+        {
+            required: true,
+            message: 'Re-entered password is required',
+            trigger: ['input', 'blur']
+        },
+        {
+            validator(rule: FormItemRule, value: string): boolean {
+                return value === registrationFormBuffer.value.password
+            },
+            message: 'Password is not same as re-entered password!',
+            trigger: ['blur', 'password-input']
+        }
+    ]
+}
+
+function attemptSubmittal(e: MouseEvent) {
+    e.preventDefault();
+    formRef.value?.validate((errors: Array<FormValidationError> | undefined) => {
+        if (!errors) {
+            try {
+                registerUser(registrationFormBuffer.value.username!, registrationFormBuffer.value.password!)
+            }
+            catch (errors) {
+                console.log(errors)
+                message.error('Registration Error')
+            }
+            message.success('Valid')
+        }
+        else {
+            console.log(errors)
+            message.error('Invalid')
+        }
+    });
+}
 
 </script>
 
 <template>
-    <section>
-        <n-input
-            type="text"
-            placeholder="Username"
-        />
-        <div>
-            Some password restrictions!
+    <div class="registrationFormWrapper">
+        <NForm ref="formRef" :model="registrationFormBuffer" :rules="rules">
+            <NFormItem label="Username" path="username">
+                <NInput
+                    v-model:value="registrationFormBuffer.username"
+                    type="text"
+                    placeholder="Username"
+                />
+            </NFormItem>
+            <NFormItem label="Password" path="password">
+                <NInput
+                    key="primaryPassword"
+                    v-model:value="registrationFormBuffer.password"
+                    type="password"
+                    show-password-on="mousedown"
+                    placeholder="Password"
+                />
+            </NFormItem>
+            <NFormItem label="Confirm Password" path="secondaryPassword">
+                <NInput
+                    key="secondaryPassword"
+                    v-model:value="registrationFormBuffer.secondaryPassword"
+                    :disabled="!registrationFormBuffer.password"
+                    type="password"
+                    show-password-on="mousedown"
+                    placeholder="Confirm Password"
+                />
+            </NFormItem>
+        </NForm>
+        <div class="flex justify-between w-full">
+            <RouterLink to="/Login">
+                <NButton
+                    round
+                    type="primary"
+                >
+                    Never mind!
+                </NButton>
+            </RouterLink>
+            <NButton
+                round
+                type="primary"
+                @click="attemptSubmittal"
+            >
+                Register
+            </NButton>
         </div>
-		<n-input
-            type="password"
-            show-password-on="mousedown"
-            placeholder="Password"
-        />
-        <n-input
-            type="password"
-            show-password-on="mousedown"
-            placeholder="Confirm Password"
-        />
-        <RouterLink to="/Login">
-            Regular Login
-        </RouterLink>
-
-
-	</section>
+        
+	</div>
 </template>
 
 <style scoped>
-
+    .registrationFormWrapper {
+        max-width: 24rem;
+        width: fit-content;
+        margin: auto;
+    }
 </style>

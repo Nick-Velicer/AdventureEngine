@@ -109,7 +109,7 @@ func FilterTableContext(dbContext *gorm.DB, filters *[]FilterExpression) (*gorm.
 }
 
 func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 25)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 15)
 	return string(bytes), err
 }
 
