@@ -61,13 +61,6 @@ func ParseFilterURLExpression(filters map[string]string) []FilterExpression {
 	return returnBuffer
 }
 
-var ProtectedAndHashedFieldNames = []string{
-	"Password",
-	"Passkey",
-	"Secret",
-	"Key",
-}
-
 // Translates the more readable filters to the gorm context and applies them
 // to a given context. Makes a bit more syntactic sense than producing the clauses
 // and doing some function management shenanigans to manually apply them elsewhere.
@@ -83,8 +76,7 @@ func FilterTableContext(dbContext *gorm.DB, filters *[]FilterExpression) (*gorm.
 		return dbContext, nil
 	}
 
-	//Additionally filtering out password fields from being retrieved
-	updateBuffer := dbContext.Omit(ProtectedAndHashedFieldNames...)
+	updateBuffer := dbContext
 
 	for _, filter := range *filters {
 		switch filter.Operator {
