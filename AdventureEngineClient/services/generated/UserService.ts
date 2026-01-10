@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getUsers(filters?: FilterCollection<User>): Promise<User[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getUsers" + filterString);
+      const response = await fetch("http://localhost:8080/getUsers" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<User>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getUsers(filters?: FilterCollection<User>): Promise<User[]
 
 export async function getUserbyId(id: number): Promise<User> {
    try {
-      const response = await fetch("http://localhost:8080/getUser/" + id);
+      const response = await fetch("http://localhost:8080/getUser/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as User;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getUserbyId(id: number): Promise<User> {
 
 export async function saveUser<T extends User | User[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveUser", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveUser", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

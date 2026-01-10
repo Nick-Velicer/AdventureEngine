@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getQuantifiers(filters?: FilterCollection<Quantifier>): Promise<Quantifier[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getQuantifiers" + filterString);
+      const response = await fetch("http://localhost:8080/getQuantifiers" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<Quantifier>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getQuantifiers(filters?: FilterCollection<Quantifier>): Pr
 
 export async function getQuantifierbyId(id: number): Promise<Quantifier> {
    try {
-      const response = await fetch("http://localhost:8080/getQuantifier/" + id);
+      const response = await fetch("http://localhost:8080/getQuantifier/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as Quantifier;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getQuantifierbyId(id: number): Promise<Quantifier> {
 
 export async function saveQuantifier<T extends Quantifier | Quantifier[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveQuantifier", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveQuantifier", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

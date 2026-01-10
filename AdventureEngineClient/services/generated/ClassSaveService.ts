@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getClassSaves(filters?: FilterCollection<ClassSave>): Promise<ClassSave[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getClassSaves" + filterString);
+      const response = await fetch("http://localhost:8080/getClassSaves" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<ClassSave>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getClassSaves(filters?: FilterCollection<ClassSave>): Prom
 
 export async function getClassSavebyId(id: number): Promise<ClassSave> {
    try {
-      const response = await fetch("http://localhost:8080/getClassSave/" + id);
+      const response = await fetch("http://localhost:8080/getClassSave/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as ClassSave;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getClassSavebyId(id: number): Promise<ClassSave> {
 
 export async function saveClassSave<T extends ClassSave | ClassSave[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveClassSave", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveClassSave", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

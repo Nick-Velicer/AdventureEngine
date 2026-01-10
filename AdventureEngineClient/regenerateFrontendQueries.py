@@ -84,7 +84,7 @@ def main():
         '}'    
     ]
             
-    f = open(queriesTargetDirectory + "/queries.ts", 'w')
+    f = open(queriesTargetDirectory + "/generatedQueries.ts", 'w')
     f.writelines([i + '\n' for i in fileLines])
     f.close()
     

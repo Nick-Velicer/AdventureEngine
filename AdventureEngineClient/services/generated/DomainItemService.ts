@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainItems(filters?: FilterCollection<DomainItem>): Promise<DomainItem[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainItems" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainItems" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainItem>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainItems(filters?: FilterCollection<DomainItem>): Pr
 
 export async function getDomainItembyId(id: number): Promise<DomainItem> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainItem/" + id);
+      const response = await fetch("http://localhost:8080/getDomainItem/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainItem;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainItembyId(id: number): Promise<DomainItem> {
 
 export async function saveDomainItem<T extends DomainItem | DomainItem[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainItem", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainItem", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

@@ -1,23 +1,37 @@
 import { defineQuery, useMutation, useQuery, useQueryCache, type QueryCache, type UseQueryReturn } from "@pinia/colada";
 import { defineStore } from 'pinia'
-import { composeQueryBuilderContext } from "../queries/queries";
+import { composeQueryBuilderContext } from "../queries/generatedQueries";
+import { composeCustomQueryBuilderContext } from "../queries/customQueries";
 import { generatedInjectableServices } from "./generated/generatedInjectableServices";
 import { stateActions, stateDefault, stateGetters } from "../state/clientStateConfig";
 import type { Campaign } from "../types/appTypes/appTypes";
 
 export const composedAppInjectionContexts = {
-    queries: composeQueryBuilderContext(
-        useQuery, 
-        useMutation, 
-        useQueryCache,
-        (cacheContext: QueryCache, keys: string[]) => {
-            keys.forEach(key => cacheContext.invalidateQueries({
-                key: [key],
-                exact: false
-            }))
-        },
-        generatedInjectableServices
-    ),
+    queries: {
+        ...composeQueryBuilderContext(
+            useQuery, 
+            useMutation, 
+            useQueryCache,
+            (cacheContext: QueryCache, keys: string[]) => {
+                keys.forEach(key => cacheContext.invalidateQueries({
+                    key: [key],
+                    exact: false
+                }))
+            },
+            generatedInjectableServices
+        ),
+        ...composeCustomQueryBuilderContext(
+            useQuery, 
+            useMutation, 
+            useQueryCache,
+            (cacheContext: QueryCache, keys: string[]) => {
+                keys.forEach(key => cacheContext.invalidateQueries({
+                    key: [key],
+                    exact: false
+                }))
+            }
+        ),
+    },
     store: defineStore('globalStore', {
         state: () => stateDefault, 
         getters: stateGetters,

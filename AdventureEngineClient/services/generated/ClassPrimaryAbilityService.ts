@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getClassPrimaryAbilitys(filters?: FilterCollection<ClassPrimaryAbility>): Promise<ClassPrimaryAbility[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getClassPrimaryAbilitys" + filterString);
+      const response = await fetch("http://localhost:8080/getClassPrimaryAbilitys" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<ClassPrimaryAbility>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getClassPrimaryAbilitys(filters?: FilterCollection<ClassPr
 
 export async function getClassPrimaryAbilitybyId(id: number): Promise<ClassPrimaryAbility> {
    try {
-      const response = await fetch("http://localhost:8080/getClassPrimaryAbility/" + id);
+      const response = await fetch("http://localhost:8080/getClassPrimaryAbility/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as ClassPrimaryAbility;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getClassPrimaryAbilitybyId(id: number): Promise<ClassPrima
 
 export async function saveClassPrimaryAbility<T extends ClassPrimaryAbility | ClassPrimaryAbility[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveClassPrimaryAbility", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveClassPrimaryAbility", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

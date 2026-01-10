@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getEvaluatedConditionals(filters?: FilterCollection<EvaluatedConditional>): Promise<EvaluatedConditional[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getEvaluatedConditionals" + filterString);
+      const response = await fetch("http://localhost:8080/getEvaluatedConditionals" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<EvaluatedConditional>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getEvaluatedConditionals(filters?: FilterCollection<Evalua
 
 export async function getEvaluatedConditionalbyId(id: number): Promise<EvaluatedConditional> {
    try {
-      const response = await fetch("http://localhost:8080/getEvaluatedConditional/" + id);
+      const response = await fetch("http://localhost:8080/getEvaluatedConditional/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as EvaluatedConditional;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getEvaluatedConditionalbyId(id: number): Promise<Evaluated
 
 export async function saveEvaluatedConditional<T extends EvaluatedConditional | EvaluatedConditional[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveEvaluatedConditional", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveEvaluatedConditional", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

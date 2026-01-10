@@ -69,7 +69,7 @@ func UserToUserDTO(db *gorm.DB, user *types.User, traversedTables []string) *Use
          Description: user.Description,
          
          IsActive: user.IsActive,
-         Password: user.Password,
+         Password: nil,
          Title: user.Title,
          UpdatedAt: user.UpdatedAt,
          Username: user.Username,

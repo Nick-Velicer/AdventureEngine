@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainCreatureTypes(filters?: FilterCollection<DomainCreatureType>): Promise<DomainCreatureType[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainCreatureTypes" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainCreatureTypes" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainCreatureType>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainCreatureTypes(filters?: FilterCollection<DomainCr
 
 export async function getDomainCreatureTypebyId(id: number): Promise<DomainCreatureType> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainCreatureType/" + id);
+      const response = await fetch("http://localhost:8080/getDomainCreatureType/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainCreatureType;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainCreatureTypebyId(id: number): Promise<DomainCreat
 
 export async function saveDomainCreatureType<T extends DomainCreatureType | DomainCreatureType[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainCreatureType", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainCreatureType", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getCharacters(filters?: FilterCollection<Character>): Promise<Character[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getCharacters" + filterString);
+      const response = await fetch("http://localhost:8080/getCharacters" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<Character>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getCharacters(filters?: FilterCollection<Character>): Prom
 
 export async function getCharacterbyId(id: number): Promise<Character> {
    try {
-      const response = await fetch("http://localhost:8080/getCharacter/" + id);
+      const response = await fetch("http://localhost:8080/getCharacter/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as Character;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getCharacterbyId(id: number): Promise<Character> {
 
 export async function saveCharacter<T extends Character | Character[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveCharacter", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveCharacter", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

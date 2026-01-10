@@ -282,7 +282,7 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                 *indentLineBlock([
                     'Id: ' + objectArgName + '.Id,',
                     'Attributes: ' + tableName + 'DTOAttributes{',
-                    *indentLineBlock([(attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.' + attribute + ',' if attribute == 'Password' else (attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.' + attribute + ',' if attribute != 'Id' else '')) for attribute in typeMeta['attributes']]),
+                    *indentLineBlock([(attribute[0].upper() + attribute[1:] + ': nil,' if attribute == 'Password' else (attribute[0].upper() + attribute[1:] + ': ' + objectArgName + '.' + attribute + ',' if attribute != 'Id' else '')) for attribute in typeMeta['attributes']]),
                     '},',
                     'Relationships: ' + tableName + 'DTORelationships{',
                     *indentLineBlock([

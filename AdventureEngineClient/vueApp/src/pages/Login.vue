@@ -3,9 +3,12 @@ import { ref } from 'vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 import { NInput, NForm, NButton, NFormItem, useMessage, type FormInst, type FormItemRule, type FormRules, type FormValidationError } from 'naive-ui';
 import { loginUser } from '../../../services/custom/AuthenticationService';
+import { useRouter } from 'vue-router';
+import Loader from '../components/Loader.vue';
 
 
 const message = useMessage();
+const router = useRouter();
 
 const formDefault = {
   username: undefined as string | undefined,
@@ -13,7 +16,7 @@ const formDefault = {
 };
 
 const loginFormBuffer = ref(formDefault);
-
+const loginPending = ref(false);
 const formRef = ref<FormInst | null>(null);
 
 const rules: FormRules = {
@@ -42,20 +45,27 @@ function attemptSubmittal(e: MouseEvent) {
     e.preventDefault();
     formRef.value?.validate((errors: Array<FormValidationError> | undefined) => {
         if (!errors) {
-            try {
-                loginUser(loginFormBuffer.value.username!, loginFormBuffer.value.password!)
-            }
-            catch (errors) {
-                console.log(errors)
-                message.error('Login Error')
-            }
-            message.success('Valid')
+            attemptLogin(loginFormBuffer.value.username!, loginFormBuffer.value.password!);
         }
         else {
             console.log(errors)
-            message.error('Invalid')
+            message.error('Invalid Form State')
         }
     });
+}
+
+async function attemptLogin(userName: string, password: string) {
+    
+    loginPending.value = true;
+    try {
+        await loginUser(userName, password);
+        router.push('/Home');
+    }
+    catch (errors) {
+        console.log(errors);
+        message.error('Error Logging In');
+        loginPending.value = false;
+    }
 }
 
 
@@ -81,7 +91,8 @@ function attemptSubmittal(e: MouseEvent) {
                 />
             </NFormItem>
         </NForm>
-        <div class="flex justify-between w-full">
+        <Loader v-if="loginPending"/>
+        <div v-else class="flex justify-between w-full">
             <NButton
                 round
                 type="primary"

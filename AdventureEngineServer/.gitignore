@@ -5,3 +5,4 @@ AdventureEngineServer*
 migrationVenv/
 certs/
 *.cnf
+.env

@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainClassResources(filters?: FilterCollection<DomainClassResource>): Promise<DomainClassResource[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainClassResources" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainClassResources" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainClassResource>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainClassResources(filters?: FilterCollection<DomainC
 
 export async function getDomainClassResourcebyId(id: number): Promise<DomainClassResource> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainClassResource/" + id);
+      const response = await fetch("http://localhost:8080/getDomainClassResource/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainClassResource;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainClassResourcebyId(id: number): Promise<DomainClas
 
 export async function saveDomainClassResource<T extends DomainClassResource | DomainClassResource[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainClassResource", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainClassResource", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

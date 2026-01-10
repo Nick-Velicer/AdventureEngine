@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainConditions(filters?: FilterCollection<DomainCondition>): Promise<DomainCondition[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainConditions" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainConditions" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainCondition>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainConditions(filters?: FilterCollection<DomainCondi
 
 export async function getDomainConditionbyId(id: number): Promise<DomainCondition> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainCondition/" + id);
+      const response = await fetch("http://localhost:8080/getDomainCondition/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainCondition;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainConditionbyId(id: number): Promise<DomainConditio
 
 export async function saveDomainCondition<T extends DomainCondition | DomainCondition[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainCondition", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainCondition", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

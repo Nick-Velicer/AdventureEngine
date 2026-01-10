@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainSpells(filters?: FilterCollection<DomainSpell>): Promise<DomainSpell[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainSpells" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainSpells" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainSpell>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainSpells(filters?: FilterCollection<DomainSpell>): 
 
 export async function getDomainSpellbyId(id: number): Promise<DomainSpell> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainSpell/" + id);
+      const response = await fetch("http://localhost:8080/getDomainSpell/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainSpell;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainSpellbyId(id: number): Promise<DomainSpell> {
 
 export async function saveDomainSpell<T extends DomainSpell | DomainSpell[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainSpell", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainSpell", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainSubClasss(filters?: FilterCollection<DomainSubClass>): Promise<DomainSubClass[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainSubClasss" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainSubClasss" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainSubClass>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainSubClasss(filters?: FilterCollection<DomainSubCla
 
 export async function getDomainSubClassbyId(id: number): Promise<DomainSubClass> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainSubClass/" + id);
+      const response = await fetch("http://localhost:8080/getDomainSubClass/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainSubClass;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainSubClassbyId(id: number): Promise<DomainSubClass>
 
 export async function saveDomainSubClass<T extends DomainSubClass | DomainSubClass[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainSubClass", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainSubClass", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getCampaigns(filters?: FilterCollection<Campaign>): Promise<Campaign[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getCampaigns" + filterString);
+      const response = await fetch("http://localhost:8080/getCampaigns" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<Campaign>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getCampaigns(filters?: FilterCollection<Campaign>): Promis
 
 export async function getCampaignbyId(id: number): Promise<Campaign> {
    try {
-      const response = await fetch("http://localhost:8080/getCampaign/" + id);
+      const response = await fetch("http://localhost:8080/getCampaign/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as Campaign;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getCampaignbyId(id: number): Promise<Campaign> {
 
 export async function saveCampaign<T extends Campaign | Campaign[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveCampaign", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveCampaign", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

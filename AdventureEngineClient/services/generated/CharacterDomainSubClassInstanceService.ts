@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getCharacterDomainSubClassInstances(filters?: FilterCollection<CharacterDomainSubClassInstance>): Promise<CharacterDomainSubClassInstance[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getCharacterDomainSubClassInstances" + filterString);
+      const response = await fetch("http://localhost:8080/getCharacterDomainSubClassInstances" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<CharacterDomainSubClassInstance>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getCharacterDomainSubClassInstances(filters?: FilterCollec
 
 export async function getCharacterDomainSubClassInstancebyId(id: number): Promise<CharacterDomainSubClassInstance> {
    try {
-      const response = await fetch("http://localhost:8080/getCharacterDomainSubClassInstance/" + id);
+      const response = await fetch("http://localhost:8080/getCharacterDomainSubClassInstance/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as CharacterDomainSubClassInstance;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getCharacterDomainSubClassInstancebyId(id: number): Promis
 
 export async function saveCharacterDomainSubClassInstance<T extends CharacterDomainSubClassInstance | CharacterDomainSubClassInstance[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveCharacterDomainSubClassInstance", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveCharacterDomainSubClassInstance", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

@@ -3,9 +3,11 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"log"
+	"os"
 	"strings"
 
-	"golang.org/x/crypto/bcrypt"
+	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
 
@@ -100,12 +102,16 @@ func FilterTableContext(dbContext *gorm.DB, filters *[]FilterExpression) (*gorm.
 	return updateBuffer, nil
 }
 
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 15)
-	return string(bytes), err
-}
+func GetEnvVar(key string) string {
 
-func VerifyPassword(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+	//Eventually this can be managed as app context instead of having to load it every time
+	//but that's not really set up in a convenient way so this works for now.
+	err := godotenv.Load()
+
+	if err != nil {
+		fmt.Println(err)
+		log.Fatalf("Error loading .env file")
+	}
+
+	return os.Getenv(key)
 }

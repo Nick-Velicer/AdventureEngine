@@ -1,10 +1,12 @@
 import  { testDarkTheme, themeDefault, type ThemeVariables } from '../theme/themeConfig'
-import { AppTypes, type DomainCharacterStat, type DomainDice } from '../types/appTypes/appTypes'
+import { AppTypes, type User, type DomainCharacterStat, type DomainDice } from '../types/appTypes/appTypes'
 
 export type StoreShape = typeof stateDefault
 
 
 export const stateDefault = {
+    activeUser: undefined as User | undefined,
+    sessionToken: undefined as string | undefined,
     activeCharacterId: undefined as number | undefined,
     activeTableView: undefined as (keyof typeof AppTypes) | undefined,
     theme: themeDefault as Record<ThemeVariables, string>,
@@ -32,6 +34,12 @@ export const stateActions = {
     },
     setActiveCharacterId(id: number) {
         this.activeCharacterId = id;
+    }, 
+    initializeUserSession(user: User) {
+        this.activeUser = user;
+    }, 
+    setSessionToken(token: string) {
+        this.sessionToken = token;
     }, 
 }
 //} satisfies Record<string, (arg0: StoreShape) => void>

@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainActions(filters?: FilterCollection<DomainAction>): Promise<DomainAction[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainActions" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainActions" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainAction>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainActions(filters?: FilterCollection<DomainAction>)
 
 export async function getDomainActionbyId(id: number): Promise<DomainAction> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainAction/" + id);
+      const response = await fetch("http://localhost:8080/getDomainAction/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainAction;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainActionbyId(id: number): Promise<DomainAction> {
 
 export async function saveDomainAction<T extends DomainAction | DomainAction[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainAction", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainAction", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

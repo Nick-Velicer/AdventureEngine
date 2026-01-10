@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainDiceRollSubTypes(filters?: FilterCollection<DomainDiceRollSubType>): Promise<DomainDiceRollSubType[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainDiceRollSubTypes" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainDiceRollSubTypes" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainDiceRollSubType>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainDiceRollSubTypes(filters?: FilterCollection<Domai
 
 export async function getDomainDiceRollSubTypebyId(id: number): Promise<DomainDiceRollSubType> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainDiceRollSubType/" + id);
+      const response = await fetch("http://localhost:8080/getDomainDiceRollSubType/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainDiceRollSubType;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainDiceRollSubTypebyId(id: number): Promise<DomainDi
 
 export async function saveDomainDiceRollSubType<T extends DomainDiceRollSubType | DomainDiceRollSubType[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainDiceRollSubType", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainDiceRollSubType", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

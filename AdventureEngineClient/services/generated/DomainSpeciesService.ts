@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainSpeciess(filters?: FilterCollection<DomainSpecies>): Promise<DomainSpecies[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainSpeciess" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainSpeciess" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainSpecies>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainSpeciess(filters?: FilterCollection<DomainSpecies
 
 export async function getDomainSpeciesbyId(id: number): Promise<DomainSpecies> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainSpecies/" + id);
+      const response = await fetch("http://localhost:8080/getDomainSpecies/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainSpecies;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainSpeciesbyId(id: number): Promise<DomainSpecies> {
 
 export async function saveDomainSpecies<T extends DomainSpecies | DomainSpecies[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainSpecies", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainSpecies", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

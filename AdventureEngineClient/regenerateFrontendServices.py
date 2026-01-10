@@ -52,7 +52,7 @@ def produceTSServiceFile(typeName: str):
                 'try {',
                 *indentLineBlock([
                     'const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";',
-                    'const response = await fetch("' + baseApiUrl + 'get' + tableName + 's" + filterString);',
+                    'const response = await fetch("' + baseApiUrl + 'get' + tableName + 's" + filterString, { credentials: "include" });',
                     'const returnObj = await response.json() as unknown as Array<' + typeName + '>;',
                     'return returnObj;'
                 ]),
@@ -75,7 +75,7 @@ def produceTSServiceFile(typeName: str):
             *indentLineBlock([
                 'try {',
                 *indentLineBlock([
-                    'const response = await fetch("' + baseApiUrl + 'get' + tableName + '/" + id);',
+                    'const response = await fetch("' + baseApiUrl + 'get' + tableName + '/" + id, { credentials: "include" });',
                     'const returnObj = await response.json() as unknown as ' + typeName + ';',
                     'return returnObj;'
                 ]),
@@ -98,7 +98,7 @@ def produceTSServiceFile(typeName: str):
             *indentLineBlock([
                 'try {',
                 *indentLineBlock([
-                    'const response = await fetch("' + baseApiUrl + 'save' + tableName + '", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});',
+                    'const response = await fetch("' + baseApiUrl + 'save' + tableName + '", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });',
                     'const returnObj = await response.json() as unknown as T;',
                     'return returnObj;'
                 ]),

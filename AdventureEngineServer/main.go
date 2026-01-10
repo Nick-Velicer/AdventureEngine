@@ -24,7 +24,8 @@ func applyCORSSettings(router *gin.Engine) {
 
 	config := cors.DefaultConfig()
 	//URLs should eventually be moved out to app config
-	config.AllowOrigins = []string{"http://localhost:5173", "*"}
+	config.AllowCredentials = true
+	config.AllowOrigins = []string{"http://localhost:5173"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
 	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 

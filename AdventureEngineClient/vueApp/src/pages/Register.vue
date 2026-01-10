@@ -4,8 +4,11 @@ import { composedAppInjectionContexts } from '../../../injections/composedInject
 import { NInput, NForm, NFormItem, type FormItemRule, NButton, type FormInst, type FormValidationError, useMessage, type FormRules } from 'naive-ui';
 import type { User } from '../../../types/appTypes/appTypes';
 import { registerUser } from '../../../services/custom/AuthenticationService';
+import { useRouter } from 'vue-router';
+import Loader from '../components/Loader.vue';
 
 const message = useMessage();
+const router = useRouter();
 
 //The controlled inputs for user should not be in the store,
 //that will be reserved for the active user/session info
@@ -17,7 +20,7 @@ const formDefault = {
 };
 
 const registrationFormBuffer = ref(formDefault);
-
+const loginPending = ref(false);
 const formRef = ref<FormInst | null>(null);
 
 const rules: FormRules = {
@@ -60,20 +63,27 @@ function attemptSubmittal(e: MouseEvent) {
     e.preventDefault();
     formRef.value?.validate((errors: Array<FormValidationError> | undefined) => {
         if (!errors) {
-            try {
-                registerUser(registrationFormBuffer.value.username!, registrationFormBuffer.value.password!)
-            }
-            catch (errors) {
-                console.log(errors)
-                message.error('Registration Error')
-            }
-            message.success('Valid')
+            attemptRegistration(registrationFormBuffer.value.username!, registrationFormBuffer.value.password!);
         }
         else {
             console.log(errors)
-            message.error('Invalid')
+            message.error('Invalid Form State')
         }
     });
+}
+
+async function attemptRegistration(userName: string, password: string) {
+    
+    loginPending.value = true;
+    try {
+        await registerUser(userName, password);
+        router.push('/Home');
+    }
+    catch (errors) {
+        console.log(errors);
+        message.error('Error Registering User');
+        loginPending.value = false;
+    }
 }
 
 </script>
@@ -108,7 +118,8 @@ function attemptSubmittal(e: MouseEvent) {
                 />
             </NFormItem>
         </NForm>
-        <div class="flex justify-between w-full">
+        <Loader v-if="loginPending"/>
+        <div v-else class="flex justify-between w-full">
             <RouterLink to="/Login">
                 <NButton
                     round

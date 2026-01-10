@@ -8,7 +8,7 @@ import { type FilterCollection, produceFilterParamsFromExpression} from "../filt
 export async function getDomainStaticEffects(filters?: FilterCollection<DomainStaticEffect>): Promise<DomainStaticEffect[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
-      const response = await fetch("http://localhost:8080/getDomainStaticEffects" + filterString);
+      const response = await fetch("http://localhost:8080/getDomainStaticEffects" + filterString, { credentials: "include" });
       const returnObj = await response.json() as unknown as Array<DomainStaticEffect>;
       return returnObj;
    }
@@ -19,7 +19,7 @@ export async function getDomainStaticEffects(filters?: FilterCollection<DomainSt
 
 export async function getDomainStaticEffectbyId(id: number): Promise<DomainStaticEffect> {
    try {
-      const response = await fetch("http://localhost:8080/getDomainStaticEffect/" + id);
+      const response = await fetch("http://localhost:8080/getDomainStaticEffect/" + id, { credentials: "include" });
       const returnObj = await response.json() as unknown as DomainStaticEffect;
       return returnObj;
    }
@@ -30,7 +30,7 @@ export async function getDomainStaticEffectbyId(id: number): Promise<DomainStati
 
 export async function saveDomainStaticEffect<T extends DomainStaticEffect | DomainStaticEffect[]>(obj: T): Promise<T> {
    try {
-      const response = await fetch("http://localhost:8080/saveDomainStaticEffect", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj)});
+      const response = await fetch("http://localhost:8080/saveDomainStaticEffect", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
