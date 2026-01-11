@@ -66,6 +66,12 @@ func createDB() *gorm.DB {
 
 	db.Close()
 
+	returnGormDB := GetAppDBContext()
+
+	return returnGormDB
+}
+
+func GetAppDBContext() *gorm.DB {
 	returnGormDB, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			NoLowerCase:  true, // skip the snake_casing of names

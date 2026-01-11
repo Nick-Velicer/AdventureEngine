@@ -2,13 +2,25 @@ package main
 
 import (
 	"AdventureEngineServer/endpointManagers"
+	"flag"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func main() {
-	db := createDB()
+	shouldRegenerateDB := flag.Bool("regenerate", false, "a string flag")
+
+	flag.Parse()
+
+	var db *gorm.DB = nil
+
+	if *shouldRegenerateDB {
+		db = createDB()
+	} else {
+		db = GetAppDBContext()
+	}
 
 	router := gin.Default()
 	applyCORSSettings(router)
