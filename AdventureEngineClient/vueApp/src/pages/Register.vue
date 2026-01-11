@@ -94,6 +94,7 @@ async function attemptRegistration(userName: string, password: string) {
             <NFormItem label="Username" path="username">
                 <NInput
                     v-model:value="registrationFormBuffer.username"
+                    :disabled="loginPending"
                     type="text"
                     placeholder="Username"
                 />
@@ -102,6 +103,7 @@ async function attemptRegistration(userName: string, password: string) {
                 <NInput
                     key="primaryPassword"
                     v-model:value="registrationFormBuffer.password"
+                    :disabled="loginPending"
                     type="password"
                     show-password-on="mousedown"
                     placeholder="Password"
@@ -111,14 +113,14 @@ async function attemptRegistration(userName: string, password: string) {
                 <NInput
                     key="secondaryPassword"
                     v-model:value="registrationFormBuffer.secondaryPassword"
-                    :disabled="!registrationFormBuffer.password"
+                    :disabled="!registrationFormBuffer.password || loginPending"
                     type="password"
                     show-password-on="mousedown"
                     placeholder="Confirm Password"
                 />
             </NFormItem>
         </NForm>
-        <Loader v-if="loginPending"/>
+        <Loader variant="icon" v-if="loginPending"/>
         <div v-else class="flex justify-between w-full">
             <RouterLink to="/Login">
                 <NButton

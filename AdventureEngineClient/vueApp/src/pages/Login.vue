@@ -77,21 +77,22 @@ async function attemptLogin(userName: string, password: string) {
             <NFormItem label="Username" path="username">
                 <NInput
                     v-model:value="loginFormBuffer.username"
+                    :disabled="loginPending"
                     type="text"
                     placeholder="Username"
                 />
             </NFormItem>
             <NFormItem label="Password" path="password">
                 <NInput
-                    key="primaryPassword"
                     v-model:value="loginFormBuffer.password"
+                    :disabled="loginPending"
                     type="password"
                     show-password-on="mousedown"
                     placeholder="Password"
                 />
             </NFormItem>
         </NForm>
-        <Loader v-if="loginPending"/>
+        <Loader variant="icon" v-if="loginPending"/>
         <div v-else class="flex justify-between w-full">
             <NButton
                 round
