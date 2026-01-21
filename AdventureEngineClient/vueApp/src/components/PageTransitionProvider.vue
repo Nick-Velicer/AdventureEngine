@@ -20,13 +20,15 @@ type TransitionMeta = Partial<Record<ExtractRouteBase<AppRoutePaths>, typeof spa
 //All configured adjacencies for pages
 const transitionNodes = {
     "Login": {
-        "Register": "right"
+        "Register": "right",
+        "Home": "in"
     },
     "Register": {
-        "Login": "left"
+        "Login": "left",
+        "Home": "in"
     },
     "Home": {
-        "CampaignManagement": "in"
+        "CampaignManagement": "in",
     },
     "CampaignManagement": {
         "Home": "out",
@@ -96,5 +98,33 @@ function getActiveTransition(): typeof spatialTransitions[number] | undefined {
     .right-enter-from {
         opacity: 0;
         transform: translateX(50%);
+    }
+
+    .in-enter-active, .in-leave-active {
+        transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .in-leave-to {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+
+    .in-enter-from {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+
+    .out-enter-active, .out-leave-active {
+        transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .out-leave-to {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+
+    .out-enter-from {
+        opacity: 0;
+        transform: scale(1.5);
     }
 </style>

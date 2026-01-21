@@ -20,7 +20,7 @@ const store = composedAppInjectionContexts.store();
             <NavMenu/>
             <div class="flex-1"/>
         </header>
-        <main class="scrollArea flex-1">
+        <main class="scrollArea mainContentWrapper">
             <slot></slot>
         </main>
         <footer class="footerContainer">
@@ -41,6 +41,11 @@ const store = composedAppInjectionContexts.store();
     background-color: v-bind("store.reactiveThemeElement("--color-background")");
     color: v-bind("store.reactiveThemeElement("--text-color-primary")");
     font-family: v-bind("store.reactiveThemeElement("--font-family-body")");
+}
+
+.mainContentWrapper {
+    flex: 1;
+    padding: v-bind("store.reactiveThemeElement("--spacing-small")");
 }
 
 .headerContainer {

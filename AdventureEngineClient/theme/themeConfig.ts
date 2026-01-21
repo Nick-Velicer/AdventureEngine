@@ -9,18 +9,19 @@ export const themeDefault = {
     "--spacing-medium": "2rem",
     "--spacing-large": "4rem",
     "--duration-paused": "paused",
-    "--duration-slow": "3s",
-    "--duration-fast": "500ms",
+    "--duration-slow": "500ms",
+    "--duration-fast": "200ms",
     "--easing-paused": "paused",
     "--easing-slow": "3s",
-    "--easing-fast": "500ms",
-    "--radius-large": "4rem",
-    "--radius-small": "2rem",
+    "--easing-fast": "1s",
+    "--radius-large": "2rem",
+    "--radius-small": "0.5rem",
     "--font-family-body": "Arial, Helvetica, sans-serif",
-    "--font-family-headings": "Palatino Linotype, serif",
+    "--font-family-headings": "Roboto, sans-serif",
     "--font-size-caption": "12px",
     "--font-size-body": "16px",
     "--font-size-heading": "26px",
+    "--box-shadow": "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px"
 } as const;
 
 export const testDarkTheme: Record<ThemeVariables, string> = {
@@ -34,18 +35,19 @@ export const testDarkTheme: Record<ThemeVariables, string> = {
     "--spacing-medium": "2rem",
     "--spacing-large": "4rem",
     "--duration-paused": "paused",
-    "--duration-slow": "3s",
-    "--duration-fast": "500ms",
+    "--duration-slow": "500ms",
+    "--duration-fast": "200ms",
     "--easing-paused": "paused",
     "--easing-slow": "3s",
     "--easing-fast": "500ms",
-    "--radius-large": "4rem",
-    "--radius-small": "2rem",
+    "--radius-large": "2rem",
+    "--radius-small": "0.5rem",
     "--font-family-body": "Arial, Helvetica, sans-serif",
-    "--font-family-headings": "Palatino Linotype, serif",
+    "--font-family-headings": "Roboto, sans-serif",
     "--font-size-caption": "12px",
     "--font-size-body": "16px",
     "--font-size-heading": "26px",
+    "--box-shadow": "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px"
 } as const;
 
 export type ThemeVariables = keyof typeof themeDefault 
