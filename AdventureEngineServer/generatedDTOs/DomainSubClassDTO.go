@@ -26,6 +26,7 @@ type DomainSubClassDTOAttributes struct {
 
 type DomainSubClassDTOManyToOneRelationships struct {
    Class__DomainClass *DomainClassDTO
+   ResourceOwner__User *UserDTO
 }
 
 type DomainSubClassDTOOneToManyRelationships struct {
@@ -59,10 +60,18 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSubClass).Name())
    
    var includedClass__DomainClass types.DomainClass
+   var includedResourceOwner__User types.User
    
    if (domainSubClass.Class__DomainClass != nil) {
       if err := services.GetDomainClassById(db, int(*domainSubClass.Class__DomainClass), &includedClass__DomainClass); err != nil {
          fmt.Println("Error fetching many-to-one table DomainClass:")
+         fmt.Println(err)
+      }
+   }
+
+   if (domainSubClass.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainSubClass.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -82,6 +91,7 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
       Relationships: DomainSubClassDTORelationships{
          ManyToOne: DomainSubClassDTOManyToOneRelationships {
             Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainSubClassDTOOneToManyRelationships {
          },
@@ -103,6 +113,10 @@ func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) *types
    
    if (domainSubClass.Relationships.ManyToOne.Class__DomainClass != nil) {
       tableTypeBuffer.Class__DomainClass = domainSubClass.Relationships.ManyToOne.Class__DomainClass.Id
+   }
+
+   if (domainSubClass.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainSubClass.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    return &tableTypeBuffer

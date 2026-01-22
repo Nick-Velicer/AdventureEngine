@@ -25,6 +25,7 @@ type DomainDiceRollTypeDTOAttributes struct {
 }
 
 type DomainDiceRollTypeDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type DomainDiceRollTypeDTOOneToManyRelationships struct {
@@ -58,8 +59,16 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainDiceRollType).Name())
    
+   var includedResourceOwner__User types.User
    var includedVariants__DomainDiceRollSubTypes []types.DomainDiceRollSubType
    
+   if (domainDiceRollType.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainDiceRollType.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    if (slices.Contains(traversedTables, reflect.TypeOf(includedVariants__DomainDiceRollSubTypes).Elem().Name())) {
       includedVariants__DomainDiceRollSubTypes = []types.DomainDiceRollSubType{}
       fmt.Println("Hit circular catch case for table DomainDiceRollSubType")
@@ -81,6 +90,7 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(db *gorm.DB, domainDiceRollType *
       },
       Relationships: DomainDiceRollTypeDTORelationships{
          ManyToOne: DomainDiceRollTypeDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainDiceRollTypeDTOOneToManyRelationships {
             Variants__DomainDiceRollSubType: utils.Map(includedVariants__DomainDiceRollSubTypes, func(relationshipElement types.DomainDiceRollSubType) *DomainDiceRollSubTypeDTO { return DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db, &relationshipElement, traversedTables) }),
@@ -101,5 +111,9 @@ func DomainDiceRollTypeDTOToDomainDiceRollType(domainDiceRollType *DomainDiceRol
    tableTypeBuffer.Title = domainDiceRollType.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainDiceRollType.Attributes.UpdatedAt
    
+   if (domainDiceRollType.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainDiceRollType.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

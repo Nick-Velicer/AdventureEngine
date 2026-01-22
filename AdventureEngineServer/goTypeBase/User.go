@@ -21,6 +21,13 @@ type UserJson struct {
 	// Password corresponds to the JSON schema field "Password".
 	Password *string `json:"Password,omitempty" yaml:"Password,omitempty" mapstructure:"Password,omitempty"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
+
+	// RolesUserRoleInstance corresponds to the JSON schema field
+	// "Roles__UserRoleInstance".
+	RolesUserRoleInstance []float64 `json:"Roles__UserRoleInstance,omitempty" yaml:"Roles__UserRoleInstance,omitempty" mapstructure:"Roles__UserRoleInstance,omitempty"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
 

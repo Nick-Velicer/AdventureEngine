@@ -26,6 +26,7 @@ type DomainClassDTOAttributes struct {
 
 type DomainClassDTOManyToOneRelationships struct {
    HitDie__DomainDice *DomainDiceDTO
+   ResourceOwner__User *UserDTO
    SpellcastingStat__DomainCharacterStat *DomainCharacterStatDTO
 }
 
@@ -63,6 +64,7 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
    traversedTables = append(traversedTables, reflect.TypeOf(*domainClass).Name())
    
    var includedHitDie__DomainDice types.DomainDice
+   var includedResourceOwner__User types.User
    var includedSpellcastingStat__DomainCharacterStat types.DomainCharacterStat
    var includedPrimaryStats__ClassPrimaryAbilitys []types.ClassPrimaryAbility
    var includedSaves__ClassSaves []types.ClassSave
@@ -71,6 +73,13 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
    if (domainClass.HitDie__DomainDice != nil) {
       if err := services.GetDomainDiceById(db, int(*domainClass.HitDie__DomainDice), &includedHitDie__DomainDice); err != nil {
          fmt.Println("Error fetching many-to-one table DomainDice:")
+         fmt.Println(err)
+      }
+   }
+
+   if (domainClass.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainClass.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -118,6 +127,7 @@ func DomainClassToDomainClassDTO(db *gorm.DB, domainClass *types.DomainClass, tr
       Relationships: DomainClassDTORelationships{
          ManyToOne: DomainClassDTOManyToOneRelationships {
             HitDie__DomainDice: DomainDiceToDomainDiceDTO(db, &includedHitDie__DomainDice, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
             SpellcastingStat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedSpellcastingStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: DomainClassDTOOneToManyRelationships {
@@ -143,6 +153,10 @@ func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) *types.DomainClass
    
    if (domainClass.Relationships.ManyToOne.HitDie__DomainDice != nil) {
       tableTypeBuffer.HitDie__DomainDice = domainClass.Relationships.ManyToOne.HitDie__DomainDice.Id
+   }
+
+   if (domainClass.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainClass.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    if (domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat != nil) {

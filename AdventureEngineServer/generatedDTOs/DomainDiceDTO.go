@@ -7,7 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
-   
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "fmt"
    "reflect"
@@ -27,6 +27,7 @@ type DomainDiceDTOAttributes struct {
 }
 
 type DomainDiceDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type DomainDiceDTOOneToManyRelationships struct {
@@ -59,7 +60,15 @@ func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traver
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainDice).Name())
    
+   var includedResourceOwner__User types.User
    
+   if (domainDice.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainDice.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    
    return &DomainDiceDTO{
       Id: domainDice.Id,
@@ -76,6 +85,7 @@ func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traver
       },
       Relationships: DomainDiceDTORelationships{
          ManyToOne: DomainDiceDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainDiceDTOOneToManyRelationships {
          },
@@ -97,5 +107,9 @@ func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) *types.DomainDice {
    tableTypeBuffer.Title = domainDice.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainDice.Attributes.UpdatedAt
    
+   if (domainDice.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainDice.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

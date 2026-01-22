@@ -25,6 +25,9 @@ type DomainClassJson struct {
 	// "PrimaryStats__ClassPrimaryAbility".
 	PrimaryStatsClassPrimaryAbility []float64 `json:"PrimaryStats__ClassPrimaryAbility,omitempty" yaml:"PrimaryStats__ClassPrimaryAbility,omitempty" mapstructure:"PrimaryStats__ClassPrimaryAbility,omitempty"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
+
 	// SavesClassSave corresponds to the JSON schema field "Saves__ClassSave".
 	SavesClassSave []float64 `json:"Saves__ClassSave,omitempty" yaml:"Saves__ClassSave,omitempty" mapstructure:"Saves__ClassSave,omitempty"`
 

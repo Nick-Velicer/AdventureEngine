@@ -7,7 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
-   
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "fmt"
    "reflect"
@@ -25,6 +25,7 @@ type DomainStaticEffectDTOAttributes struct {
 }
 
 type DomainStaticEffectDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type DomainStaticEffectDTOOneToManyRelationships struct {
@@ -57,7 +58,15 @@ func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainStaticEffect).Name())
    
+   var includedResourceOwner__User types.User
    
+   if (domainStaticEffect.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainStaticEffect.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    
    return &DomainStaticEffectDTO{
       Id: domainStaticEffect.Id,
@@ -72,6 +81,7 @@ func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *
       },
       Relationships: DomainStaticEffectDTORelationships{
          ManyToOne: DomainStaticEffectDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainStaticEffectDTOOneToManyRelationships {
          },
@@ -91,5 +101,9 @@ func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticE
    tableTypeBuffer.Title = domainStaticEffect.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainStaticEffect.Attributes.UpdatedAt
    
+   if (domainStaticEffect.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainStaticEffect.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

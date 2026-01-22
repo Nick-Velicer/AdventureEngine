@@ -27,6 +27,7 @@ type CharacterDomainSubClassInstanceDTOAttributes struct {
 
 type CharacterDomainSubClassInstanceDTOManyToOneRelationships struct {
    Character__Character *CharacterDTO
+   ResourceOwner__User *UserDTO
    SubClass__DomainSubClass *DomainSubClassDTO
 }
 
@@ -61,11 +62,19 @@ func CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db *gor
    traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainSubClassInstance).Name())
    
    var includedCharacter__Character types.Character
+   var includedResourceOwner__User types.User
    var includedSubClass__DomainSubClass types.DomainSubClass
    
    if (characterDomainSubClassInstance.Character__Character != nil) {
       if err := services.GetCharacterById(db, int(*characterDomainSubClassInstance.Character__Character), &includedCharacter__Character); err != nil {
          fmt.Println("Error fetching many-to-one table Character:")
+         fmt.Println(err)
+      }
+   }
+
+   if (characterDomainSubClassInstance.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*characterDomainSubClassInstance.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -93,6 +102,7 @@ func CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db *gor
       Relationships: CharacterDomainSubClassInstanceDTORelationships{
          ManyToOne: CharacterDomainSubClassInstanceDTOManyToOneRelationships {
             Character__Character: CharacterToCharacterDTO(db, &includedCharacter__Character, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
             SubClass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubClass__DomainSubClass, traversedTables),
          },
          OneToMany: CharacterDomainSubClassInstanceDTOOneToManyRelationships {
@@ -116,6 +126,10 @@ func CharacterDomainSubClassInstanceDTOToCharacterDomainSubClassInstance(charact
    
    if (characterDomainSubClassInstance.Relationships.ManyToOne.Character__Character != nil) {
       tableTypeBuffer.Character__Character = characterDomainSubClassInstance.Relationships.ManyToOne.Character__Character.Id
+   }
+
+   if (characterDomainSubClassInstance.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = characterDomainSubClassInstance.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    if (characterDomainSubClassInstance.Relationships.ManyToOne.SubClass__DomainSubClass != nil) {

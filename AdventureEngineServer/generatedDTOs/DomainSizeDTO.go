@@ -7,7 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
-   
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "fmt"
    "reflect"
@@ -28,6 +28,7 @@ type DomainSizeDTOAttributes struct {
 }
 
 type DomainSizeDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type DomainSizeDTOOneToManyRelationships struct {
@@ -60,7 +61,15 @@ func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traver
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSize).Name())
    
+   var includedResourceOwner__User types.User
    
+   if (domainSize.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainSize.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    
    return &DomainSizeDTO{
       Id: domainSize.Id,
@@ -78,6 +87,7 @@ func DomainSizeToDomainSizeDTO(db *gorm.DB, domainSize *types.DomainSize, traver
       },
       Relationships: DomainSizeDTORelationships{
          ManyToOne: DomainSizeDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainSizeDTOOneToManyRelationships {
          },
@@ -100,5 +110,9 @@ func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) *types.DomainSize {
    tableTypeBuffer.Title = domainSize.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainSize.Attributes.UpdatedAt
    
+   if (domainSize.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainSize.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

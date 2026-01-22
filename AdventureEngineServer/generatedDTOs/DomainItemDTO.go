@@ -27,6 +27,7 @@ type DomainItemDTOAttributes struct {
 
 type DomainItemDTOManyToOneRelationships struct {
    OneHanded__Quantifier *QuantifierDTO
+   ResourceOwner__User *UserDTO
    TwoHanded__Quantifier *QuantifierDTO
 }
 
@@ -61,11 +62,19 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
    traversedTables = append(traversedTables, reflect.TypeOf(*domainItem).Name())
    
    var includedOneHanded__Quantifier types.Quantifier
+   var includedResourceOwner__User types.User
    var includedTwoHanded__Quantifier types.Quantifier
    
    if (domainItem.OneHanded__Quantifier != nil) {
       if err := services.GetQuantifierById(db, int(*domainItem.OneHanded__Quantifier), &includedOneHanded__Quantifier); err != nil {
          fmt.Println("Error fetching many-to-one table Quantifier:")
+         fmt.Println(err)
+      }
+   }
+
+   if (domainItem.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainItem.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -93,6 +102,7 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
       Relationships: DomainItemDTORelationships{
          ManyToOne: DomainItemDTOManyToOneRelationships {
             OneHanded__Quantifier: QuantifierToQuantifierDTO(db, &includedOneHanded__Quantifier, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
             TwoHanded__Quantifier: QuantifierToQuantifierDTO(db, &includedTwoHanded__Quantifier, traversedTables),
          },
          OneToMany: DomainItemDTOOneToManyRelationships {
@@ -116,6 +126,10 @@ func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) *types.DomainItem {
    
    if (domainItem.Relationships.ManyToOne.OneHanded__Quantifier != nil) {
       tableTypeBuffer.OneHanded__Quantifier = domainItem.Relationships.ManyToOne.OneHanded__Quantifier.Id
+   }
+
+   if (domainItem.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainItem.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    if (domainItem.Relationships.ManyToOne.TwoHanded__Quantifier != nil) {

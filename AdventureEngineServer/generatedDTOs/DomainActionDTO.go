@@ -25,6 +25,7 @@ type DomainActionDTOAttributes struct {
 }
 
 type DomainActionDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type DomainActionDTOOneToManyRelationships struct {
@@ -58,8 +59,16 @@ func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainAction).Name())
    
+   var includedResourceOwner__User types.User
    var includedQuantifiers__Quantifiers []types.Quantifier
    
+   if (domainAction.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainAction.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
       includedQuantifiers__Quantifiers = []types.Quantifier{}
       fmt.Println("Hit circular catch case for table Quantifier")
@@ -81,6 +90,7 @@ func DomainActionToDomainActionDTO(db *gorm.DB, domainAction *types.DomainAction
       },
       Relationships: DomainActionDTORelationships{
          ManyToOne: DomainActionDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainActionDTOOneToManyRelationships {
             Quantifiers__Quantifier: utils.Map(includedQuantifiers__Quantifiers, func(relationshipElement types.Quantifier) *QuantifierDTO { return QuantifierToQuantifierDTO(db, &relationshipElement, traversedTables) }),
@@ -101,5 +111,9 @@ func DomainActionDTOToDomainAction(domainAction *DomainActionDTO) *types.DomainA
    tableTypeBuffer.Title = domainAction.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainAction.Attributes.UpdatedAt
    
+   if (domainAction.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainAction.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

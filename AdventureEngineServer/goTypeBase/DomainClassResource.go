@@ -25,6 +25,9 @@ type DomainClassResourceJson struct {
 	// "Parent__DomainSubClass".
 	ParentDomainSubClass *float64 `json:"Parent__DomainSubClass,omitempty" yaml:"Parent__DomainSubClass,omitempty" mapstructure:"Parent__DomainSubClass,omitempty"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
 

@@ -21,6 +21,12 @@ type User struct {
 	// Password corresponds to the JSON schema field "Password".
 	Password *string `json:"Password" gorm:"column:Password" mapstructure:"Password"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
+
+	// RolesUserRoleInstance corresponds to the JSON schema field
+	// "Roles__UserRoleInstance".
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 

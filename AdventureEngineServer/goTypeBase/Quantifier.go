@@ -168,6 +168,9 @@ type QuantifierJson struct {
 	// Removes corresponds to the JSON schema field "Removes".
 	Removes *bool `json:"Removes,omitempty" yaml:"Removes,omitempty" mapstructure:"Removes,omitempty"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
+
 	// ShouldReplace corresponds to the JSON schema field "ShouldReplace".
 	ShouldReplace *bool `json:"ShouldReplace,omitempty" yaml:"ShouldReplace,omitempty" mapstructure:"ShouldReplace,omitempty"`
 

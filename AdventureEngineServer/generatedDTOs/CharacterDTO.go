@@ -27,6 +27,7 @@ type CharacterDTOAttributes struct {
 type CharacterDTOManyToOneRelationships struct {
    Campaign__Campaign *CampaignDTO
    CurrentSize__DomainSize *DomainSizeDTO
+   ResourceOwner__User *UserDTO
    Species__DomainSpecies *DomainSpeciesDTO
 }
 
@@ -64,6 +65,7 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
    
    var includedCampaign__Campaign types.Campaign
    var includedCurrentSize__DomainSize types.DomainSize
+   var includedResourceOwner__User types.User
    var includedSpecies__DomainSpecies types.DomainSpecies
    var includedStats__CharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
    var includedSubClasses__CharacterDomainSubClassInstances []types.CharacterDomainSubClassInstance
@@ -78,6 +80,13 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
    if (character.CurrentSize__DomainSize != nil) {
       if err := services.GetDomainSizeById(db, int(*character.CurrentSize__DomainSize), &includedCurrentSize__DomainSize); err != nil {
          fmt.Println("Error fetching many-to-one table DomainSize:")
+         fmt.Println(err)
+      }
+   }
+
+   if (character.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*character.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -119,6 +128,7 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
          ManyToOne: CharacterDTOManyToOneRelationships {
             Campaign__Campaign: CampaignToCampaignDTO(db, &includedCampaign__Campaign, traversedTables),
             CurrentSize__DomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSize__DomainSize, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
             Species__DomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpecies__DomainSpecies, traversedTables),
          },
          OneToMany: CharacterDTOOneToManyRelationships {
@@ -147,6 +157,10 @@ func CharacterDTOToCharacter(character *CharacterDTO) *types.Character {
 
    if (character.Relationships.ManyToOne.CurrentSize__DomainSize != nil) {
       tableTypeBuffer.CurrentSize__DomainSize = character.Relationships.ManyToOne.CurrentSize__DomainSize.Id
+   }
+
+   if (character.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = character.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    if (character.Relationships.ManyToOne.Species__DomainSpecies != nil) {

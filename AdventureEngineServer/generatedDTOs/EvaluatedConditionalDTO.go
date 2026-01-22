@@ -30,6 +30,7 @@ type EvaluatedConditionalDTOManyToOneRelationships struct {
    Base__Quantifier *QuantifierDTO
    IsTrue__DomainCondition *DomainConditionDTO
    Modifier__Quantifier *QuantifierDTO
+   ResourceOwner__User *UserDTO
 }
 
 type EvaluatedConditionalDTOOneToManyRelationships struct {
@@ -65,6 +66,7 @@ func EvaluatedConditionalToEvaluatedConditionalDTO(db *gorm.DB, evaluatedConditi
    var includedBase__Quantifier types.Quantifier
    var includedIsTrue__DomainCondition types.DomainCondition
    var includedModifier__Quantifier types.Quantifier
+   var includedResourceOwner__User types.User
    
    if (evaluatedConditional.Base__Quantifier != nil) {
       if err := services.GetQuantifierById(db, int(*evaluatedConditional.Base__Quantifier), &includedBase__Quantifier); err != nil {
@@ -83,6 +85,13 @@ func EvaluatedConditionalToEvaluatedConditionalDTO(db *gorm.DB, evaluatedConditi
    if (evaluatedConditional.Modifier__Quantifier != nil) {
       if err := services.GetQuantifierById(db, int(*evaluatedConditional.Modifier__Quantifier), &includedModifier__Quantifier); err != nil {
          fmt.Println("Error fetching many-to-one table Quantifier:")
+         fmt.Println(err)
+      }
+   }
+
+   if (evaluatedConditional.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*evaluatedConditional.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -106,6 +115,7 @@ func EvaluatedConditionalToEvaluatedConditionalDTO(db *gorm.DB, evaluatedConditi
             Base__Quantifier: QuantifierToQuantifierDTO(db, &includedBase__Quantifier, traversedTables),
             IsTrue__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedIsTrue__DomainCondition, traversedTables),
             Modifier__Quantifier: QuantifierToQuantifierDTO(db, &includedModifier__Quantifier, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: EvaluatedConditionalDTOOneToManyRelationships {
          },
@@ -137,6 +147,10 @@ func EvaluatedConditionalDTOToEvaluatedConditional(evaluatedConditional *Evaluat
 
    if (evaluatedConditional.Relationships.ManyToOne.Modifier__Quantifier != nil) {
       tableTypeBuffer.Modifier__Quantifier = evaluatedConditional.Relationships.ManyToOne.Modifier__Quantifier.Id
+   }
+
+   if (evaluatedConditional.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = evaluatedConditional.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    return &tableTypeBuffer

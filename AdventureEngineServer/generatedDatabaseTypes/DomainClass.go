@@ -24,6 +24,9 @@ type DomainClass struct {
 	// PrimaryStatsClassPrimaryAbility corresponds to the JSON schema field
 	// "PrimaryStats__ClassPrimaryAbility".
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
+
 	// SavesClassSave corresponds to the JSON schema field "Saves__ClassSave".
 
 	// SpellcastingStatDomainCharacterStat corresponds to the JSON schema field

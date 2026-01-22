@@ -76,6 +76,7 @@ type QuantifierDTOManyToOneRelationships struct {
    Parent__DomainCondition *DomainConditionDTO
    Parent__DomainStaticEffect *DomainStaticEffectDTO
    Parent__DomainSubClass *DomainSubClassDTO
+   ResourceOwner__User *UserDTO
    Target__DomainAction *DomainActionDTO
    Target__DomainCharacterStat *DomainCharacterStatDTO
    Target__DomainCondition *DomainConditionDTO
@@ -122,6 +123,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
    var includedParent__DomainCondition types.DomainCondition
    var includedParent__DomainStaticEffect types.DomainStaticEffect
    var includedParent__DomainSubClass types.DomainSubClass
+   var includedResourceOwner__User types.User
    var includedTarget__DomainAction types.DomainAction
    var includedTarget__DomainCharacterStat types.DomainCharacterStat
    var includedTarget__DomainCondition types.DomainCondition
@@ -169,6 +171,13 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
    if (quantifier.Parent__DomainSubClass != nil) {
       if err := services.GetDomainSubClassById(db, int(*quantifier.Parent__DomainSubClass), &includedParent__DomainSubClass); err != nil {
          fmt.Println("Error fetching many-to-one table DomainSubClass:")
+         fmt.Println(err)
+      }
+   }
+
+   if (quantifier.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*quantifier.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -294,6 +303,7 @@ func QuantifierToQuantifierDTO(db *gorm.DB, quantifier *types.Quantifier, traver
             Parent__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedParent__DomainCondition, traversedTables),
             Parent__DomainStaticEffect: DomainStaticEffectToDomainStaticEffectDTO(db, &includedParent__DomainStaticEffect, traversedTables),
             Parent__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedParent__DomainSubClass, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
             Target__DomainAction: DomainActionToDomainActionDTO(db, &includedTarget__DomainAction, traversedTables),
             Target__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedTarget__DomainCharacterStat, traversedTables),
             Target__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedTarget__DomainCondition, traversedTables),
@@ -388,6 +398,10 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
 
    if (quantifier.Relationships.ManyToOne.Parent__DomainSubClass != nil) {
       tableTypeBuffer.Parent__DomainSubClass = quantifier.Relationships.ManyToOne.Parent__DomainSubClass.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = quantifier.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    if (quantifier.Relationships.ManyToOne.Target__DomainAction != nil) {

@@ -7,7 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
-   
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "fmt"
    "reflect"
@@ -25,6 +25,7 @@ type DomainSpellSchoolDTOAttributes struct {
 }
 
 type DomainSpellSchoolDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type DomainSpellSchoolDTOOneToManyRelationships struct {
@@ -57,7 +58,15 @@ func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *typ
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSpellSchool).Name())
    
+   var includedResourceOwner__User types.User
    
+   if (domainSpellSchool.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainSpellSchool.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    
    return &DomainSpellSchoolDTO{
       Id: domainSpellSchool.Id,
@@ -72,6 +81,7 @@ func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *typ
       },
       Relationships: DomainSpellSchoolDTORelationships{
          ManyToOne: DomainSpellSchoolDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainSpellSchoolDTOOneToManyRelationships {
          },
@@ -91,5 +101,9 @@ func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoo
    tableTypeBuffer.Title = domainSpellSchool.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainSpellSchool.Attributes.UpdatedAt
    
+   if (domainSpellSchool.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainSpellSchool.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

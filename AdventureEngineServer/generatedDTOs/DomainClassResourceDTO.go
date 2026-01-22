@@ -27,6 +27,7 @@ type DomainClassResourceDTOAttributes struct {
 type DomainClassResourceDTOManyToOneRelationships struct {
    Parent__DomainClass *DomainClassDTO
    Parent__DomainSubClass *DomainSubClassDTO
+   ResourceOwner__User *UserDTO
 }
 
 type DomainClassResourceDTOOneToManyRelationships struct {
@@ -61,6 +62,7 @@ func DomainClassResourceToDomainClassResourceDTO(db *gorm.DB, domainClassResourc
    
    var includedParent__DomainClass types.DomainClass
    var includedParent__DomainSubClass types.DomainSubClass
+   var includedResourceOwner__User types.User
    
    if (domainClassResource.Parent__DomainClass != nil) {
       if err := services.GetDomainClassById(db, int(*domainClassResource.Parent__DomainClass), &includedParent__DomainClass); err != nil {
@@ -72,6 +74,13 @@ func DomainClassResourceToDomainClassResourceDTO(db *gorm.DB, domainClassResourc
    if (domainClassResource.Parent__DomainSubClass != nil) {
       if err := services.GetDomainSubClassById(db, int(*domainClassResource.Parent__DomainSubClass), &includedParent__DomainSubClass); err != nil {
          fmt.Println("Error fetching many-to-one table DomainSubClass:")
+         fmt.Println(err)
+      }
+   }
+
+   if (domainClassResource.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainClassResource.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -92,6 +101,7 @@ func DomainClassResourceToDomainClassResourceDTO(db *gorm.DB, domainClassResourc
          ManyToOne: DomainClassResourceDTOManyToOneRelationships {
             Parent__DomainClass: DomainClassToDomainClassDTO(db, &includedParent__DomainClass, traversedTables),
             Parent__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedParent__DomainSubClass, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainClassResourceDTOOneToManyRelationships {
          },
@@ -117,6 +127,10 @@ func DomainClassResourceDTOToDomainClassResource(domainClassResource *DomainClas
 
    if (domainClassResource.Relationships.ManyToOne.Parent__DomainSubClass != nil) {
       tableTypeBuffer.Parent__DomainSubClass = domainClassResource.Relationships.ManyToOne.Parent__DomainSubClass.Id
+   }
+
+   if (domainClassResource.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainClassResource.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    return &tableTypeBuffer

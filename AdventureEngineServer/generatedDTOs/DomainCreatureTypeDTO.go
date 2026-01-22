@@ -7,7 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
-   
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "fmt"
    "reflect"
@@ -25,6 +25,7 @@ type DomainCreatureTypeDTOAttributes struct {
 }
 
 type DomainCreatureTypeDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type DomainCreatureTypeDTOOneToManyRelationships struct {
@@ -57,7 +58,15 @@ func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainCreatureType).Name())
    
+   var includedResourceOwner__User types.User
    
+   if (domainCreatureType.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainCreatureType.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    
    return &DomainCreatureTypeDTO{
       Id: domainCreatureType.Id,
@@ -72,6 +81,7 @@ func DomainCreatureTypeToDomainCreatureTypeDTO(db *gorm.DB, domainCreatureType *
       },
       Relationships: DomainCreatureTypeDTORelationships{
          ManyToOne: DomainCreatureTypeDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainCreatureTypeDTOOneToManyRelationships {
          },
@@ -91,5 +101,9 @@ func DomainCreatureTypeDTOToDomainCreatureType(domainCreatureType *DomainCreatur
    tableTypeBuffer.Title = domainCreatureType.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainCreatureType.Attributes.UpdatedAt
    
+   if (domainCreatureType.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainCreatureType.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

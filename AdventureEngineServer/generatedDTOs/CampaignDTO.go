@@ -7,7 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
-   
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "fmt"
    "reflect"
@@ -26,6 +26,7 @@ type CampaignDTOAttributes struct {
 }
 
 type CampaignDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type CampaignDTOOneToManyRelationships struct {
@@ -58,7 +59,15 @@ func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTable
    
    traversedTables = append(traversedTables, reflect.TypeOf(*campaign).Name())
    
+   var includedResourceOwner__User types.User
    
+   if (campaign.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*campaign.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    
    return &CampaignDTO{
       Id: campaign.Id,
@@ -74,6 +83,7 @@ func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTable
       },
       Relationships: CampaignDTORelationships{
          ManyToOne: CampaignDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: CampaignDTOOneToManyRelationships {
          },
@@ -94,5 +104,9 @@ func CampaignDTOToCampaign(campaign *CampaignDTO) *types.Campaign {
    tableTypeBuffer.Title = campaign.Attributes.Title
    tableTypeBuffer.UpdatedAt = campaign.Attributes.UpdatedAt
    
+   if (campaign.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = campaign.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

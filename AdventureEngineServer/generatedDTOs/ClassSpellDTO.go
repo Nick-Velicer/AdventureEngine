@@ -26,6 +26,7 @@ type ClassSpellDTOAttributes struct {
 
 type ClassSpellDTOManyToOneRelationships struct {
    Class__DomainClass *DomainClassDTO
+   ResourceOwner__User *UserDTO
    Spell__DomainSpell *DomainSpellDTO
 }
 
@@ -60,11 +61,19 @@ func ClassSpellToClassSpellDTO(db *gorm.DB, classSpell *types.ClassSpell, traver
    traversedTables = append(traversedTables, reflect.TypeOf(*classSpell).Name())
    
    var includedClass__DomainClass types.DomainClass
+   var includedResourceOwner__User types.User
    var includedSpell__DomainSpell types.DomainSpell
    
    if (classSpell.Class__DomainClass != nil) {
       if err := services.GetDomainClassById(db, int(*classSpell.Class__DomainClass), &includedClass__DomainClass); err != nil {
          fmt.Println("Error fetching many-to-one table DomainClass:")
+         fmt.Println(err)
+      }
+   }
+
+   if (classSpell.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*classSpell.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -91,6 +100,7 @@ func ClassSpellToClassSpellDTO(db *gorm.DB, classSpell *types.ClassSpell, traver
       Relationships: ClassSpellDTORelationships{
          ManyToOne: ClassSpellDTOManyToOneRelationships {
             Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
             Spell__DomainSpell: DomainSpellToDomainSpellDTO(db, &includedSpell__DomainSpell, traversedTables),
          },
          OneToMany: ClassSpellDTOOneToManyRelationships {
@@ -113,6 +123,10 @@ func ClassSpellDTOToClassSpell(classSpell *ClassSpellDTO) *types.ClassSpell {
    
    if (classSpell.Relationships.ManyToOne.Class__DomainClass != nil) {
       tableTypeBuffer.Class__DomainClass = classSpell.Relationships.ManyToOne.Class__DomainClass.Id
+   }
+
+   if (classSpell.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = classSpell.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    if (classSpell.Relationships.ManyToOne.Spell__DomainSpell != nil) {

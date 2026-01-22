@@ -6,8 +6,8 @@ package generatedDTOs
 
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
-   
-   
+   utils "AdventureEngineServer/utils"
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "fmt"
    "reflect"
@@ -27,9 +27,11 @@ type UserDTOAttributes struct {
 }
 
 type UserDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type UserDTOOneToManyRelationships struct {
+   Roles__UserRoleInstance []*UserRoleInstanceDTO
 }
 
 type UserDTORelationships struct {
@@ -59,7 +61,23 @@ func UserToUserDTO(db *gorm.DB, user *types.User, traversedTables []string) *Use
    
    traversedTables = append(traversedTables, reflect.TypeOf(*user).Name())
    
+   var includedResourceOwner__User types.User
+   var includedRoles__UserRoleInstances []types.UserRoleInstance
    
+   if (user.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*user.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
+   if (slices.Contains(traversedTables, reflect.TypeOf(includedRoles__UserRoleInstances).Elem().Name())) {
+      includedRoles__UserRoleInstances = []types.UserRoleInstance{}
+      fmt.Println("Hit circular catch case for table UserRoleInstance")
+   } else {
+      services.GetUserRoleInstancesByUserId(db, int(*user.Id), &includedRoles__UserRoleInstances)
+   }
+
    
    return &UserDTO{
       Id: user.Id,
@@ -76,8 +94,10 @@ func UserToUserDTO(db *gorm.DB, user *types.User, traversedTables []string) *Use
       },
       Relationships: UserDTORelationships{
          ManyToOne: UserDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: UserDTOOneToManyRelationships {
+            Roles__UserRoleInstance: utils.Map(includedRoles__UserRoleInstances, func(relationshipElement types.UserRoleInstance) *UserRoleInstanceDTO { return UserRoleInstanceToUserRoleInstanceDTO(db, &relationshipElement, traversedTables) }),
          },
       },
    }
@@ -97,5 +117,9 @@ func UserDTOToUser(user *UserDTO) *types.User {
    tableTypeBuffer.UpdatedAt = user.Attributes.UpdatedAt
    tableTypeBuffer.Username = user.Attributes.Username
    
+   if (user.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = user.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

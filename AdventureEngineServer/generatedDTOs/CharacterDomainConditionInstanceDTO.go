@@ -29,6 +29,7 @@ type CharacterDomainConditionInstanceDTOAttributes struct {
 type CharacterDomainConditionInstanceDTOManyToOneRelationships struct {
    Character__Character *CharacterDTO
    Condition__DomainCondition *DomainConditionDTO
+   ResourceOwner__User *UserDTO
 }
 
 type CharacterDomainConditionInstanceDTOOneToManyRelationships struct {
@@ -63,6 +64,7 @@ func CharacterDomainConditionInstanceToCharacterDomainConditionInstanceDTO(db *g
    
    var includedCharacter__Character types.Character
    var includedCondition__DomainCondition types.DomainCondition
+   var includedResourceOwner__User types.User
    
    if (characterDomainConditionInstance.Character__Character != nil) {
       if err := services.GetCharacterById(db, int(*characterDomainConditionInstance.Character__Character), &includedCharacter__Character); err != nil {
@@ -74,6 +76,13 @@ func CharacterDomainConditionInstanceToCharacterDomainConditionInstanceDTO(db *g
    if (characterDomainConditionInstance.Condition__DomainCondition != nil) {
       if err := services.GetDomainConditionById(db, int(*characterDomainConditionInstance.Condition__DomainCondition), &includedCondition__DomainCondition); err != nil {
          fmt.Println("Error fetching many-to-one table DomainCondition:")
+         fmt.Println(err)
+      }
+   }
+
+   if (characterDomainConditionInstance.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*characterDomainConditionInstance.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -96,6 +105,7 @@ func CharacterDomainConditionInstanceToCharacterDomainConditionInstanceDTO(db *g
          ManyToOne: CharacterDomainConditionInstanceDTOManyToOneRelationships {
             Character__Character: CharacterToCharacterDTO(db, &includedCharacter__Character, traversedTables),
             Condition__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedCondition__DomainCondition, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: CharacterDomainConditionInstanceDTOOneToManyRelationships {
          },
@@ -123,6 +133,10 @@ func CharacterDomainConditionInstanceDTOToCharacterDomainConditionInstance(chara
 
    if (characterDomainConditionInstance.Relationships.ManyToOne.Condition__DomainCondition != nil) {
       tableTypeBuffer.Condition__DomainCondition = characterDomainConditionInstance.Relationships.ManyToOne.Condition__DomainCondition.Id
+   }
+
+   if (characterDomainConditionInstance.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = characterDomainConditionInstance.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    return &tableTypeBuffer

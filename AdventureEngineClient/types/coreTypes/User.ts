@@ -1,4 +1,5 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
+import { UserRoleInstance } from "./UserRoleInstance";
 
 export type User = ExtendedSchemaObject<{
     Attributes: {
@@ -7,6 +8,8 @@ export type User = ExtendedSchemaObject<{
     },
     Relationships: {
         ManyToOne: {},
-        OneToMany: {}
+        OneToMany: {
+            Roles__UserRoleInstance?: UserRoleInstance[]
+        }
     }
 }>

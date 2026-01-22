@@ -26,6 +26,7 @@ type DomainSpeciesDTOAttributes struct {
 
 type DomainSpeciesDTOManyToOneRelationships struct {
    CreatureType__DomainCreatureType *DomainCreatureTypeDTO
+   ResourceOwner__User *UserDTO
 }
 
 type DomainSpeciesDTOOneToManyRelationships struct {
@@ -59,10 +60,18 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSpecies).Name())
    
    var includedCreatureType__DomainCreatureType types.DomainCreatureType
+   var includedResourceOwner__User types.User
    
    if (domainSpecies.CreatureType__DomainCreatureType != nil) {
       if err := services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureType__DomainCreatureType), &includedCreatureType__DomainCreatureType); err != nil {
          fmt.Println("Error fetching many-to-one table DomainCreatureType:")
+         fmt.Println(err)
+      }
+   }
+
+   if (domainSpecies.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainSpecies.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -82,6 +91,7 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
       Relationships: DomainSpeciesDTORelationships{
          ManyToOne: DomainSpeciesDTOManyToOneRelationships {
             CreatureType__DomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureType__DomainCreatureType, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainSpeciesDTOOneToManyRelationships {
          },
@@ -103,6 +113,10 @@ func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) *types.Dom
    
    if (domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType != nil) {
       tableTypeBuffer.CreatureType__DomainCreatureType = domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType.Id
+   }
+
+   if (domainSpecies.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainSpecies.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    return &tableTypeBuffer

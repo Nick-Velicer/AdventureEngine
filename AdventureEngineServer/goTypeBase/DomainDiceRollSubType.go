@@ -18,6 +18,9 @@ type DomainDiceRollSubTypeJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
+
 	// SuperTypeDomainDiceRollType corresponds to the JSON schema field
 	// "SuperType__DomainDiceRollType".
 	SuperTypeDomainDiceRollType *float64 `json:"SuperType__DomainDiceRollType,omitempty" yaml:"SuperType__DomainDiceRollType,omitempty" mapstructure:"SuperType__DomainDiceRollType,omitempty"`

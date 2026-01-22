@@ -26,6 +26,7 @@ type ClassSaveDTOAttributes struct {
 
 type ClassSaveDTOManyToOneRelationships struct {
    Class__DomainClass *DomainClassDTO
+   ResourceOwner__User *UserDTO
    Stat__DomainCharacterStat *DomainCharacterStatDTO
 }
 
@@ -60,11 +61,19 @@ func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedT
    traversedTables = append(traversedTables, reflect.TypeOf(*classSave).Name())
    
    var includedClass__DomainClass types.DomainClass
+   var includedResourceOwner__User types.User
    var includedStat__DomainCharacterStat types.DomainCharacterStat
    
    if (classSave.Class__DomainClass != nil) {
       if err := services.GetDomainClassById(db, int(*classSave.Class__DomainClass), &includedClass__DomainClass); err != nil {
          fmt.Println("Error fetching many-to-one table DomainClass:")
+         fmt.Println(err)
+      }
+   }
+
+   if (classSave.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*classSave.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -91,6 +100,7 @@ func ClassSaveToClassSaveDTO(db *gorm.DB, classSave *types.ClassSave, traversedT
       Relationships: ClassSaveDTORelationships{
          ManyToOne: ClassSaveDTOManyToOneRelationships {
             Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
             Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: ClassSaveDTOOneToManyRelationships {
@@ -113,6 +123,10 @@ func ClassSaveDTOToClassSave(classSave *ClassSaveDTO) *types.ClassSave {
    
    if (classSave.Relationships.ManyToOne.Class__DomainClass != nil) {
       tableTypeBuffer.Class__DomainClass = classSave.Relationships.ManyToOne.Class__DomainClass.Id
+   }
+
+   if (classSave.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = classSave.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    if (classSave.Relationships.ManyToOne.Stat__DomainCharacterStat != nil) {

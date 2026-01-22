@@ -25,6 +25,7 @@ type DomainConditionDTOAttributes struct {
 }
 
 type DomainConditionDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type DomainConditionDTOOneToManyRelationships struct {
@@ -58,8 +59,16 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainCondition).Name())
    
+   var includedResourceOwner__User types.User
    var includedQuantifiers__Quantifiers []types.Quantifier
    
+   if (domainCondition.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainCondition.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
       includedQuantifiers__Quantifiers = []types.Quantifier{}
       fmt.Println("Hit circular catch case for table Quantifier")
@@ -81,6 +90,7 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
       },
       Relationships: DomainConditionDTORelationships{
          ManyToOne: DomainConditionDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainConditionDTOOneToManyRelationships {
             Quantifiers__Quantifier: utils.Map(includedQuantifiers__Quantifiers, func(relationshipElement types.Quantifier) *QuantifierDTO { return QuantifierToQuantifierDTO(db, &relationshipElement, traversedTables) }),
@@ -101,5 +111,9 @@ func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) *t
    tableTypeBuffer.Title = domainCondition.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainCondition.Attributes.UpdatedAt
    
+   if (domainCondition.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainCondition.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

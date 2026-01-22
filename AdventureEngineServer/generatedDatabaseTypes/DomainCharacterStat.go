@@ -21,6 +21,9 @@ type DomainCharacterStat struct {
 	// IsBaseStat corresponds to the JSON schema field "IsBaseStat".
 	IsBaseStat bool `json:"IsBaseStat" gorm:"column:IsBaseStat" mapstructure:"IsBaseStat"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 

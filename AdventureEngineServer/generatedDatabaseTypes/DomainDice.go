@@ -24,6 +24,9 @@ type DomainDice struct {
 	// Minimum corresponds to the JSON schema field "Minimum".
 	Minimum float64 `json:"Minimum" gorm:"column:Minimum" mapstructure:"Minimum"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 

@@ -25,6 +25,9 @@ type CharacterDomainConditionInstance struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
+
 	// Source corresponds to the JSON schema field "Source".
 	Source string `json:"Source" gorm:"column:Source" mapstructure:"Source"`
 

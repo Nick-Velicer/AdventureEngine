@@ -25,6 +25,9 @@ type DomainClassTraitJson struct {
 	// "Quantifiers__Quantifier".
 	QuantifiersQuantifier []float64 `json:"Quantifiers__Quantifier,omitempty" yaml:"Quantifiers__Quantifier,omitempty" mapstructure:"Quantifiers__Quantifier,omitempty"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
+
 	// SubClassDomainSubClass corresponds to the JSON schema field
 	// "SubClass__DomainSubClass".
 	SubClassDomainSubClass *float64 `json:"SubClass__DomainSubClass,omitempty" yaml:"SubClass__DomainSubClass,omitempty" mapstructure:"SubClass__DomainSubClass,omitempty"`

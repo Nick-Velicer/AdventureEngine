@@ -24,6 +24,9 @@ type DomainClassTrait struct {
 	// QuantifiersQuantifier corresponds to the JSON schema field
 	// "Quantifiers__Quantifier".
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
+
 	// SubClassDomainSubClass corresponds to the JSON schema field
 	// "SubClass__DomainSubClass".
 	SubClass__DomainSubClass *int `json:"SubClass__DomainSubClass" gorm:"column:SubClass__DomainSubClass" mapstructure:"SubClass__DomainSubClass"`

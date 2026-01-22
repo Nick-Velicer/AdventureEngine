@@ -11,6 +11,7 @@ import { ClassPrimaryAbility as Base__ClassPrimaryAbility } from "../coreTypes/C
 import { ClassSave as Base__ClassSave } from "../coreTypes/ClassSave";
 import { ClassSpell as Base__ClassSpell } from "../coreTypes/ClassSpell";
 import { DomainAction as Base__DomainAction } from "../coreTypes/DomainAction";
+import { DomainAppRole as Base__DomainAppRole } from "../coreTypes/DomainAppRole";
 import { DomainCharacterStat as Base__DomainCharacterStat } from "../coreTypes/DomainCharacterStat";
 import { DomainClass as Base__DomainClass } from "../coreTypes/DomainClass";
 import { DomainClassResource as Base__DomainClassResource } from "../coreTypes/DomainClassResource";
@@ -31,6 +32,7 @@ import { DomainSubClass as Base__DomainSubClass } from "../coreTypes/DomainSubCl
 import { EvaluatedConditional as Base__EvaluatedConditional } from "../coreTypes/EvaluatedConditional";
 import { Quantifier as Base__Quantifier } from "../coreTypes/Quantifier";
 import { User as Base__User } from "../coreTypes/User";
+import { UserRoleInstance as Base__UserRoleInstance } from "../coreTypes/UserRoleInstance";
 
 const BaseAppTypes = {
 	Campaign: {} as Base__Campaign,
@@ -42,6 +44,7 @@ const BaseAppTypes = {
 	ClassSave: {} as Base__ClassSave,
 	ClassSpell: {} as Base__ClassSpell,
 	DomainAction: {} as Base__DomainAction,
+	DomainAppRole: {} as Base__DomainAppRole,
 	DomainCharacterStat: {} as Base__DomainCharacterStat,
 	DomainClass: {} as Base__DomainClass,
 	DomainClassResource: {} as Base__DomainClassResource,
@@ -62,6 +65,7 @@ const BaseAppTypes = {
 	EvaluatedConditional: {} as Base__EvaluatedConditional,
 	Quantifier: {} as Base__Quantifier,
 	User: {} as Base__User,
+	UserRoleInstance: {} as Base__UserRoleInstance,
 } as const satisfies Record<string, SchemaObject> 
 
 
@@ -94,6 +98,7 @@ export type ClassPrimaryAbility = RecursionGuardedSchemaObject<Base__ClassPrimar
 export type ClassSave = RecursionGuardedSchemaObject<Base__ClassSave>;
 export type ClassSpell = RecursionGuardedSchemaObject<Base__ClassSpell>;
 export type DomainAction = RecursionGuardedSchemaObject<Base__DomainAction>;
+export type DomainAppRole = RecursionGuardedSchemaObject<Base__DomainAppRole>;
 export type DomainCharacterStat = RecursionGuardedSchemaObject<Base__DomainCharacterStat>;
 export type DomainClass = RecursionGuardedSchemaObject<Base__DomainClass>;
 export type DomainClassResource = RecursionGuardedSchemaObject<Base__DomainClassResource>;
@@ -114,6 +119,7 @@ export type DomainSubClass = RecursionGuardedSchemaObject<Base__DomainSubClass>;
 export type EvaluatedConditional = RecursionGuardedSchemaObject<Base__EvaluatedConditional>;
 export type Quantifier = RecursionGuardedSchemaObject<Base__Quantifier>;
 export type User = RecursionGuardedSchemaObject<Base__User>;
+export type UserRoleInstance = RecursionGuardedSchemaObject<Base__UserRoleInstance>;
 
 export const AppTypes = {
 	Campaign: {} as Campaign,
@@ -125,6 +131,7 @@ export const AppTypes = {
 	ClassSave: {} as ClassSave,
 	ClassSpell: {} as ClassSpell,
 	DomainAction: {} as DomainAction,
+	DomainAppRole: {} as DomainAppRole,
 	DomainCharacterStat: {} as DomainCharacterStat,
 	DomainClass: {} as DomainClass,
 	DomainClassResource: {} as DomainClassResource,
@@ -145,4 +152,5 @@ export const AppTypes = {
 	EvaluatedConditional: {} as EvaluatedConditional,
 	Quantifier: {} as Quantifier,
 	User: {} as User,
+	UserRoleInstance: {} as UserRoleInstance,
 } as const satisfies Record<string, SchemaObject> 

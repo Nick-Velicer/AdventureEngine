@@ -160,7 +160,7 @@ func Login(db *gorm.DB, user *types.User) (*string, error) {
 		return nil, errors.New("Incorrect password")
 	}
 
-	sessionToken, err := createToken(*user.Id)
+	sessionToken, err := createToken(*(foundUsers[0].Id))
 
 	if err != nil {
 		return nil, errors.New("Could not generate JWT session token for user " + *user.Username)

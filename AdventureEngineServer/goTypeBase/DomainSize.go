@@ -24,6 +24,9 @@ type DomainSizeJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
+
 	// SizeOrder corresponds to the JSON schema field "SizeOrder".
 	SizeOrder float64 `json:"SizeOrder" yaml:"SizeOrder" mapstructure:"SizeOrder"`
 

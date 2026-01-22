@@ -47,6 +47,7 @@ type DomainSpellDTOAttributes struct {
 
 type DomainSpellDTOManyToOneRelationships struct {
    DamageScaling__DomainDice *DomainDiceDTO
+   ResourceOwner__User *UserDTO
    School__DomainSpellSchool *DomainSpellSchoolDTO
 }
 
@@ -82,12 +83,20 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
    traversedTables = append(traversedTables, reflect.TypeOf(*domainSpell).Name())
    
    var includedDamageScaling__DomainDice types.DomainDice
+   var includedResourceOwner__User types.User
    var includedSchool__DomainSpellSchool types.DomainSpellSchool
    var includedClasses__ClassSpells []types.ClassSpell
    
    if (domainSpell.DamageScaling__DomainDice != nil) {
       if err := services.GetDomainDiceById(db, int(*domainSpell.DamageScaling__DomainDice), &includedDamageScaling__DomainDice); err != nil {
          fmt.Println("Error fetching many-to-one table DomainDice:")
+         fmt.Println(err)
+      }
+   }
+
+   if (domainSpell.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainSpell.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -142,6 +151,7 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
       Relationships: DomainSpellDTORelationships{
          ManyToOne: DomainSpellDTOManyToOneRelationships {
             DamageScaling__DomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScaling__DomainDice, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
             School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchool__DomainSpellSchool, traversedTables),
          },
          OneToMany: DomainSpellDTOOneToManyRelationships {
@@ -186,6 +196,10 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) *types.DomainSpell
    
    if (domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice != nil) {
       tableTypeBuffer.DamageScaling__DomainDice = domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice.Id
+   }
+
+   if (domainSpell.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainSpell.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    if (domainSpell.Relationships.ManyToOne.School__DomainSpellSchool != nil) {

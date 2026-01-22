@@ -43,6 +43,9 @@ func ApplyGeneratedEndpoints(router *gin.Engine, db *gorm.DB) {
    router.GET("/getDomainActions", ProduceDBContextInjectedEndpoint(router, db, controllers.GetDomainActions))
    router.GET("/getDomainAction/:id", ProduceDBContextInjectedEndpoint(router, db, controllers.GetDomainActionById))
    router.POST("/saveDomainAction", ProduceDBContextInjectedEndpoint(router, db, controllers.SaveDomainAction))
+   router.GET("/getDomainAppRoles", ProduceDBContextInjectedEndpoint(router, db, controllers.GetDomainAppRoles))
+   router.GET("/getDomainAppRole/:id", ProduceDBContextInjectedEndpoint(router, db, controllers.GetDomainAppRoleById))
+   router.POST("/saveDomainAppRole", ProduceDBContextInjectedEndpoint(router, db, controllers.SaveDomainAppRole))
    router.GET("/getDomainCharacterStats", ProduceDBContextInjectedEndpoint(router, db, controllers.GetDomainCharacterStats))
    router.GET("/getDomainCharacterStat/:id", ProduceDBContextInjectedEndpoint(router, db, controllers.GetDomainCharacterStatById))
    router.POST("/saveDomainCharacterStat", ProduceDBContextInjectedEndpoint(router, db, controllers.SaveDomainCharacterStat))
@@ -103,4 +106,7 @@ func ApplyGeneratedEndpoints(router *gin.Engine, db *gorm.DB) {
    router.GET("/getQuantifierConditionalMaps", ProduceDBContextInjectedEndpoint(router, db, controllers.GetQuantifierConditionalMaps))
    router.GET("/getQuantifierConditionalMap/:id", ProduceDBContextInjectedEndpoint(router, db, controllers.GetQuantifierConditionalMapById))
    router.POST("/saveQuantifierConditionalMap", ProduceDBContextInjectedEndpoint(router, db, controllers.SaveQuantifierConditionalMap))
+   router.GET("/getUserRoleInstances", ProduceDBContextInjectedEndpoint(router, db, controllers.GetUserRoleInstances))
+   router.GET("/getUserRoleInstance/:id", ProduceDBContextInjectedEndpoint(router, db, controllers.GetUserRoleInstanceById))
+   router.POST("/saveUserRoleInstance", ProduceDBContextInjectedEndpoint(router, db, controllers.SaveUserRoleInstance))
 }

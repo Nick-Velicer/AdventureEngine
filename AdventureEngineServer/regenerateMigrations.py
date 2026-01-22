@@ -1,3 +1,4 @@
+import bcrypt
 import os
 import pandas as pd
 import re
@@ -15,11 +16,13 @@ goTypeBaseDir = './goTypeBase'
 migrationsBaseDir = './generatedMigrations'
 
 
-
 #global type meta context
 typeMetas = {}
 
 #global contexts to be able to link generated migrations to other generated tables
+users = []
+roles = []
+roleMappings = []
 dice = []
 diceRollTypes = []
 diceRollSubTypes = []
@@ -73,6 +76,9 @@ def main():
     #on the state of previously generated tables to link (providing better fk safety)
 
     migrationFunctions = [
+        regenerateBaseUsers,
+        regenerateAppRoles,
+        regenerateRoleMappings,
         regenerateDiceMigration,
         regenerateDomainDiceRollTypeMigration,
         regenerateDomainDiceRollSubTypeMigration,
@@ -182,6 +188,42 @@ def getForeignKeyIdForTitle(tableObjects: list, title: str):
 #endregion
 
 #region Migration Producers
+
+def regenerateBaseUsers():
+    global users
+
+    #This is used at dev time or at initial load,
+    #and should be changed for long term use
+    defaultPassword = b"password"
+
+    userMeta = [
+        {
+            "Title": "Application Root",
+            "Username": "root",
+            "Password": bcrypt.hashpw(defaultPassword, bcrypt.gensalt(15)).decode('utf-8')
+        },
+    ]
+
+    users = produceMigrationFileFromObjects("User", userMeta)
+
+def regenerateAppRoles():
+    global roles
+
+    roleTitles = ["Root", "Admin", "Base User"]
+
+    roles = produceMigrationFileFromObjects("DomainAppRole", [{ "Title": title} for title in roleTitles])
+
+
+def regenerateRoleMappings():
+    global roles
+    global users
+    global roleMappings
+
+    roleMappings = produceMigrationFileFromObjects("UserRoleInstance", [{
+        "User__User": getForeignKeyIdForTitle(users, "Application Root"),
+        "Role__DomainAppRole": getForeignKeyIdForTitle(roles, "Root")
+    }])
+
 
 def regenerateDiceMigration():
 

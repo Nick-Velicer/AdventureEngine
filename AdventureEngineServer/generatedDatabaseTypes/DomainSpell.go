@@ -84,6 +84,9 @@ type DomainSpell struct {
 	// RequiresTouch corresponds to the JSON schema field "RequiresTouch".
 	RequiresTouch *bool `json:"RequiresTouch" gorm:"column:RequiresTouch" mapstructure:"RequiresTouch"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
+
 	// RoundDuration corresponds to the JSON schema field "RoundDuration".
 	RoundDuration *float64 `json:"RoundDuration" gorm:"column:RoundDuration" mapstructure:"RoundDuration"`
 

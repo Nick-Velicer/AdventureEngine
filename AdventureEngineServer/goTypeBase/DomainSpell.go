@@ -85,6 +85,9 @@ type DomainSpellJson struct {
 	// RequiresTouch corresponds to the JSON schema field "RequiresTouch".
 	RequiresTouch *bool `json:"RequiresTouch,omitempty" yaml:"RequiresTouch,omitempty" mapstructure:"RequiresTouch,omitempty"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
+
 	// RoundDuration corresponds to the JSON schema field "RoundDuration".
 	RoundDuration *float64 `json:"RoundDuration,omitempty" yaml:"RoundDuration,omitempty" mapstructure:"RoundDuration,omitempty"`
 

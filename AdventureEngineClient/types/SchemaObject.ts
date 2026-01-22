@@ -1,4 +1,5 @@
-import { Merge } from "type-fest"
+import { Merge, MergeDeep } from "type-fest"
+import { User } from "./coreTypes/User"
 
 export type BaseAttributes = {
     Title?: string
@@ -7,6 +8,15 @@ export type BaseAttributes = {
     IsActive?: boolean
     CreatedAt?: string
     UpdatedAt?: string
+}
+
+//Barring some slightly inconvenient cyclic definitions,
+//this allows for a more secure ownership relation than
+//just tracking a string/float id in attributes
+export type BaseRelationships = {
+    ManyToOne: {
+        ResourceOwner__User?: User
+    }
 }
 
 export type SchemaObject = {
@@ -31,7 +41,7 @@ export type ExtendedSchemaObject<T extends {
 }> = {
     Id: number | undefined,
     Attributes: BaseAttributes & T["Attributes"],
-    Relationships: T["Relationships"],
+    Relationships: MergeDeep<BaseRelationships, T["Relationships"]>,
 }
 
 //Merge is used here since a regular object union will result in the schemas being unions of properties, instead of one single property list

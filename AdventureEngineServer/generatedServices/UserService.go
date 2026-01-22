@@ -50,3 +50,7 @@ func SaveUser(db *gorm.DB, users []*types.User) error {
    return tx.Commit().Error
 }
 
+func GetUserRoleInstancesByUserId(db *gorm.DB, id int, UserRoleInstances *[]types.UserRoleInstance) error {
+   result := db.Table("UserRoleInstance").Where(map[string]interface{}{"ResourceOwner__User": id}).Find(UserRoleInstances)
+   return result.Error
+}

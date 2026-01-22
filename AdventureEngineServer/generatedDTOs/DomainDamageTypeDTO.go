@@ -7,7 +7,7 @@ package generatedDTOs
 import (
    types "AdventureEngineServer/generatedDatabaseTypes"
    
-   
+   services "AdventureEngineServer/generatedServices"
    "gorm.io/gorm"
    "fmt"
    "reflect"
@@ -25,6 +25,7 @@ type DomainDamageTypeDTOAttributes struct {
 }
 
 type DomainDamageTypeDTOManyToOneRelationships struct {
+   ResourceOwner__User *UserDTO
 }
 
 type DomainDamageTypeDTOOneToManyRelationships struct {
@@ -57,7 +58,15 @@ func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.
    
    traversedTables = append(traversedTables, reflect.TypeOf(*domainDamageType).Name())
    
+   var includedResourceOwner__User types.User
    
+   if (domainDamageType.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*domainDamageType.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
+         fmt.Println(err)
+      }
+   }
+
    
    return &DomainDamageTypeDTO{
       Id: domainDamageType.Id,
@@ -72,6 +81,7 @@ func DomainDamageTypeToDomainDamageTypeDTO(db *gorm.DB, domainDamageType *types.
       },
       Relationships: DomainDamageTypeDTORelationships{
          ManyToOne: DomainDamageTypeDTOManyToOneRelationships {
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
          },
          OneToMany: DomainDamageTypeDTOOneToManyRelationships {
          },
@@ -91,5 +101,9 @@ func DomainDamageTypeDTOToDomainDamageType(domainDamageType *DomainDamageTypeDTO
    tableTypeBuffer.Title = domainDamageType.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainDamageType.Attributes.UpdatedAt
    
+   if (domainDamageType.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = domainDamageType.Relationships.ManyToOne.ResourceOwner__User.Id
+   }
+
    return &tableTypeBuffer
 }

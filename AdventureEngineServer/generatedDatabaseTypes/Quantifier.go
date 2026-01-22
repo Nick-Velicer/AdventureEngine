@@ -168,6 +168,9 @@ type Quantifier struct {
 	// Removes corresponds to the JSON schema field "Removes".
 	Removes *bool `json:"Removes" gorm:"column:Removes" mapstructure:"Removes"`
 
+	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
+	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
+
 	// ShouldReplace corresponds to the JSON schema field "ShouldReplace".
 	ShouldReplace *bool `json:"ShouldReplace" gorm:"column:ShouldReplace" mapstructure:"ShouldReplace"`
 

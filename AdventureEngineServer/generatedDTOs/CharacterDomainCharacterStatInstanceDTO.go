@@ -27,6 +27,7 @@ type CharacterDomainCharacterStatInstanceDTOAttributes struct {
 
 type CharacterDomainCharacterStatInstanceDTOManyToOneRelationships struct {
    Character__Character *CharacterDTO
+   ResourceOwner__User *UserDTO
    Stat__DomainCharacterStat *DomainCharacterStatDTO
 }
 
@@ -61,11 +62,19 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
    traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())
    
    var includedCharacter__Character types.Character
+   var includedResourceOwner__User types.User
    var includedStat__DomainCharacterStat types.DomainCharacterStat
    
    if (characterDomainCharacterStatInstance.Character__Character != nil) {
       if err := services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), &includedCharacter__Character); err != nil {
          fmt.Println("Error fetching many-to-one table Character:")
+         fmt.Println(err)
+      }
+   }
+
+   if (characterDomainCharacterStatInstance.ResourceOwner__User != nil) {
+      if err := services.GetUserById(db, int(*characterDomainCharacterStatInstance.ResourceOwner__User), &includedResourceOwner__User); err != nil {
+         fmt.Println("Error fetching many-to-one table User:")
          fmt.Println(err)
       }
    }
@@ -93,6 +102,7 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
          ManyToOne: CharacterDomainCharacterStatInstanceDTOManyToOneRelationships {
             Character__Character: CharacterToCharacterDTO(db, &includedCharacter__Character, traversedTables),
+            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
             Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStat__DomainCharacterStat, traversedTables),
          },
          OneToMany: CharacterDomainCharacterStatInstanceDTOOneToManyRelationships {
@@ -116,6 +126,10 @@ func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstan
    
    if (characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character != nil) {
       tableTypeBuffer.Character__Character = characterDomainCharacterStatInstance.Relationships.ManyToOne.Character__Character.Id
+   }
+
+   if (characterDomainCharacterStatInstance.Relationships.ManyToOne.ResourceOwner__User != nil) {
+      tableTypeBuffer.ResourceOwner__User = characterDomainCharacterStatInstance.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
    if (characterDomainCharacterStatInstance.Relationships.ManyToOne.Stat__DomainCharacterStat != nil) {
