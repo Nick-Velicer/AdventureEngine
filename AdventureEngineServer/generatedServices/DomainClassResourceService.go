@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainClassResources(db *gorm.DB, domainClassResources *[]types.DomainClassResource, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainClassResource"), filters)
-   if err != nil {
-      return err
+func GetDomainClassResources(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainClassResource]) (contextProviders.GetReturn[types.DomainClassResource], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainClassResources)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainClassResource
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainClassResource"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainClassResourceById(db *gorm.DB, id int, domainClassResource *types.DomainClassResource) error {
-   result := db.Table("DomainClassResource").First(domainClassResource, id)
-   return result.Error
+func GetDomainClassResourceById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainClassResource]) (contextProviders.GetByIdReturn[types.DomainClassResource], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainClassResource
+   result := context.DatabaseContext.Table("DomainClassResource").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainClassResource(db *gorm.DB, domainClassResources []*types.DomainClassResource) error {
-   tx := db.Begin()
+func SaveDomainClassResource(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainClassResource]) (contextProviders.SaveReturn[types.DomainClassResource], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainClassResources).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveDomainClassResource(db *gorm.DB, domainClassResources []*types.DomainCl
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainClassResource").Save(domainClassResources).Error; err != nil {
+   if err := tx.Table("DomainClassResource").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

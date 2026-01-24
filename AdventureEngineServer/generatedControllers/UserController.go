@@ -4,21 +4,23 @@
 
 package generatedControllers
 import (
+   "errors"
    "fmt"
-   "github.com/gin-gonic/gin"
    "github.com/gin-gonic/gin/binding"
-   "gorm.io/gorm"
    "net/http"
    "regexp"
    "strconv"
-   services "AdventureEngineServer/generatedServices"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
    utils "AdventureEngineServer/utils"
 )
 
-func GetUsers(ctx *gin.Context, db *gorm.DB) {
-   queryParams := ctx.Request.URL.Query()
+func GetUsers(context *contextProviders.GeneratedControllerContext[types.User, dtos.UserDTO, contextProviders.GetArgs[types.User], contextProviders.GetReturn[types.User]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   queryParams := context.RequestContext.Request.URL.Query()
    
    //Since we can have multiple filters, that sometimes doesn't play nicely with
    //Gin's parameter pulling, so they need to be isolated manually.
@@ -35,42 +37,71 @@ func GetUsers(ctx *gin.Context, db *gorm.DB) {
    
    parsedFilters := utils.ParseFilterURLExpression(filterParams)
    
-   var serviceBuffer []types.User
-   err := services.GetUsers(db, &serviceBuffer, &parsedFilters)
+   serviceBuffer, err := context.ServiceAction(&contextProviders.GetArgs[types.User]{ Filters: &parsedFilters })
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    var returnBuffer []dtos.UserDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.UserToUserDTO(db, &dbTypeInstance, []string{})
-      if (pointerToDTO != nil) {
-         returnBuffer = append(returnBuffer, *pointerToDTO)
+      pointerToDTO, err := context.DTOConverter(&dbTypeInstance)
+      if (err != nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
       }
+      
+      if (pointerToDTO == nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type User"))
+         return
+      }
+      
+      returnBuffer = append(returnBuffer, *pointerToDTO)
    }
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func GetUserById(ctx *gin.Context, db *gorm.DB) {
-   id := ctx.Param("id")
+func GetUserById(context *contextProviders.GeneratedControllerContext[types.User, dtos.UserDTO, contextProviders.GetByIdArgs[types.User], contextProviders.GetByIdReturn[types.User]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   
+   id := context.RequestContext.Param("id")
    idNum, err := strconv.Atoi(id)
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var serviceBuffer types.User
-   err = services.GetUserById(db, idNum, &serviceBuffer)
+   serviceBuffer, err := context.ServiceAction(&contextProviders.GetByIdArgs[types.User]{ Id: idNum })
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
-   returnBuffer := dtos.UserToUserDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if serviceBuffer == nil {
+      context.RequestContext.IndentedJSON(http.StatusOK, nil)
+      return
+   }
+   
+   returnBuffer, err := context.DTOConverter(serviceBuffer)
+   
+   if err != nil {
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   
+   if (returnBuffer == nil) {
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type User"))
+      return
+   }
+   context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func SaveUser(ctx *gin.Context, db *gorm.DB) {
+func SaveUser(context *contextProviders.GeneratedControllerContext[types.User, dtos.UserDTO, contextProviders.SaveArgs[types.User], contextProviders.SaveReturn[types.User]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   
    //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
    var DTOBuffer *dtos.UserDTO = &dtos.UserDTO{}
    var batchDTOBuffer []*dtos.UserDTO
@@ -78,34 +109,50 @@ func SaveUser(ctx *gin.Context, db *gorm.DB) {
    
    //If neither a single item nor a collection can be bound to JSON, fail early
    //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
-   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+   if err := context.RequestContext.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = []*types.User{dtos.UserDTOToUser(DTOBuffer)}
-      if err := services.SaveUser(db, serviceBuffer); err != nil {
-         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      serviceBuffer = []*types.User{context.DTOFlattener(DTOBuffer)}
+      serviceReturn, err := context.ServiceAction(&contextProviders.SaveArgs[types.User]{ Items: serviceBuffer })
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := dtos.UserToUserDTO(db, serviceBuffer[0], []string{})
+      returnBuffer, err := context.DTOConverter(serviceReturn[0])
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
       
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      if (returnBuffer == nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type User"))
+         return
+      }
+      
+      context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
       return
       
-   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+   } else if err := context.RequestContext.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.UserDTO) *types.User { return dtos.UserDTOToUser(dto) })
-      if err := services.SaveUser(db, serviceBuffer); err != nil {
-         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.UserDTO) *types.User { return context.DTOFlattener(dto) })
+      serviceReturn, err := context.ServiceAction(&contextProviders.SaveArgs[types.User]{ Items: serviceBuffer })
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.User) *dtos.UserDTO { return dtos.UserToUserDTO(db, dbReturn, []string{}) })
+      returnBuffer, err := utils.ErrorCompatibleMap(serviceReturn, func(dbReturn *types.User) (*dtos.UserDTO, error) { return context.DTOConverter(dbReturn) })
       
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
       return
       
    } else {
-      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusBadRequest, err.Error())
       return
    }
 }

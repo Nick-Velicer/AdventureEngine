@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainDices(db *gorm.DB, domainDices *[]types.DomainDice, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainDice"), filters)
-   if err != nil {
-      return err
+func GetDomainDices(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainDice]) (contextProviders.GetReturn[types.DomainDice], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainDices)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainDice
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainDice"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainDiceById(db *gorm.DB, id int, domainDice *types.DomainDice) error {
-   result := db.Table("DomainDice").First(domainDice, id)
-   return result.Error
+func GetDomainDiceById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainDice]) (contextProviders.GetByIdReturn[types.DomainDice], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainDice
+   result := context.DatabaseContext.Table("DomainDice").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainDice(db *gorm.DB, domainDices []*types.DomainDice) error {
-   tx := db.Begin()
+func SaveDomainDice(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainDice]) (contextProviders.SaveReturn[types.DomainDice], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainDices).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveDomainDice(db *gorm.DB, domainDices []*types.DomainDice) error {
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainDice").Save(domainDices).Error; err != nil {
+   if err := tx.Table("DomainDice").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

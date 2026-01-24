@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -46,26 +47,43 @@ type DomainDiceDTO struct {
    Relationships DomainDiceDTORelationships
 }
 
-func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traversedTables []string) *DomainDiceDTO {
+func DomainDiceToDomainDiceDTO(context *contextProviders.DTOContext, domainDice *types.DomainDice) (*DomainDiceDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainDice == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainDice")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainDice")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainDice).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainDice).Name())) {
       fmt.Println("Hit circular catch case for table DomainDice")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainDice).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainDice).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedResourceOwner__User types.User
+   var includedResourceOwner__User *types.User
+   
+   var ResourceOwner__UserDTO *UserDTO
+   
+   var err error
    
    if (domainDice.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainDice.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainDice.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -85,12 +103,12 @@ func DomainDiceToDomainDiceDTO(db *gorm.DB, domainDice *types.DomainDice, traver
       },
       Relationships: DomainDiceDTORelationships{
          ManyToOne: DomainDiceDTOManyToOneRelationships {
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
+            ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: DomainDiceDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) *types.DomainDice {

@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetClassSpells(db *gorm.DB, classSpells *[]types.ClassSpell, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("ClassSpell"), filters)
-   if err != nil {
-      return err
+func GetClassSpells(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.ClassSpell]) (contextProviders.GetReturn[types.ClassSpell], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(classSpells)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.ClassSpell
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("ClassSpell"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetClassSpellById(db *gorm.DB, id int, classSpell *types.ClassSpell) error {
-   result := db.Table("ClassSpell").First(classSpell, id)
-   return result.Error
+func GetClassSpellById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.ClassSpell]) (contextProviders.GetByIdReturn[types.ClassSpell], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.ClassSpell
+   result := context.DatabaseContext.Table("ClassSpell").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveClassSpell(db *gorm.DB, classSpells []*types.ClassSpell) error {
-   tx := db.Begin()
+func SaveClassSpell(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.ClassSpell]) (contextProviders.SaveReturn[types.ClassSpell], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(classSpells).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveClassSpell(db *gorm.DB, classSpells []*types.ClassSpell) error {
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("ClassSpell").Save(classSpells).Error; err != nil {
+   if err := tx.Table("ClassSpell").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

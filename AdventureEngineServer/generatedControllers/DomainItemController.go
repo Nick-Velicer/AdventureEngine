@@ -4,21 +4,23 @@
 
 package generatedControllers
 import (
+   "errors"
    "fmt"
-   "github.com/gin-gonic/gin"
    "github.com/gin-gonic/gin/binding"
-   "gorm.io/gorm"
    "net/http"
    "regexp"
    "strconv"
-   services "AdventureEngineServer/generatedServices"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainItems(ctx *gin.Context, db *gorm.DB) {
-   queryParams := ctx.Request.URL.Query()
+func GetDomainItems(context *contextProviders.GeneratedControllerContext[types.DomainItem, dtos.DomainItemDTO, contextProviders.GetArgs[types.DomainItem], contextProviders.GetReturn[types.DomainItem]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   queryParams := context.RequestContext.Request.URL.Query()
    
    //Since we can have multiple filters, that sometimes doesn't play nicely with
    //Gin's parameter pulling, so they need to be isolated manually.
@@ -35,42 +37,71 @@ func GetDomainItems(ctx *gin.Context, db *gorm.DB) {
    
    parsedFilters := utils.ParseFilterURLExpression(filterParams)
    
-   var serviceBuffer []types.DomainItem
-   err := services.GetDomainItems(db, &serviceBuffer, &parsedFilters)
+   serviceBuffer, err := context.ServiceAction(&contextProviders.GetArgs[types.DomainItem]{ Filters: &parsedFilters })
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    var returnBuffer []dtos.DomainItemDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.DomainItemToDomainItemDTO(db, &dbTypeInstance, []string{})
-      if (pointerToDTO != nil) {
-         returnBuffer = append(returnBuffer, *pointerToDTO)
+      pointerToDTO, err := context.DTOConverter(&dbTypeInstance)
+      if (err != nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
       }
+      
+      if (pointerToDTO == nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type DomainItem"))
+         return
+      }
+      
+      returnBuffer = append(returnBuffer, *pointerToDTO)
    }
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func GetDomainItemById(ctx *gin.Context, db *gorm.DB) {
-   id := ctx.Param("id")
+func GetDomainItemById(context *contextProviders.GeneratedControllerContext[types.DomainItem, dtos.DomainItemDTO, contextProviders.GetByIdArgs[types.DomainItem], contextProviders.GetByIdReturn[types.DomainItem]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   
+   id := context.RequestContext.Param("id")
    idNum, err := strconv.Atoi(id)
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var serviceBuffer types.DomainItem
-   err = services.GetDomainItemById(db, idNum, &serviceBuffer)
+   serviceBuffer, err := context.ServiceAction(&contextProviders.GetByIdArgs[types.DomainItem]{ Id: idNum })
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
-   returnBuffer := dtos.DomainItemToDomainItemDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if serviceBuffer == nil {
+      context.RequestContext.IndentedJSON(http.StatusOK, nil)
+      return
+   }
+   
+   returnBuffer, err := context.DTOConverter(serviceBuffer)
+   
+   if err != nil {
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   
+   if (returnBuffer == nil) {
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type DomainItem"))
+      return
+   }
+   context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func SaveDomainItem(ctx *gin.Context, db *gorm.DB) {
+func SaveDomainItem(context *contextProviders.GeneratedControllerContext[types.DomainItem, dtos.DomainItemDTO, contextProviders.SaveArgs[types.DomainItem], contextProviders.SaveReturn[types.DomainItem]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   
    //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
    var DTOBuffer *dtos.DomainItemDTO = &dtos.DomainItemDTO{}
    var batchDTOBuffer []*dtos.DomainItemDTO
@@ -78,34 +109,50 @@ func SaveDomainItem(ctx *gin.Context, db *gorm.DB) {
    
    //If neither a single item nor a collection can be bound to JSON, fail early
    //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
-   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+   if err := context.RequestContext.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = []*types.DomainItem{dtos.DomainItemDTOToDomainItem(DTOBuffer)}
-      if err := services.SaveDomainItem(db, serviceBuffer); err != nil {
-         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      serviceBuffer = []*types.DomainItem{context.DTOFlattener(DTOBuffer)}
+      serviceReturn, err := context.ServiceAction(&contextProviders.SaveArgs[types.DomainItem]{ Items: serviceBuffer })
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := dtos.DomainItemToDomainItemDTO(db, serviceBuffer[0], []string{})
+      returnBuffer, err := context.DTOConverter(serviceReturn[0])
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
       
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      if (returnBuffer == nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type DomainItem"))
+         return
+      }
+      
+      context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
       return
       
-   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+   } else if err := context.RequestContext.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.DomainItemDTO) *types.DomainItem { return dtos.DomainItemDTOToDomainItem(dto) })
-      if err := services.SaveDomainItem(db, serviceBuffer); err != nil {
-         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.DomainItemDTO) *types.DomainItem { return context.DTOFlattener(dto) })
+      serviceReturn, err := context.ServiceAction(&contextProviders.SaveArgs[types.DomainItem]{ Items: serviceBuffer })
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.DomainItem) *dtos.DomainItemDTO { return dtos.DomainItemToDomainItemDTO(db, dbReturn, []string{}) })
+      returnBuffer, err := utils.ErrorCompatibleMap(serviceReturn, func(dbReturn *types.DomainItem) (*dtos.DomainItemDTO, error) { return context.DTOConverter(dbReturn) })
       
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
       return
       
    } else {
-      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusBadRequest, err.Error())
       return
    }
 }

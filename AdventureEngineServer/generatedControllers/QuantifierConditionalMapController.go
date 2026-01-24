@@ -4,21 +4,23 @@
 
 package generatedControllers
 import (
+   "errors"
    "fmt"
-   "github.com/gin-gonic/gin"
    "github.com/gin-gonic/gin/binding"
-   "gorm.io/gorm"
    "net/http"
    "regexp"
    "strconv"
-   services "AdventureEngineServer/generatedServices"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
    utils "AdventureEngineServer/utils"
 )
 
-func GetQuantifierConditionalMaps(ctx *gin.Context, db *gorm.DB) {
-   queryParams := ctx.Request.URL.Query()
+func GetQuantifierConditionalMaps(context *contextProviders.GeneratedControllerContext[types.QuantifierConditionalMap, dtos.QuantifierConditionalMapDTO, contextProviders.GetArgs[types.QuantifierConditionalMap], contextProviders.GetReturn[types.QuantifierConditionalMap]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   queryParams := context.RequestContext.Request.URL.Query()
    
    //Since we can have multiple filters, that sometimes doesn't play nicely with
    //Gin's parameter pulling, so they need to be isolated manually.
@@ -35,42 +37,71 @@ func GetQuantifierConditionalMaps(ctx *gin.Context, db *gorm.DB) {
    
    parsedFilters := utils.ParseFilterURLExpression(filterParams)
    
-   var serviceBuffer []types.QuantifierConditionalMap
-   err := services.GetQuantifierConditionalMaps(db, &serviceBuffer, &parsedFilters)
+   serviceBuffer, err := context.ServiceAction(&contextProviders.GetArgs[types.QuantifierConditionalMap]{ Filters: &parsedFilters })
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    var returnBuffer []dtos.QuantifierConditionalMapDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.QuantifierConditionalMapToQuantifierConditionalMapDTO(db, &dbTypeInstance, []string{})
-      if (pointerToDTO != nil) {
-         returnBuffer = append(returnBuffer, *pointerToDTO)
+      pointerToDTO, err := context.DTOConverter(&dbTypeInstance)
+      if (err != nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
       }
+      
+      if (pointerToDTO == nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type QuantifierConditionalMap"))
+         return
+      }
+      
+      returnBuffer = append(returnBuffer, *pointerToDTO)
    }
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func GetQuantifierConditionalMapById(ctx *gin.Context, db *gorm.DB) {
-   id := ctx.Param("id")
+func GetQuantifierConditionalMapById(context *contextProviders.GeneratedControllerContext[types.QuantifierConditionalMap, dtos.QuantifierConditionalMapDTO, contextProviders.GetByIdArgs[types.QuantifierConditionalMap], contextProviders.GetByIdReturn[types.QuantifierConditionalMap]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   
+   id := context.RequestContext.Param("id")
    idNum, err := strconv.Atoi(id)
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var serviceBuffer types.QuantifierConditionalMap
-   err = services.GetQuantifierConditionalMapById(db, idNum, &serviceBuffer)
+   serviceBuffer, err := context.ServiceAction(&contextProviders.GetByIdArgs[types.QuantifierConditionalMap]{ Id: idNum })
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
-   returnBuffer := dtos.QuantifierConditionalMapToQuantifierConditionalMapDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if serviceBuffer == nil {
+      context.RequestContext.IndentedJSON(http.StatusOK, nil)
+      return
+   }
+   
+   returnBuffer, err := context.DTOConverter(serviceBuffer)
+   
+   if err != nil {
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   
+   if (returnBuffer == nil) {
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type QuantifierConditionalMap"))
+      return
+   }
+   context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func SaveQuantifierConditionalMap(ctx *gin.Context, db *gorm.DB) {
+func SaveQuantifierConditionalMap(context *contextProviders.GeneratedControllerContext[types.QuantifierConditionalMap, dtos.QuantifierConditionalMapDTO, contextProviders.SaveArgs[types.QuantifierConditionalMap], contextProviders.SaveReturn[types.QuantifierConditionalMap]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   
    //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
    var DTOBuffer *dtos.QuantifierConditionalMapDTO = &dtos.QuantifierConditionalMapDTO{}
    var batchDTOBuffer []*dtos.QuantifierConditionalMapDTO
@@ -78,34 +109,50 @@ func SaveQuantifierConditionalMap(ctx *gin.Context, db *gorm.DB) {
    
    //If neither a single item nor a collection can be bound to JSON, fail early
    //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
-   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+   if err := context.RequestContext.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = []*types.QuantifierConditionalMap{dtos.QuantifierConditionalMapDTOToQuantifierConditionalMap(DTOBuffer)}
-      if err := services.SaveQuantifierConditionalMap(db, serviceBuffer); err != nil {
-         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      serviceBuffer = []*types.QuantifierConditionalMap{context.DTOFlattener(DTOBuffer)}
+      serviceReturn, err := context.ServiceAction(&contextProviders.SaveArgs[types.QuantifierConditionalMap]{ Items: serviceBuffer })
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := dtos.QuantifierConditionalMapToQuantifierConditionalMapDTO(db, serviceBuffer[0], []string{})
+      returnBuffer, err := context.DTOConverter(serviceReturn[0])
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
       
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      if (returnBuffer == nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type QuantifierConditionalMap"))
+         return
+      }
+      
+      context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
       return
       
-   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+   } else if err := context.RequestContext.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.QuantifierConditionalMapDTO) *types.QuantifierConditionalMap { return dtos.QuantifierConditionalMapDTOToQuantifierConditionalMap(dto) })
-      if err := services.SaveQuantifierConditionalMap(db, serviceBuffer); err != nil {
-         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.QuantifierConditionalMapDTO) *types.QuantifierConditionalMap { return context.DTOFlattener(dto) })
+      serviceReturn, err := context.ServiceAction(&contextProviders.SaveArgs[types.QuantifierConditionalMap]{ Items: serviceBuffer })
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.QuantifierConditionalMap) *dtos.QuantifierConditionalMapDTO { return dtos.QuantifierConditionalMapToQuantifierConditionalMapDTO(db, dbReturn, []string{}) })
+      returnBuffer, err := utils.ErrorCompatibleMap(serviceReturn, func(dbReturn *types.QuantifierConditionalMap) (*dtos.QuantifierConditionalMapDTO, error) { return context.DTOConverter(dbReturn) })
       
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
       return
       
    } else {
-      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusBadRequest, err.Error())
       return
    }
 }

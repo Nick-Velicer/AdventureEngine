@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -45,34 +46,56 @@ type DomainSpeciesDTO struct {
    Relationships DomainSpeciesDTORelationships
 }
 
-func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpecies, traversedTables []string) *DomainSpeciesDTO {
+func DomainSpeciesToDomainSpeciesDTO(context *contextProviders.DTOContext, domainSpecies *types.DomainSpecies) (*DomainSpeciesDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainSpecies == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainSpecies")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainSpecies")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpecies).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainSpecies).Name())) {
       fmt.Println("Hit circular catch case for table DomainSpecies")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainSpecies).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainSpecies).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedCreatureType__DomainCreatureType types.DomainCreatureType
-   var includedResourceOwner__User types.User
+   var includedCreatureType__DomainCreatureType *types.DomainCreatureType
+   var includedResourceOwner__User *types.User
+   
+   var CreatureType__DomainCreatureTypeDTO *DomainCreatureTypeDTO
+   var ResourceOwner__UserDTO *UserDTO
+   
+   var err error
    
    if (domainSpecies.CreatureType__DomainCreatureType != nil) {
-      if err := services.GetDomainCreatureTypeById(db, int(*domainSpecies.CreatureType__DomainCreatureType), &includedCreatureType__DomainCreatureType); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainCreatureType:")
-         fmt.Println(err)
+      includedCreatureType__DomainCreatureType, err = services.GetDomainCreatureTypeById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCreatureType](domainSpecies.CreatureType__DomainCreatureType))
+      if err != nil {
+         return nil, err
+      }
+      CreatureType__DomainCreatureTypeDTO, err = DomainCreatureTypeToDomainCreatureTypeDTO(&childDTOContext, includedCreatureType__DomainCreatureType)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainSpecies.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainSpecies.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainSpecies.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -90,13 +113,13 @@ func DomainSpeciesToDomainSpeciesDTO(db *gorm.DB, domainSpecies *types.DomainSpe
       },
       Relationships: DomainSpeciesDTORelationships{
          ManyToOne: DomainSpeciesDTOManyToOneRelationships {
-            CreatureType__DomainCreatureType: DomainCreatureTypeToDomainCreatureTypeDTO(db, &includedCreatureType__DomainCreatureType, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
+            CreatureType__DomainCreatureType: CreatureType__DomainCreatureTypeDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: DomainSpeciesDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) *types.DomainSpecies {

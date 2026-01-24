@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetCharacterDomainSubClassInstances(db *gorm.DB, characterDomainSubClassInstances *[]types.CharacterDomainSubClassInstance, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("CharacterDomainSubClassInstance"), filters)
-   if err != nil {
-      return err
+func GetCharacterDomainSubClassInstances(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.CharacterDomainSubClassInstance]) (contextProviders.GetReturn[types.CharacterDomainSubClassInstance], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(characterDomainSubClassInstances)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.CharacterDomainSubClassInstance
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("CharacterDomainSubClassInstance"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetCharacterDomainSubClassInstanceById(db *gorm.DB, id int, characterDomainSubClassInstance *types.CharacterDomainSubClassInstance) error {
-   result := db.Table("CharacterDomainSubClassInstance").First(characterDomainSubClassInstance, id)
-   return result.Error
+func GetCharacterDomainSubClassInstanceById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.CharacterDomainSubClassInstance]) (contextProviders.GetByIdReturn[types.CharacterDomainSubClassInstance], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.CharacterDomainSubClassInstance
+   result := context.DatabaseContext.Table("CharacterDomainSubClassInstance").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveCharacterDomainSubClassInstance(db *gorm.DB, characterDomainSubClassInstances []*types.CharacterDomainSubClassInstance) error {
-   tx := db.Begin()
+func SaveCharacterDomainSubClassInstance(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.CharacterDomainSubClassInstance]) (contextProviders.SaveReturn[types.CharacterDomainSubClassInstance], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(characterDomainSubClassInstances).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveCharacterDomainSubClassInstance(db *gorm.DB, characterDomainSubClassIns
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("CharacterDomainSubClassInstance").Save(characterDomainSubClassInstances).Error; err != nil {
+   if err := tx.Table("CharacterDomainSubClassInstance").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

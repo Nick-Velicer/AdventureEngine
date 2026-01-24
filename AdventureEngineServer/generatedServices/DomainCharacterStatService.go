@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainCharacterStats(db *gorm.DB, domainCharacterStats *[]types.DomainCharacterStat, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainCharacterStat"), filters)
-   if err != nil {
-      return err
+func GetDomainCharacterStats(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainCharacterStat]) (contextProviders.GetReturn[types.DomainCharacterStat], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainCharacterStats)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainCharacterStat
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainCharacterStat"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainCharacterStatById(db *gorm.DB, id int, domainCharacterStat *types.DomainCharacterStat) error {
-   result := db.Table("DomainCharacterStat").First(domainCharacterStat, id)
-   return result.Error
+func GetDomainCharacterStatById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainCharacterStat]) (contextProviders.GetByIdReturn[types.DomainCharacterStat], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainCharacterStat
+   result := context.DatabaseContext.Table("DomainCharacterStat").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainCharacterStat(db *gorm.DB, domainCharacterStats []*types.DomainCharacterStat) error {
-   tx := db.Begin()
+func SaveDomainCharacterStat(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainCharacterStat]) (contextProviders.SaveReturn[types.DomainCharacterStat], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainCharacterStats).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveDomainCharacterStat(db *gorm.DB, domainCharacterStats []*types.DomainCh
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainCharacterStat").Save(domainCharacterStats).Error; err != nil {
+   if err := tx.Table("DomainCharacterStat").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

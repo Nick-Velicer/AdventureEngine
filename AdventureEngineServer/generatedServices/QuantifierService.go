@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetQuantifiers(db *gorm.DB, quantifiers *[]types.Quantifier, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("Quantifier"), filters)
-   if err != nil {
-      return err
+func GetQuantifiers(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.Quantifier]) (contextProviders.GetReturn[types.Quantifier], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(quantifiers)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.Quantifier
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("Quantifier"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetQuantifierById(db *gorm.DB, id int, quantifier *types.Quantifier) error {
-   result := db.Table("Quantifier").First(quantifier, id)
-   return result.Error
+func GetQuantifierById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.Quantifier]) (contextProviders.GetByIdReturn[types.Quantifier], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.Quantifier
+   result := context.DatabaseContext.Table("Quantifier").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveQuantifier(db *gorm.DB, quantifiers []*types.Quantifier) error {
-   tx := db.Begin()
+func SaveQuantifier(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.Quantifier]) (contextProviders.SaveReturn[types.Quantifier], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(quantifiers).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveQuantifier(db *gorm.DB, quantifiers []*types.Quantifier) error {
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("Quantifier").Save(quantifiers).Error; err != nil {
+   if err := tx.Table("Quantifier").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

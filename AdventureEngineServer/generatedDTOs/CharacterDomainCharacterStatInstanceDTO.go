@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -47,42 +48,69 @@ type CharacterDomainCharacterStatInstanceDTO struct {
    Relationships CharacterDomainCharacterStatInstanceDTORelationships
 }
 
-func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db *gorm.DB, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance, traversedTables []string) *CharacterDomainCharacterStatInstanceDTO {
+func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(context *contextProviders.DTOContext, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance) (*CharacterDomainCharacterStatInstanceDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (characterDomainCharacterStatInstance == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table CharacterDomainCharacterStatInstance")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table CharacterDomainCharacterStatInstance")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())) {
       fmt.Println("Hit circular catch case for table CharacterDomainCharacterStatInstance")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*characterDomainCharacterStatInstance).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedCharacter__Character types.Character
-   var includedResourceOwner__User types.User
-   var includedStat__DomainCharacterStat types.DomainCharacterStat
+   var includedCharacter__Character *types.Character
+   var includedResourceOwner__User *types.User
+   var includedStat__DomainCharacterStat *types.DomainCharacterStat
+   
+   var Character__CharacterDTO *CharacterDTO
+   var ResourceOwner__UserDTO *UserDTO
+   var Stat__DomainCharacterStatDTO *DomainCharacterStatDTO
+   
+   var err error
    
    if (characterDomainCharacterStatInstance.Character__Character != nil) {
-      if err := services.GetCharacterById(db, int(*characterDomainCharacterStatInstance.Character__Character), &includedCharacter__Character); err != nil {
-         fmt.Println("Error fetching many-to-one table Character:")
-         fmt.Println(err)
+      includedCharacter__Character, err = services.GetCharacterById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Character](characterDomainCharacterStatInstance.Character__Character))
+      if err != nil {
+         return nil, err
+      }
+      Character__CharacterDTO, err = CharacterToCharacterDTO(&childDTOContext, includedCharacter__Character)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (characterDomainCharacterStatInstance.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*characterDomainCharacterStatInstance.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](characterDomainCharacterStatInstance.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (characterDomainCharacterStatInstance.Stat__DomainCharacterStat != nil) {
-      if err := services.GetDomainCharacterStatById(db, int(*characterDomainCharacterStatInstance.Stat__DomainCharacterStat), &includedStat__DomainCharacterStat); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainCharacterStat:")
-         fmt.Println(err)
+      includedStat__DomainCharacterStat, err = services.GetDomainCharacterStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCharacterStat](characterDomainCharacterStatInstance.Stat__DomainCharacterStat))
+      if err != nil {
+         return nil, err
+      }
+      Stat__DomainCharacterStatDTO, err = DomainCharacterStatToDomainCharacterStatDTO(&childDTOContext, includedStat__DomainCharacterStat)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -101,14 +129,14 @@ func CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceD
       },
       Relationships: CharacterDomainCharacterStatInstanceDTORelationships{
          ManyToOne: CharacterDomainCharacterStatInstanceDTOManyToOneRelationships {
-            Character__Character: CharacterToCharacterDTO(db, &includedCharacter__Character, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
-            Stat__DomainCharacterStat: DomainCharacterStatToDomainCharacterStatDTO(db, &includedStat__DomainCharacterStat, traversedTables),
+            Character__Character: Character__CharacterDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
+            Stat__DomainCharacterStat: Stat__DomainCharacterStatDTO,
          },
          OneToMany: CharacterDomainCharacterStatInstanceDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func CharacterDomainCharacterStatInstanceDTOToCharacterDomainCharacterStatInstance(characterDomainCharacterStatInstance *CharacterDomainCharacterStatInstanceDTO) *types.CharacterDomainCharacterStatInstance {

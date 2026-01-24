@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainSizes(db *gorm.DB, domainSizes *[]types.DomainSize, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainSize"), filters)
-   if err != nil {
-      return err
+func GetDomainSizes(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainSize]) (contextProviders.GetReturn[types.DomainSize], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainSizes)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainSize
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainSize"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainSizeById(db *gorm.DB, id int, domainSize *types.DomainSize) error {
-   result := db.Table("DomainSize").First(domainSize, id)
-   return result.Error
+func GetDomainSizeById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainSize]) (contextProviders.GetByIdReturn[types.DomainSize], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainSize
+   result := context.DatabaseContext.Table("DomainSize").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainSize(db *gorm.DB, domainSizes []*types.DomainSize) error {
-   tx := db.Begin()
+func SaveDomainSize(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainSize]) (contextProviders.SaveReturn[types.DomainSize], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainSizes).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveDomainSize(db *gorm.DB, domainSizes []*types.DomainSize) error {
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainSize").Save(domainSizes).Error; err != nil {
+   if err := tx.Table("DomainSize").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

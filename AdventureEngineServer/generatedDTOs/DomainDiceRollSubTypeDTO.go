@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -45,34 +46,56 @@ type DomainDiceRollSubTypeDTO struct {
    Relationships DomainDiceRollSubTypeDTORelationships
 }
 
-func DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db *gorm.DB, domainDiceRollSubType *types.DomainDiceRollSubType, traversedTables []string) *DomainDiceRollSubTypeDTO {
+func DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(context *contextProviders.DTOContext, domainDiceRollSubType *types.DomainDiceRollSubType) (*DomainDiceRollSubTypeDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainDiceRollSubType == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainDiceRollSubType")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainDiceRollSubType")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainDiceRollSubType).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainDiceRollSubType).Name())) {
       fmt.Println("Hit circular catch case for table DomainDiceRollSubType")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainDiceRollSubType).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainDiceRollSubType).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedResourceOwner__User types.User
-   var includedSuperType__DomainDiceRollType types.DomainDiceRollType
+   var includedResourceOwner__User *types.User
+   var includedSuperType__DomainDiceRollType *types.DomainDiceRollType
+   
+   var ResourceOwner__UserDTO *UserDTO
+   var SuperType__DomainDiceRollTypeDTO *DomainDiceRollTypeDTO
+   
+   var err error
    
    if (domainDiceRollSubType.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainDiceRollSubType.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainDiceRollSubType.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainDiceRollSubType.SuperType__DomainDiceRollType != nil) {
-      if err := services.GetDomainDiceRollTypeById(db, int(*domainDiceRollSubType.SuperType__DomainDiceRollType), &includedSuperType__DomainDiceRollType); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainDiceRollType:")
-         fmt.Println(err)
+      includedSuperType__DomainDiceRollType, err = services.GetDomainDiceRollTypeById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainDiceRollType](domainDiceRollSubType.SuperType__DomainDiceRollType))
+      if err != nil {
+         return nil, err
+      }
+      SuperType__DomainDiceRollTypeDTO, err = DomainDiceRollTypeToDomainDiceRollTypeDTO(&childDTOContext, includedSuperType__DomainDiceRollType)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -90,13 +113,13 @@ func DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(db *gorm.DB, domainDiceRoll
       },
       Relationships: DomainDiceRollSubTypeDTORelationships{
          ManyToOne: DomainDiceRollSubTypeDTOManyToOneRelationships {
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
-            SuperType__DomainDiceRollType: DomainDiceRollTypeToDomainDiceRollTypeDTO(db, &includedSuperType__DomainDiceRollType, traversedTables),
+            ResourceOwner__User: ResourceOwner__UserDTO,
+            SuperType__DomainDiceRollType: SuperType__DomainDiceRollTypeDTO,
          },
          OneToMany: DomainDiceRollSubTypeDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func DomainDiceRollSubTypeDTOToDomainDiceRollSubType(domainDiceRollSubType *DomainDiceRollSubTypeDTO) *types.DomainDiceRollSubType {

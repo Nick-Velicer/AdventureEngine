@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -46,42 +47,69 @@ type DomainClassResourceDTO struct {
    Relationships DomainClassResourceDTORelationships
 }
 
-func DomainClassResourceToDomainClassResourceDTO(db *gorm.DB, domainClassResource *types.DomainClassResource, traversedTables []string) *DomainClassResourceDTO {
+func DomainClassResourceToDomainClassResourceDTO(context *contextProviders.DTOContext, domainClassResource *types.DomainClassResource) (*DomainClassResourceDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainClassResource == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainClassResource")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainClassResource")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainClassResource).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainClassResource).Name())) {
       fmt.Println("Hit circular catch case for table DomainClassResource")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainClassResource).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainClassResource).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedParent__DomainClass types.DomainClass
-   var includedParent__DomainSubClass types.DomainSubClass
-   var includedResourceOwner__User types.User
+   var includedParent__DomainClass *types.DomainClass
+   var includedParent__DomainSubClass *types.DomainSubClass
+   var includedResourceOwner__User *types.User
+   
+   var Parent__DomainClassDTO *DomainClassDTO
+   var Parent__DomainSubClassDTO *DomainSubClassDTO
+   var ResourceOwner__UserDTO *UserDTO
+   
+   var err error
    
    if (domainClassResource.Parent__DomainClass != nil) {
-      if err := services.GetDomainClassById(db, int(*domainClassResource.Parent__DomainClass), &includedParent__DomainClass); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainClass:")
-         fmt.Println(err)
+      includedParent__DomainClass, err = services.GetDomainClassById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainClass](domainClassResource.Parent__DomainClass))
+      if err != nil {
+         return nil, err
+      }
+      Parent__DomainClassDTO, err = DomainClassToDomainClassDTO(&childDTOContext, includedParent__DomainClass)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainClassResource.Parent__DomainSubClass != nil) {
-      if err := services.GetDomainSubClassById(db, int(*domainClassResource.Parent__DomainSubClass), &includedParent__DomainSubClass); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainSubClass:")
-         fmt.Println(err)
+      includedParent__DomainSubClass, err = services.GetDomainSubClassById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainSubClass](domainClassResource.Parent__DomainSubClass))
+      if err != nil {
+         return nil, err
+      }
+      Parent__DomainSubClassDTO, err = DomainSubClassToDomainSubClassDTO(&childDTOContext, includedParent__DomainSubClass)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainClassResource.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainClassResource.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainClassResource.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -99,14 +127,14 @@ func DomainClassResourceToDomainClassResourceDTO(db *gorm.DB, domainClassResourc
       },
       Relationships: DomainClassResourceDTORelationships{
          ManyToOne: DomainClassResourceDTOManyToOneRelationships {
-            Parent__DomainClass: DomainClassToDomainClassDTO(db, &includedParent__DomainClass, traversedTables),
-            Parent__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedParent__DomainSubClass, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
+            Parent__DomainClass: Parent__DomainClassDTO,
+            Parent__DomainSubClass: Parent__DomainSubClassDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: DomainClassResourceDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func DomainClassResourceDTOToDomainClassResource(domainClassResource *DomainClassResourceDTO) *types.DomainClassResource {

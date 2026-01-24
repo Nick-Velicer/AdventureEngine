@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -44,26 +45,43 @@ type DomainSpellSchoolDTO struct {
    Relationships DomainSpellSchoolDTORelationships
 }
 
-func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *types.DomainSpellSchool, traversedTables []string) *DomainSpellSchoolDTO {
+func DomainSpellSchoolToDomainSpellSchoolDTO(context *contextProviders.DTOContext, domainSpellSchool *types.DomainSpellSchool) (*DomainSpellSchoolDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainSpellSchool == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainSpellSchool")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainSpellSchool")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpellSchool).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainSpellSchool).Name())) {
       fmt.Println("Hit circular catch case for table DomainSpellSchool")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainSpellSchool).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainSpellSchool).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedResourceOwner__User types.User
+   var includedResourceOwner__User *types.User
+   
+   var ResourceOwner__UserDTO *UserDTO
+   
+   var err error
    
    if (domainSpellSchool.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainSpellSchool.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainSpellSchool.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -81,12 +99,12 @@ func DomainSpellSchoolToDomainSpellSchoolDTO(db *gorm.DB, domainSpellSchool *typ
       },
       Relationships: DomainSpellSchoolDTORelationships{
          ManyToOne: DomainSpellSchoolDTOManyToOneRelationships {
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
+            ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: DomainSpellSchoolDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoolDTO) *types.DomainSpellSchool {

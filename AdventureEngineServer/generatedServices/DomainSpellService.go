@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainSpells(db *gorm.DB, domainSpells *[]types.DomainSpell, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainSpell"), filters)
-   if err != nil {
-      return err
+func GetDomainSpells(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainSpell]) (contextProviders.GetReturn[types.DomainSpell], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainSpells)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainSpell
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainSpell"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainSpellById(db *gorm.DB, id int, domainSpell *types.DomainSpell) error {
-   result := db.Table("DomainSpell").First(domainSpell, id)
-   return result.Error
+func GetDomainSpellById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainSpell]) (contextProviders.GetByIdReturn[types.DomainSpell], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainSpell
+   result := context.DatabaseContext.Table("DomainSpell").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainSpell(db *gorm.DB, domainSpells []*types.DomainSpell) error {
-   tx := db.Begin()
+func SaveDomainSpell(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainSpell]) (contextProviders.SaveReturn[types.DomainSpell], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainSpells).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,18 +76,16 @@ func SaveDomainSpell(db *gorm.DB, domainSpells []*types.DomainSpell) error {
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainSpell").Save(domainSpells).Error; err != nil {
+   if err := tx.Table("DomainSpell").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
-}
-
-func GetClassSpellsByDomainSpellId(db *gorm.DB, id int, ClassSpells *[]types.ClassSpell) error {
-   result := db.Table("ClassSpell").Where(map[string]interface{}{"Spell__DomainSpell": id}).Find(ClassSpells)
-   return result.Error
+   return args.Items, nil
 }

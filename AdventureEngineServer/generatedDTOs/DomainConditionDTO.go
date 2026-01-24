@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -45,35 +46,60 @@ type DomainConditionDTO struct {
    Relationships DomainConditionDTORelationships
 }
 
-func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.DomainCondition, traversedTables []string) *DomainConditionDTO {
+func DomainConditionToDomainConditionDTO(context *contextProviders.DTOContext, domainCondition *types.DomainCondition) (*DomainConditionDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainCondition == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainCondition")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainCondition")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainCondition).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainCondition).Name())) {
       fmt.Println("Hit circular catch case for table DomainCondition")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainCondition).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainCondition).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedResourceOwner__User types.User
+   var includedResourceOwner__User *types.User
    var includedQuantifiers__Quantifiers []types.Quantifier
    
+   var ResourceOwner__UserDTO *UserDTO
+   var Quantifiers__QuantifierDTOs []*QuantifierDTO
+   
+   var err error
+   
    if (domainCondition.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainCondition.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainCondition.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
-   if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
       includedQuantifiers__Quantifiers = []types.Quantifier{}
       fmt.Println("Hit circular catch case for table Quantifier")
    } else {
-      services.GetQuantifiersByDomainConditionId(db, int(*domainCondition.Id), &includedQuantifiers__Quantifiers)
+      includedQuantifiers__Quantifiers, err = services.GetQuantifiers(serviceContext, contextProviders.ProduceGetArgs[types.Quantifier]("Quantifiers__Quantifier", domainCondition.Id))
+      if err != nil {
+         return nil, err
+      }
+      Quantifiers__QuantifierDTOs, err = utils.ErrorCompatibleMap(includedQuantifiers__Quantifiers, func(relationshipElement types.Quantifier) (*QuantifierDTO, error) { return QuantifierToQuantifierDTO(&childDTOContext, &relationshipElement) })
+      if err != nil {
+         return nil, err
+      }
    }
 
    
@@ -90,13 +116,13 @@ func DomainConditionToDomainConditionDTO(db *gorm.DB, domainCondition *types.Dom
       },
       Relationships: DomainConditionDTORelationships{
          ManyToOne: DomainConditionDTOManyToOneRelationships {
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
+            ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: DomainConditionDTOOneToManyRelationships {
-            Quantifiers__Quantifier: utils.Map(includedQuantifiers__Quantifiers, func(relationshipElement types.Quantifier) *QuantifierDTO { return QuantifierToQuantifierDTO(db, &relationshipElement, traversedTables) }),
+            Quantifiers__Quantifier: Quantifiers__QuantifierDTOs,
          },
       },
-   }
+   }, nil
 }
 
 func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) *types.DomainCondition {

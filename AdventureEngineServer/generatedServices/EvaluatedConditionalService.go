@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetEvaluatedConditionals(db *gorm.DB, evaluatedConditionals *[]types.EvaluatedConditional, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("EvaluatedConditional"), filters)
-   if err != nil {
-      return err
+func GetEvaluatedConditionals(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.EvaluatedConditional]) (contextProviders.GetReturn[types.EvaluatedConditional], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(evaluatedConditionals)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.EvaluatedConditional
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("EvaluatedConditional"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetEvaluatedConditionalById(db *gorm.DB, id int, evaluatedConditional *types.EvaluatedConditional) error {
-   result := db.Table("EvaluatedConditional").First(evaluatedConditional, id)
-   return result.Error
+func GetEvaluatedConditionalById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.EvaluatedConditional]) (contextProviders.GetByIdReturn[types.EvaluatedConditional], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.EvaluatedConditional
+   result := context.DatabaseContext.Table("EvaluatedConditional").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveEvaluatedConditional(db *gorm.DB, evaluatedConditionals []*types.EvaluatedConditional) error {
-   tx := db.Begin()
+func SaveEvaluatedConditional(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.EvaluatedConditional]) (contextProviders.SaveReturn[types.EvaluatedConditional], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(evaluatedConditionals).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveEvaluatedConditional(db *gorm.DB, evaluatedConditionals []*types.Evalua
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("EvaluatedConditional").Save(evaluatedConditionals).Error; err != nil {
+   if err := tx.Table("EvaluatedConditional").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

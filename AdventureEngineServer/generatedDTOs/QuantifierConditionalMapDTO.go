@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -44,42 +45,69 @@ type QuantifierConditionalMapDTO struct {
    Relationships QuantifierConditionalMapDTORelationships
 }
 
-func QuantifierConditionalMapToQuantifierConditionalMapDTO(db *gorm.DB, quantifierConditionalMap *types.QuantifierConditionalMap, traversedTables []string) *QuantifierConditionalMapDTO {
+func QuantifierConditionalMapToQuantifierConditionalMapDTO(context *contextProviders.DTOContext, quantifierConditionalMap *types.QuantifierConditionalMap) (*QuantifierConditionalMapDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (quantifierConditionalMap == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table QuantifierConditionalMap")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table QuantifierConditionalMap")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*quantifierConditionalMap).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*quantifierConditionalMap).Name())) {
       fmt.Println("Hit circular catch case for table QuantifierConditionalMap")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*quantifierConditionalMap).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*quantifierConditionalMap).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedBase__Quantifier types.Quantifier
-   var includedIsTrue__DomainCondition types.DomainCondition
-   var includedModifier__Quantifier types.Quantifier
+   var includedBase__Quantifier *types.Quantifier
+   var includedIsTrue__DomainCondition *types.DomainCondition
+   var includedModifier__Quantifier *types.Quantifier
+   
+   var Base__QuantifierDTO *QuantifierDTO
+   var IsTrue__DomainConditionDTO *DomainConditionDTO
+   var Modifier__QuantifierDTO *QuantifierDTO
+   
+   var err error
    
    if (quantifierConditionalMap.Base__Quantifier != nil) {
-      if err := services.GetQuantifierById(db, int(*quantifierConditionalMap.Base__Quantifier), &includedBase__Quantifier); err != nil {
-         fmt.Println("Error fetching many-to-one table Quantifier:")
-         fmt.Println(err)
+      includedBase__Quantifier, err = services.GetQuantifierById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Quantifier](quantifierConditionalMap.Base__Quantifier))
+      if err != nil {
+         return nil, err
+      }
+      Base__QuantifierDTO, err = QuantifierToQuantifierDTO(&childDTOContext, includedBase__Quantifier)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (quantifierConditionalMap.IsTrue__DomainCondition != nil) {
-      if err := services.GetDomainConditionById(db, int(*quantifierConditionalMap.IsTrue__DomainCondition), &includedIsTrue__DomainCondition); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainCondition:")
-         fmt.Println(err)
+      includedIsTrue__DomainCondition, err = services.GetDomainConditionById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCondition](quantifierConditionalMap.IsTrue__DomainCondition))
+      if err != nil {
+         return nil, err
+      }
+      IsTrue__DomainConditionDTO, err = DomainConditionToDomainConditionDTO(&childDTOContext, includedIsTrue__DomainCondition)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (quantifierConditionalMap.Modifier__Quantifier != nil) {
-      if err := services.GetQuantifierById(db, int(*quantifierConditionalMap.Modifier__Quantifier), &includedModifier__Quantifier); err != nil {
-         fmt.Println("Error fetching many-to-one table Quantifier:")
-         fmt.Println(err)
+      includedModifier__Quantifier, err = services.GetQuantifierById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Quantifier](quantifierConditionalMap.Modifier__Quantifier))
+      if err != nil {
+         return nil, err
+      }
+      Modifier__QuantifierDTO, err = QuantifierToQuantifierDTO(&childDTOContext, includedModifier__Quantifier)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -95,14 +123,14 @@ func QuantifierConditionalMapToQuantifierConditionalMapDTO(db *gorm.DB, quantifi
       },
       Relationships: QuantifierConditionalMapDTORelationships{
          ManyToOne: QuantifierConditionalMapDTOManyToOneRelationships {
-            Base__Quantifier: QuantifierToQuantifierDTO(db, &includedBase__Quantifier, traversedTables),
-            IsTrue__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedIsTrue__DomainCondition, traversedTables),
-            Modifier__Quantifier: QuantifierToQuantifierDTO(db, &includedModifier__Quantifier, traversedTables),
+            Base__Quantifier: Base__QuantifierDTO,
+            IsTrue__DomainCondition: IsTrue__DomainConditionDTO,
+            Modifier__Quantifier: Modifier__QuantifierDTO,
          },
          OneToMany: QuantifierConditionalMapDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func QuantifierConditionalMapDTOToQuantifierConditionalMap(quantifierConditionalMap *QuantifierConditionalMapDTO) *types.QuantifierConditionalMap {

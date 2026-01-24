@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetQuantifierConditionalMaps(db *gorm.DB, quantifierConditionalMaps *[]types.QuantifierConditionalMap, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("QuantifierConditionalMap"), filters)
-   if err != nil {
-      return err
+func GetQuantifierConditionalMaps(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.QuantifierConditionalMap]) (contextProviders.GetReturn[types.QuantifierConditionalMap], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(quantifierConditionalMaps)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.QuantifierConditionalMap
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("QuantifierConditionalMap"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetQuantifierConditionalMapById(db *gorm.DB, id int, quantifierConditionalMap *types.QuantifierConditionalMap) error {
-   result := db.Table("QuantifierConditionalMap").First(quantifierConditionalMap, id)
-   return result.Error
+func GetQuantifierConditionalMapById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.QuantifierConditionalMap]) (contextProviders.GetByIdReturn[types.QuantifierConditionalMap], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.QuantifierConditionalMap
+   result := context.DatabaseContext.Table("QuantifierConditionalMap").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveQuantifierConditionalMap(db *gorm.DB, quantifierConditionalMaps []*types.QuantifierConditionalMap) error {
-   tx := db.Begin()
+func SaveQuantifierConditionalMap(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.QuantifierConditionalMap]) (contextProviders.SaveReturn[types.QuantifierConditionalMap], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(quantifierConditionalMaps).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveQuantifierConditionalMap(db *gorm.DB, quantifierConditionalMaps []*type
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("QuantifierConditionalMap").Save(quantifierConditionalMaps).Error; err != nil {
+   if err := tx.Table("QuantifierConditionalMap").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

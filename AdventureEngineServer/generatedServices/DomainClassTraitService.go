@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainClassTraits(db *gorm.DB, domainClassTraits *[]types.DomainClassTrait, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainClassTrait"), filters)
-   if err != nil {
-      return err
+func GetDomainClassTraits(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainClassTrait]) (contextProviders.GetReturn[types.DomainClassTrait], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainClassTraits)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainClassTrait
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainClassTrait"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainClassTraitById(db *gorm.DB, id int, domainClassTrait *types.DomainClassTrait) error {
-   result := db.Table("DomainClassTrait").First(domainClassTrait, id)
-   return result.Error
+func GetDomainClassTraitById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainClassTrait]) (contextProviders.GetByIdReturn[types.DomainClassTrait], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainClassTrait
+   result := context.DatabaseContext.Table("DomainClassTrait").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainClassTrait(db *gorm.DB, domainClassTraits []*types.DomainClassTrait) error {
-   tx := db.Begin()
+func SaveDomainClassTrait(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainClassTrait]) (contextProviders.SaveReturn[types.DomainClassTrait], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainClassTraits).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,18 +76,16 @@ func SaveDomainClassTrait(db *gorm.DB, domainClassTraits []*types.DomainClassTra
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainClassTrait").Save(domainClassTraits).Error; err != nil {
+   if err := tx.Table("DomainClassTrait").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
-}
-
-func GetQuantifiersByDomainClassTraitId(db *gorm.DB, id int, Quantifiers *[]types.Quantifier) error {
-   result := db.Table("Quantifier").Where(map[string]interface{}{"Parent__DomainClassTrait": id}).Find(Quantifiers)
-   return result.Error
+   return args.Items, nil
 }

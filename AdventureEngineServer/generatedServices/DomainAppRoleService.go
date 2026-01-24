@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainAppRoles(db *gorm.DB, domainAppRoles *[]types.DomainAppRole, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainAppRole"), filters)
-   if err != nil {
-      return err
+func GetDomainAppRoles(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainAppRole]) (contextProviders.GetReturn[types.DomainAppRole], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainAppRoles)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainAppRole
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainAppRole"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainAppRoleById(db *gorm.DB, id int, domainAppRole *types.DomainAppRole) error {
-   result := db.Table("DomainAppRole").First(domainAppRole, id)
-   return result.Error
+func GetDomainAppRoleById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainAppRole]) (contextProviders.GetByIdReturn[types.DomainAppRole], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainAppRole
+   result := context.DatabaseContext.Table("DomainAppRole").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainAppRole(db *gorm.DB, domainAppRoles []*types.DomainAppRole) error {
-   tx := db.Begin()
+func SaveDomainAppRole(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainAppRole]) (contextProviders.SaveReturn[types.DomainAppRole], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainAppRoles).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveDomainAppRole(db *gorm.DB, domainAppRoles []*types.DomainAppRole) error
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainAppRole").Save(domainAppRoles).Error; err != nil {
+   if err := tx.Table("DomainAppRole").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

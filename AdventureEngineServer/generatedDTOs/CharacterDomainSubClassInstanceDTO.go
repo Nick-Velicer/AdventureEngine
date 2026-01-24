@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -47,42 +48,69 @@ type CharacterDomainSubClassInstanceDTO struct {
    Relationships CharacterDomainSubClassInstanceDTORelationships
 }
 
-func CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db *gorm.DB, characterDomainSubClassInstance *types.CharacterDomainSubClassInstance, traversedTables []string) *CharacterDomainSubClassInstanceDTO {
+func CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(context *contextProviders.DTOContext, characterDomainSubClassInstance *types.CharacterDomainSubClassInstance) (*CharacterDomainSubClassInstanceDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (characterDomainSubClassInstance == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table CharacterDomainSubClassInstance")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table CharacterDomainSubClassInstance")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*characterDomainSubClassInstance).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*characterDomainSubClassInstance).Name())) {
       fmt.Println("Hit circular catch case for table CharacterDomainSubClassInstance")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*characterDomainSubClassInstance).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*characterDomainSubClassInstance).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedCharacter__Character types.Character
-   var includedResourceOwner__User types.User
-   var includedSubClass__DomainSubClass types.DomainSubClass
+   var includedCharacter__Character *types.Character
+   var includedResourceOwner__User *types.User
+   var includedSubClass__DomainSubClass *types.DomainSubClass
+   
+   var Character__CharacterDTO *CharacterDTO
+   var ResourceOwner__UserDTO *UserDTO
+   var SubClass__DomainSubClassDTO *DomainSubClassDTO
+   
+   var err error
    
    if (characterDomainSubClassInstance.Character__Character != nil) {
-      if err := services.GetCharacterById(db, int(*characterDomainSubClassInstance.Character__Character), &includedCharacter__Character); err != nil {
-         fmt.Println("Error fetching many-to-one table Character:")
-         fmt.Println(err)
+      includedCharacter__Character, err = services.GetCharacterById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Character](characterDomainSubClassInstance.Character__Character))
+      if err != nil {
+         return nil, err
+      }
+      Character__CharacterDTO, err = CharacterToCharacterDTO(&childDTOContext, includedCharacter__Character)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (characterDomainSubClassInstance.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*characterDomainSubClassInstance.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](characterDomainSubClassInstance.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (characterDomainSubClassInstance.SubClass__DomainSubClass != nil) {
-      if err := services.GetDomainSubClassById(db, int(*characterDomainSubClassInstance.SubClass__DomainSubClass), &includedSubClass__DomainSubClass); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainSubClass:")
-         fmt.Println(err)
+      includedSubClass__DomainSubClass, err = services.GetDomainSubClassById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainSubClass](characterDomainSubClassInstance.SubClass__DomainSubClass))
+      if err != nil {
+         return nil, err
+      }
+      SubClass__DomainSubClassDTO, err = DomainSubClassToDomainSubClassDTO(&childDTOContext, includedSubClass__DomainSubClass)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -101,14 +129,14 @@ func CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db *gor
       },
       Relationships: CharacterDomainSubClassInstanceDTORelationships{
          ManyToOne: CharacterDomainSubClassInstanceDTOManyToOneRelationships {
-            Character__Character: CharacterToCharacterDTO(db, &includedCharacter__Character, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
-            SubClass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubClass__DomainSubClass, traversedTables),
+            Character__Character: Character__CharacterDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
+            SubClass__DomainSubClass: SubClass__DomainSubClassDTO,
          },
          OneToMany: CharacterDomainSubClassInstanceDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func CharacterDomainSubClassInstanceDTOToCharacterDomainSubClassInstance(characterDomainSubClassInstance *CharacterDomainSubClassInstanceDTO) *types.CharacterDomainSubClassInstance {

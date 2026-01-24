@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -49,67 +50,115 @@ type CharacterDTO struct {
    Relationships CharacterDTORelationships
 }
 
-func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedTables []string) *CharacterDTO {
+func CharacterToCharacterDTO(context *contextProviders.DTOContext, character *types.Character) (*CharacterDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (character == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table Character")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table Character")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*character).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*character).Name())) {
       fmt.Println("Hit circular catch case for table Character")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*character).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*character).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedCampaign__Campaign types.Campaign
-   var includedCurrentSize__DomainSize types.DomainSize
-   var includedResourceOwner__User types.User
-   var includedSpecies__DomainSpecies types.DomainSpecies
+   var includedCampaign__Campaign *types.Campaign
+   var includedCurrentSize__DomainSize *types.DomainSize
+   var includedResourceOwner__User *types.User
+   var includedSpecies__DomainSpecies *types.DomainSpecies
    var includedStats__CharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
    var includedSubClasses__CharacterDomainSubClassInstances []types.CharacterDomainSubClassInstance
    
+   var Campaign__CampaignDTO *CampaignDTO
+   var CurrentSize__DomainSizeDTO *DomainSizeDTO
+   var ResourceOwner__UserDTO *UserDTO
+   var Species__DomainSpeciesDTO *DomainSpeciesDTO
+   var Stats__CharacterDomainCharacterStatInstanceDTOs []*CharacterDomainCharacterStatInstanceDTO
+   var SubClasses__CharacterDomainSubClassInstanceDTOs []*CharacterDomainSubClassInstanceDTO
+   
+   var err error
+   
    if (character.Campaign__Campaign != nil) {
-      if err := services.GetCampaignById(db, int(*character.Campaign__Campaign), &includedCampaign__Campaign); err != nil {
-         fmt.Println("Error fetching many-to-one table Campaign:")
-         fmt.Println(err)
+      includedCampaign__Campaign, err = services.GetCampaignById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Campaign](character.Campaign__Campaign))
+      if err != nil {
+         return nil, err
+      }
+      Campaign__CampaignDTO, err = CampaignToCampaignDTO(&childDTOContext, includedCampaign__Campaign)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (character.CurrentSize__DomainSize != nil) {
-      if err := services.GetDomainSizeById(db, int(*character.CurrentSize__DomainSize), &includedCurrentSize__DomainSize); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainSize:")
-         fmt.Println(err)
+      includedCurrentSize__DomainSize, err = services.GetDomainSizeById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainSize](character.CurrentSize__DomainSize))
+      if err != nil {
+         return nil, err
+      }
+      CurrentSize__DomainSizeDTO, err = DomainSizeToDomainSizeDTO(&childDTOContext, includedCurrentSize__DomainSize)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (character.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*character.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](character.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (character.Species__DomainSpecies != nil) {
-      if err := services.GetDomainSpeciesById(db, int(*character.Species__DomainSpecies), &includedSpecies__DomainSpecies); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainSpecies:")
-         fmt.Println(err)
+      includedSpecies__DomainSpecies, err = services.GetDomainSpeciesById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainSpecies](character.Species__DomainSpecies))
+      if err != nil {
+         return nil, err
+      }
+      Species__DomainSpeciesDTO, err = DomainSpeciesToDomainSpeciesDTO(&childDTOContext, includedSpecies__DomainSpecies)
+      if err != nil {
+         return nil, err
       }
    }
 
-   if (slices.Contains(traversedTables, reflect.TypeOf(includedStats__CharacterDomainCharacterStatInstances).Elem().Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(includedStats__CharacterDomainCharacterStatInstances).Elem().Name())) {
       includedStats__CharacterDomainCharacterStatInstances = []types.CharacterDomainCharacterStatInstance{}
       fmt.Println("Hit circular catch case for table CharacterDomainCharacterStatInstance")
    } else {
-      services.GetCharacterDomainCharacterStatInstancesByCharacterId(db, int(*character.Id), &includedStats__CharacterDomainCharacterStatInstances)
+      includedStats__CharacterDomainCharacterStatInstances, err = services.GetCharacterDomainCharacterStatInstances(serviceContext, contextProviders.ProduceGetArgs[types.CharacterDomainCharacterStatInstance]("Stats__CharacterDomainCharacterStatInstance", character.Id))
+      if err != nil {
+         return nil, err
+      }
+      Stats__CharacterDomainCharacterStatInstanceDTOs, err = utils.ErrorCompatibleMap(includedStats__CharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) (*CharacterDomainCharacterStatInstanceDTO, error) { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(&childDTOContext, &relationshipElement) })
+      if err != nil {
+         return nil, err
+      }
    }
 
-   if (slices.Contains(traversedTables, reflect.TypeOf(includedSubClasses__CharacterDomainSubClassInstances).Elem().Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(includedSubClasses__CharacterDomainSubClassInstances).Elem().Name())) {
       includedSubClasses__CharacterDomainSubClassInstances = []types.CharacterDomainSubClassInstance{}
       fmt.Println("Hit circular catch case for table CharacterDomainSubClassInstance")
    } else {
-      services.GetCharacterDomainSubClassInstancesByCharacterId(db, int(*character.Id), &includedSubClasses__CharacterDomainSubClassInstances)
+      includedSubClasses__CharacterDomainSubClassInstances, err = services.GetCharacterDomainSubClassInstances(serviceContext, contextProviders.ProduceGetArgs[types.CharacterDomainSubClassInstance]("SubClasses__CharacterDomainSubClassInstance", character.Id))
+      if err != nil {
+         return nil, err
+      }
+      SubClasses__CharacterDomainSubClassInstanceDTOs, err = utils.ErrorCompatibleMap(includedSubClasses__CharacterDomainSubClassInstances, func(relationshipElement types.CharacterDomainSubClassInstance) (*CharacterDomainSubClassInstanceDTO, error) { return CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(&childDTOContext, &relationshipElement) })
+      if err != nil {
+         return nil, err
+      }
    }
 
    
@@ -126,17 +175,17 @@ func CharacterToCharacterDTO(db *gorm.DB, character *types.Character, traversedT
       },
       Relationships: CharacterDTORelationships{
          ManyToOne: CharacterDTOManyToOneRelationships {
-            Campaign__Campaign: CampaignToCampaignDTO(db, &includedCampaign__Campaign, traversedTables),
-            CurrentSize__DomainSize: DomainSizeToDomainSizeDTO(db, &includedCurrentSize__DomainSize, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
-            Species__DomainSpecies: DomainSpeciesToDomainSpeciesDTO(db, &includedSpecies__DomainSpecies, traversedTables),
+            Campaign__Campaign: Campaign__CampaignDTO,
+            CurrentSize__DomainSize: CurrentSize__DomainSizeDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
+            Species__DomainSpecies: Species__DomainSpeciesDTO,
          },
          OneToMany: CharacterDTOOneToManyRelationships {
-            Stats__CharacterDomainCharacterStatInstance: utils.Map(includedStats__CharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) *CharacterDomainCharacterStatInstanceDTO { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(db, &relationshipElement, traversedTables) }),
-            SubClasses__CharacterDomainSubClassInstance: utils.Map(includedSubClasses__CharacterDomainSubClassInstances, func(relationshipElement types.CharacterDomainSubClassInstance) *CharacterDomainSubClassInstanceDTO { return CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(db, &relationshipElement, traversedTables) }),
+            Stats__CharacterDomainCharacterStatInstance: Stats__CharacterDomainCharacterStatInstanceDTOs,
+            SubClasses__CharacterDomainSubClassInstance: SubClasses__CharacterDomainSubClassInstanceDTOs,
          },
       },
-   }
+   }, nil
 }
 
 func CharacterDTOToCharacter(character *CharacterDTO) *types.Character {

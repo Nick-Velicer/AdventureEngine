@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainCreatureTypes(db *gorm.DB, domainCreatureTypes *[]types.DomainCreatureType, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainCreatureType"), filters)
-   if err != nil {
-      return err
+func GetDomainCreatureTypes(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainCreatureType]) (contextProviders.GetReturn[types.DomainCreatureType], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainCreatureTypes)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainCreatureType
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainCreatureType"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainCreatureTypeById(db *gorm.DB, id int, domainCreatureType *types.DomainCreatureType) error {
-   result := db.Table("DomainCreatureType").First(domainCreatureType, id)
-   return result.Error
+func GetDomainCreatureTypeById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainCreatureType]) (contextProviders.GetByIdReturn[types.DomainCreatureType], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainCreatureType
+   result := context.DatabaseContext.Table("DomainCreatureType").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainCreatureType(db *gorm.DB, domainCreatureTypes []*types.DomainCreatureType) error {
-   tx := db.Begin()
+func SaveDomainCreatureType(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainCreatureType]) (contextProviders.SaveReturn[types.DomainCreatureType], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainCreatureTypes).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveDomainCreatureType(db *gorm.DB, domainCreatureTypes []*types.DomainCrea
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainCreatureType").Save(domainCreatureTypes).Error; err != nil {
+   if err := tx.Table("DomainCreatureType").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

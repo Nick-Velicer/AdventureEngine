@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -68,51 +69,86 @@ type DomainSpellDTO struct {
    Relationships DomainSpellDTORelationships
 }
 
-func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, traversedTables []string) *DomainSpellDTO {
+func DomainSpellToDomainSpellDTO(context *contextProviders.DTOContext, domainSpell *types.DomainSpell) (*DomainSpellDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainSpell == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainSpell")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainSpell")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainSpell).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainSpell).Name())) {
       fmt.Println("Hit circular catch case for table DomainSpell")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainSpell).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainSpell).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedDamageScaling__DomainDice types.DomainDice
-   var includedResourceOwner__User types.User
-   var includedSchool__DomainSpellSchool types.DomainSpellSchool
+   var includedDamageScaling__DomainDice *types.DomainDice
+   var includedResourceOwner__User *types.User
+   var includedSchool__DomainSpellSchool *types.DomainSpellSchool
    var includedClasses__ClassSpells []types.ClassSpell
    
+   var DamageScaling__DomainDiceDTO *DomainDiceDTO
+   var ResourceOwner__UserDTO *UserDTO
+   var School__DomainSpellSchoolDTO *DomainSpellSchoolDTO
+   var Classes__ClassSpellDTOs []*ClassSpellDTO
+   
+   var err error
+   
    if (domainSpell.DamageScaling__DomainDice != nil) {
-      if err := services.GetDomainDiceById(db, int(*domainSpell.DamageScaling__DomainDice), &includedDamageScaling__DomainDice); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainDice:")
-         fmt.Println(err)
+      includedDamageScaling__DomainDice, err = services.GetDomainDiceById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainDice](domainSpell.DamageScaling__DomainDice))
+      if err != nil {
+         return nil, err
+      }
+      DamageScaling__DomainDiceDTO, err = DomainDiceToDomainDiceDTO(&childDTOContext, includedDamageScaling__DomainDice)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainSpell.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainSpell.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainSpell.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainSpell.School__DomainSpellSchool != nil) {
-      if err := services.GetDomainSpellSchoolById(db, int(*domainSpell.School__DomainSpellSchool), &includedSchool__DomainSpellSchool); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainSpellSchool:")
-         fmt.Println(err)
+      includedSchool__DomainSpellSchool, err = services.GetDomainSpellSchoolById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainSpellSchool](domainSpell.School__DomainSpellSchool))
+      if err != nil {
+         return nil, err
+      }
+      School__DomainSpellSchoolDTO, err = DomainSpellSchoolToDomainSpellSchoolDTO(&childDTOContext, includedSchool__DomainSpellSchool)
+      if err != nil {
+         return nil, err
       }
    }
 
-   if (slices.Contains(traversedTables, reflect.TypeOf(includedClasses__ClassSpells).Elem().Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(includedClasses__ClassSpells).Elem().Name())) {
       includedClasses__ClassSpells = []types.ClassSpell{}
       fmt.Println("Hit circular catch case for table ClassSpell")
    } else {
-      services.GetClassSpellsByDomainSpellId(db, int(*domainSpell.Id), &includedClasses__ClassSpells)
+      includedClasses__ClassSpells, err = services.GetClassSpells(serviceContext, contextProviders.ProduceGetArgs[types.ClassSpell]("Classes__ClassSpell", domainSpell.Id))
+      if err != nil {
+         return nil, err
+      }
+      Classes__ClassSpellDTOs, err = utils.ErrorCompatibleMap(includedClasses__ClassSpells, func(relationshipElement types.ClassSpell) (*ClassSpellDTO, error) { return ClassSpellToClassSpellDTO(&childDTOContext, &relationshipElement) })
+      if err != nil {
+         return nil, err
+      }
    }
 
    
@@ -150,15 +186,15 @@ func DomainSpellToDomainSpellDTO(db *gorm.DB, domainSpell *types.DomainSpell, tr
       },
       Relationships: DomainSpellDTORelationships{
          ManyToOne: DomainSpellDTOManyToOneRelationships {
-            DamageScaling__DomainDice: DomainDiceToDomainDiceDTO(db, &includedDamageScaling__DomainDice, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
-            School__DomainSpellSchool: DomainSpellSchoolToDomainSpellSchoolDTO(db, &includedSchool__DomainSpellSchool, traversedTables),
+            DamageScaling__DomainDice: DamageScaling__DomainDiceDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
+            School__DomainSpellSchool: School__DomainSpellSchoolDTO,
          },
          OneToMany: DomainSpellDTOOneToManyRelationships {
-            Classes__ClassSpell: utils.Map(includedClasses__ClassSpells, func(relationshipElement types.ClassSpell) *ClassSpellDTO { return ClassSpellToClassSpellDTO(db, &relationshipElement, traversedTables) }),
+            Classes__ClassSpell: Classes__ClassSpellDTOs,
          },
       },
-   }
+   }, nil
 }
 
 func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) *types.DomainSpell {

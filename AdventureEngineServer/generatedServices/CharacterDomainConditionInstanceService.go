@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetCharacterDomainConditionInstances(db *gorm.DB, characterDomainConditionInstances *[]types.CharacterDomainConditionInstance, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("CharacterDomainConditionInstance"), filters)
-   if err != nil {
-      return err
+func GetCharacterDomainConditionInstances(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.CharacterDomainConditionInstance]) (contextProviders.GetReturn[types.CharacterDomainConditionInstance], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(characterDomainConditionInstances)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.CharacterDomainConditionInstance
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("CharacterDomainConditionInstance"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetCharacterDomainConditionInstanceById(db *gorm.DB, id int, characterDomainConditionInstance *types.CharacterDomainConditionInstance) error {
-   result := db.Table("CharacterDomainConditionInstance").First(characterDomainConditionInstance, id)
-   return result.Error
+func GetCharacterDomainConditionInstanceById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.CharacterDomainConditionInstance]) (contextProviders.GetByIdReturn[types.CharacterDomainConditionInstance], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.CharacterDomainConditionInstance
+   result := context.DatabaseContext.Table("CharacterDomainConditionInstance").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveCharacterDomainConditionInstance(db *gorm.DB, characterDomainConditionInstances []*types.CharacterDomainConditionInstance) error {
-   tx := db.Begin()
+func SaveCharacterDomainConditionInstance(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.CharacterDomainConditionInstance]) (contextProviders.SaveReturn[types.CharacterDomainConditionInstance], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(characterDomainConditionInstances).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveCharacterDomainConditionInstance(db *gorm.DB, characterDomainConditionI
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("CharacterDomainConditionInstance").Save(characterDomainConditionInstances).Error; err != nil {
+   if err := tx.Table("CharacterDomainConditionInstance").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

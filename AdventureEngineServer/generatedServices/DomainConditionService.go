@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainConditions(db *gorm.DB, domainConditions *[]types.DomainCondition, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainCondition"), filters)
-   if err != nil {
-      return err
+func GetDomainConditions(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainCondition]) (contextProviders.GetReturn[types.DomainCondition], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainConditions)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainCondition
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainCondition"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainConditionById(db *gorm.DB, id int, domainCondition *types.DomainCondition) error {
-   result := db.Table("DomainCondition").First(domainCondition, id)
-   return result.Error
+func GetDomainConditionById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainCondition]) (contextProviders.GetByIdReturn[types.DomainCondition], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainCondition
+   result := context.DatabaseContext.Table("DomainCondition").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainCondition(db *gorm.DB, domainConditions []*types.DomainCondition) error {
-   tx := db.Begin()
+func SaveDomainCondition(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainCondition]) (contextProviders.SaveReturn[types.DomainCondition], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainConditions).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,18 +76,16 @@ func SaveDomainCondition(db *gorm.DB, domainConditions []*types.DomainCondition)
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainCondition").Save(domainConditions).Error; err != nil {
+   if err := tx.Table("DomainCondition").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
-}
-
-func GetQuantifiersByDomainConditionId(db *gorm.DB, id int, Quantifiers *[]types.Quantifier) error {
-   result := db.Table("Quantifier").Where(map[string]interface{}{"Parent__DomainCondition": id}).Find(Quantifiers)
-   return result.Error
+   return args.Items, nil
 }

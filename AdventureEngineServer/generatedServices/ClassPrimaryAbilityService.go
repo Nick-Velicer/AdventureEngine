@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetClassPrimaryAbilitys(db *gorm.DB, classPrimaryAbilitys *[]types.ClassPrimaryAbility, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("ClassPrimaryAbility"), filters)
-   if err != nil {
-      return err
+func GetClassPrimaryAbilitys(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.ClassPrimaryAbility]) (contextProviders.GetReturn[types.ClassPrimaryAbility], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(classPrimaryAbilitys)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.ClassPrimaryAbility
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("ClassPrimaryAbility"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetClassPrimaryAbilityById(db *gorm.DB, id int, classPrimaryAbility *types.ClassPrimaryAbility) error {
-   result := db.Table("ClassPrimaryAbility").First(classPrimaryAbility, id)
-   return result.Error
+func GetClassPrimaryAbilityById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.ClassPrimaryAbility]) (contextProviders.GetByIdReturn[types.ClassPrimaryAbility], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.ClassPrimaryAbility
+   result := context.DatabaseContext.Table("ClassPrimaryAbility").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveClassPrimaryAbility(db *gorm.DB, classPrimaryAbilitys []*types.ClassPrimaryAbility) error {
-   tx := db.Begin()
+func SaveClassPrimaryAbility(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.ClassPrimaryAbility]) (contextProviders.SaveReturn[types.ClassPrimaryAbility], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(classPrimaryAbilitys).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveClassPrimaryAbility(db *gorm.DB, classPrimaryAbilitys []*types.ClassPri
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("ClassPrimaryAbility").Save(classPrimaryAbilitys).Error; err != nil {
+   if err := tx.Table("ClassPrimaryAbility").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

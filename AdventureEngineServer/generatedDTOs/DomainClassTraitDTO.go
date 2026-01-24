@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -47,51 +48,86 @@ type DomainClassTraitDTO struct {
    Relationships DomainClassTraitDTORelationships
 }
 
-func DomainClassTraitToDomainClassTraitDTO(db *gorm.DB, domainClassTrait *types.DomainClassTrait, traversedTables []string) *DomainClassTraitDTO {
+func DomainClassTraitToDomainClassTraitDTO(context *contextProviders.DTOContext, domainClassTrait *types.DomainClassTrait) (*DomainClassTraitDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainClassTrait == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainClassTrait")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainClassTrait")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainClassTrait).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainClassTrait).Name())) {
       fmt.Println("Hit circular catch case for table DomainClassTrait")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainClassTrait).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainClassTrait).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedClass__DomainClass types.DomainClass
-   var includedResourceOwner__User types.User
-   var includedSubClass__DomainSubClass types.DomainSubClass
+   var includedClass__DomainClass *types.DomainClass
+   var includedResourceOwner__User *types.User
+   var includedSubClass__DomainSubClass *types.DomainSubClass
    var includedQuantifiers__Quantifiers []types.Quantifier
    
+   var Class__DomainClassDTO *DomainClassDTO
+   var ResourceOwner__UserDTO *UserDTO
+   var SubClass__DomainSubClassDTO *DomainSubClassDTO
+   var Quantifiers__QuantifierDTOs []*QuantifierDTO
+   
+   var err error
+   
    if (domainClassTrait.Class__DomainClass != nil) {
-      if err := services.GetDomainClassById(db, int(*domainClassTrait.Class__DomainClass), &includedClass__DomainClass); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainClass:")
-         fmt.Println(err)
+      includedClass__DomainClass, err = services.GetDomainClassById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainClass](domainClassTrait.Class__DomainClass))
+      if err != nil {
+         return nil, err
+      }
+      Class__DomainClassDTO, err = DomainClassToDomainClassDTO(&childDTOContext, includedClass__DomainClass)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainClassTrait.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainClassTrait.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainClassTrait.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainClassTrait.SubClass__DomainSubClass != nil) {
-      if err := services.GetDomainSubClassById(db, int(*domainClassTrait.SubClass__DomainSubClass), &includedSubClass__DomainSubClass); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainSubClass:")
-         fmt.Println(err)
+      includedSubClass__DomainSubClass, err = services.GetDomainSubClassById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainSubClass](domainClassTrait.SubClass__DomainSubClass))
+      if err != nil {
+         return nil, err
+      }
+      SubClass__DomainSubClassDTO, err = DomainSubClassToDomainSubClassDTO(&childDTOContext, includedSubClass__DomainSubClass)
+      if err != nil {
+         return nil, err
       }
    }
 
-   if (slices.Contains(traversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(includedQuantifiers__Quantifiers).Elem().Name())) {
       includedQuantifiers__Quantifiers = []types.Quantifier{}
       fmt.Println("Hit circular catch case for table Quantifier")
    } else {
-      services.GetQuantifiersByDomainClassTraitId(db, int(*domainClassTrait.Id), &includedQuantifiers__Quantifiers)
+      includedQuantifiers__Quantifiers, err = services.GetQuantifiers(serviceContext, contextProviders.ProduceGetArgs[types.Quantifier]("Quantifiers__Quantifier", domainClassTrait.Id))
+      if err != nil {
+         return nil, err
+      }
+      Quantifiers__QuantifierDTOs, err = utils.ErrorCompatibleMap(includedQuantifiers__Quantifiers, func(relationshipElement types.Quantifier) (*QuantifierDTO, error) { return QuantifierToQuantifierDTO(&childDTOContext, &relationshipElement) })
+      if err != nil {
+         return nil, err
+      }
    }
 
    
@@ -108,15 +144,15 @@ func DomainClassTraitToDomainClassTraitDTO(db *gorm.DB, domainClassTrait *types.
       },
       Relationships: DomainClassTraitDTORelationships{
          ManyToOne: DomainClassTraitDTOManyToOneRelationships {
-            Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
-            SubClass__DomainSubClass: DomainSubClassToDomainSubClassDTO(db, &includedSubClass__DomainSubClass, traversedTables),
+            Class__DomainClass: Class__DomainClassDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
+            SubClass__DomainSubClass: SubClass__DomainSubClassDTO,
          },
          OneToMany: DomainClassTraitDTOOneToManyRelationships {
-            Quantifiers__Quantifier: utils.Map(includedQuantifiers__Quantifiers, func(relationshipElement types.Quantifier) *QuantifierDTO { return QuantifierToQuantifierDTO(db, &relationshipElement, traversedTables) }),
+            Quantifiers__Quantifier: Quantifiers__QuantifierDTOs,
          },
       },
-   }
+   }, nil
 }
 
 func DomainClassTraitDTOToDomainClassTrait(domainClassTrait *DomainClassTraitDTO) *types.DomainClassTrait {

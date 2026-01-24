@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainSubClasss(db *gorm.DB, domainSubClasss *[]types.DomainSubClass, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainSubClass"), filters)
-   if err != nil {
-      return err
+func GetDomainSubClasss(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainSubClass]) (contextProviders.GetReturn[types.DomainSubClass], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainSubClasss)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainSubClass
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainSubClass"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainSubClassById(db *gorm.DB, id int, domainSubClass *types.DomainSubClass) error {
-   result := db.Table("DomainSubClass").First(domainSubClass, id)
-   return result.Error
+func GetDomainSubClassById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainSubClass]) (contextProviders.GetByIdReturn[types.DomainSubClass], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainSubClass
+   result := context.DatabaseContext.Table("DomainSubClass").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainSubClass(db *gorm.DB, domainSubClasss []*types.DomainSubClass) error {
-   tx := db.Begin()
+func SaveDomainSubClass(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainSubClass]) (contextProviders.SaveReturn[types.DomainSubClass], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainSubClasss).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveDomainSubClass(db *gorm.DB, domainSubClasss []*types.DomainSubClass) er
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainSubClass").Save(domainSubClasss).Error; err != nil {
+   if err := tx.Table("DomainSubClass").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

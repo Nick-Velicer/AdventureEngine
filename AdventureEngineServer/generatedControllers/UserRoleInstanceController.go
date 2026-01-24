@@ -4,21 +4,23 @@
 
 package generatedControllers
 import (
+   "errors"
    "fmt"
-   "github.com/gin-gonic/gin"
    "github.com/gin-gonic/gin/binding"
-   "gorm.io/gorm"
    "net/http"
    "regexp"
    "strconv"
-   services "AdventureEngineServer/generatedServices"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    dtos "AdventureEngineServer/generatedDTOs"
    utils "AdventureEngineServer/utils"
 )
 
-func GetUserRoleInstances(ctx *gin.Context, db *gorm.DB) {
-   queryParams := ctx.Request.URL.Query()
+func GetUserRoleInstances(context *contextProviders.GeneratedControllerContext[types.UserRoleInstance, dtos.UserRoleInstanceDTO, contextProviders.GetArgs[types.UserRoleInstance], contextProviders.GetReturn[types.UserRoleInstance]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   queryParams := context.RequestContext.Request.URL.Query()
    
    //Since we can have multiple filters, that sometimes doesn't play nicely with
    //Gin's parameter pulling, so they need to be isolated manually.
@@ -35,42 +37,71 @@ func GetUserRoleInstances(ctx *gin.Context, db *gorm.DB) {
    
    parsedFilters := utils.ParseFilterURLExpression(filterParams)
    
-   var serviceBuffer []types.UserRoleInstance
-   err := services.GetUserRoleInstances(db, &serviceBuffer, &parsedFilters)
+   serviceBuffer, err := context.ServiceAction(&contextProviders.GetArgs[types.UserRoleInstance]{ Filters: &parsedFilters })
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
    var returnBuffer []dtos.UserRoleInstanceDTO
    for _, dbTypeInstance := range serviceBuffer {
-      pointerToDTO := dtos.UserRoleInstanceToUserRoleInstanceDTO(db, &dbTypeInstance, []string{})
-      if (pointerToDTO != nil) {
-         returnBuffer = append(returnBuffer, *pointerToDTO)
+      pointerToDTO, err := context.DTOConverter(&dbTypeInstance)
+      if (err != nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
       }
+      
+      if (pointerToDTO == nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type UserRoleInstance"))
+         return
+      }
+      
+      returnBuffer = append(returnBuffer, *pointerToDTO)
    }
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func GetUserRoleInstanceById(ctx *gin.Context, db *gorm.DB) {
-   id := ctx.Param("id")
+func GetUserRoleInstanceById(context *contextProviders.GeneratedControllerContext[types.UserRoleInstance, dtos.UserRoleInstanceDTO, contextProviders.GetByIdArgs[types.UserRoleInstance], contextProviders.GetByIdReturn[types.UserRoleInstance]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   
+   id := context.RequestContext.Param("id")
    idNum, err := strconv.Atoi(id)
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
-   var serviceBuffer types.UserRoleInstance
-   err = services.GetUserRoleInstanceById(db, idNum, &serviceBuffer)
+   serviceBuffer, err := context.ServiceAction(&contextProviders.GetByIdArgs[types.UserRoleInstance]{ Id: idNum })
    if err != nil {
-      ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
       return
    }
    
-   returnBuffer := dtos.UserRoleInstanceToUserRoleInstanceDTO(db, &serviceBuffer, []string{})
-   ctx.IndentedJSON(http.StatusOK, returnBuffer)
+   if serviceBuffer == nil {
+      context.RequestContext.IndentedJSON(http.StatusOK, nil)
+      return
+   }
+   
+   returnBuffer, err := context.DTOConverter(serviceBuffer)
+   
+   if err != nil {
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+      return
+   }
+   
+   if (returnBuffer == nil) {
+      context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type UserRoleInstance"))
+      return
+   }
+   context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
 }
 
-func SaveUserRoleInstance(ctx *gin.Context, db *gorm.DB) {
+func SaveUserRoleInstance(context *contextProviders.GeneratedControllerContext[types.UserRoleInstance, dtos.UserRoleInstanceDTO, contextProviders.SaveArgs[types.UserRoleInstance], contextProviders.SaveReturn[types.UserRoleInstance]]) {
+   if context == nil {
+      panic("No controller context provided")
+   }
+   
    //Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line
    var DTOBuffer *dtos.UserRoleInstanceDTO = &dtos.UserRoleInstanceDTO{}
    var batchDTOBuffer []*dtos.UserRoleInstanceDTO
@@ -78,34 +109,50 @@ func SaveUserRoleInstance(ctx *gin.Context, db *gorm.DB) {
    
    //If neither a single item nor a collection can be bound to JSON, fail early
    //ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts
-   if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
+   if err := context.RequestContext.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = []*types.UserRoleInstance{dtos.UserRoleInstanceDTOToUserRoleInstance(DTOBuffer)}
-      if err := services.SaveUserRoleInstance(db, serviceBuffer); err != nil {
-         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      serviceBuffer = []*types.UserRoleInstance{context.DTOFlattener(DTOBuffer)}
+      serviceReturn, err := context.ServiceAction(&contextProviders.SaveArgs[types.UserRoleInstance]{ Items: serviceBuffer })
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := dtos.UserRoleInstanceToUserRoleInstanceDTO(db, serviceBuffer[0], []string{})
+      returnBuffer, err := context.DTOConverter(serviceReturn[0])
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
       
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      if (returnBuffer == nil) {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type UserRoleInstance"))
+         return
+      }
+      
+      context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
       return
       
-   } else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
+   } else if err := context.RequestContext.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {
       
-      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.UserRoleInstanceDTO) *types.UserRoleInstance { return dtos.UserRoleInstanceDTOToUserRoleInstance(dto) })
-      if err := services.SaveUserRoleInstance(db, serviceBuffer); err != nil {
-         ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+      serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.UserRoleInstanceDTO) *types.UserRoleInstance { return context.DTOFlattener(dto) })
+      serviceReturn, err := context.ServiceAction(&contextProviders.SaveArgs[types.UserRoleInstance]{ Items: serviceBuffer })
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
          return
       }
       
-      returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.UserRoleInstance) *dtos.UserRoleInstanceDTO { return dtos.UserRoleInstanceToUserRoleInstanceDTO(db, dbReturn, []string{}) })
+      returnBuffer, err := utils.ErrorCompatibleMap(serviceReturn, func(dbReturn *types.UserRoleInstance) (*dtos.UserRoleInstanceDTO, error) { return context.DTOConverter(dbReturn) })
       
-      ctx.IndentedJSON(http.StatusOK, returnBuffer)
+      if err != nil {
+         context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+         return
+      }
+      
+      context.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)
       return
       
    } else {
-      ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+      context.RequestContext.IndentedJSON(http.StatusBadRequest, err.Error())
       return
    }
 }

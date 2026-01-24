@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetCharacterDomainCharacterStatInstances(db *gorm.DB, characterDomainCharacterStatInstances *[]types.CharacterDomainCharacterStatInstance, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("CharacterDomainCharacterStatInstance"), filters)
-   if err != nil {
-      return err
+func GetCharacterDomainCharacterStatInstances(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.CharacterDomainCharacterStatInstance]) (contextProviders.GetReturn[types.CharacterDomainCharacterStatInstance], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(characterDomainCharacterStatInstances)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.CharacterDomainCharacterStatInstance
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("CharacterDomainCharacterStatInstance"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetCharacterDomainCharacterStatInstanceById(db *gorm.DB, id int, characterDomainCharacterStatInstance *types.CharacterDomainCharacterStatInstance) error {
-   result := db.Table("CharacterDomainCharacterStatInstance").First(characterDomainCharacterStatInstance, id)
-   return result.Error
+func GetCharacterDomainCharacterStatInstanceById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.CharacterDomainCharacterStatInstance]) (contextProviders.GetByIdReturn[types.CharacterDomainCharacterStatInstance], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.CharacterDomainCharacterStatInstance
+   result := context.DatabaseContext.Table("CharacterDomainCharacterStatInstance").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveCharacterDomainCharacterStatInstance(db *gorm.DB, characterDomainCharacterStatInstances []*types.CharacterDomainCharacterStatInstance) error {
-   tx := db.Begin()
+func SaveCharacterDomainCharacterStatInstance(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.CharacterDomainCharacterStatInstance]) (contextProviders.SaveReturn[types.CharacterDomainCharacterStatInstance], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(characterDomainCharacterStatInstances).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveCharacterDomainCharacterStatInstance(db *gorm.DB, characterDomainCharac
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("CharacterDomainCharacterStatInstance").Save(characterDomainCharacterStatInstances).Error; err != nil {
+   if err := tx.Table("CharacterDomainCharacterStatInstance").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

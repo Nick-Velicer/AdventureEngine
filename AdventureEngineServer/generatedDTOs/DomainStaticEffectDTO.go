@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -44,26 +45,43 @@ type DomainStaticEffectDTO struct {
    Relationships DomainStaticEffectDTORelationships
 }
 
-func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *types.DomainStaticEffect, traversedTables []string) *DomainStaticEffectDTO {
+func DomainStaticEffectToDomainStaticEffectDTO(context *contextProviders.DTOContext, domainStaticEffect *types.DomainStaticEffect) (*DomainStaticEffectDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainStaticEffect == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainStaticEffect")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainStaticEffect")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainStaticEffect).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainStaticEffect).Name())) {
       fmt.Println("Hit circular catch case for table DomainStaticEffect")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainStaticEffect).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainStaticEffect).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedResourceOwner__User types.User
+   var includedResourceOwner__User *types.User
+   
+   var ResourceOwner__UserDTO *UserDTO
+   
+   var err error
    
    if (domainStaticEffect.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainStaticEffect.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainStaticEffect.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -81,12 +99,12 @@ func DomainStaticEffectToDomainStaticEffectDTO(db *gorm.DB, domainStaticEffect *
       },
       Relationships: DomainStaticEffectDTORelationships{
          ManyToOne: DomainStaticEffectDTOManyToOneRelationships {
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
+            ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: DomainStaticEffectDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticEffectDTO) *types.DomainStaticEffect {

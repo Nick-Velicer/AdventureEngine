@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetUsers(db *gorm.DB, users *[]types.User, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("User"), filters)
-   if err != nil {
-      return err
+func GetUsers(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.User]) (contextProviders.GetReturn[types.User], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(users)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.User
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("User"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetUserById(db *gorm.DB, id int, user *types.User) error {
-   result := db.Table("User").First(user, id)
-   return result.Error
+func GetUserById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.User]) (contextProviders.GetByIdReturn[types.User], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.User
+   result := context.DatabaseContext.Table("User").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveUser(db *gorm.DB, users []*types.User) error {
-   tx := db.Begin()
+func SaveUser(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.User]) (contextProviders.SaveReturn[types.User], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(users).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,18 +76,16 @@ func SaveUser(db *gorm.DB, users []*types.User) error {
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("User").Save(users).Error; err != nil {
+   if err := tx.Table("User").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
-}
-
-func GetUserRoleInstancesByUserId(db *gorm.DB, id int, UserRoleInstances *[]types.UserRoleInstance) error {
-   result := db.Table("UserRoleInstance").Where(map[string]interface{}{"ResourceOwner__User": id}).Find(UserRoleInstances)
-   return result.Error
+   return args.Items, nil
 }

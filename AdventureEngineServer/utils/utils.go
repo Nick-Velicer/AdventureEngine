@@ -11,12 +11,22 @@ import (
 	"gorm.io/gorm"
 )
 
-func Map[T, V any](ts []T, fn func(T) V) []V {
+func Map[T any, V any](ts []T, fn func(T) V) []V {
 	result := make([]V, len(ts))
 	for i, t := range ts {
 		result[i] = fn(t)
 	}
 	return result
+}
+
+func ErrorCompatibleMap[T any, V any](ts []T, fn func(T) (V, error)) ([]V, error) {
+	result := make([]V, len(ts))
+	var err error
+
+	for i, t := range ts {
+		result[i], err = fn(t)
+	}
+	return result, err
 }
 
 type FilterExpression struct {

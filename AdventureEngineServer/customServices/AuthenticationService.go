@@ -9,6 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 
+	"AdventureEngineServer/contextProviders"
 	types "AdventureEngineServer/generatedDatabaseTypes"
 	services "AdventureEngineServer/generatedServices"
 	utils "AdventureEngineServer/utils"
@@ -99,9 +100,16 @@ func Register(db *gorm.DB, user *types.User) (*string, error) {
 	//Make sure there is not an existing user with the given username
 	var foundUsers = []types.User{}
 
-	err := services.GetUsers(db, &foundUsers, &[]utils.FilterExpression{
-		{Field: "Username", Operator: "eq", FilterValue: *user.Password},
-	})
+	serviceContext := contextProviders.ServiceContext{
+		DatabaseContext: db,
+		CurrentUser:     nil,
+	}
+
+	serviceGetArgs := contextProviders.GetArgs[types.User]{
+		Filters: &[]utils.FilterExpression{{Field: "Username", Operator: "eq", FilterValue: *user.Username}},
+	}
+
+	foundUsers, err := services.GetUsers(&serviceContext, &serviceGetArgs)
 
 	if err != nil {
 		return nil, err
@@ -120,13 +128,17 @@ func Register(db *gorm.DB, user *types.User) (*string, error) {
 
 	user.Password = &hashedPassword
 
-	serviceBuffer := []*types.User{user}
+	serviceSaveArgs := contextProviders.SaveArgs[types.User]{
+		Items: []*types.User{user},
+	}
 
-	if err := services.SaveUser(db, serviceBuffer); err != nil {
+	savedUserArr, err := services.SaveUser(&serviceContext, &serviceSaveArgs)
+
+	if err != nil {
 		return nil, err
 	}
 
-	sessionToken, err := createToken(*user.Id)
+	sessionToken, err := createToken(*savedUserArr[0].Id)
 
 	if err != nil {
 		return nil, errors.New("Could not generate JWT session token for user " + *user.Username)
@@ -145,11 +157,20 @@ func Login(db *gorm.DB, user *types.User) (*string, error) {
 		return nil, errors.New("No password provided")
 	}
 
-	var foundUsers = []types.User{}
+	serviceContext := contextProviders.ServiceContext{
+		DatabaseContext: db,
+		CurrentUser:     nil,
+	}
 
-	services.GetUsers(db, &foundUsers, &[]utils.FilterExpression{
-		{Field: "Username", Operator: "eq", FilterValue: *user.Username},
-	})
+	serviceArgs := contextProviders.GetArgs[types.User]{
+		Filters: &[]utils.FilterExpression{{Field: "Username", Operator: "eq", FilterValue: *user.Username}},
+	}
+
+	foundUsers, err := services.GetUsers(&serviceContext, &serviceArgs)
+
+	if err != nil {
+		return nil, err
+	}
 
 	if len(foundUsers) > 1 {
 		return nil, errors.New("Somehow multiple users have the same username?!")
@@ -170,24 +191,35 @@ func Login(db *gorm.DB, user *types.User) (*string, error) {
 	return &sessionToken, nil
 }
 
-func GetActiveUser(db *gorm.DB, sessionToken string, user *types.User) error {
+func GetActiveUser(db *gorm.DB, sessionToken string) (*types.User, error) {
 
 	claim, err := getClaimsFromToken(sessionToken)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if claim == nil {
-		return errors.New("Could not determine claim for session token")
+		return nil, errors.New("Could not determine claim for session token")
 	}
 
 	//This id cast is terrible, but I just want to get a better working base before
 	//adding the actual interface in, since that caused some problems getting the claim
 	//to cast
-	if err = services.GetUserById(db, int(claim["userId"].(float64)), user); err != nil {
-		return err
+	serviceContext := contextProviders.ServiceContext{
+		DatabaseContext: db,
+		CurrentUser:     nil,
 	}
 
-	return nil
+	serviceArgs := contextProviders.GetByIdArgs[types.User]{
+		Id: int(claim["userId"].(float64)),
+	}
+
+	user, err := services.GetUserById(&serviceContext, &serviceArgs)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

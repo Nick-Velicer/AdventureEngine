@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -46,42 +47,69 @@ type UserRoleInstanceDTO struct {
    Relationships UserRoleInstanceDTORelationships
 }
 
-func UserRoleInstanceToUserRoleInstanceDTO(db *gorm.DB, userRoleInstance *types.UserRoleInstance, traversedTables []string) *UserRoleInstanceDTO {
+func UserRoleInstanceToUserRoleInstanceDTO(context *contextProviders.DTOContext, userRoleInstance *types.UserRoleInstance) (*UserRoleInstanceDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (userRoleInstance == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table UserRoleInstance")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table UserRoleInstance")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*userRoleInstance).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*userRoleInstance).Name())) {
       fmt.Println("Hit circular catch case for table UserRoleInstance")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*userRoleInstance).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*userRoleInstance).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedResourceOwner__User types.User
-   var includedRole__DomainAppRole types.DomainAppRole
-   var includedUser__User types.User
+   var includedResourceOwner__User *types.User
+   var includedRole__DomainAppRole *types.DomainAppRole
+   var includedUser__User *types.User
+   
+   var ResourceOwner__UserDTO *UserDTO
+   var Role__DomainAppRoleDTO *DomainAppRoleDTO
+   var User__UserDTO *UserDTO
+   
+   var err error
    
    if (userRoleInstance.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*userRoleInstance.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](userRoleInstance.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (userRoleInstance.Role__DomainAppRole != nil) {
-      if err := services.GetDomainAppRoleById(db, int(*userRoleInstance.Role__DomainAppRole), &includedRole__DomainAppRole); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainAppRole:")
-         fmt.Println(err)
+      includedRole__DomainAppRole, err = services.GetDomainAppRoleById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainAppRole](userRoleInstance.Role__DomainAppRole))
+      if err != nil {
+         return nil, err
+      }
+      Role__DomainAppRoleDTO, err = DomainAppRoleToDomainAppRoleDTO(&childDTOContext, includedRole__DomainAppRole)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (userRoleInstance.User__User != nil) {
-      if err := services.GetUserById(db, int(*userRoleInstance.User__User), &includedUser__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedUser__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](userRoleInstance.User__User))
+      if err != nil {
+         return nil, err
+      }
+      User__UserDTO, err = UserToUserDTO(&childDTOContext, includedUser__User)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -99,14 +127,14 @@ func UserRoleInstanceToUserRoleInstanceDTO(db *gorm.DB, userRoleInstance *types.
       },
       Relationships: UserRoleInstanceDTORelationships{
          ManyToOne: UserRoleInstanceDTOManyToOneRelationships {
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
-            Role__DomainAppRole: DomainAppRoleToDomainAppRoleDTO(db, &includedRole__DomainAppRole, traversedTables),
-            User__User: UserToUserDTO(db, &includedUser__User, traversedTables),
+            ResourceOwner__User: ResourceOwner__UserDTO,
+            Role__DomainAppRole: Role__DomainAppRoleDTO,
+            User__User: User__UserDTO,
          },
          OneToMany: UserRoleInstanceDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func UserRoleInstanceDTOToUserRoleInstance(userRoleInstance *UserRoleInstanceDTO) *types.UserRoleInstance {

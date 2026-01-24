@@ -5,10 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"gorm.io/gorm"
 
+	contextProviders "AdventureEngineServer/contextProviders"
 	customServices "AdventureEngineServer/customServices"
 	dtos "AdventureEngineServer/generatedDTOs"
 	types "AdventureEngineServer/generatedDatabaseTypes"
@@ -17,30 +16,33 @@ import (
 //TODO: eventually have error middleware to translate from business logic errors
 //to HTTP errors, for right now not a huge deal since it's just these endpoints
 
-func Register(ctx *gin.Context, db *gorm.DB) {
+func Register(context *contextProviders.CustomControllerContext[types.User, dtos.UserDTO]) {
+	if context == nil {
+		panic("No controller context provided")
+	}
 
 	DTOBuffer := &dtos.UserDTO{}
 
-	if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+	if err := context.RequestContext.ShouldBindBodyWith(DTOBuffer, binding.JSON); err != nil {
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	user := dtos.UserDTOToUser(DTOBuffer)
+	user := context.DTOFlattener(DTOBuffer)
 
-	sessionToken, err := customServices.Register(db, user)
+	sessionToken, err := customServices.Register(context.DatabaseContext, user)
 
 	if err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	if sessionToken == nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, "Error generating session token")
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, "Error generating session token")
 		return
 	}
 
-	ctx.SetCookieData(&http.Cookie{
+	context.RequestContext.SetCookieData(&http.Cookie{
 		Name:     "AESession",
 		Value:    *sessionToken,
 		Path:     "/",
@@ -51,33 +53,36 @@ func Register(ctx *gin.Context, db *gorm.DB) {
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	ctx.IndentedJSON(http.StatusOK, nil)
+	context.RequestContext.IndentedJSON(http.StatusOK, nil)
 }
 
-func Login(ctx *gin.Context, db *gorm.DB) {
+func Login(context *contextProviders.CustomControllerContext[types.User, dtos.UserDTO]) {
+	if context == nil {
+		panic("No controller context provided")
+	}
 
 	DTOBuffer := &dtos.UserDTO{}
 
-	if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+	if err := context.RequestContext.ShouldBindBodyWith(DTOBuffer, binding.JSON); err != nil {
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	user := dtos.UserDTOToUser(DTOBuffer)
+	user := context.DTOFlattener(DTOBuffer)
 
-	sessionToken, err := customServices.Login(db, user)
+	sessionToken, err := customServices.Login(context.DatabaseContext, user)
 
 	if err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	if sessionToken == nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, "Error generating session token")
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, "Error generating session token")
 		return
 	}
 
-	ctx.SetCookieData(&http.Cookie{
+	context.RequestContext.SetCookieData(&http.Cookie{
 		Name:     "AESession",
 		Value:    *sessionToken,
 		Path:     "/",
@@ -88,31 +93,46 @@ func Login(ctx *gin.Context, db *gorm.DB) {
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	ctx.IndentedJSON(http.StatusOK, nil)
+	context.RequestContext.IndentedJSON(http.StatusOK, nil)
 }
 
-func GetActiveUser(ctx *gin.Context, db *gorm.DB) {
+func GetActiveUser(context *contextProviders.CustomControllerContext[types.User, dtos.UserDTO]) {
+	if context == nil {
+		panic("No controller context provided")
+	}
 
-	sessionToken, err := ctx.Cookie("AESession")
+	sessionToken, err := context.RequestContext.Cookie("AESession")
 
 	if err != nil || len(sessionToken) == 0 {
-		ctx.IndentedJSON(http.StatusInternalServerError, "Session token cookie not found")
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, "Session token cookie not found")
 		return
 	}
 
 	userBuffer := &types.User{}
 
-	if err := customServices.GetActiveUser(db, sessionToken, userBuffer); err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+	userBuffer, err = customServices.GetActiveUser(context.DatabaseContext, sessionToken)
+
+	if userBuffer == nil {
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("Could not retrieve a corresponding user for provided session token"))
 		return
 	}
 
-	userDTOBuffer := dtos.UserToUserDTO(db, userBuffer, []string{})
+	if err != nil {
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	userDTOBuffer, err := context.DTOConverter(userBuffer)
+
+	if err != nil {
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, err)
+		return
+	}
 
 	if userDTOBuffer == nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, errors.New("Failed to convert from User to User DTO"))
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("Failed to convert from User to User DTO"))
 		return
 	}
 
-	ctx.IndentedJSON(http.StatusOK, *userDTOBuffer)
+	context.RequestContext.IndentedJSON(http.StatusOK, *userDTOBuffer)
 }

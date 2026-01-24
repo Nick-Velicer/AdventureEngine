@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -45,26 +46,43 @@ type CampaignDTO struct {
    Relationships CampaignDTORelationships
 }
 
-func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTables []string) *CampaignDTO {
+func CampaignToCampaignDTO(context *contextProviders.DTOContext, campaign *types.Campaign) (*CampaignDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (campaign == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table Campaign")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table Campaign")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*campaign).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*campaign).Name())) {
       fmt.Println("Hit circular catch case for table Campaign")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*campaign).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*campaign).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedResourceOwner__User types.User
+   var includedResourceOwner__User *types.User
+   
+   var ResourceOwner__UserDTO *UserDTO
+   
+   var err error
    
    if (campaign.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*campaign.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](campaign.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -83,12 +101,12 @@ func CampaignToCampaignDTO(db *gorm.DB, campaign *types.Campaign, traversedTable
       },
       Relationships: CampaignDTORelationships{
          ManyToOne: CampaignDTOManyToOneRelationships {
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
+            ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: CampaignDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func CampaignDTOToCampaign(campaign *CampaignDTO) *types.Campaign {

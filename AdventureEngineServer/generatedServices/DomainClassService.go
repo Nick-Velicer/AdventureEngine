@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainClasss(db *gorm.DB, domainClasss *[]types.DomainClass, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainClass"), filters)
-   if err != nil {
-      return err
+func GetDomainClasss(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainClass]) (contextProviders.GetReturn[types.DomainClass], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainClasss)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainClass
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainClass"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainClassById(db *gorm.DB, id int, domainClass *types.DomainClass) error {
-   result := db.Table("DomainClass").First(domainClass, id)
-   return result.Error
+func GetDomainClassById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainClass]) (contextProviders.GetByIdReturn[types.DomainClass], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainClass
+   result := context.DatabaseContext.Table("DomainClass").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainClass(db *gorm.DB, domainClasss []*types.DomainClass) error {
-   tx := db.Begin()
+func SaveDomainClass(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainClass]) (contextProviders.SaveReturn[types.DomainClass], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainClasss).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,26 +76,16 @@ func SaveDomainClass(db *gorm.DB, domainClasss []*types.DomainClass) error {
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainClass").Save(domainClasss).Error; err != nil {
+   if err := tx.Table("DomainClass").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
-}
-
-func GetClassPrimaryAbilitysByDomainClassId(db *gorm.DB, id int, ClassPrimaryAbilitys *[]types.ClassPrimaryAbility) error {
-   result := db.Table("ClassPrimaryAbility").Where(map[string]interface{}{"Class__DomainClass": id}).Find(ClassPrimaryAbilitys)
-   return result.Error
-}
-func GetClassSavesByDomainClassId(db *gorm.DB, id int, ClassSaves *[]types.ClassSave) error {
-   result := db.Table("ClassSave").Where(map[string]interface{}{"Class__DomainClass": id}).Find(ClassSaves)
-   return result.Error
-}
-func GetDomainSubClasssByDomainClassId(db *gorm.DB, id int, DomainSubClasss *[]types.DomainSubClass) error {
-   result := db.Table("DomainSubClass").Where(map[string]interface{}{"Class__DomainClass": id}).Find(DomainSubClasss)
-   return result.Error
+   return args.Items, nil
 }

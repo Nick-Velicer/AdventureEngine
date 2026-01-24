@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainStaticEffects(db *gorm.DB, domainStaticEffects *[]types.DomainStaticEffect, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainStaticEffect"), filters)
-   if err != nil {
-      return err
+func GetDomainStaticEffects(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainStaticEffect]) (contextProviders.GetReturn[types.DomainStaticEffect], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainStaticEffects)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainStaticEffect
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainStaticEffect"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainStaticEffectById(db *gorm.DB, id int, domainStaticEffect *types.DomainStaticEffect) error {
-   result := db.Table("DomainStaticEffect").First(domainStaticEffect, id)
-   return result.Error
+func GetDomainStaticEffectById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainStaticEffect]) (contextProviders.GetByIdReturn[types.DomainStaticEffect], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainStaticEffect
+   result := context.DatabaseContext.Table("DomainStaticEffect").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainStaticEffect(db *gorm.DB, domainStaticEffects []*types.DomainStaticEffect) error {
-   tx := db.Begin()
+func SaveDomainStaticEffect(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainStaticEffect]) (contextProviders.SaveReturn[types.DomainStaticEffect], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainStaticEffects).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveDomainStaticEffect(db *gorm.DB, domainStaticEffects []*types.DomainStat
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainStaticEffect").Save(domainStaticEffects).Error; err != nil {
+   if err := tx.Table("DomainStaticEffect").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

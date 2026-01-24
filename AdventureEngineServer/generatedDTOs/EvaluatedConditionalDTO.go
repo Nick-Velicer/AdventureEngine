@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -49,50 +50,82 @@ type EvaluatedConditionalDTO struct {
    Relationships EvaluatedConditionalDTORelationships
 }
 
-func EvaluatedConditionalToEvaluatedConditionalDTO(db *gorm.DB, evaluatedConditional *types.EvaluatedConditional, traversedTables []string) *EvaluatedConditionalDTO {
+func EvaluatedConditionalToEvaluatedConditionalDTO(context *contextProviders.DTOContext, evaluatedConditional *types.EvaluatedConditional) (*EvaluatedConditionalDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (evaluatedConditional == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table EvaluatedConditional")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table EvaluatedConditional")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*evaluatedConditional).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*evaluatedConditional).Name())) {
       fmt.Println("Hit circular catch case for table EvaluatedConditional")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*evaluatedConditional).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*evaluatedConditional).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedBase__Quantifier types.Quantifier
-   var includedIsTrue__DomainCondition types.DomainCondition
-   var includedModifier__Quantifier types.Quantifier
-   var includedResourceOwner__User types.User
+   var includedBase__Quantifier *types.Quantifier
+   var includedIsTrue__DomainCondition *types.DomainCondition
+   var includedModifier__Quantifier *types.Quantifier
+   var includedResourceOwner__User *types.User
+   
+   var Base__QuantifierDTO *QuantifierDTO
+   var IsTrue__DomainConditionDTO *DomainConditionDTO
+   var Modifier__QuantifierDTO *QuantifierDTO
+   var ResourceOwner__UserDTO *UserDTO
+   
+   var err error
    
    if (evaluatedConditional.Base__Quantifier != nil) {
-      if err := services.GetQuantifierById(db, int(*evaluatedConditional.Base__Quantifier), &includedBase__Quantifier); err != nil {
-         fmt.Println("Error fetching many-to-one table Quantifier:")
-         fmt.Println(err)
+      includedBase__Quantifier, err = services.GetQuantifierById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Quantifier](evaluatedConditional.Base__Quantifier))
+      if err != nil {
+         return nil, err
+      }
+      Base__QuantifierDTO, err = QuantifierToQuantifierDTO(&childDTOContext, includedBase__Quantifier)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (evaluatedConditional.IsTrue__DomainCondition != nil) {
-      if err := services.GetDomainConditionById(db, int(*evaluatedConditional.IsTrue__DomainCondition), &includedIsTrue__DomainCondition); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainCondition:")
-         fmt.Println(err)
+      includedIsTrue__DomainCondition, err = services.GetDomainConditionById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCondition](evaluatedConditional.IsTrue__DomainCondition))
+      if err != nil {
+         return nil, err
+      }
+      IsTrue__DomainConditionDTO, err = DomainConditionToDomainConditionDTO(&childDTOContext, includedIsTrue__DomainCondition)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (evaluatedConditional.Modifier__Quantifier != nil) {
-      if err := services.GetQuantifierById(db, int(*evaluatedConditional.Modifier__Quantifier), &includedModifier__Quantifier); err != nil {
-         fmt.Println("Error fetching many-to-one table Quantifier:")
-         fmt.Println(err)
+      includedModifier__Quantifier, err = services.GetQuantifierById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Quantifier](evaluatedConditional.Modifier__Quantifier))
+      if err != nil {
+         return nil, err
+      }
+      Modifier__QuantifierDTO, err = QuantifierToQuantifierDTO(&childDTOContext, includedModifier__Quantifier)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (evaluatedConditional.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*evaluatedConditional.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](evaluatedConditional.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -112,15 +145,15 @@ func EvaluatedConditionalToEvaluatedConditionalDTO(db *gorm.DB, evaluatedConditi
       },
       Relationships: EvaluatedConditionalDTORelationships{
          ManyToOne: EvaluatedConditionalDTOManyToOneRelationships {
-            Base__Quantifier: QuantifierToQuantifierDTO(db, &includedBase__Quantifier, traversedTables),
-            IsTrue__DomainCondition: DomainConditionToDomainConditionDTO(db, &includedIsTrue__DomainCondition, traversedTables),
-            Modifier__Quantifier: QuantifierToQuantifierDTO(db, &includedModifier__Quantifier, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
+            Base__Quantifier: Base__QuantifierDTO,
+            IsTrue__DomainCondition: IsTrue__DomainConditionDTO,
+            Modifier__Quantifier: Modifier__QuantifierDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: EvaluatedConditionalDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func EvaluatedConditionalDTOToEvaluatedConditional(evaluatedConditional *EvaluatedConditionalDTO) *types.EvaluatedConditional {

@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainActions(db *gorm.DB, domainActions *[]types.DomainAction, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainAction"), filters)
-   if err != nil {
-      return err
+func GetDomainActions(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainAction]) (contextProviders.GetReturn[types.DomainAction], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainActions)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainAction
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainAction"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainActionById(db *gorm.DB, id int, domainAction *types.DomainAction) error {
-   result := db.Table("DomainAction").First(domainAction, id)
-   return result.Error
+func GetDomainActionById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainAction]) (contextProviders.GetByIdReturn[types.DomainAction], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainAction
+   result := context.DatabaseContext.Table("DomainAction").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainAction(db *gorm.DB, domainActions []*types.DomainAction) error {
-   tx := db.Begin()
+func SaveDomainAction(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainAction]) (contextProviders.SaveReturn[types.DomainAction], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainActions).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,18 +76,16 @@ func SaveDomainAction(db *gorm.DB, domainActions []*types.DomainAction) error {
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainAction").Save(domainActions).Error; err != nil {
+   if err := tx.Table("DomainAction").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
-}
-
-func GetQuantifiersByDomainActionId(db *gorm.DB, id int, Quantifiers *[]types.Quantifier) error {
-   result := db.Table("Quantifier").Where(map[string]interface{}{"Parent__DomainAction": id}).Find(Quantifiers)
-   return result.Error
+   return args.Items, nil
 }

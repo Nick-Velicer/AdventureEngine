@@ -5,31 +5,68 @@
 package generatedServices
 import (
    "errors"
-   "gorm.io/gorm"
    "reflect"
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    utils "AdventureEngineServer/utils"
 )
 
-func GetDomainDiceRollSubTypes(db *gorm.DB, domainDiceRollSubTypes *[]types.DomainDiceRollSubType, filters *[]utils.FilterExpression) error {
-   filteredContext, err := utils.FilterTableContext(db.Table("DomainDiceRollSubType"), filters)
-   if err != nil {
-      return err
+func GetDomainDiceRollSubTypes(context *contextProviders.ServiceContext, args *contextProviders.GetArgs[types.DomainDiceRollSubType]) (contextProviders.GetReturn[types.DomainDiceRollSubType], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
    }
-   result := filteredContext.Find(domainDiceRollSubTypes)
-   return result.Error
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnBuffer []types.DomainDiceRollSubType
+   
+   filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainDiceRollSubType"), args.Filters)
+   
+   if err != nil {
+      return nil, err
+   }
+   result := filteredContext.Find(returnBuffer)
+   
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnBuffer, nil
 }
 
-func GetDomainDiceRollSubTypeById(db *gorm.DB, id int, domainDiceRollSubType *types.DomainDiceRollSubType) error {
-   result := db.Table("DomainDiceRollSubType").First(domainDiceRollSubType, id)
-   return result.Error
+func GetDomainDiceRollSubTypeById(context *contextProviders.ServiceContext, args *contextProviders.GetByIdArgs[types.DomainDiceRollSubType]) (contextProviders.GetByIdReturn[types.DomainDiceRollSubType], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   var returnPtr *types.DomainDiceRollSubType
+   result := context.DatabaseContext.Table("DomainDiceRollSubType").First(returnPtr, args.Id)
+   if result.Error != nil {
+      return nil, result.Error
+   }
+   
+   return returnPtr, nil
 }
 
-func SaveDomainDiceRollSubType(db *gorm.DB, domainDiceRollSubTypes []*types.DomainDiceRollSubType) error {
-   tx := db.Begin()
+func SaveDomainDiceRollSubType(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainDiceRollSubType]) (contextProviders.SaveReturn[types.DomainDiceRollSubType], error) {
+   if context == nil {
+      return nil, errors.New("No service context provided")
+   }
+   
+   if args == nil {
+      return nil, errors.New("No service arguments provided")
+   }
+   
+   tx := context.DatabaseContext.Begin()
    
    if tx.Error != nil {
-      return errors.New("Could not initialize transaction to save " + reflect.TypeOf(domainDiceRollSubTypes).Name() + " entity")
+      return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(args.Items).Name() + " entity")
    }
    
    defer func() {
@@ -39,14 +76,16 @@ func SaveDomainDiceRollSubType(db *gorm.DB, domainDiceRollSubTypes []*types.Doma
    }()
    
    if err := tx.Error; err != nil {
-      return err
+      return nil, err
    }
    
-   if err := tx.Table("DomainDiceRollSubType").Save(domainDiceRollSubTypes).Error; err != nil {
+   if err := tx.Table("DomainDiceRollSubType").Save(args.Items).Error; err != nil {
       tx.Rollback()
-      return err
+      return nil, err
+   }
+   if tx.Commit().Error != nil {
+      return nil, tx.Commit().Error
    }
    
-   return tx.Commit().Error
+   return args.Items, nil
 }
-

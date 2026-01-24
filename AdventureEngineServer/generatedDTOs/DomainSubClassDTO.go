@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -45,34 +46,56 @@ type DomainSubClassDTO struct {
    Relationships DomainSubClassDTORelationships
 }
 
-func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.DomainSubClass, traversedTables []string) *DomainSubClassDTO {
+func DomainSubClassToDomainSubClassDTO(context *contextProviders.DTOContext, domainSubClass *types.DomainSubClass) (*DomainSubClassDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainSubClass == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainSubClass")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainSubClass")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainSubClass).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainSubClass).Name())) {
       fmt.Println("Hit circular catch case for table DomainSubClass")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainSubClass).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainSubClass).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedClass__DomainClass types.DomainClass
-   var includedResourceOwner__User types.User
+   var includedClass__DomainClass *types.DomainClass
+   var includedResourceOwner__User *types.User
+   
+   var Class__DomainClassDTO *DomainClassDTO
+   var ResourceOwner__UserDTO *UserDTO
+   
+   var err error
    
    if (domainSubClass.Class__DomainClass != nil) {
-      if err := services.GetDomainClassById(db, int(*domainSubClass.Class__DomainClass), &includedClass__DomainClass); err != nil {
-         fmt.Println("Error fetching many-to-one table DomainClass:")
-         fmt.Println(err)
+      includedClass__DomainClass, err = services.GetDomainClassById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainClass](domainSubClass.Class__DomainClass))
+      if err != nil {
+         return nil, err
+      }
+      Class__DomainClassDTO, err = DomainClassToDomainClassDTO(&childDTOContext, includedClass__DomainClass)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainSubClass.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainSubClass.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainSubClass.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -90,13 +113,13 @@ func DomainSubClassToDomainSubClassDTO(db *gorm.DB, domainSubClass *types.Domain
       },
       Relationships: DomainSubClassDTORelationships{
          ManyToOne: DomainSubClassDTOManyToOneRelationships {
-            Class__DomainClass: DomainClassToDomainClassDTO(db, &includedClass__DomainClass, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
+            Class__DomainClass: Class__DomainClassDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: DomainSubClassDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) *types.DomainSubClass {

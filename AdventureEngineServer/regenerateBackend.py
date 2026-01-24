@@ -207,7 +207,7 @@ def produceTestInsertStatements(tableName: str, typeMeta: dict):
 
 #Currently assuming full levels of relationship includes
 def produceDTOForType(tableName: str, typeMeta: dict):
-    dbArgName = 'db'
+    contextArgName = 'context'
     objectArgName = tableName[0].lower() + tableName[1:]
 
     def produceConvertToTableTypeMethod(tableName: str, typeMeta: dict):
@@ -236,44 +236,76 @@ def produceDTOForType(tableName: str, typeMeta: dict):
 
     def produceConvertToDTOMethod(tableName: str, typeMeta: dict):
         lines = [
-            'func ' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ' *gorm.DB, ' + objectArgName + ' *types.' + tableName + ', traversedTables []string) *' + tableName + 'DTO {',
+            'func ' + tableName + 'To' + tableName + 'DTO(' + contextArgName + ' *contextProviders.DTOContext, ' + objectArgName + ' *types.' + tableName + ') (*' + tableName + 'DTO, error) {',
             *indentLineBlock([
+                'if ' + contextArgName + ' == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("No DTO context provided")',
+                ]), 
+                '}',
                 '',
                 'if (' + objectArgName + ' == nil) {',
                 *indentLineBlock([
-                    'fmt.Println("Nil pointer passed to DTO conversion for table ' + tableName + '")',
-                    'return nil'
+                    'return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table ' + tableName + '")'
                 ]),
                 '}',
                 '',
-                'if (slices.Contains(traversedTables, reflect.TypeOf(*' + objectArgName + ').Name())) {',
+                'if (slices.Contains(' + contextArgName + '.TraversedTables, reflect.TypeOf(*' + objectArgName + ').Name())) {',
                 *indentLineBlock([
                     'fmt.Println("Hit circular catch case for table ' + tableName + '")',
-                    'return nil'
+                    'return nil, nil'
                 ]),
                 '}',
                 '',
-                'traversedTables = append(traversedTables, reflect.TypeOf(*' + objectArgName + ').Name())',
+                'childDTOContext := contextProviders.DTOContext{',
+                *indentLineBlock([
+                    'DatabaseContext: ' + contextArgName + '.DatabaseContext,',
+                    'TraversedTables: append(' + contextArgName + '.TraversedTables, reflect.TypeOf(*' + objectArgName + ').Name()),'
+                ]),
+                '}',
+                ''
+                'serviceContext := &contextProviders.ServiceContext{',
+                *indentLineBlock([
+                    'DatabaseContext: ' + contextArgName + '.DatabaseContext,',
+                    'CurrentUser: nil,'
+                ]),
+                '}',
                 '',
-                *['var included' + relationship + ' types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
+                *['var included' + relationship + ' *types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['manyToOne']],
                 *['var included' + relationship + 's []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] for relationship in typeMeta["relationships"]['oneToMany']],
+                '',
+                *['var ' + relationship + 'DTO *' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + "DTO" for relationship in typeMeta["relationships"]['manyToOne']],
+                *['var ' + relationship + 'DTOs []*' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + "DTO" for relationship in typeMeta["relationships"]['oneToMany']],
+                '',
+                'var err error',
                 '',
                 *[
                     #Not technically using the indentLineBlock convention, but python doesn't like the extra inner looping/unpacking so this is relatively a reasonable tradeoff
                     'if (' + objectArgName + '.' + relationship + ' != nil) {\n' +
-                    '      if err := services.Get' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'ById(' + dbArgName + ', int(*' + objectArgName + '.' + relationship + '), &included' + relationship + '); err != nil {\n'  +
-                    '         fmt.Println("Error fetching many-to-one table ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + ':")\n' + 
-                    '         fmt.Println(err)\n' + 
+                    '      included' + relationship + ', err = services.Get' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'ById(serviceContext, contextProviders.ProduceGetByIdArgs[types.' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + '](' + objectArgName + '.' + relationship + '))\n'  +
+                    '      if err != nil {\n'  +
+                    '         return nil, err\n' + 
+                    '      }\n' +
+                    '      ' + relationship + 'DTO, err = ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(&childDTOContext, included' + relationship + ')\n'  +
+                    '      if err != nil {\n'  +
+                    '         return nil, err\n' + 
                     '      }\n' +
                     '   }\n'
                     for relationship in typeMeta["relationships"]['manyToOne']
                 ],
                 *[
-                    'if (slices.Contains(traversedTables, reflect.TypeOf(included' + relationship + 's).Elem().Name())) {\n' +
+                    'if (slices.Contains(' + contextArgName + '.TraversedTables, reflect.TypeOf(included' + relationship + 's).Elem().Name())) {\n' +
                     '      included' + relationship + 's = []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '{}\n' +
                     '      fmt.Println("Hit circular catch case for table ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '")\n' +
                     '   } else {\n' +
-                    '      services.Get' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'sBy' + tableName + 'Id(' + dbArgName + ', int(*' + tableName[0].lower() + tableName[1:] + '.Id),' + ' &included' + relationship + 's)\n'  +
+                    '      included' + relationship + 's, err = services.Get' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 's(serviceContext, contextProviders.ProduceGetArgs[types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ']("' + relationship + '", ' + tableName[0].lower() + tableName[1:] + '.Id))\n'  +
+                    '      if err != nil {\n'  +
+                    '         return nil, err\n' + 
+                    '      }\n' +
+                    '      ' + relationship + 'DTOs, err = utils.ErrorCompatibleMap(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') (*' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO, error) { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(&childDTOContext, &relationshipElement) })\n'  +
+                    '      if err != nil {\n'  +
+                    '         return nil, err\n' + 
+                    '      }\n' +
                     '   }\n'
                     for relationship in typeMeta["relationships"]['oneToMany']
                 ],
@@ -287,15 +319,15 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                     'Relationships: ' + tableName + 'DTORelationships{',
                     *indentLineBlock([
                         'ManyToOne: ' + tableName + 'DTOManyToOneRelationships {',
-                        *indentLineBlock([relationship + ': ' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['manyToOne'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &included' + relationship + ', traversedTables),' for relationship in typeMeta["relationships"]['manyToOne']]),
+                        *indentLineBlock([relationship + ': ' + relationship + 'DTO,' for relationship in typeMeta["relationships"]['manyToOne']]),
                         '},',
                         'OneToMany: ' + tableName + 'DTOOneToManyRelationships {',
-                        *indentLineBlock([relationship + ': utils.Map(included' + relationship + 's, func(relationshipElement types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ') *' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO { return ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'To' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 'DTO(' + dbArgName + ', &relationshipElement, traversedTables) }),' for relationship in typeMeta["relationships"]['oneToMany']]),
+                        *indentLineBlock([relationship + ': ' + relationship + 'DTOs,' for relationship in typeMeta["relationships"]['oneToMany']]),
                         '},',
                     ]),
                     '},',
                 ]),
-                '}',
+                '}, nil',
             ]),
             '}'
         ]
@@ -309,10 +341,11 @@ def produceDTOForType(tableName: str, typeMeta: dict):
         '',
         'import (',
         *indentLineBlock([
+            'contextProviders "AdventureEngineServer/contextProviders"',
             'types "AdventureEngineServer/generatedDatabaseTypes"',
             'utils "AdventureEngineServer/utils"' if len(typeMeta["relationships"]["oneToMany"]) > 0 else '',
             'services "AdventureEngineServer/generatedServices"' if len(typeMeta["relationships"]["manyToOne"]) > 0 or len(typeMeta["relationships"]["oneToMany"]) > 0 else '',
-  	        '"gorm.io/gorm"',
+            '"errors"',
             '"fmt"',
             '"reflect"',
             '"slices"',
@@ -358,18 +391,30 @@ def produceDTOForType(tableName: str, typeMeta: dict):
 
 def produceServiceFileForType(tableName: str, typeMeta: dict):
 
-    dbArgName = 'db'
-    objectArgName = tableName[0].lower() + tableName[1:]
+    contextArgName = 'context'
+    argsArgName = 'args'
 
     def produceServiceSaveMethod(tableName: str):
         lines = [
-            'func Save' + tableName + '(' + dbArgName + ' *gorm.DB, ' + objectArgName + 's []*types.' + tableName + ') error {',
+            'func Save' + tableName + '(' + contextArgName + ' *contextProviders.ServiceContext, ' + argsArgName + ' *contextProviders.SaveArgs[types.' + tableName + ']' + ') (contextProviders.SaveReturn[types.' + tableName + '], error) {',
             *indentLineBlock([
-                'tx := ' + dbArgName + '.Begin()',
+                'if ' + contextArgName + ' == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("No service context provided")',
+                ]), 
+                '}',
+                '',
+                'if ' + argsArgName + ' == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("No service arguments provided")',
+                ]), 
+                '}',
+                '',
+                'tx := ' + contextArgName + '.DatabaseContext.Begin()',
                 '',
                 'if tx.Error != nil {',
                 *indentLineBlock([
-                    'return errors.New("Could not initialize transaction to save " + reflect.TypeOf(' + objectArgName + 's).Name() + " entity")',
+                    'return nil, errors.New("Could not initialize transaction to save " + reflect.TypeOf(' + argsArgName + '.Items).Name() + " entity")',
                 ]), 
                 '}',
                 '',
@@ -385,18 +430,24 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                 '',
                 'if err := tx.Error; err != nil {',
                 *indentLineBlock([
-                    'return err',
+                    'return nil, err',
                 ]),
                 '}',
                 '',
-                'if err := tx.Table("' + tableName + '").Save(' + objectArgName + 's).Error; err != nil {',
+                'if err := tx.Table("' + tableName + '").Save(' + argsArgName + '.Items).Error; err != nil {',
                 *indentLineBlock([
                     'tx.Rollback()',
-                    'return err',
+                    'return nil, err',
+                ]),
+                '}',
+                ''
+                'if tx.Commit().Error != nil {',
+                *indentLineBlock([
+                    'return nil, tx.Commit().Error',
                 ]),
                 '}',
                 '',
-                'return tx.Commit().Error',
+                'return ' + argsArgName + '.Items, nil',
             ]),
             '}'
         ]
@@ -407,16 +458,38 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
     def produceServiceGetAllMethod(tableName: str):
     
         lines = [
-            'func Get' + tableName + 's(' + dbArgName + ' *gorm.DB, ' + objectArgName  + 's *[]types.' + tableName + ', filters *[]utils.FilterExpression) error {',
+            'func Get' + tableName + 's(' + contextArgName + ' *contextProviders.ServiceContext, ' + argsArgName + ' *contextProviders.GetArgs[types.' + tableName + ']' + ') (contextProviders.GetReturn[types.' + tableName + '], error) {',
             *indentLineBlock([
-                'filteredContext, err := utils.FilterTableContext(db.Table("' + tableName + '"), filters)',
+                'if ' + contextArgName + ' == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("No service context provided")',
+                ]), 
+                '}',
+                '',
+                'if ' + argsArgName + ' == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("No service arguments provided")',
+                ]), 
+                '}',
+                '',
+                'var returnBuffer []types.' + tableName,
+                '',
+                'filteredContext, err := utils.FilterTableContext(' + contextArgName + '.DatabaseContext.Table("' + tableName + '"), ' + argsArgName + '.Filters)',
+                '',
                 'if err != nil {',
                 *indentLineBlock([
-                    'return err',
+                    'return nil, err',
                 ]),
                 '}',
-	            'result := filteredContext.Find(' + objectArgName + 's)',
-                'return result.Error',  
+	            'result := filteredContext.Find(returnBuffer)',
+                '',
+                'if result.Error != nil {',
+                *indentLineBlock([
+                    'return nil, result.Error',
+                ]),
+                '}',
+                '',
+                'return returnBuffer, nil',  
             ]),
             '}'
         ]
@@ -427,32 +500,29 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
     def produceServiceGetByIdMethod(tableName: str):
     
         lines = [
-            'func Get' + tableName + 'ById(' + dbArgName + ' *gorm.DB, id int, ' + objectArgName  + ' *types.' + tableName + ') error {',
+            'func Get' + tableName + 'ById(' + contextArgName + ' *contextProviders.ServiceContext, ' + argsArgName + ' *contextProviders.GetByIdArgs[types.' + tableName + ']' + ') (contextProviders.GetByIdReturn[types.' + tableName + '], error) {',
             *indentLineBlock([
-	            'result := db.Table("' + tableName + '").First(' + objectArgName + ', id)',
-                'return result.Error',  
-            ]),
-            '}'
-        ]
-
-        return lines
-    
-    #This produces getters technically for the opposing table, but this was the most convenient way to do this
-    #while being able to determine the reference from the parent type (they will all be imported from the service package anyways)
-    def produceServiceGetByFKMethod(tableName: str, relationshipTable: str):
-
-        filteredForeignKeys = [key for key in list(typeMetas[relationshipTable]['relationships']['manyToOne'].keys()) if typeMetas[relationshipTable]['relationships']['manyToOne'][key]['correspondingTable'] == tableName]
-
-        if len(filteredForeignKeys) == 0:
-            return []
-
-        foreignKeyName = filteredForeignKeys[0]
-    
-        lines = [
-            'func Get' + relationshipTable + 'sBy' + tableName + 'Id(' + dbArgName + ' *gorm.DB, id int, ' + relationshipTable  + 's *[]types.' + relationshipTable + ') error {',
-            *indentLineBlock([
-	            'result := db.Table("' + relationshipTable + '").Where(map[string]interface{}{"' + foreignKeyName + '": id}).Find(' + relationshipTable + 's)',
-                'return result.Error',  
+                'if ' + contextArgName + ' == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("No service context provided")',
+                ]), 
+                '}',
+                '',
+                'if ' + argsArgName + ' == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("No service arguments provided")',
+                ]), 
+                '}',
+                '',
+                'var returnPtr *types.' + tableName,
+	            'result := ' + contextArgName + '.DatabaseContext.Table("' + tableName + '").First(returnPtr, ' + argsArgName + '.Id)',
+                'if result.Error != nil {',
+                *indentLineBlock([
+                    'return nil, result.Error',
+                ]),
+                '}',
+                '',
+                'return returnPtr, nil',    
             ]),
             '}'
         ]
@@ -467,8 +537,8 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
         'import (',
         *indentLineBlock([
             '"errors"',
-  	        '"gorm.io/gorm"',
             '"reflect"',
+            'contextProviders "AdventureEngineServer/contextProviders"',
             'types "AdventureEngineServer/generatedDatabaseTypes"',
             'utils "AdventureEngineServer/utils"'
         ]),
@@ -479,9 +549,6 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
         *produceServiceGetByIdMethod(tableName),
         '',
         *produceServiceSaveMethod(tableName),
-        '',
-        #some code golf here, Python does not take kindly to nested unpacking so we need an extra iteration wrapper
-        *[item for sublist in [produceServiceGetByFKMethod(tableName, typeMeta['relationships']['oneToMany'][relationship]['correspondingTable']) for relationship in typeMeta['relationships']['oneToMany']] for item in sublist],
     ]
 
     return lines
@@ -494,13 +561,18 @@ def produceControllerFileForType(tableName: str):
 
     def produceControllerGetMethod(tableName: str):
         
-        contextArgName = 'ctx'
+        contextArgName = 'context'
         objectArgName = tableName[0].lower() + tableName[1:]
 
         lines = [
-            'func Get' + tableName + 's(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
+            'func Get' + tableName + 's(' + contextArgName + ' *contextProviders.GeneratedControllerContext[types.' + tableName + ', dtos.' + tableName + 'DTO, contextProviders.GetArgs[types.' + tableName + '], contextProviders.GetReturn[types.' + tableName + ']]) {',
             *indentLineBlock([
-                'queryParams := ' + contextArgName + '.Request.URL.Query()',
+                'if ' + contextArgName + ' == nil {',
+                *indentLineBlock([
+                    'panic("No controller context provided")',
+                ]), 
+                '}',
+                'queryParams := ' + contextArgName + '.RequestContext.Request.URL.Query()',
                 '',
                 '//Since we can have multiple filters, that sometimes doesn\'t play nicely with',
                 '//Gin\'s parameter pulling, so they need to be isolated manually.',
@@ -523,11 +595,10 @@ def produceControllerFileForType(tableName: str):
                 '',
                 'parsedFilters := utils.ParseFilterURLExpression(filterParams)',
                 '',
-                'var serviceBuffer []types.' + tableName,
-                'err := services.Get' + tableName + 's(' + dbArgName + ', &serviceBuffer, &parsedFilters)',
+                'serviceBuffer, err := ' + contextArgName + '.ServiceAction(&contextProviders.GetArgs[types.' + tableName + ']{ Filters: &parsedFilters })',
                 'if err != nil {',
                 *indentLineBlock([
-                    'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                    '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())',
                     'return'
                 ]),
                 '}',
@@ -535,15 +606,25 @@ def produceControllerFileForType(tableName: str):
                 'var returnBuffer []dtos.' + tableName + 'DTO',
                 'for _, dbTypeInstance := range serviceBuffer {',
                 *indentLineBlock([
-                    'pointerToDTO := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &dbTypeInstance, []string{})',
-                    'if (pointerToDTO != nil) {',
+                    'pointerToDTO, err := ' + contextArgName + '.DTOConverter(&dbTypeInstance)',
+                    'if (err != nil) {',
                     *indentLineBlock([
-                        'returnBuffer = append(returnBuffer, *pointerToDTO)'
+                        '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                        'return'
                     ]),
-                    '}'
+                    '}',
+                    '',
+                    'if (pointerToDTO == nil) {',
+                    *indentLineBlock([
+                        '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type ' + tableName + '"))',
+                        'return'
+                    ]),
+                    '}',
+                    '',
+                    'returnBuffer = append(returnBuffer, *pointerToDTO)'
                 ]),
                 '}',
-                'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
+                '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)'
 	        ]),
             '}'
         ]
@@ -551,32 +632,58 @@ def produceControllerFileForType(tableName: str):
         return lines
     
     def produceControllerGetByIdMethod(tableName: str):
-        contextArgName = 'ctx'
+        contextArgName = 'context'
         objectArgName = tableName[0].lower() + tableName[1:]
 
         lines = [
-            'func Get' + tableName + 'ById(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
+            'func Get' + tableName + 'ById(' + contextArgName + ' *contextProviders.GeneratedControllerContext[types.' + tableName + ', dtos.' + tableName + 'DTO, contextProviders.GetByIdArgs[types.' + tableName + '], contextProviders.GetByIdReturn[types.' + tableName + ']]) {',
             *indentLineBlock([
-                'id := ctx.Param("id")',
+                'if ' + contextArgName + ' == nil {',
+                *indentLineBlock([
+                    'panic("No controller context provided")',
+                ]), 
+                '}',
+                '',
+                'id := ' + contextArgName + '.RequestContext.Param("id")',
                 'idNum, err := strconv.Atoi(id)',
                 'if err != nil {',
                 *indentLineBlock([
-                    contextArgName + '.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                    contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())',
                     'return'
                 ]),
                 
                 '}',
-                'var serviceBuffer types.' + tableName,
-                'err = services.Get' + tableName + 'ById(' + dbArgName + ', idNum, &serviceBuffer)',
+                'serviceBuffer, err := ' + contextArgName + '.ServiceAction(&contextProviders.GetByIdArgs[types.' + tableName + ']{ Id: idNum })',
                 'if err != nil {',
                 *indentLineBlock([
-                    contextArgName + '.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                    contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())',
                     'return'
                 ]),
                 '}',
                 '',
-                'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', &serviceBuffer, []string{})',
-                'ctx.IndentedJSON(http.StatusOK, returnBuffer)'
+                'if serviceBuffer == nil {',
+                *indentLineBlock([
+                    contextArgName + '.RequestContext.IndentedJSON(http.StatusOK, nil)',
+                    'return'
+                ]),
+                '}',
+                '',
+                'returnBuffer, err := ' + contextArgName + '.DTOConverter(serviceBuffer)',
+                '',
+                'if err != nil {',
+                *indentLineBlock([
+                    contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                    'return'
+                ]),
+                '}',
+                '',
+                'if (returnBuffer == nil) {',
+                    *indentLineBlock([
+                        '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type ' + tableName + '"))',
+                        'return'
+                    ]),
+                '}',
+                '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)'
 	        ]),
             '}'
         ]
@@ -584,12 +691,18 @@ def produceControllerFileForType(tableName: str):
         return lines
 
     def produceControllerSaveMethod(tableName: str):
-        contextArgName = 'ctx'
+        contextArgName = 'context'
         objectArgName = tableName[0].lower() + tableName[1:]
 
         lines = [
-            'func Save' + tableName + '(' + contextArgName + ' *gin.Context, ' + dbArgName + ' *gorm.DB) {',
+            'func Save' + tableName + '(' + contextArgName + ' *contextProviders.GeneratedControllerContext[types.' + tableName + ', dtos.' + tableName + 'DTO, contextProviders.SaveArgs[types.' + tableName + '], contextProviders.SaveReturn[types.' + tableName + ']]) {',
             *indentLineBlock([
+                'if ' + contextArgName + ' == nil {',
+                *indentLineBlock([
+                    'panic("No controller context provided")',
+                ]), 
+                '}',
+                '',
                 '//Weirdness with unmarshalling, cannot unmarshal into a nil pointer, there must be some pre-initialization somewhere along the line',
                 'var DTOBuffer *dtos.' + tableName + 'DTO = &dtos.' + tableName + 'DTO{}',
                 'var batchDTOBuffer []*dtos.' + tableName + 'DTO',
@@ -597,43 +710,66 @@ def produceControllerFileForType(tableName: str):
                 '',
                 '//If neither a single item nor a collection can be bound to JSON, fail early',
                 '//ShouldBindBodyWith is used instead of ShouldBindJSON since the latter prevents multiple bind attempts',
-                'if err := ctx.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {',
+                'if err := ' + contextArgName + '.RequestContext.ShouldBindBodyWith(DTOBuffer, binding.JSON); err == nil {',
                 *indentLineBlock([
                     '',
-                    'serviceBuffer = []*types.' + tableName + '{dtos.' + tableName + 'DTOTo' + tableName + '(DTOBuffer)}',
-                    'if err := services.Save' + tableName + '(' + dbArgName + ', serviceBuffer); err != nil {',
+                    'serviceBuffer = []*types.' + tableName + '{' + contextArgName + '.DTOFlattener(DTOBuffer)}',
+
+                    'serviceReturn, err := ' + contextArgName + '.ServiceAction(&contextProviders.SaveArgs[types.' + tableName + ']{ Items: serviceBuffer })',
+                    'if err != nil {',
                     *indentLineBlock([
-                        'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                        '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())',
                         'return'
                     ]),
                     '}',
                     '',
-                    'returnBuffer := dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', serviceBuffer[0], []string{})',
+                    'returnBuffer, err := ' + contextArgName + '.DTOConverter(serviceReturn[0])',
+                    'if err != nil {',
+                    *indentLineBlock([
+                        '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                        'return'
+                    ]),
+                    '}',
                     '',
-                    'ctx.IndentedJSON(http.StatusOK, returnBuffer)',
+                    'if (returnBuffer == nil) {',
+                    *indentLineBlock([
+                        '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("DTO conversion resulted in nil for object of type ' + tableName + '"))',
+                        'return'
+                    ]),
+                    '}',
+                    '',
+                    '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)',
                     'return',
                     ''
                 ]),
-                '} else if err := ctx.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {',
+                '} else if err := ' + contextArgName + '.RequestContext.ShouldBindBodyWith(&batchDTOBuffer, binding.JSON); err == nil {',
                 *indentLineBlock([
                     '',
-                    'serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.' + tableName + 'DTO) *types.' + tableName + ' { return dtos.' + tableName + 'DTOTo' + tableName + '(dto) })',
-                    'if err := services.Save' + tableName + '(' + dbArgName + ', serviceBuffer); err != nil {',
+                    'serviceBuffer = utils.Map(batchDTOBuffer, func(dto *dtos.' + tableName + 'DTO) *types.' + tableName + ' { return ' + contextArgName + '.DTOFlattener(dto) })',
+                    'serviceReturn, err := ' + contextArgName + '.ServiceAction(&contextProviders.SaveArgs[types.' + tableName + ']{ Items: serviceBuffer })',
+                    'if err != nil {',
                     *indentLineBlock([
-                        'ctx.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                        '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())',
                         'return'
                     ]),
                     '}',
                     '',
-                    'returnBuffer := utils.Map(serviceBuffer, func(dbReturn *types.' + tableName + ') *dtos.' + tableName + 'DTO { return dtos.' + tableName + 'To' + tableName + 'DTO(' + dbArgName + ', dbReturn, []string{}) })',
+                    'returnBuffer, err := utils.ErrorCompatibleMap(serviceReturn, func(dbReturn *types.' + tableName + ') (*dtos.' + tableName + 'DTO, error) { return ' + contextArgName + '.DTOConverter(dbReturn) })',
                     '',
-                    'ctx.IndentedJSON(http.StatusOK, returnBuffer)',
+                    'if err != nil {',
+                    *indentLineBlock([
+                        '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())',
+                        'return'
+                    ]),
+                    '}',
+                    '',
+                    '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusOK, returnBuffer)',
                     'return',
                     ''
                 ]),
                 '} else {',
                 *indentLineBlock([
-                    'ctx.IndentedJSON(http.StatusBadRequest, err.Error())',
+                    '' + contextArgName + '.RequestContext.IndentedJSON(http.StatusBadRequest, err.Error())',
                     'return'
                 ]),
                 '}',
@@ -649,14 +785,13 @@ def produceControllerFileForType(tableName: str):
         'package generatedControllers',
         'import (',
         *indentLineBlock([
+            '"errors"',
             '"fmt"',
-  	        '"github.com/gin-gonic/gin"',
             '"github.com/gin-gonic/gin/binding"',
-  	        '"gorm.io/gorm"',
             '"net/http"',
             '"regexp"',
             '"strconv"',
-            'services "AdventureEngineServer/generatedServices"',
+            'contextProviders "AdventureEngineServer/contextProviders"',
             'types "AdventureEngineServer/generatedDatabaseTypes"',
             'dtos "AdventureEngineServer/generatedDTOs"',
             'utils "AdventureEngineServer/utils"',
@@ -684,9 +819,9 @@ def generateEndpointManager(tableNames: list[str]):
 
     def produceEndpointsForTable(tableName: str):
         lines = [
-            'router.GET("/get' + tableName + 's", ProduceDBContextInjectedEndpoint(' + ginContextName + ', ' + dbContextName + ', controllers.Get' + tableName + 's))',
-            'router.GET("/get' + tableName + '/:id", ProduceDBContextInjectedEndpoint(' + ginContextName + ', ' + dbContextName + ', controllers.Get' + tableName + 'ById))',
-            'router.POST("/save' + tableName + '", ProduceDBContextInjectedEndpoint(' + ginContextName + ', ' + dbContextName + ', controllers.Save' + tableName + '))',
+            'router.GET("/get' + tableName + 's", contextProviders.ProduceContextInjectedGetController(' + dbContextName + ', services.Get' + tableName + 's, dtos.' + tableName + 'To' + tableName + 'DTO, dtos.' + tableName + 'DTOTo' + tableName + ', controllers.Get' + tableName + 's))',
+            'router.GET("/get' + tableName + '/:id", contextProviders.ProduceContextInjectedGetByIdController(' + dbContextName + ', services.Get' + tableName + 'ById, dtos.' + tableName + 'To' + tableName + 'DTO, dtos.' + tableName + 'DTOTo' + tableName + ', controllers.Get' + tableName + 'ById))',
+            'router.POST("/save' + tableName + '", contextProviders.ProduceContextInjectedSaveController(' + dbContextName + ', services.Save' + tableName + ', dtos.' + tableName + 'To' + tableName + 'DTO, dtos.' + tableName + 'DTOTo' + tableName + ', controllers.Save' + tableName + '))',
         ]
 
         return lines
@@ -698,18 +833,13 @@ def generateEndpointManager(tableNames: list[str]):
         'import (',
         *indentLineBlock([
   	        '"github.com/gin-gonic/gin"',
-              '"gorm.io/gorm"',
-            'controllers "AdventureEngineServer/generatedControllers"'
+            '"gorm.io/gorm"',
+            'controllers "AdventureEngineServer/generatedControllers"',
+            'contextProviders "AdventureEngineServer/contextProviders"',
+            'dtos "AdventureEngineServer/generatedDTOs"',
+            'services "AdventureEngineServer/generatedServices"'
         ]),
         ')',
-        '',
-        'func ProduceDBContextInjectedEndpoint(' + ginContextName + ' *gin.Engine, ' + dbContextName + ' *gorm.DB, endpointHandler func(*gin.Context, *gorm.DB)) gin.HandlerFunc {',
-        *indentLineBlock([
-            'return func(ctx *gin.Context) {',
-		    '   endpointHandler(ctx, ' + dbContextName + ')',
-	        '}',
-        ]),
-        '}',
         '',
         'func ApplyGeneratedEndpoints(' + ginContextName + ' *gin.Engine, ' + dbContextName + ' *gorm.DB) {',
         #A little bit of code golf, as a treat (just unpacking the list of lists of generated lines since Python doesn't like embedding * syntax in here)

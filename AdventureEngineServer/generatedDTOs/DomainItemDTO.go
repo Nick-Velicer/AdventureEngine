@@ -5,10 +5,11 @@
 package generatedDTOs
 
 import (
+   contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
    
    services "AdventureEngineServer/generatedServices"
-   "gorm.io/gorm"
+   "errors"
    "fmt"
    "reflect"
    "slices"
@@ -47,42 +48,69 @@ type DomainItemDTO struct {
    Relationships DomainItemDTORelationships
 }
 
-func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traversedTables []string) *DomainItemDTO {
+func DomainItemToDomainItemDTO(context *contextProviders.DTOContext, domainItem *types.DomainItem) (*DomainItemDTO, error) {
+   if context == nil {
+      return nil, errors.New("No DTO context provided")
+   }
    
    if (domainItem == nil) {
-      fmt.Println("Nil pointer passed to DTO conversion for table DomainItem")
-      return nil
+      return nil, errors.New("Cannot convert nil pointer passed to DTO conversion for table DomainItem")
    }
    
-   if (slices.Contains(traversedTables, reflect.TypeOf(*domainItem).Name())) {
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(*domainItem).Name())) {
       fmt.Println("Hit circular catch case for table DomainItem")
-      return nil
+      return nil, nil
    }
    
-   traversedTables = append(traversedTables, reflect.TypeOf(*domainItem).Name())
+   childDTOContext := contextProviders.DTOContext{
+      DatabaseContext: context.DatabaseContext,
+      TraversedTables: append(context.TraversedTables, reflect.TypeOf(*domainItem).Name()),
+   }
+   serviceContext := &contextProviders.ServiceContext{
+      DatabaseContext: context.DatabaseContext,
+      CurrentUser: nil,
+   }
    
-   var includedOneHanded__Quantifier types.Quantifier
-   var includedResourceOwner__User types.User
-   var includedTwoHanded__Quantifier types.Quantifier
+   var includedOneHanded__Quantifier *types.Quantifier
+   var includedResourceOwner__User *types.User
+   var includedTwoHanded__Quantifier *types.Quantifier
+   
+   var OneHanded__QuantifierDTO *QuantifierDTO
+   var ResourceOwner__UserDTO *UserDTO
+   var TwoHanded__QuantifierDTO *QuantifierDTO
+   
+   var err error
    
    if (domainItem.OneHanded__Quantifier != nil) {
-      if err := services.GetQuantifierById(db, int(*domainItem.OneHanded__Quantifier), &includedOneHanded__Quantifier); err != nil {
-         fmt.Println("Error fetching many-to-one table Quantifier:")
-         fmt.Println(err)
+      includedOneHanded__Quantifier, err = services.GetQuantifierById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Quantifier](domainItem.OneHanded__Quantifier))
+      if err != nil {
+         return nil, err
+      }
+      OneHanded__QuantifierDTO, err = QuantifierToQuantifierDTO(&childDTOContext, includedOneHanded__Quantifier)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainItem.ResourceOwner__User != nil) {
-      if err := services.GetUserById(db, int(*domainItem.ResourceOwner__User), &includedResourceOwner__User); err != nil {
-         fmt.Println("Error fetching many-to-one table User:")
-         fmt.Println(err)
+      includedResourceOwner__User, err = services.GetUserById(serviceContext, contextProviders.ProduceGetByIdArgs[types.User](domainItem.ResourceOwner__User))
+      if err != nil {
+         return nil, err
+      }
+      ResourceOwner__UserDTO, err = UserToUserDTO(&childDTOContext, includedResourceOwner__User)
+      if err != nil {
+         return nil, err
       }
    }
 
    if (domainItem.TwoHanded__Quantifier != nil) {
-      if err := services.GetQuantifierById(db, int(*domainItem.TwoHanded__Quantifier), &includedTwoHanded__Quantifier); err != nil {
-         fmt.Println("Error fetching many-to-one table Quantifier:")
-         fmt.Println(err)
+      includedTwoHanded__Quantifier, err = services.GetQuantifierById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Quantifier](domainItem.TwoHanded__Quantifier))
+      if err != nil {
+         return nil, err
+      }
+      TwoHanded__QuantifierDTO, err = QuantifierToQuantifierDTO(&childDTOContext, includedTwoHanded__Quantifier)
+      if err != nil {
+         return nil, err
       }
    }
 
@@ -101,14 +129,14 @@ func DomainItemToDomainItemDTO(db *gorm.DB, domainItem *types.DomainItem, traver
       },
       Relationships: DomainItemDTORelationships{
          ManyToOne: DomainItemDTOManyToOneRelationships {
-            OneHanded__Quantifier: QuantifierToQuantifierDTO(db, &includedOneHanded__Quantifier, traversedTables),
-            ResourceOwner__User: UserToUserDTO(db, &includedResourceOwner__User, traversedTables),
-            TwoHanded__Quantifier: QuantifierToQuantifierDTO(db, &includedTwoHanded__Quantifier, traversedTables),
+            OneHanded__Quantifier: OneHanded__QuantifierDTO,
+            ResourceOwner__User: ResourceOwner__UserDTO,
+            TwoHanded__Quantifier: TwoHanded__QuantifierDTO,
          },
          OneToMany: DomainItemDTOOneToManyRelationships {
          },
       },
-   }
+   }, nil
 }
 
 func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) *types.DomainItem {
