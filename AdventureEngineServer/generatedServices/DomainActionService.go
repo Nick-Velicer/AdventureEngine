@@ -20,6 +20,10 @@ func GetDomainActions(context *contextProviders.ServiceContext, args *contextPro
       return nil, errors.New("No service arguments provided")
    }
    
+   if context.DatabaseContext == nil {
+      return nil, errors.New("Cannot perform get action on nil database context")
+   }
+   
    var returnBuffer []types.DomainAction
    
    filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("DomainAction"), args.Filters)
@@ -27,7 +31,7 @@ func GetDomainActions(context *contextProviders.ServiceContext, args *contextPro
    if err != nil {
       return nil, err
    }
-   result := filteredContext.Find(returnBuffer)
+   result := filteredContext.Find(&returnBuffer)
    
    if result.Error != nil {
       return nil, result.Error
@@ -43,6 +47,10 @@ func GetDomainActionById(context *contextProviders.ServiceContext, args *context
    
    if args == nil {
       return nil, errors.New("No service arguments provided")
+   }
+   
+   if context.DatabaseContext == nil {
+      return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
    var returnPtr *types.DomainAction
@@ -61,6 +69,10 @@ func SaveDomainAction(context *contextProviders.ServiceContext, args *contextPro
    
    if args == nil {
       return nil, errors.New("No service arguments provided")
+   }
+   
+   if context.DatabaseContext == nil {
+      return nil, errors.New("Cannot perform save action on nil database context")
    }
    
    tx := context.DatabaseContext.Begin()

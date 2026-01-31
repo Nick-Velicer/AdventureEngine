@@ -20,6 +20,10 @@ func GetCharacterDomainSubClassInstances(context *contextProviders.ServiceContex
       return nil, errors.New("No service arguments provided")
    }
    
+   if context.DatabaseContext == nil {
+      return nil, errors.New("Cannot perform get action on nil database context")
+   }
+   
    var returnBuffer []types.CharacterDomainSubClassInstance
    
    filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("CharacterDomainSubClassInstance"), args.Filters)
@@ -27,7 +31,7 @@ func GetCharacterDomainSubClassInstances(context *contextProviders.ServiceContex
    if err != nil {
       return nil, err
    }
-   result := filteredContext.Find(returnBuffer)
+   result := filteredContext.Find(&returnBuffer)
    
    if result.Error != nil {
       return nil, result.Error
@@ -43,6 +47,10 @@ func GetCharacterDomainSubClassInstanceById(context *contextProviders.ServiceCon
    
    if args == nil {
       return nil, errors.New("No service arguments provided")
+   }
+   
+   if context.DatabaseContext == nil {
+      return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
    var returnPtr *types.CharacterDomainSubClassInstance
@@ -61,6 +69,10 @@ func SaveCharacterDomainSubClassInstance(context *contextProviders.ServiceContex
    
    if args == nil {
       return nil, errors.New("No service arguments provided")
+   }
+   
+   if context.DatabaseContext == nil {
+      return nil, errors.New("Cannot perform save action on nil database context")
    }
    
    tx := context.DatabaseContext.Begin()

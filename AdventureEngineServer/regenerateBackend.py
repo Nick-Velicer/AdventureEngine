@@ -410,6 +410,12 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                 ]), 
                 '}',
                 '',
+                'if ' + contextArgName + '.DatabaseContext == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("Cannot perform save action on nil database context")',
+                ]), 
+                '}',
+                '',
                 'tx := ' + contextArgName + '.DatabaseContext.Begin()',
                 '',
                 'if tx.Error != nil {',
@@ -472,6 +478,12 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                 ]), 
                 '}',
                 '',
+                'if ' + contextArgName + '.DatabaseContext == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("Cannot perform get action on nil database context")',
+                ]), 
+                '}',
+                '',
                 'var returnBuffer []types.' + tableName,
                 '',
                 'filteredContext, err := utils.FilterTableContext(' + contextArgName + '.DatabaseContext.Table("' + tableName + '"), ' + argsArgName + '.Filters)',
@@ -481,7 +493,7 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                     'return nil, err',
                 ]),
                 '}',
-	            'result := filteredContext.Find(returnBuffer)',
+	            'result := filteredContext.Find(&returnBuffer)',
                 '',
                 'if result.Error != nil {',
                 *indentLineBlock([
@@ -511,6 +523,12 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                 'if ' + argsArgName + ' == nil {',
                 *indentLineBlock([
                     'return nil, errors.New("No service arguments provided")',
+                ]), 
+                '}',
+                '',
+                'if ' + contextArgName + '.DatabaseContext == nil {',
+                *indentLineBlock([
+                    'return nil, errors.New("Cannot perform get by id action on nil database context")',
                 ]), 
                 '}',
                 '',

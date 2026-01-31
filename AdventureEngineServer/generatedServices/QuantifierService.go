@@ -20,6 +20,10 @@ func GetQuantifiers(context *contextProviders.ServiceContext, args *contextProvi
       return nil, errors.New("No service arguments provided")
    }
    
+   if context.DatabaseContext == nil {
+      return nil, errors.New("Cannot perform get action on nil database context")
+   }
+   
    var returnBuffer []types.Quantifier
    
    filteredContext, err := utils.FilterTableContext(context.DatabaseContext.Table("Quantifier"), args.Filters)
@@ -27,7 +31,7 @@ func GetQuantifiers(context *contextProviders.ServiceContext, args *contextProvi
    if err != nil {
       return nil, err
    }
-   result := filteredContext.Find(returnBuffer)
+   result := filteredContext.Find(&returnBuffer)
    
    if result.Error != nil {
       return nil, result.Error
@@ -43,6 +47,10 @@ func GetQuantifierById(context *contextProviders.ServiceContext, args *contextPr
    
    if args == nil {
       return nil, errors.New("No service arguments provided")
+   }
+   
+   if context.DatabaseContext == nil {
+      return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
    var returnPtr *types.Quantifier
@@ -61,6 +69,10 @@ func SaveQuantifier(context *contextProviders.ServiceContext, args *contextProvi
    
    if args == nil {
       return nil, errors.New("No service arguments provided")
+   }
+   
+   if context.DatabaseContext == nil {
+      return nil, errors.New("Cannot perform save action on nil database context")
    }
    
    tx := context.DatabaseContext.Begin()
