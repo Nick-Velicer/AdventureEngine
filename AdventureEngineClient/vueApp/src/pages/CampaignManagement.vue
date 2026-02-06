@@ -3,7 +3,7 @@ import type { UseQueryReturn } from '@pinia/colada';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts.ts';
 import type { Campaign, Character } from '../../../types/appTypes/appTypes.ts';
 import { useRoute } from 'vue-router';
-import type { FilterCollection } from '../../../services/filterUtils.ts';
+import type { FilterCollection } from '../../../services/utils.ts';
 import { NButton } from 'naive-ui';
 import { getCharacters } from '../../../services/generated/CharacterService.ts';
 

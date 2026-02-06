@@ -1,6 +1,7 @@
 export const themeDefault = {
     "--text-color-primary": "#444746",
-    "--color-background": "#e8eef1",
+    "--color-background": "#e8e8e6",
+    "--color-background-secondary": "#dcdbd5",
     "--color-primary": "#354156",
     "--color-success": "#4d967b",
     "--color-warning": "#ffca30",

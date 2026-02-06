@@ -28,7 +28,7 @@ const props = defineProps<PropsType>();
     flex-direction: column;
     border-radius: v-bind("store.reactiveThemeElement("--radius-small")");
     padding: v-bind("store.reactiveThemeElement("--spacing-large")");
-    background-color: v-bind("store.reactiveThemeElement("--color-background")");
+    background-color: v-bind("store.reactiveThemeElement("--color-background-secondary")");
     color: v-bind("store.reactiveThemeElement("--text-color-primary")");
     font-family: v-bind("store.reactiveThemeElement("--font-family-headings")");
     transition: box-shadow v-bind("store.reactiveThemeElement("--duration-fast")") ease-in-out; 

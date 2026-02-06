@@ -3,12 +3,16 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainClassTrait } from "../../types/appTypes/appTypes";
-import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression, validateApiResponse} from "../utils";
 
 export async function getDomainClassTraits(filters?: FilterCollection<DomainClassTrait>): Promise<DomainClassTrait[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
       const response = await fetch("http://localhost:8080/getDomainClassTraits" + filterString, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as Array<DomainClassTrait>;
       return returnObj;
    }
@@ -20,6 +24,10 @@ export async function getDomainClassTraits(filters?: FilterCollection<DomainClas
 export async function getDomainClassTraitbyId(id: number): Promise<DomainClassTrait> {
    try {
       const response = await fetch("http://localhost:8080/getDomainClassTrait/" + id, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as DomainClassTrait;
       return returnObj;
    }
@@ -31,6 +39,10 @@ export async function getDomainClassTraitbyId(id: number): Promise<DomainClassTr
 export async function saveDomainClassTrait<T extends DomainClassTrait | DomainClassTrait[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainClassTrait", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

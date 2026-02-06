@@ -3,12 +3,16 @@
 //Edits made here will not persist after regeneration.
 
 import { type CharacterDomainSubClassInstance } from "../../types/appTypes/appTypes";
-import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression, validateApiResponse} from "../utils";
 
 export async function getCharacterDomainSubClassInstances(filters?: FilterCollection<CharacterDomainSubClassInstance>): Promise<CharacterDomainSubClassInstance[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
       const response = await fetch("http://localhost:8080/getCharacterDomainSubClassInstances" + filterString, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as Array<CharacterDomainSubClassInstance>;
       return returnObj;
    }
@@ -20,6 +24,10 @@ export async function getCharacterDomainSubClassInstances(filters?: FilterCollec
 export async function getCharacterDomainSubClassInstancebyId(id: number): Promise<CharacterDomainSubClassInstance> {
    try {
       const response = await fetch("http://localhost:8080/getCharacterDomainSubClassInstance/" + id, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as CharacterDomainSubClassInstance;
       return returnObj;
    }
@@ -31,6 +39,10 @@ export async function getCharacterDomainSubClassInstancebyId(id: number): Promis
 export async function saveCharacterDomainSubClassInstance<T extends CharacterDomainSubClassInstance | CharacterDomainSubClassInstance[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveCharacterDomainSubClassInstance", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

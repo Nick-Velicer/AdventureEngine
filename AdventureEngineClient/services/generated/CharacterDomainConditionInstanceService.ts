@@ -3,12 +3,16 @@
 //Edits made here will not persist after regeneration.
 
 import { type CharacterDomainConditionInstance } from "../../types/appTypes/appTypes";
-import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression, validateApiResponse} from "../utils";
 
 export async function getCharacterDomainConditionInstances(filters?: FilterCollection<CharacterDomainConditionInstance>): Promise<CharacterDomainConditionInstance[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
       const response = await fetch("http://localhost:8080/getCharacterDomainConditionInstances" + filterString, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as Array<CharacterDomainConditionInstance>;
       return returnObj;
    }
@@ -20,6 +24,10 @@ export async function getCharacterDomainConditionInstances(filters?: FilterColle
 export async function getCharacterDomainConditionInstancebyId(id: number): Promise<CharacterDomainConditionInstance> {
    try {
       const response = await fetch("http://localhost:8080/getCharacterDomainConditionInstance/" + id, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as CharacterDomainConditionInstance;
       return returnObj;
    }
@@ -31,6 +39,10 @@ export async function getCharacterDomainConditionInstancebyId(id: number): Promi
 export async function saveCharacterDomainConditionInstance<T extends CharacterDomainConditionInstance | CharacterDomainConditionInstance[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveCharacterDomainConditionInstance", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

@@ -3,12 +3,16 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainClass } from "../../types/appTypes/appTypes";
-import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression, validateApiResponse} from "../utils";
 
 export async function getDomainClasss(filters?: FilterCollection<DomainClass>): Promise<DomainClass[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
       const response = await fetch("http://localhost:8080/getDomainClasss" + filterString, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as Array<DomainClass>;
       return returnObj;
    }
@@ -20,6 +24,10 @@ export async function getDomainClasss(filters?: FilterCollection<DomainClass>): 
 export async function getDomainClassbyId(id: number): Promise<DomainClass> {
    try {
       const response = await fetch("http://localhost:8080/getDomainClass/" + id, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as DomainClass;
       return returnObj;
    }
@@ -31,6 +39,10 @@ export async function getDomainClassbyId(id: number): Promise<DomainClass> {
 export async function saveDomainClass<T extends DomainClass | DomainClass[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainClass", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

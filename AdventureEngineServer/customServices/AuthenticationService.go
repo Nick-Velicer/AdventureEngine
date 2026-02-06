@@ -172,13 +172,17 @@ func Login(db *gorm.DB, user *types.User) (*string, error) {
 		return nil, err
 	}
 
+	if len(foundUsers) < 1 {
+		return nil, errors.New("Incorrect usename or password")
+	}
+
 	if len(foundUsers) > 1 {
 		return nil, errors.New("Somehow multiple users have the same username?!")
 	}
 
 	//Actually validate the given provided credentials
 	if !verifyPassword(*user.Password, *(foundUsers[0].Password)) {
-		return nil, errors.New("Incorrect password")
+		return nil, errors.New("Incorrect username or password")
 	}
 
 	sessionToken, err := createToken(*(foundUsers[0].Id))

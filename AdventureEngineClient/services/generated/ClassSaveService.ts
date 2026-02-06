@@ -3,12 +3,16 @@
 //Edits made here will not persist after regeneration.
 
 import { type ClassSave } from "../../types/appTypes/appTypes";
-import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression, validateApiResponse} from "../utils";
 
 export async function getClassSaves(filters?: FilterCollection<ClassSave>): Promise<ClassSave[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
       const response = await fetch("http://localhost:8080/getClassSaves" + filterString, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as Array<ClassSave>;
       return returnObj;
    }
@@ -20,6 +24,10 @@ export async function getClassSaves(filters?: FilterCollection<ClassSave>): Prom
 export async function getClassSavebyId(id: number): Promise<ClassSave> {
    try {
       const response = await fetch("http://localhost:8080/getClassSave/" + id, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as ClassSave;
       return returnObj;
    }
@@ -31,6 +39,10 @@ export async function getClassSavebyId(id: number): Promise<ClassSave> {
 export async function saveClassSave<T extends ClassSave | ClassSave[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveClassSave", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

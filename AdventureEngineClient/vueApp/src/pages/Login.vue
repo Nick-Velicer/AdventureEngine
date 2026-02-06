@@ -48,8 +48,7 @@ function attemptSubmittal(e: MouseEvent) {
             attemptLogin(loginFormBuffer.value.username!, loginFormBuffer.value.password!);
         }
         else {
-            console.log(errors)
-            message.error('Invalid Form State')
+            message.error("Invalid form state")
         }
     });
 }
@@ -63,7 +62,7 @@ async function attemptLogin(userName: string, password: string) {
     }
     catch (errors) {
         console.log(errors);
-        message.error('Error Logging In');
+        message.error(errors? errors.toString() : "Unhandled login error");
         loginPending.value = false;
     }
 }

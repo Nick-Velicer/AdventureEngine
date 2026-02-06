@@ -3,12 +3,16 @@
 //Edits made here will not persist after regeneration.
 
 import { type CharacterDomainCharacterStatInstance } from "../../types/appTypes/appTypes";
-import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression, validateApiResponse} from "../utils";
 
 export async function getCharacterDomainCharacterStatInstances(filters?: FilterCollection<CharacterDomainCharacterStatInstance>): Promise<CharacterDomainCharacterStatInstance[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
       const response = await fetch("http://localhost:8080/getCharacterDomainCharacterStatInstances" + filterString, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as Array<CharacterDomainCharacterStatInstance>;
       return returnObj;
    }
@@ -20,6 +24,10 @@ export async function getCharacterDomainCharacterStatInstances(filters?: FilterC
 export async function getCharacterDomainCharacterStatInstancebyId(id: number): Promise<CharacterDomainCharacterStatInstance> {
    try {
       const response = await fetch("http://localhost:8080/getCharacterDomainCharacterStatInstance/" + id, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as CharacterDomainCharacterStatInstance;
       return returnObj;
    }
@@ -31,6 +39,10 @@ export async function getCharacterDomainCharacterStatInstancebyId(id: number): P
 export async function saveCharacterDomainCharacterStatInstance<T extends CharacterDomainCharacterStatInstance | CharacterDomainCharacterStatInstance[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveCharacterDomainCharacterStatInstance", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

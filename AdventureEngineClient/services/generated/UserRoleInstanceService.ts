@@ -3,12 +3,16 @@
 //Edits made here will not persist after regeneration.
 
 import { type UserRoleInstance } from "../../types/appTypes/appTypes";
-import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression, validateApiResponse} from "../utils";
 
 export async function getUserRoleInstances(filters?: FilterCollection<UserRoleInstance>): Promise<UserRoleInstance[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
       const response = await fetch("http://localhost:8080/getUserRoleInstances" + filterString, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as Array<UserRoleInstance>;
       return returnObj;
    }
@@ -20,6 +24,10 @@ export async function getUserRoleInstances(filters?: FilterCollection<UserRoleIn
 export async function getUserRoleInstancebyId(id: number): Promise<UserRoleInstance> {
    try {
       const response = await fetch("http://localhost:8080/getUserRoleInstance/" + id, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as UserRoleInstance;
       return returnObj;
    }
@@ -31,6 +39,10 @@ export async function getUserRoleInstancebyId(id: number): Promise<UserRoleInsta
 export async function saveUserRoleInstance<T extends UserRoleInstance | UserRoleInstance[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveUserRoleInstance", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

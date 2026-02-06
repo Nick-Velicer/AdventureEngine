@@ -3,12 +3,16 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainAppRole } from "../../types/appTypes/appTypes";
-import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression, validateApiResponse} from "../utils";
 
 export async function getDomainAppRoles(filters?: FilterCollection<DomainAppRole>): Promise<DomainAppRole[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
       const response = await fetch("http://localhost:8080/getDomainAppRoles" + filterString, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as Array<DomainAppRole>;
       return returnObj;
    }
@@ -20,6 +24,10 @@ export async function getDomainAppRoles(filters?: FilterCollection<DomainAppRole
 export async function getDomainAppRolebyId(id: number): Promise<DomainAppRole> {
    try {
       const response = await fetch("http://localhost:8080/getDomainAppRole/" + id, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as DomainAppRole;
       return returnObj;
    }
@@ -31,6 +39,10 @@ export async function getDomainAppRolebyId(id: number): Promise<DomainAppRole> {
 export async function saveDomainAppRole<T extends DomainAppRole | DomainAppRole[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainAppRole", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }

@@ -3,12 +3,16 @@
 //Edits made here will not persist after regeneration.
 
 import { type DomainCreatureType } from "../../types/appTypes/appTypes";
-import { type FilterCollection, produceFilterParamsFromExpression} from "../filterUtils";
+import { type FilterCollection, produceFilterParamsFromExpression, validateApiResponse} from "../utils";
 
 export async function getDomainCreatureTypes(filters?: FilterCollection<DomainCreatureType>): Promise<DomainCreatureType[]> {
    try {
       const filterString = filters instanceof Array && filters?.length > 0? "?" + produceFilterParamsFromExpression(filters) : "";
       const response = await fetch("http://localhost:8080/getDomainCreatureTypes" + filterString, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as Array<DomainCreatureType>;
       return returnObj;
    }
@@ -20,6 +24,10 @@ export async function getDomainCreatureTypes(filters?: FilterCollection<DomainCr
 export async function getDomainCreatureTypebyId(id: number): Promise<DomainCreatureType> {
    try {
       const response = await fetch("http://localhost:8080/getDomainCreatureType/" + id, { credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as DomainCreatureType;
       return returnObj;
    }
@@ -31,6 +39,10 @@ export async function getDomainCreatureTypebyId(id: number): Promise<DomainCreat
 export async function saveDomainCreatureType<T extends DomainCreatureType | DomainCreatureType[]>(obj: T): Promise<T> {
    try {
       const response = await fetch("http://localhost:8080/saveDomainCreatureType", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(obj), credentials: "include" });
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json() as unknown as T;
       return returnObj;
    }
