@@ -70,18 +70,17 @@ const cardConfig: Array<CardModule> = [
 
 .pageContainer {
 	height: 100%;
-	width: 70%;
+	width: 80%;
 	max-width: 100rem;
 	margin-left: auto;
 	margin-right: auto;
 	display: flex;
 	flex-direction: column;
-	gap: v-bind("store.reactiveThemeElement("--spacing-large")");
+	gap: min(v-bind("store.reactiveThemeElement("--spacing-large")"), 2vw);
 }
 
 .landingText {
-	font-size: calc(v-bind("store.reactiveThemeElement("--font-size-heading")") * 3);
-
+	font-size: min(v-bind("store.reactiveThemeElement("--font-size-heading")") * 3, 5vw);
 }
 
 .svgCardContainer {

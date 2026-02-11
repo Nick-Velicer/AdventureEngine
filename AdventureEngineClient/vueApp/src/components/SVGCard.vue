@@ -22,17 +22,20 @@ const props = defineProps<PropsType>();
 <style scoped>
 
 .svgCard {
+    container-type: size;
     height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
     border-radius: v-bind("store.reactiveThemeElement("--radius-small")");
-    padding: v-bind("store.reactiveThemeElement("--spacing-large")");
+    padding: min(v-bind("store.reactiveThemeElement("--spacing-large")"), 20%);
     background-color: v-bind("store.reactiveThemeElement("--color-background-secondary")");
     color: v-bind("store.reactiveThemeElement("--text-color-primary")");
     font-family: v-bind("store.reactiveThemeElement("--font-family-headings")");
     transition: box-shadow v-bind("store.reactiveThemeElement("--duration-fast")") ease-in-out; 
     border: 1px solid v-bind("store.reactiveThemeElement("--text-color-primary")");
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .svgCard:hover {
@@ -48,8 +51,12 @@ const props = defineProps<PropsType>();
 }
 
 .title {
+    margin-left: auto;
+    margin-right: auto;
     margin-top: auto;
-    font-size: v-bind("store.reactiveThemeElement("--font-size-heading")");
+    max-width: 100%;
+    text-overflow: ellipsis;
+    font-size: min(v-bind("store.reactiveThemeElement("--font-size-heading")"), 25cqw);
     text-align: center;
 }
 
