@@ -29,8 +29,9 @@ const characterNavLink = (characterId: number ) => "/CharacterManagement/" + cha
 </script>
 
 <template>
-	<div class="scrollWrapper">
-		<DynamicDataList table="Campaign"/>
+	<DynamicDataList v-if="typeof campaignId != 'number'" table="Campaign"/>
+	<div v-else>
+		<DynamicDataList table="Character"/>
 	</div>
 	
 </template>
