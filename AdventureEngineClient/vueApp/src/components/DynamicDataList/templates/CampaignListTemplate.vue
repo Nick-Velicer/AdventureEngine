@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { composedAppInjectionContexts } from "../../../../../injections/composedInjectionContexts";
 import { type Campaign } from "../../../../../types/appTypes/appTypes";
 import type { ListTemplatePropsType } from "../config";
-import { NButton } from 'naive-ui';
+import Button from "../../Button.vue";
 
 const props = defineProps<ListTemplatePropsType<Campaign>>();
 const store = composedAppInjectionContexts.store();
@@ -11,8 +11,8 @@ const store = composedAppInjectionContexts.store();
 const isHovered = ref(false);
 
 function toggleHovered() {
-      isHovered.value = !isHovered.value
-    }
+    isHovered.value = !isHovered.value
+}
 
 </script>
 
@@ -21,16 +21,16 @@ function toggleHovered() {
     
         <div v-text="props.value.Attributes.Title" class="title"/>
         <div v-text="props.value.Attributes.Description" class="description"/>
-        <nav v-if="isHovered">
+        <nav>
             <RouterLink to="/CharacterManagement/1">
-                <NButton>
+                <Button variant="Primary">
                     Continue (Last Updated Character)
-                </NButton>
+                </Button>
             </RouterLink>
             <RouterLink :to="'/CampaignManagement/' + props.value.Id">
-                <NButton>
+                <Button variant="Utility">
                     Manage Campaign
-                </NButton>
+                </Button>
             </RouterLink>
         </nav>
     </div>

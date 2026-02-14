@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AppTypes, type CharacterDomainCharacterStatInstance } from '../../../types/appTypes/appTypes.ts';
-import { NDropdown, NButton } from 'naive-ui';
+import { NDropdown} from 'naive-ui';
 import CharacterStatDisplay from '../components/CharacterStatDisplay.vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts.ts'
 import { getCharacterbyId } from '../../../services/generated/CharacterService.ts';

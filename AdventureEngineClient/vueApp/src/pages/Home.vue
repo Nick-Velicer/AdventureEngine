@@ -2,9 +2,6 @@
 import type { UseQueryReturn } from '@pinia/colada';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 import type { Campaign } from '../../../types/appTypes/appTypes';
-import { getActiveUser } from '../../../services/custom/AuthenticationService';
-import { NButton } from 'naive-ui';
-import ActionCard from '../components/SVGCard.vue';
 import { useRouter } from 'vue-router';
 import SVGCard from '../components/SVGCard.vue';
 import Character from '../components/svg/Character.vue';

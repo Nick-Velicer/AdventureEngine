@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
-import { NInput, NForm, NFormItem, type FormItemRule, NButton, type FormInst, type FormValidationError, useMessage, type FormRules } from 'naive-ui';
+import { NInput, NForm, NFormItem, type FormItemRule, type FormInst, type FormValidationError, useMessage, type FormRules } from 'naive-ui';
 import type { User } from '../../../types/appTypes/appTypes';
 import { registerUser } from '../../../services/custom/AuthenticationService';
 import { useRouter } from 'vue-router';
 import Loader from '../components/Loader.vue';
+import Button from '../components/Button.vue';
 
 const message = useMessage();
 const router = useRouter();
@@ -123,20 +124,13 @@ async function attemptRegistration(userName: string, password: string) {
         <Loader variant="icon" v-if="loginPending"/>
         <div v-else class="flex justify-between w-full">
             <RouterLink to="/Login">
-                <NButton
-                    round
-                    type="primary"
-                >
+                <Button variant="Negatory">
                     Never mind!
-                </NButton>
+                </Button>
             </RouterLink>
-            <NButton
-                round
-                type="primary"
-                @click="attemptSubmittal"
-            >
+            <Button variant="Primary" @click="attemptSubmittal">
                 Register
-            </NButton>
+            </Button>
         </div>
         
 	</div>

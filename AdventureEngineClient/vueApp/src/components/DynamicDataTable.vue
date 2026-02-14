@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { DataTableColumns } from 'naive-ui'
-import { NDataTable, NButton } from 'naive-ui'
+import { NDataTable} from 'naive-ui'
 import { computed, h, watch } from 'vue'
 import { AppTypes } from '../../../types/appTypes/appTypes'
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts'
 import type { SchemaObject } from '../../../types/SchemaObject'
 import { flattenSchemaObject } from '../utils/utils'
+import Button from './Button.vue';
 
 type PropsType = {
     table: keyof typeof AppTypes
@@ -22,8 +23,12 @@ console.log(query.value);
 </script>
 
 <template>
-    <n-button v-on:click="() => console.log(query)">See Query Result</n-button>
-    <n-button v-on:click="() => query.refetch()">Test Query Refresh</n-button>
+    <Button @click="() => console.log(query)">
+        See Query Result
+    </Button>
+    <Button @click="() => query.refetch()">
+        Test Query Refresh
+    </Button>
     <div v-if="query?.value?.isPending === true">
         Loading...
     </div>

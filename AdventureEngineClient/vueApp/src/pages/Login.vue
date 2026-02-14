@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
-import { NInput, NForm, NButton, NFormItem, useMessage, type FormInst, type FormItemRule, type FormRules, type FormValidationError } from 'naive-ui';
+import { NInput, NForm, NFormItem, useMessage, type FormInst, type FormItemRule, type FormRules, type FormValidationError } from 'naive-ui';
 import { loginUser } from '../../../services/custom/AuthenticationService';
 import { useRouter } from 'vue-router';
 import Loader from '../components/Loader.vue';
+import Button from '../components/Button.vue';
 
 
 const message = useMessage();
@@ -93,20 +94,13 @@ async function attemptLogin(userName: string, password: string) {
         </NForm>
         <Loader variant="icon" v-if="loginPending"/>
         <div v-else class="flex justify-between w-full">
-            <NButton
-                round
-                type="primary"
-                @click="attemptSubmittal"
-            >
+            <Button variant="Primary" @click="attemptSubmittal">
                 Login
-            </NButton>
+            </Button>
             <RouterLink to="/Register">
-                <NButton
-                    round
-                    type="primary"
-                >
+                <Button variant="Primary">
                     Register
-                </NButton>
+                </Button>
             </RouterLink>
         </div>
         

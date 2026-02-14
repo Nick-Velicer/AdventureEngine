@@ -4,7 +4,6 @@ import { composedAppInjectionContexts } from '../../../injections/composedInject
 import type { Campaign, Character } from '../../../types/appTypes/appTypes.ts';
 import { useRoute } from 'vue-router';
 import type { FilterCollection } from '../../../services/utils.ts';
-import { NButton } from 'naive-ui';
 import { getCharacters } from '../../../services/generated/CharacterService.ts';
 import Loader from '../components/Loader.vue';
 import DynamicDataList from '../components/DynamicDataList/DynamicDataList.vue';

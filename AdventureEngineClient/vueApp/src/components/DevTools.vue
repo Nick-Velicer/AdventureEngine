@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { NSwitch, NButton } from 'naive-ui'
+import { NSwitch} from 'naive-ui';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 import ThemeSelector from './ThemeSelector.vue';
 import type { Campaign, Character, CharacterDomainCharacterStatInstance, DomainCharacterStat } from '../../../types/appTypes/appTypes';
+import Button from './Button.vue';
 
 const store = composedAppInjectionContexts.store();
 
@@ -99,7 +100,9 @@ async function dispatchStatsSave(characters: Character[]) {
 
 <template>
     <ThemeSelector/>
-    <n-button v-on:click="dispatchCampaignsSave">Test Data Init</n-button>
+    <Button variant="Primary" @click="dispatchCampaignsSave">
+        Test Init
+    </Button>
 </template>
 
 <style scoped>
