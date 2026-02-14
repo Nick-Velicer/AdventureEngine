@@ -34,6 +34,12 @@ export const routes = [
         primaryNavigation: false
     },
     { 
+        path: '/CampaignManagement', 
+        component: CampaignManagement,
+        title: "Campaign Management",
+        primaryNavigation: false
+    },
+    { 
         path: '/Login', 
         component: Login,
         title: "Login",

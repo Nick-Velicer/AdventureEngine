@@ -25,12 +25,12 @@ export default defineConfig({
         //},
         host: 'localhost'
     },
-    css: {
-        preprocessorOptions: {
-            scss: {
-                additionalData: `@import "@/theme/utilities.scss";`,
-                silenceDeprecations: ['import']
-            },
-        },
-    }
+    //css: {
+        //preprocessorOptions: {
+            //scss: {
+                //additionalData: `@import "@/theme/utilities.css";`,
+                //silenceDeprecations: ['import']
+            //},
+        //},
+    //}
 });

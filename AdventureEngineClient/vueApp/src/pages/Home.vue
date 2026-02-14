@@ -77,6 +77,7 @@ const cardConfig: Array<CardModule> = [
 	display: flex;
 	flex-direction: column;
 	gap: min(v-bind("store.reactiveThemeElement("--spacing-large")"), 2vw);
+	overflow-x: hidden;
 }
 
 .landingText {

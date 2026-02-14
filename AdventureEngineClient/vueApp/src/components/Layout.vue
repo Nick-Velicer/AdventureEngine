@@ -20,7 +20,7 @@ const store = composedAppInjectionContexts.store();
             <NavMenu/>
             <div class="flex-1"/>
         </header>
-        <main class="scrollArea mainContentWrapper">
+        <main class="scrollWrapper mainContentWrapper">
             <slot></slot>
         </main>
         <footer class="footerContainer">
@@ -35,17 +35,17 @@ const store = composedAppInjectionContexts.store();
 .topLevelContainer {
     height: 100vh;
     width: 100vw;
-    display: flex;
-    flex-direction: column;
     padding: v-bind("store.reactiveThemeElement("--spacing-small")");
     background-color: v-bind("store.reactiveThemeElement("--color-background")");
     color: v-bind("store.reactiveThemeElement("--text-color-primary")");
     font-family: v-bind("store.reactiveThemeElement("--font-family-body")");
+    overflow-x: hidden;
 }
 
 .mainContentWrapper {
     flex: 1;
     padding: v-bind("store.reactiveThemeElement("--spacing-small")");
+    overflow-x: hidden;
 }
 
 .headerContainer {
