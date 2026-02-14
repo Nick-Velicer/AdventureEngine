@@ -3,11 +3,12 @@ import { NSwitch } from 'naive-ui'
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 
 const store = composedAppInjectionContexts.store();
+console.log(store.reactiveThemeElement('Name') === 'Dark');
 
 </script>
 
 <template>
-    <n-switch 
+    <NSwitch
         checked-value="Dark"
         unchecked-value="Light"
         v-on:update:value="store.setTheme"
@@ -18,7 +19,7 @@ const store = composedAppInjectionContexts.store();
         <template #unchecked>
             Light Mode
         </template>
-    </n-switch>
+    </NSwitch>
 </template>
 
 <style scoped>

@@ -20,7 +20,8 @@ async function dispatchCampaignsSave() {
             {
                 Id: undefined,
                 Attributes: {
-                    Title: "Campaign 1"
+                    Title: "Campaign 1",
+                    Description: "Here is a fun and long description for a campaign. It contains lots of words and should hopefully be able to test overflow UI. Oh boy I love writing filler text since I'm too lazy to get a dummy data library set up."
                 },
                 Relationships: {
                     ManyToOne: {},

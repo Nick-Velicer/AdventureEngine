@@ -9,7 +9,7 @@ export const stateDefault = {
     sessionToken: undefined as string | undefined,
     activeCharacterId: undefined as number | undefined,
     activeTableView: undefined as (keyof typeof AppTypes) | undefined,
-    theme: themeDefault as Record<ThemeVariables, string>,
+    theme: typeof localStorage.getItem("theme") === "string" ? JSON.parse(localStorage.getItem("theme")!): themeDefault as Record<ThemeVariables, string>,
     //Tables that realistically will not be changing, and are used often enough 
     //for UI organization that being able to access them synchronously makes life a lot easier
     staticTables: {
@@ -27,7 +27,8 @@ export const stateGetters = {
 ///Potentially at some point just generate the setters if there's enough that just directly set the value with no other logic
 export const stateActions = {
     setTheme(variant: "Light" | "Dark") {
-        this.theme = variant === "Light"? themeDefault : testDarkTheme
+        this.theme = variant === "Light"? themeDefault : testDarkTheme;
+        localStorage.setItem("theme", JSON.stringify(variant === "Light"? themeDefault : testDarkTheme));
     },
     setActiveTableView(table: keyof typeof AppTypes) {
         this.activeTableView = table;

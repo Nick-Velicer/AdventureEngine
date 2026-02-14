@@ -1,7 +1,11 @@
 export const themeDefault = {
+    //The top level name only gets used as meta-info
+    //for local storage, and is otherwise inaccessible
+    //from a CSS variables perspective
+    "Name": "Light",
     "--text-color-primary": "#444746",
-    "--color-background": "#e8e8e6",
-    "--color-background-secondary": "#dcdbd5",
+    "--color-background": "#ece4d5",
+    "--color-background-secondary": "#d7ccb7",
     "--color-primary": "#354156",
     "--color-success": "#4d967b",
     "--color-warning": "#ffca30",
@@ -26,8 +30,10 @@ export const themeDefault = {
 } as const;
 
 export const testDarkTheme: Record<ThemeVariables, string> = {
+    "Name": "Dark",
     "--text-color-primary": "#e8eef1",
     "--color-background": "#354156",
+    "--color-background-secondary": "#404d64",
     "--color-primary": "#354156",
     "--color-success": "#4d967b",
     "--color-warning": "#ffca30",
