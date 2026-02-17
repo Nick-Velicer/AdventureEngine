@@ -1,0 +1,72 @@
+What leads to having a quantifier interpreted?
+
+1. triggered event (i.e. when you attack with a strength weapon, add extra 1d4 damage)
+2. taking a game action
+    -determining the cost 
+    -paying a cost (selecting a variant/mode i.e. casting a spell with a 3rd or 5th level)
+3. static calculated display/base/effect (pull on initial evaluation of base stat plus determined new value)
+
+Entry point should specify when to pull/evaluate
+
+First character render: apply static quantifiers on top of base stats and any given effects (i.e. waterbreathing)
+On character turn (nothing on the stack per se): parse costed quantifiers for available actions/variants
+On game event: search for applicable event listeners to trigger a quantifier
+
+Quantifiers can have a Game Entry/Access Point for occasions which their evaluation is governed by game state
+Static effects like poison will still have an entry as static evaluation for determining character state (instance of that owned by the parent instance)
+
+Cost should NOT be included in game action or triggered entries, as there may be variadic or multi-step costs for a specific action variant
+
+Chain of quantifiers (or more expressive entities) for whenever one should be applied
+
+Quantifiers can add listeners for other triggers to happen (with their own quantifiers)
+
+e.g. Barbarian Rage text:
+You can enter it as a Bonus Action if you aren’t wearing Heavy armor.
+
+You can enter your Rage the number of times shown for your Barbarian level in the Rages column of the Barbarian Features table. 
+You regain one expended use when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest.
+
+While active, your Rage follows the rules below.
+
+Damage Resistance. You have Resistance to Bludgeoning, Piercing, and Slashing damage.
+
+Rage Damage. When you make an attack using Strength—with either a weapon or an Unarmed Strike—and deal damage to the target, 
+you gain a bonus to the damage that increases as you gain levels as a Barbarian, as shown in the Rage Damage column of the Barbarian Features table.
+
+Strength Advantage. You have Advantage on Strength checks and Strength saving throws.
+No Concentration or Spells. You can’t maintain Concentration, and you can’t cast spells.
+
+Duration. The Rage lasts until the end of your next turn, and it ends early if you don Heavy armor or 
+have the Incapacitated condition. If your Rage is still active on your next turn, you can extend the Rage for 
+another round by doing one of the following:
+
+Make an attack roll against an enemy.
+Force an enemy to make a saving throw.
+Take a Bonus Action to extend your Rage.
+Each time the Rage is extended, it lasts until the end of your next turn. You can maintain a Rage for up to 10 minutes.
+
+
+--------------------------------------
+
+Quantifiers provide half of the handshake managed by the game engine
+
+Templated as (assuming rage level 1, would have more effects in the effects stage if higher level):
+(Player selects the rage option, determined that that's provided based on class and action state)
+1. Rage entry point for engaging with that quantifier group
+2. Cost determiner -> If player is wearing heavy armor allow bonus action variant, otherwise provide action option (or override? who knows)
+(Player can pay and chooses to pay associated cost)
+3a. Add rage lvl 1 status to character (with turns until expiry)
+   - Gives resistance statuses by virtue of attached quantifiers to rage
+   - Gives advantage on strength spells
+   - Blocks maintaning concentration
+   - Blocks casting spells
+3b. Add event triggers tracking:
+   - "dealing damage with a strength attack", on which quantifiers add bonus damage
+   - "on end of next turn", on which remove rage
+   - "on becoming equipped with heavy armor", on which remove rage
+   - "on attack", "on enemy save caused by you" (maybe optional), reset rage turn timer
+   - "on time passing (10min)", remove rage
+3c. Give character bonus action option to extend rage (maybe with warning prompt that you don't have to)
+
+

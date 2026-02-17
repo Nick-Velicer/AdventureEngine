@@ -365,6 +365,84 @@ def regenerateBasicStatMigration():
             "AbbreviatedTitle": "Weight",
             "IsBaseStat": 0,
         },
+        #We are tracking spell slots here as a resource for the player
+        #even though the base is always 0, modified by their class
+        {
+            "Title": "Level One Spell Slots",
+            "AbbreviatedTitle": "Lvl. 1 Slots",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Level Two Spell Slots",
+            "AbbreviatedTitle": "Lvl. 2 Slots",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Level Three Spell Slots",
+            "AbbreviatedTitle": "Lvl. 3 Slots",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Level Four Spell Slots",
+            "AbbreviatedTitle": "Lvl. 4 Slots",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Level Five Spell Slots",
+            "AbbreviatedTitle": "Lvl. 5 Slots",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Level Six Spell Slots",
+            "AbbreviatedTitle": "Lvl. 6 Slots",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Level Seven Spell Slots",
+            "AbbreviatedTitle": "Lvl. 7 Slots",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Level Eight Spell Slots",
+            "AbbreviatedTitle": "Lvl. 8 Slots",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Level Nine Spell Slots",
+            "AbbreviatedTitle": "Lvl. 9 Slots",
+            "IsBaseStat": 0,
+        },
+        #Class-specific resources
+        {
+            "Title": "Rage Charges",
+            "AbbreviatedTitle": "Rages",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Sorcery Points",
+            "AbbreviatedTitle": "Sorcery Points",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Ki Points",
+            "AbbreviatedTitle": "Ki Points",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Wildshape Charges",
+            "AbbreviatedTitle": "Wildshapes",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Superiority Die",
+            "AbbreviatedTitle": "Sup. Die",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Divinity Charges",
+            "AbbreviatedTitle": "Div. Charges",
+            "IsBaseStat": 0,
+        }
     ])
 
     baseStats = produceMigrationFileFromObjects("DomainCharacterStat", baseStats)

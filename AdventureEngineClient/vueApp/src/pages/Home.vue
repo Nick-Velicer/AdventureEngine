@@ -10,50 +10,38 @@ import Compass from '../components/svg/Compass.vue';
 import Books from '../components/svg/Books.vue';
 import Bottle from '../components/svg/Bottle.vue';
 import Loader from '../components/Loader.vue';
+import D20 from '../components/svg/D20.vue';
 
 const router = useRouter();
 const campaignsQuery = composedAppInjectionContexts.queries.useGetCampaignsQuery() as UseQueryReturn<Campaign[]>;
 const store = composedAppInjectionContexts.store();
 
 const campaignNavLink = (campaignId: number ) => "/CampaignManagement/" + campaignId.toString();
-
-type CardModule = {
-	title: string,
-	to: string,
-	svg: Component
-}
-const cardConfig: Array<CardModule> = [
-	{
-		title: "Campaigns",
-		to: "/CampaignManagement",
-		svg: Compass
-	},
-	{
-		title: "Characters",
-		to: "/CharacterManagement",
-		svg: Character
-	},
-	{
-		title: "Lookup",
-		to: "/Home",
-		svg: Books
-	},
-	{
-		title: "About",
-		to: "/Home",
-		svg: Bottle
-	}
-];
-
 </script>
 
 <template>
 	<Loader v-if="campaignsQuery.isLoading.value === true" variant="icon"/>
 	<div v-else class="pageContainer">
-		<div class="svgCardContainer">
-			<RouterLink v-for="cardMeta in cardConfig" :to="cardMeta.to" class="linkWrapper">
-				<SVGCard :text="cardMeta.title" :svgComponent="cardMeta.svg"/>
-			</RouterLink>
+		<div id="rotationTarget" class="navigationContainer">
+			<div class="navigationBorder"/>
+			<div class="navigationDial">
+				<RouterLink to="/CampaignManagement" class="linkWrapper">
+					<SVGCard text="Campaigns" :svgComponent="Compass"/>
+				</RouterLink>
+				<div class="flex items-center">
+					<RouterLink to="/CharacterManagement" class="linkWrapper">
+						<SVGCard text="Characters" :svgComponent="Character"/>
+					</RouterLink>
+					<D20/>
+					<RouterLink to="/Home" class="linkWrapper">
+						<SVGCard text="Lookup" :svgComponent="Books"/>
+					</RouterLink>
+				</div>
+				<RouterLink to="/Home" class="linkWrapper">
+					<SVGCard text="About" :svgComponent="Bottle"/>
+				</RouterLink>
+			</div>
+			
 		</div>
 		<Transition name="fade" appear>
 			<div class="landingText">
@@ -77,14 +65,33 @@ const cardConfig: Array<CardModule> = [
 	overflow-x: hidden;
 }
 
-.landingText {
-	font-size: min(v-bind("store.reactiveThemeElement("--font-size-heading")") * 3, 5vw);
+.navigationContainer {
+	position: relative;
+	transform-style: preserve-3d;
+  	transform: perspective(5000px) rotateY(var(--rotateX)) rotateX(var(--rotateY));
 }
 
-.svgCardContainer {
+.navigationBorder {
+	position: absolute;
+	background: white;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	
+	clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+}
+
+.navigationDial {
 	flex: 1;
 	display: flex;
-	gap: v-bind("store.reactiveThemeElement("--spacing-large")");
+	gap: min(v-bind("store.reactiveThemeElement("--spacing-large")"), 2vw);
+	flex-direction: column;
+	clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+}
+
+.landingText {
+	font-size: min(v-bind("store.reactiveThemeElement("--font-size-heading")") * 3, 5vw);
 }
 
 .linkWrapper {

@@ -8,6 +8,7 @@ import type { routes } from './utils/routes';
 import { useRoute } from 'vue-router';
 import PageTransitionProvider from './providers/PageTransitionProvider.vue';
 import SessionGuardProvider from './providers/SessionGuardProvider.vue';
+import MouseFollowerProvider from './providers/MouseFollowerProvider.vue';
 
 </script>
 
@@ -15,15 +16,17 @@ import SessionGuardProvider from './providers/SessionGuardProvider.vue';
     <NMessageProvider placement="top-right">
         <NModalProvider> 
             <NConfigProvider>
-                <Layout>
-                    <RouterView v-slot="{ Component, route }">
-                        <SessionGuardProvider>
-                            <PageTransitionProvider>
-                                <Component :is="Component" :key="route.path"/>
-                            </PageTransitionProvider>
-                        </SessionGuardProvider>
-                    </RouterView>
-                </Layout>
+                <MouseFollowerProvider>
+                    <Layout>
+                        <RouterView v-slot="{ Component, route }">
+                            <SessionGuardProvider>
+                                <PageTransitionProvider>
+                                    <Component :is="Component" :key="route.path"/>
+                                </PageTransitionProvider>
+                            </SessionGuardProvider>
+                        </RouterView>
+                    </Layout>
+                </MouseFollowerProvider>
             </NConfigProvider>
         </NModalProvider>
     </NMessageProvider>

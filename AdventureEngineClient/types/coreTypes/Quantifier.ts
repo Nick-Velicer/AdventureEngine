@@ -7,9 +7,12 @@ import { DomainCondition } from "./DomainCondition";
 import { DomainDamageType } from "./DomainDamageType";
 import { DomainDiceRollSubType } from "./DomainDiceRollSubType";
 import { DomainDiceRollType } from "./DomainDiceRollType";
+import { DomainQuantifierVariant } from "./DomainQuantifierVariant";
 import { DomainSpell } from "./DomainSpell";
 import { DomainStaticEffect } from "./DomainStaticEffect";
 import { DomainSubClass } from "./DomainSubClass";
+import { EvaluatedConditional } from "./EvaluatedConditional";
+import { QuantifierCostSpecifier } from "./QuantifierCostSpecifier";
 
 export type Quantifier = ExtendedSchemaObject<{
     Attributes: {
@@ -47,24 +50,11 @@ export type Quantifier = ExtendedSchemaObject<{
         RemovedOn?: boolean,
         GivesResistance?: boolean,
         IntoInventory?: boolean,
-        IsAction?: boolean,
-        IsBonusAction?: boolean,
-        GivesAction?: boolean,
-        ImpactsMovementAmount?: boolean,
-        GivesBonusAction?: boolean,
-        Level1SpellSlots?: number,
-        Level2SpellSlots?: number,
-        Level3SpellSlots?: number,
-        Level4SpellSlots?: number,
-        Level5SpellSlots?: number,
-        Level6SpellSlots?: number,
-        Level7SpellSlots?: number,
-        Level8SpellSlots?: number,
-        Level9SpellSlots?: number,
         Range?: number,
     },
     Relationships: {
         ManyToOne: {
+
             //Keys for quantifiers owned by effects, class traits, etc.
             Parent__DomainAction?: DomainAction,
             Parent__DomainStaticEffect?: DomainStaticEffect,
@@ -82,7 +72,13 @@ export type Quantifier = ExtendedSchemaObject<{
             Target__DomainSpell?: DomainSpell,
             Target__DomainCondition?: DomainCondition,
             Target__DomainDamageType?: DomainDamageType,
+
+            Variant__DomainQuantifierVariant?: DomainQuantifierVariant,
         },
-        OneToMany: {}
+        OneToMany: {
+            //Costs paid for this quantifier (action, bonus action, movement, spell slot, etc.)
+            Costs?: QuantifierCostSpecifier[],
+            Conditions?: EvaluatedConditional[],
+        }
     }
 }>
