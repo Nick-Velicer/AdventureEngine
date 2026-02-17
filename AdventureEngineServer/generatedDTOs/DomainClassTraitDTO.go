@@ -120,7 +120,7 @@ func DomainClassTraitToDomainClassTraitDTO(context *contextProviders.DTOContext,
       includedQuantifiers__Quantifiers = []types.Quantifier{}
       fmt.Println("Hit circular catch case for table Quantifier")
    } else {
-      includedQuantifiers__Quantifiers, err = services.GetQuantifiers(serviceContext, contextProviders.ProduceGetArgs[types.Quantifier]("Quantifiers__Quantifier", domainClassTrait.Id))
+      includedQuantifiers__Quantifiers, err = services.GetQuantifiers(serviceContext, contextProviders.ProduceGetArgs[types.Quantifier]("Parent__DomainClassTrait", domainClassTrait.Id))
       if err != nil {
          return nil, err
       }

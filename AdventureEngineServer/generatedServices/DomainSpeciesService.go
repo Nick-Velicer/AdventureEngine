@@ -53,13 +53,13 @@ func GetDomainSpeciesById(context *contextProviders.ServiceContext, args *contex
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainSpecies
-   result := context.DatabaseContext.Table("DomainSpecies").First(returnPtr, args.Id)
+   var returnBuffer types.DomainSpecies
+   result := context.DatabaseContext.Table("DomainSpecies").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainSpecies(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainSpecies]) (contextProviders.SaveReturn[types.DomainSpecies], error) {

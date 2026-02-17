@@ -53,13 +53,13 @@ func GetDomainConditionById(context *contextProviders.ServiceContext, args *cont
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainCondition
-   result := context.DatabaseContext.Table("DomainCondition").First(returnPtr, args.Id)
+   var returnBuffer types.DomainCondition
+   result := context.DatabaseContext.Table("DomainCondition").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainCondition(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainCondition]) (contextProviders.SaveReturn[types.DomainCondition], error) {

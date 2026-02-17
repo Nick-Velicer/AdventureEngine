@@ -207,6 +207,7 @@ def produceTestInsertStatements(tableName: str, typeMeta: dict):
 
 #Currently assuming full levels of relationship includes
 def produceDTOForType(tableName: str, typeMeta: dict):
+
     contextArgName = 'context'
     objectArgName = tableName[0].lower() + tableName[1:]
 
@@ -298,7 +299,11 @@ def produceDTOForType(tableName: str, typeMeta: dict):
                     '      included' + relationship + 's = []types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '{}\n' +
                     '      fmt.Println("Hit circular catch case for table ' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + '")\n' +
                     '   } else {\n' +
-                    '      included' + relationship + 's, err = services.Get' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 's(serviceContext, contextProviders.ProduceGetArgs[types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ']("' + relationship + '", ' + tableName[0].lower() + tableName[1:] + '.Id))\n'  +
+                           #Current assumed behavior is to check the first occurrence of the relationship table match. 
+                           #If need be we can add more advanced tracking for how one-to-many and many-to-one linkages happen
+                           #if more than one binding needs to happen between tables, but that's likely an indicationthat things 
+                           #should be a separate mapping table anyways. This will likely stay, but mentioning just in case.
+                    '      included' + relationship + 's, err = services.Get' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + 's(serviceContext, contextProviders.ProduceGetArgs[types.' + typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"] + ']("' + next(filter(lambda x: tableName in x, list(inverseRelationship for inverseRelationship in typeMetas[typeMeta['relationships']['oneToMany'][relationship]["correspondingTable"]]['relationships']['manyToOne']))) + '", ' + tableName[0].lower() + tableName[1:] + '.Id))\n'  +
                     '      if err != nil {\n'  +
                     '         return nil, err\n' + 
                     '      }\n' +
@@ -532,15 +537,15 @@ def produceServiceFileForType(tableName: str, typeMeta: dict):
                 ]), 
                 '}',
                 '',
-                'var returnPtr *types.' + tableName,
-	            'result := ' + contextArgName + '.DatabaseContext.Table("' + tableName + '").First(returnPtr, ' + argsArgName + '.Id)',
+                'var returnBuffer types.' + tableName,
+	            'result := ' + contextArgName + '.DatabaseContext.Table("' + tableName + '").First(&returnBuffer, ' + argsArgName + '.Id)',
                 'if result.Error != nil {',
                 *indentLineBlock([
                     'return nil, result.Error',
                 ]),
                 '}',
                 '',
-                'return returnPtr, nil',    
+                'return &returnBuffer, nil',    
             ]),
             '}'
         ]

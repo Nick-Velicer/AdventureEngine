@@ -53,13 +53,13 @@ func GetDomainClassById(context *contextProviders.ServiceContext, args *contextP
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainClass
-   result := context.DatabaseContext.Table("DomainClass").First(returnPtr, args.Id)
+   var returnBuffer types.DomainClass
+   result := context.DatabaseContext.Table("DomainClass").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainClass(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainClass]) (contextProviders.SaveReturn[types.DomainClass], error) {

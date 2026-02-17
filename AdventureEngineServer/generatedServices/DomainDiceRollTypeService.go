@@ -53,13 +53,13 @@ func GetDomainDiceRollTypeById(context *contextProviders.ServiceContext, args *c
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainDiceRollType
-   result := context.DatabaseContext.Table("DomainDiceRollType").First(returnPtr, args.Id)
+   var returnBuffer types.DomainDiceRollType
+   result := context.DatabaseContext.Table("DomainDiceRollType").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainDiceRollType(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainDiceRollType]) (contextProviders.SaveReturn[types.DomainDiceRollType], error) {

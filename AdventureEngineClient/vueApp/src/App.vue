@@ -2,25 +2,30 @@
 import Layout from './components/Layout.vue';
 import TestItemDisplay from './components/TestItemDisplay.vue';
 import "./main.css"
-import { NConfigProvider, NMessageProvider } from 'naive-ui';
+import { NConfigProvider, NMessageProvider, NModalProvider } from 'naive-ui';
 import "../../theme/generated/variables.css";
 import type { routes } from './utils/routes';
 import { useRoute } from 'vue-router';
-import PageTransitionProvider from './components/PageTransitionProvider.vue';
+import PageTransitionProvider from './providers/PageTransitionProvider.vue';
+import SessionGuardProvider from './providers/SessionGuardProvider.vue';
 
 </script>
 
 <template>
     <NMessageProvider placement="top-right">
-        <NConfigProvider>
-            <Layout>
-                <RouterView v-slot="{ Component, route }">
-                    <PageTransitionProvider>
-                        <Component :is="Component" :key="route.path"/>
-                    </PageTransitionProvider>
-                </RouterView>
-            </Layout>
-        </NConfigProvider>
+        <NModalProvider> 
+            <NConfigProvider>
+                <Layout>
+                    <RouterView v-slot="{ Component, route }">
+                        <SessionGuardProvider>
+                            <PageTransitionProvider>
+                                <Component :is="Component" :key="route.path"/>
+                            </PageTransitionProvider>
+                        </SessionGuardProvider>
+                    </RouterView>
+                </Layout>
+            </NConfigProvider>
+        </NModalProvider>
     </NMessageProvider>
 </template>
 

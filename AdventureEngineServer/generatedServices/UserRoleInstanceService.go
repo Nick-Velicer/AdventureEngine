@@ -53,13 +53,13 @@ func GetUserRoleInstanceById(context *contextProviders.ServiceContext, args *con
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.UserRoleInstance
-   result := context.DatabaseContext.Table("UserRoleInstance").First(returnPtr, args.Id)
+   var returnBuffer types.UserRoleInstance
+   result := context.DatabaseContext.Table("UserRoleInstance").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveUserRoleInstance(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.UserRoleInstance]) (contextProviders.SaveReturn[types.UserRoleInstance], error) {

@@ -53,13 +53,13 @@ func GetDomainStaticEffectById(context *contextProviders.ServiceContext, args *c
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainStaticEffect
-   result := context.DatabaseContext.Table("DomainStaticEffect").First(returnPtr, args.Id)
+   var returnBuffer types.DomainStaticEffect
+   result := context.DatabaseContext.Table("DomainStaticEffect").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainStaticEffect(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainStaticEffect]) (contextProviders.SaveReturn[types.DomainStaticEffect], error) {

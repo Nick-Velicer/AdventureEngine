@@ -92,7 +92,7 @@ func DomainDiceRollTypeToDomainDiceRollTypeDTO(context *contextProviders.DTOCont
       includedVariants__DomainDiceRollSubTypes = []types.DomainDiceRollSubType{}
       fmt.Println("Hit circular catch case for table DomainDiceRollSubType")
    } else {
-      includedVariants__DomainDiceRollSubTypes, err = services.GetDomainDiceRollSubTypes(serviceContext, contextProviders.ProduceGetArgs[types.DomainDiceRollSubType]("Variants__DomainDiceRollSubType", domainDiceRollType.Id))
+      includedVariants__DomainDiceRollSubTypes, err = services.GetDomainDiceRollSubTypes(serviceContext, contextProviders.ProduceGetArgs[types.DomainDiceRollSubType]("SuperType__DomainDiceRollType", domainDiceRollType.Id))
       if err != nil {
          return nil, err
       }

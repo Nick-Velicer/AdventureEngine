@@ -53,13 +53,13 @@ func GetQuantifierConditionalMapById(context *contextProviders.ServiceContext, a
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.QuantifierConditionalMap
-   result := context.DatabaseContext.Table("QuantifierConditionalMap").First(returnPtr, args.Id)
+   var returnBuffer types.QuantifierConditionalMap
+   result := context.DatabaseContext.Table("QuantifierConditionalMap").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveQuantifierConditionalMap(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.QuantifierConditionalMap]) (contextProviders.SaveReturn[types.QuantifierConditionalMap], error) {

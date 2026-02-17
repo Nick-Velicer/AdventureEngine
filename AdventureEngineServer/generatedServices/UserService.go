@@ -53,13 +53,13 @@ func GetUserById(context *contextProviders.ServiceContext, args *contextProvider
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.User
-   result := context.DatabaseContext.Table("User").First(returnPtr, args.Id)
+   var returnBuffer types.User
+   result := context.DatabaseContext.Table("User").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveUser(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.User]) (contextProviders.SaveReturn[types.User], error) {

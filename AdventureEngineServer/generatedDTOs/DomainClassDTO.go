@@ -126,7 +126,7 @@ func DomainClassToDomainClassDTO(context *contextProviders.DTOContext, domainCla
       includedPrimaryStats__ClassPrimaryAbilitys = []types.ClassPrimaryAbility{}
       fmt.Println("Hit circular catch case for table ClassPrimaryAbility")
    } else {
-      includedPrimaryStats__ClassPrimaryAbilitys, err = services.GetClassPrimaryAbilitys(serviceContext, contextProviders.ProduceGetArgs[types.ClassPrimaryAbility]("PrimaryStats__ClassPrimaryAbility", domainClass.Id))
+      includedPrimaryStats__ClassPrimaryAbilitys, err = services.GetClassPrimaryAbilitys(serviceContext, contextProviders.ProduceGetArgs[types.ClassPrimaryAbility]("Class__DomainClass", domainClass.Id))
       if err != nil {
          return nil, err
       }
@@ -140,7 +140,7 @@ func DomainClassToDomainClassDTO(context *contextProviders.DTOContext, domainCla
       includedSaves__ClassSaves = []types.ClassSave{}
       fmt.Println("Hit circular catch case for table ClassSave")
    } else {
-      includedSaves__ClassSaves, err = services.GetClassSaves(serviceContext, contextProviders.ProduceGetArgs[types.ClassSave]("Saves__ClassSave", domainClass.Id))
+      includedSaves__ClassSaves, err = services.GetClassSaves(serviceContext, contextProviders.ProduceGetArgs[types.ClassSave]("Class__DomainClass", domainClass.Id))
       if err != nil {
          return nil, err
       }
@@ -154,7 +154,7 @@ func DomainClassToDomainClassDTO(context *contextProviders.DTOContext, domainCla
       includedSubClasses__DomainSubClasss = []types.DomainSubClass{}
       fmt.Println("Hit circular catch case for table DomainSubClass")
    } else {
-      includedSubClasses__DomainSubClasss, err = services.GetDomainSubClasss(serviceContext, contextProviders.ProduceGetArgs[types.DomainSubClass]("SubClasses__DomainSubClass", domainClass.Id))
+      includedSubClasses__DomainSubClasss, err = services.GetDomainSubClasss(serviceContext, contextProviders.ProduceGetArgs[types.DomainSubClass]("Class__DomainClass", domainClass.Id))
       if err != nil {
          return nil, err
       }

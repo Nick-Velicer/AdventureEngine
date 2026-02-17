@@ -203,6 +203,8 @@ func GetActiveUser(db *gorm.DB, sessionToken string) (*types.User, error) {
 		return nil, err
 	}
 
+	fmt.Println("no error geting claims")
+
 	if claim == nil {
 		return nil, errors.New("Could not determine claim for session token")
 	}
@@ -224,6 +226,8 @@ func GetActiveUser(db *gorm.DB, sessionToken string) (*types.User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("Got here")
 
 	return user, nil
 }

@@ -57,9 +57,11 @@ function getActiveTransition(): typeof spatialTransitions[number] | undefined {
 
     const currentRouteBase = extractRouteBase(currentPath);
     const previousRouteBase = extractRouteBase(previousPath);
+    
+    if (transitionNodes[previousRouteBase] == undefined) {
+        return;
+    }
 
-    console.log("Calculated transition: ");
-    console.log(previousRouteBase + " going " + transitionNodes[previousRouteBase][currentRouteBase] + " to " + currentRouteBase);
     return transitionNodes[previousRouteBase][currentRouteBase];
 }
 

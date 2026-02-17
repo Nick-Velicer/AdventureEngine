@@ -2,6 +2,7 @@ package customControllers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -110,29 +111,39 @@ func GetActiveUser(context *contextProviders.CustomControllerContext[types.User,
 
 	userBuffer := &types.User{}
 
-	userBuffer, err = customServices.GetActiveUser(context.DatabaseContext, sessionToken)
+	fmt.Println("finished init")
 
-	if userBuffer == nil {
-		context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("Could not retrieve a corresponding user for provided session token"))
-		return
-	}
+	userBuffer, err = customServices.GetActiveUser(context.DatabaseContext, sessionToken)
 
 	if err != nil {
 		context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
+	fmt.Println("no error retrieving")
+
+	if userBuffer == nil {
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("Could not retrieve a corresponding user for provided session token"))
+		return
+	}
+
+	fmt.Println("user buffer exists")
+
 	userDTOBuffer, err := context.DTOConverter(userBuffer)
 
 	if err != nil {
-		context.RequestContext.IndentedJSON(http.StatusInternalServerError, err)
+		context.RequestContext.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	fmt.Println("no dto error")
 
 	if userDTOBuffer == nil {
 		context.RequestContext.IndentedJSON(http.StatusInternalServerError, errors.New("Failed to convert from User to User DTO"))
 		return
 	}
+
+	fmt.Println("dto buffer exists")
 
 	context.RequestContext.IndentedJSON(http.StatusOK, *userDTOBuffer)
 }

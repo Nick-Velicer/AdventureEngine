@@ -53,13 +53,13 @@ func GetQuantifierById(context *contextProviders.ServiceContext, args *contextPr
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.Quantifier
-   result := context.DatabaseContext.Table("Quantifier").First(returnPtr, args.Id)
+   var returnBuffer types.Quantifier
+   result := context.DatabaseContext.Table("Quantifier").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveQuantifier(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.Quantifier]) (contextProviders.SaveReturn[types.Quantifier], error) {

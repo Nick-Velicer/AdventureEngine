@@ -53,13 +53,13 @@ func GetClassSaveById(context *contextProviders.ServiceContext, args *contextPro
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.ClassSave
-   result := context.DatabaseContext.Table("ClassSave").First(returnPtr, args.Id)
+   var returnBuffer types.ClassSave
+   result := context.DatabaseContext.Table("ClassSave").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveClassSave(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.ClassSave]) (contextProviders.SaveReturn[types.ClassSave], error) {

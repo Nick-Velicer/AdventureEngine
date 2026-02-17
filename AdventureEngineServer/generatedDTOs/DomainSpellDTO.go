@@ -141,7 +141,7 @@ func DomainSpellToDomainSpellDTO(context *contextProviders.DTOContext, domainSpe
       includedClasses__ClassSpells = []types.ClassSpell{}
       fmt.Println("Hit circular catch case for table ClassSpell")
    } else {
-      includedClasses__ClassSpells, err = services.GetClassSpells(serviceContext, contextProviders.ProduceGetArgs[types.ClassSpell]("Classes__ClassSpell", domainSpell.Id))
+      includedClasses__ClassSpells, err = services.GetClassSpells(serviceContext, contextProviders.ProduceGetArgs[types.ClassSpell]("Spell__DomainSpell", domainSpell.Id))
       if err != nil {
          return nil, err
       }

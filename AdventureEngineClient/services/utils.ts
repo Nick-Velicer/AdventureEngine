@@ -39,10 +39,13 @@ export function produceFilterParamsFromExpression<T extends SchemaObject>(filter
 //we don't "succeed" a service response on a non-2xx status
 export async function validateApiResponse(response: Response): Promise<string | undefined> {
 
+    //Not ideal to duplicate, but this is a quick way to read/parse 
+    //outside the service context without using up the response stream
+    const localResponseClone = response.clone();
     try {
-        if (!(response.status?.toString()?.startsWith("2"))) {
+        if (!(localResponseClone.status?.toString()?.startsWith("2"))) {
             
-            const errorText = await response.json();
+            const errorText = await localResponseClone.json();
 
             if (typeof errorText != "string") {
                 throw("Error determining api error string");

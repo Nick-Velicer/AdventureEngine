@@ -53,13 +53,13 @@ func GetDomainClassTraitById(context *contextProviders.ServiceContext, args *con
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainClassTrait
-   result := context.DatabaseContext.Table("DomainClassTrait").First(returnPtr, args.Id)
+   var returnBuffer types.DomainClassTrait
+   result := context.DatabaseContext.Table("DomainClassTrait").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainClassTrait(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainClassTrait]) (contextProviders.SaveReturn[types.DomainClassTrait], error) {

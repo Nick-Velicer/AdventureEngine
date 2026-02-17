@@ -92,7 +92,7 @@ func DomainActionToDomainActionDTO(context *contextProviders.DTOContext, domainA
       includedQuantifiers__Quantifiers = []types.Quantifier{}
       fmt.Println("Hit circular catch case for table Quantifier")
    } else {
-      includedQuantifiers__Quantifiers, err = services.GetQuantifiers(serviceContext, contextProviders.ProduceGetArgs[types.Quantifier]("Quantifiers__Quantifier", domainAction.Id))
+      includedQuantifiers__Quantifiers, err = services.GetQuantifiers(serviceContext, contextProviders.ProduceGetArgs[types.Quantifier]("Parent__DomainAction", domainAction.Id))
       if err != nil {
          return nil, err
       }

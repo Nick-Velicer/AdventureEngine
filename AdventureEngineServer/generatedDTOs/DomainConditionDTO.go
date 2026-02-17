@@ -92,7 +92,7 @@ func DomainConditionToDomainConditionDTO(context *contextProviders.DTOContext, d
       includedQuantifiers__Quantifiers = []types.Quantifier{}
       fmt.Println("Hit circular catch case for table Quantifier")
    } else {
-      includedQuantifiers__Quantifiers, err = services.GetQuantifiers(serviceContext, contextProviders.ProduceGetArgs[types.Quantifier]("Quantifiers__Quantifier", domainCondition.Id))
+      includedQuantifiers__Quantifiers, err = services.GetQuantifiers(serviceContext, contextProviders.ProduceGetArgs[types.Quantifier]("Parent__DomainCondition", domainCondition.Id))
       if err != nil {
          return nil, err
       }

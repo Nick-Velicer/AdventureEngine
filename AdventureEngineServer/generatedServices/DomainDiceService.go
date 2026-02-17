@@ -53,13 +53,13 @@ func GetDomainDiceById(context *contextProviders.ServiceContext, args *contextPr
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainDice
-   result := context.DatabaseContext.Table("DomainDice").First(returnPtr, args.Id)
+   var returnBuffer types.DomainDice
+   result := context.DatabaseContext.Table("DomainDice").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainDice(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainDice]) (contextProviders.SaveReturn[types.DomainDice], error) {

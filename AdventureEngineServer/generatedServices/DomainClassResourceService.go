@@ -53,13 +53,13 @@ func GetDomainClassResourceById(context *contextProviders.ServiceContext, args *
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainClassResource
-   result := context.DatabaseContext.Table("DomainClassResource").First(returnPtr, args.Id)
+   var returnBuffer types.DomainClassResource
+   result := context.DatabaseContext.Table("DomainClassResource").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainClassResource(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainClassResource]) (contextProviders.SaveReturn[types.DomainClassResource], error) {

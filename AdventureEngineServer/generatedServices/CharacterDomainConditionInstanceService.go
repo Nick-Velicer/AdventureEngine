@@ -53,13 +53,13 @@ func GetCharacterDomainConditionInstanceById(context *contextProviders.ServiceCo
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.CharacterDomainConditionInstance
-   result := context.DatabaseContext.Table("CharacterDomainConditionInstance").First(returnPtr, args.Id)
+   var returnBuffer types.CharacterDomainConditionInstance
+   result := context.DatabaseContext.Table("CharacterDomainConditionInstance").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveCharacterDomainConditionInstance(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.CharacterDomainConditionInstance]) (contextProviders.SaveReturn[types.CharacterDomainConditionInstance], error) {

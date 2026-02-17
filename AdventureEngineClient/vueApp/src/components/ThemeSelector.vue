@@ -3,7 +3,6 @@ import { NSwitch } from 'naive-ui'
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 
 const store = composedAppInjectionContexts.store();
-console.log(store.reactiveThemeElement('Name') === 'Dark');
 
 </script>
 

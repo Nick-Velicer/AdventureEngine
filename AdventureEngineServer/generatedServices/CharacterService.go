@@ -53,13 +53,13 @@ func GetCharacterById(context *contextProviders.ServiceContext, args *contextPro
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.Character
-   result := context.DatabaseContext.Table("Character").First(returnPtr, args.Id)
+   var returnBuffer types.Character
+   result := context.DatabaseContext.Table("Character").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveCharacter(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.Character]) (contextProviders.SaveReturn[types.Character], error) {

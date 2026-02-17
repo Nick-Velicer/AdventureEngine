@@ -66,7 +66,10 @@ export async function loginUser(username: string, password: string): Promise<voi
 export async function getActiveUser(): Promise<User> {
    try {
       const response = await fetch("http://localhost:8080/getActiveUser", { credentials: "include"});
-      validateApiResponse(response);
+      const errorResponse = await validateApiResponse(response);
+      if (typeof errorResponse === "string") {
+         throw errorResponse;
+      }
       const returnObj = await response.json();
       return returnObj;
    }

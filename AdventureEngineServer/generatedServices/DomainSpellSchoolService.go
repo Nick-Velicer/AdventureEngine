@@ -53,13 +53,13 @@ func GetDomainSpellSchoolById(context *contextProviders.ServiceContext, args *co
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainSpellSchool
-   result := context.DatabaseContext.Table("DomainSpellSchool").First(returnPtr, args.Id)
+   var returnBuffer types.DomainSpellSchool
+   result := context.DatabaseContext.Table("DomainSpellSchool").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainSpellSchool(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainSpellSchool]) (contextProviders.SaveReturn[types.DomainSpellSchool], error) {

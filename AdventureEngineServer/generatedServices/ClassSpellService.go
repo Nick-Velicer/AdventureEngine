@@ -53,13 +53,13 @@ func GetClassSpellById(context *contextProviders.ServiceContext, args *contextPr
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.ClassSpell
-   result := context.DatabaseContext.Table("ClassSpell").First(returnPtr, args.Id)
+   var returnBuffer types.ClassSpell
+   result := context.DatabaseContext.Table("ClassSpell").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveClassSpell(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.ClassSpell]) (contextProviders.SaveReturn[types.ClassSpell], error) {

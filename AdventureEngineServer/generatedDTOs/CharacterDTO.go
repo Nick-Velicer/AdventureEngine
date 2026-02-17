@@ -137,7 +137,7 @@ func CharacterToCharacterDTO(context *contextProviders.DTOContext, character *ty
       includedStats__CharacterDomainCharacterStatInstances = []types.CharacterDomainCharacterStatInstance{}
       fmt.Println("Hit circular catch case for table CharacterDomainCharacterStatInstance")
    } else {
-      includedStats__CharacterDomainCharacterStatInstances, err = services.GetCharacterDomainCharacterStatInstances(serviceContext, contextProviders.ProduceGetArgs[types.CharacterDomainCharacterStatInstance]("Stats__CharacterDomainCharacterStatInstance", character.Id))
+      includedStats__CharacterDomainCharacterStatInstances, err = services.GetCharacterDomainCharacterStatInstances(serviceContext, contextProviders.ProduceGetArgs[types.CharacterDomainCharacterStatInstance]("Character__Character", character.Id))
       if err != nil {
          return nil, err
       }
@@ -151,7 +151,7 @@ func CharacterToCharacterDTO(context *contextProviders.DTOContext, character *ty
       includedSubClasses__CharacterDomainSubClassInstances = []types.CharacterDomainSubClassInstance{}
       fmt.Println("Hit circular catch case for table CharacterDomainSubClassInstance")
    } else {
-      includedSubClasses__CharacterDomainSubClassInstances, err = services.GetCharacterDomainSubClassInstances(serviceContext, contextProviders.ProduceGetArgs[types.CharacterDomainSubClassInstance]("SubClasses__CharacterDomainSubClassInstance", character.Id))
+      includedSubClasses__CharacterDomainSubClassInstances, err = services.GetCharacterDomainSubClassInstances(serviceContext, contextProviders.ProduceGetArgs[types.CharacterDomainSubClassInstance]("Character__Character", character.Id))
       if err != nil {
          return nil, err
       }

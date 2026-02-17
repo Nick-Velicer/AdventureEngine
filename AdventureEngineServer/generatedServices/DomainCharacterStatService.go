@@ -53,13 +53,13 @@ func GetDomainCharacterStatById(context *contextProviders.ServiceContext, args *
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.DomainCharacterStat
-   result := context.DatabaseContext.Table("DomainCharacterStat").First(returnPtr, args.Id)
+   var returnBuffer types.DomainCharacterStat
+   result := context.DatabaseContext.Table("DomainCharacterStat").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveDomainCharacterStat(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.DomainCharacterStat]) (contextProviders.SaveReturn[types.DomainCharacterStat], error) {

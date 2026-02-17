@@ -53,13 +53,13 @@ func GetEvaluatedConditionalById(context *contextProviders.ServiceContext, args 
       return nil, errors.New("Cannot perform get by id action on nil database context")
    }
    
-   var returnPtr *types.EvaluatedConditional
-   result := context.DatabaseContext.Table("EvaluatedConditional").First(returnPtr, args.Id)
+   var returnBuffer types.EvaluatedConditional
+   result := context.DatabaseContext.Table("EvaluatedConditional").First(&returnBuffer, args.Id)
    if result.Error != nil {
       return nil, result.Error
    }
    
-   return returnPtr, nil
+   return &returnBuffer, nil
 }
 
 func SaveEvaluatedConditional(context *contextProviders.ServiceContext, args *contextProviders.SaveArgs[types.EvaluatedConditional]) (contextProviders.SaveReturn[types.EvaluatedConditional], error) {

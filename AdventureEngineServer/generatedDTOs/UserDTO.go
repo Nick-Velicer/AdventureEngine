@@ -94,7 +94,7 @@ func UserToUserDTO(context *contextProviders.DTOContext, user *types.User) (*Use
       includedRoles__UserRoleInstances = []types.UserRoleInstance{}
       fmt.Println("Hit circular catch case for table UserRoleInstance")
    } else {
-      includedRoles__UserRoleInstances, err = services.GetUserRoleInstances(serviceContext, contextProviders.ProduceGetArgs[types.UserRoleInstance]("Roles__UserRoleInstance", user.Id))
+      includedRoles__UserRoleInstances, err = services.GetUserRoleInstances(serviceContext, contextProviders.ProduceGetArgs[types.UserRoleInstance]("ResourceOwner__User", user.Id))
       if err != nil {
          return nil, err
       }
