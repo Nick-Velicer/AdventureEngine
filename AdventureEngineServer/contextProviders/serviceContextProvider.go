@@ -3,6 +3,7 @@ package contextProviders
 import (
 	types "AdventureEngineServer/generatedDatabaseTypes"
 	utils "AdventureEngineServer/utils"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -61,7 +62,7 @@ func ProduceGetArgs[T any](relationshipField string, fk *int) *GetArgs[T] {
 	filter := utils.FilterExpression{
 		Field:       relationshipField,
 		Operator:    "eq",
-		FilterValue: string(rune(*fk)),
+		FilterValue: strconv.Itoa(*fk),
 	}
 
 	return &GetArgs[T]{

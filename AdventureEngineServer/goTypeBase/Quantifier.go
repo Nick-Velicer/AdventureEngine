@@ -34,6 +34,14 @@ type QuantifierJson struct {
 	// AutomaticFailure corresponds to the JSON schema field "AutomaticFailure".
 	AutomaticFailure *bool `json:"AutomaticFailure,omitempty" yaml:"AutomaticFailure,omitempty" mapstructure:"AutomaticFailure,omitempty"`
 
+	// ConditionsEvaluatedConditional corresponds to the JSON schema field
+	// "Conditions__EvaluatedConditional".
+	ConditionsEvaluatedConditional []float64 `json:"Conditions__EvaluatedConditional,omitempty" yaml:"Conditions__EvaluatedConditional,omitempty" mapstructure:"Conditions__EvaluatedConditional,omitempty"`
+
+	// CostsQuantifierCostSpecifier corresponds to the JSON schema field
+	// "Costs__QuantifierCostSpecifier".
+	CostsQuantifierCostSpecifier []float64 `json:"Costs__QuantifierCostSpecifier,omitempty" yaml:"Costs__QuantifierCostSpecifier,omitempty" mapstructure:"Costs__QuantifierCostSpecifier,omitempty"`
+
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
 
@@ -46,14 +54,8 @@ type QuantifierJson struct {
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
-	// GivesAction corresponds to the JSON schema field "GivesAction".
-	GivesAction *bool `json:"GivesAction,omitempty" yaml:"GivesAction,omitempty" mapstructure:"GivesAction,omitempty"`
-
 	// GivesAdvantage corresponds to the JSON schema field "GivesAdvantage".
 	GivesAdvantage *bool `json:"GivesAdvantage,omitempty" yaml:"GivesAdvantage,omitempty" mapstructure:"GivesAdvantage,omitempty"`
-
-	// GivesBonusAction corresponds to the JSON schema field "GivesBonusAction".
-	GivesBonusAction *bool `json:"GivesBonusAction,omitempty" yaml:"GivesBonusAction,omitempty" mapstructure:"GivesBonusAction,omitempty"`
 
 	// GivesDisadvantage corresponds to the JSON schema field "GivesDisadvantage".
 	GivesDisadvantage *bool `json:"GivesDisadvantage,omitempty" yaml:"GivesDisadvantage,omitempty" mapstructure:"GivesDisadvantage,omitempty"`
@@ -70,48 +72,11 @@ type QuantifierJson struct {
 	// Id corresponds to the JSON schema field "Id".
 	Id *float64 `json:"Id,omitempty" yaml:"Id,omitempty" mapstructure:"Id,omitempty"`
 
-	// ImpactsMovementAmount corresponds to the JSON schema field
-	// "ImpactsMovementAmount".
-	ImpactsMovementAmount *bool `json:"ImpactsMovementAmount,omitempty" yaml:"ImpactsMovementAmount,omitempty" mapstructure:"ImpactsMovementAmount,omitempty"`
-
 	// IntoInventory corresponds to the JSON schema field "IntoInventory".
 	IntoInventory *bool `json:"IntoInventory,omitempty" yaml:"IntoInventory,omitempty" mapstructure:"IntoInventory,omitempty"`
 
-	// IsAction corresponds to the JSON schema field "IsAction".
-	IsAction *bool `json:"IsAction,omitempty" yaml:"IsAction,omitempty" mapstructure:"IsAction,omitempty"`
-
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
-
-	// IsBonusAction corresponds to the JSON schema field "IsBonusAction".
-	IsBonusAction *bool `json:"IsBonusAction,omitempty" yaml:"IsBonusAction,omitempty" mapstructure:"IsBonusAction,omitempty"`
-
-	// Level1SpellSlots corresponds to the JSON schema field "Level1SpellSlots".
-	Level1SpellSlots *float64 `json:"Level1SpellSlots,omitempty" yaml:"Level1SpellSlots,omitempty" mapstructure:"Level1SpellSlots,omitempty"`
-
-	// Level2SpellSlots corresponds to the JSON schema field "Level2SpellSlots".
-	Level2SpellSlots *float64 `json:"Level2SpellSlots,omitempty" yaml:"Level2SpellSlots,omitempty" mapstructure:"Level2SpellSlots,omitempty"`
-
-	// Level3SpellSlots corresponds to the JSON schema field "Level3SpellSlots".
-	Level3SpellSlots *float64 `json:"Level3SpellSlots,omitempty" yaml:"Level3SpellSlots,omitempty" mapstructure:"Level3SpellSlots,omitempty"`
-
-	// Level4SpellSlots corresponds to the JSON schema field "Level4SpellSlots".
-	Level4SpellSlots *float64 `json:"Level4SpellSlots,omitempty" yaml:"Level4SpellSlots,omitempty" mapstructure:"Level4SpellSlots,omitempty"`
-
-	// Level5SpellSlots corresponds to the JSON schema field "Level5SpellSlots".
-	Level5SpellSlots *float64 `json:"Level5SpellSlots,omitempty" yaml:"Level5SpellSlots,omitempty" mapstructure:"Level5SpellSlots,omitempty"`
-
-	// Level6SpellSlots corresponds to the JSON schema field "Level6SpellSlots".
-	Level6SpellSlots *float64 `json:"Level6SpellSlots,omitempty" yaml:"Level6SpellSlots,omitempty" mapstructure:"Level6SpellSlots,omitempty"`
-
-	// Level7SpellSlots corresponds to the JSON schema field "Level7SpellSlots".
-	Level7SpellSlots *float64 `json:"Level7SpellSlots,omitempty" yaml:"Level7SpellSlots,omitempty" mapstructure:"Level7SpellSlots,omitempty"`
-
-	// Level8SpellSlots corresponds to the JSON schema field "Level8SpellSlots".
-	Level8SpellSlots *float64 `json:"Level8SpellSlots,omitempty" yaml:"Level8SpellSlots,omitempty" mapstructure:"Level8SpellSlots,omitempty"`
-
-	// Level9SpellSlots corresponds to the JSON schema field "Level9SpellSlots".
-	Level9SpellSlots *float64 `json:"Level9SpellSlots,omitempty" yaml:"Level9SpellSlots,omitempty" mapstructure:"Level9SpellSlots,omitempty"`
 
 	// LevelMaximumRequirement corresponds to the JSON schema field
 	// "LevelMaximumRequirement".
@@ -221,4 +186,8 @@ type QuantifierJson struct {
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
+
+	// VariantDomainQuantifierVariant corresponds to the JSON schema field
+	// "Variant__DomainQuantifierVariant".
+	VariantDomainQuantifierVariant *float64 `json:"Variant__DomainQuantifierVariant,omitempty" yaml:"Variant__DomainQuantifierVariant,omitempty" mapstructure:"Variant__DomainQuantifierVariant,omitempty"`
 }

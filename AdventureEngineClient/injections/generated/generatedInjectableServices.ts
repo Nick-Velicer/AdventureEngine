@@ -5,25 +5,36 @@
 import * as CampaignService from "../../services/generated/CampaignService";
 import * as CharacterService from "../../services/generated/CharacterService";
 import * as CharacterDomainCharacterStatInstanceService from "../../services/generated/CharacterDomainCharacterStatInstanceService";
+import * as CharacterDomainConditionInstanceService from "../../services/generated/CharacterDomainConditionInstanceService";
+import * as CharacterDomainSubClassInstanceService from "../../services/generated/CharacterDomainSubClassInstanceService";
 import * as ClassPrimaryAbilityService from "../../services/generated/ClassPrimaryAbilityService";
 import * as ClassSaveService from "../../services/generated/ClassSaveService";
 import * as ClassSpellService from "../../services/generated/ClassSpellService";
 import * as DomainActionService from "../../services/generated/DomainActionService";
+import * as DomainAppRoleService from "../../services/generated/DomainAppRoleService";
 import * as DomainCharacterStatService from "../../services/generated/DomainCharacterStatService";
 import * as DomainClassService from "../../services/generated/DomainClassService";
+import * as DomainClassResourceService from "../../services/generated/DomainClassResourceService";
+import * as DomainClassTraitService from "../../services/generated/DomainClassTraitService";
 import * as DomainConditionService from "../../services/generated/DomainConditionService";
 import * as DomainCreatureTypeService from "../../services/generated/DomainCreatureTypeService";
 import * as DomainDamageTypeService from "../../services/generated/DomainDamageTypeService";
 import * as DomainDiceService from "../../services/generated/DomainDiceService";
+import * as DomainDiceRollSubTypeService from "../../services/generated/DomainDiceRollSubTypeService";
 import * as DomainDiceRollTypeService from "../../services/generated/DomainDiceRollTypeService";
 import * as DomainItemService from "../../services/generated/DomainItemService";
+import * as DomainQuantifierVariantService from "../../services/generated/DomainQuantifierVariantService";
 import * as DomainSizeService from "../../services/generated/DomainSizeService";
 import * as DomainSpeciesService from "../../services/generated/DomainSpeciesService";
 import * as DomainSpellService from "../../services/generated/DomainSpellService";
 import * as DomainSpellSchoolService from "../../services/generated/DomainSpellSchoolService";
 import * as DomainStaticEffectService from "../../services/generated/DomainStaticEffectService";
 import * as DomainSubClassService from "../../services/generated/DomainSubClassService";
+import * as EvaluatedConditionalService from "../../services/generated/EvaluatedConditionalService";
 import * as QuantifierService from "../../services/generated/QuantifierService";
+import * as QuantifierCostSpecifierService from "../../services/generated/QuantifierCostSpecifierService";
+import * as UserService from "../../services/generated/UserService";
+import * as UserRoleInstanceService from "../../services/generated/UserRoleInstanceService";
 
 export const generatedInjectableServices = {
    Campaign: {
@@ -40,6 +51,16 @@ export const generatedInjectableServices = {
       getAllItems: CharacterDomainCharacterStatInstanceService.getCharacterDomainCharacterStatInstances,
       getItemById: CharacterDomainCharacterStatInstanceService.getCharacterDomainCharacterStatInstancebyId,
       saveItem: CharacterDomainCharacterStatInstanceService.saveCharacterDomainCharacterStatInstance
+   },
+   CharacterDomainConditionInstance: {
+      getAllItems: CharacterDomainConditionInstanceService.getCharacterDomainConditionInstances,
+      getItemById: CharacterDomainConditionInstanceService.getCharacterDomainConditionInstancebyId,
+      saveItem: CharacterDomainConditionInstanceService.saveCharacterDomainConditionInstance
+   },
+   CharacterDomainSubClassInstance: {
+      getAllItems: CharacterDomainSubClassInstanceService.getCharacterDomainSubClassInstances,
+      getItemById: CharacterDomainSubClassInstanceService.getCharacterDomainSubClassInstancebyId,
+      saveItem: CharacterDomainSubClassInstanceService.saveCharacterDomainSubClassInstance
    },
    ClassPrimaryAbility: {
       getAllItems: ClassPrimaryAbilityService.getClassPrimaryAbilitys,
@@ -61,6 +82,11 @@ export const generatedInjectableServices = {
       getItemById: DomainActionService.getDomainActionbyId,
       saveItem: DomainActionService.saveDomainAction
    },
+   DomainAppRole: {
+      getAllItems: DomainAppRoleService.getDomainAppRoles,
+      getItemById: DomainAppRoleService.getDomainAppRolebyId,
+      saveItem: DomainAppRoleService.saveDomainAppRole
+   },
    DomainCharacterStat: {
       getAllItems: DomainCharacterStatService.getDomainCharacterStats,
       getItemById: DomainCharacterStatService.getDomainCharacterStatbyId,
@@ -70,6 +96,16 @@ export const generatedInjectableServices = {
       getAllItems: DomainClassService.getDomainClasss,
       getItemById: DomainClassService.getDomainClassbyId,
       saveItem: DomainClassService.saveDomainClass
+   },
+   DomainClassResource: {
+      getAllItems: DomainClassResourceService.getDomainClassResources,
+      getItemById: DomainClassResourceService.getDomainClassResourcebyId,
+      saveItem: DomainClassResourceService.saveDomainClassResource
+   },
+   DomainClassTrait: {
+      getAllItems: DomainClassTraitService.getDomainClassTraits,
+      getItemById: DomainClassTraitService.getDomainClassTraitbyId,
+      saveItem: DomainClassTraitService.saveDomainClassTrait
    },
    DomainCondition: {
       getAllItems: DomainConditionService.getDomainConditions,
@@ -91,6 +127,11 @@ export const generatedInjectableServices = {
       getItemById: DomainDiceService.getDomainDicebyId,
       saveItem: DomainDiceService.saveDomainDice
    },
+   DomainDiceRollSubType: {
+      getAllItems: DomainDiceRollSubTypeService.getDomainDiceRollSubTypes,
+      getItemById: DomainDiceRollSubTypeService.getDomainDiceRollSubTypebyId,
+      saveItem: DomainDiceRollSubTypeService.saveDomainDiceRollSubType
+   },
    DomainDiceRollType: {
       getAllItems: DomainDiceRollTypeService.getDomainDiceRollTypes,
       getItemById: DomainDiceRollTypeService.getDomainDiceRollTypebyId,
@@ -100,6 +141,11 @@ export const generatedInjectableServices = {
       getAllItems: DomainItemService.getDomainItems,
       getItemById: DomainItemService.getDomainItembyId,
       saveItem: DomainItemService.saveDomainItem
+   },
+   DomainQuantifierVariant: {
+      getAllItems: DomainQuantifierVariantService.getDomainQuantifierVariants,
+      getItemById: DomainQuantifierVariantService.getDomainQuantifierVariantbyId,
+      saveItem: DomainQuantifierVariantService.saveDomainQuantifierVariant
    },
    DomainSize: {
       getAllItems: DomainSizeService.getDomainSizes,
@@ -131,9 +177,29 @@ export const generatedInjectableServices = {
       getItemById: DomainSubClassService.getDomainSubClassbyId,
       saveItem: DomainSubClassService.saveDomainSubClass
    },
+   EvaluatedConditional: {
+      getAllItems: EvaluatedConditionalService.getEvaluatedConditionals,
+      getItemById: EvaluatedConditionalService.getEvaluatedConditionalbyId,
+      saveItem: EvaluatedConditionalService.saveEvaluatedConditional
+   },
    Quantifier: {
       getAllItems: QuantifierService.getQuantifiers,
       getItemById: QuantifierService.getQuantifierbyId,
       saveItem: QuantifierService.saveQuantifier
+   },
+   QuantifierCostSpecifier: {
+      getAllItems: QuantifierCostSpecifierService.getQuantifierCostSpecifiers,
+      getItemById: QuantifierCostSpecifierService.getQuantifierCostSpecifierbyId,
+      saveItem: QuantifierCostSpecifierService.saveQuantifierCostSpecifier
+   },
+   User: {
+      getAllItems: UserService.getUsers,
+      getItemById: UserService.getUserbyId,
+      saveItem: UserService.saveUser
+   },
+   UserRoleInstance: {
+      getAllItems: UserRoleInstanceService.getUserRoleInstances,
+      getItemById: UserRoleInstanceService.getUserRoleInstancebyId,
+      saveItem: UserRoleInstanceService.saveUserRoleInstance
    },
 } as const

@@ -54,6 +54,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getCampaigns",
                   "getCampaignById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -82,9 +84,11 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getCharacters",
                   "getCharacterById",
+                  "getUsers",
                   "getDomainSizes",
                   "getDomainSpeciess",
                   "getCampaigns",
+                  "getUserById",
                   "getDomainSizeById",
                   "getDomainSpeciesById",
                   "getCampaignById",
@@ -116,8 +120,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getCharacterDomainCharacterStatInstances",
                   "getCharacterDomainCharacterStatInstanceById",
+                  "getUsers",
                   "getCharacters",
                   "getDomainCharacterStats",
+                  "getUserById",
                   "getCharacterById",
                   "getDomainCharacterStatById",
                ]);
@@ -148,8 +154,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getCharacterDomainConditionInstances",
                   "getCharacterDomainConditionInstanceById",
+                  "getUsers",
                   "getCharacters",
                   "getDomainConditions",
+                  "getUserById",
                   "getCharacterById",
                   "getDomainConditionById",
                ]);
@@ -180,8 +188,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getCharacterDomainSubClassInstances",
                   "getCharacterDomainSubClassInstanceById",
+                  "getUsers",
                   "getCharacters",
                   "getDomainSubClasss",
+                  "getUserById",
                   "getCharacterById",
                   "getDomainSubClassById",
                ]);
@@ -212,8 +222,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getClassPrimaryAbilitys",
                   "getClassPrimaryAbilityById",
+                  "getUsers",
                   "getDomainClasss",
                   "getDomainCharacterStats",
+                  "getUserById",
                   "getDomainClassById",
                   "getDomainCharacterStatById",
                ]);
@@ -244,8 +256,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getClassSaves",
                   "getClassSaveById",
+                  "getUsers",
                   "getDomainClasss",
                   "getDomainCharacterStats",
+                  "getUserById",
                   "getDomainClassById",
                   "getDomainCharacterStatById",
                ]);
@@ -276,8 +290,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getClassSpells",
                   "getClassSpellById",
+                  "getUsers",
                   "getDomainClasss",
                   "getDomainSpells",
+                  "getUserById",
                   "getDomainClassById",
                   "getDomainSpellById",
                ]);
@@ -308,6 +324,38 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainActions",
                   "getDomainActionById",
+                  "getUsers",
+                  "getUserById",
+               ]);
+            }
+         });
+      },
+      
+      //DomainAppRole
+      useGetDomainAppRolesQuery: <H extends Parameters<typeof services.DomainAppRole.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainAppRoles", params?.toString()],
+            query: () => services.DomainAppRole.getAllItems(...params)
+         });
+      },
+      useGetDomainAppRoleByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getDomainAppRoleById", id.toString()],
+            query: () => services.DomainAppRole.getItemById(id)
+         });
+      },
+      useSaveDomainAppRoleMutation: <H extends Parameters<typeof services.DomainAppRole.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainAppRole.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainAppRoles",
+                  "getDomainAppRoleById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -336,6 +384,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainCharacterStats",
                   "getDomainCharacterStatById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -364,8 +414,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainClasss",
                   "getDomainClassById",
+                  "getUsers",
                   "getDomainDices",
                   "getDomainCharacterStats",
+                  "getUserById",
                   "getDomainDiceById",
                   "getDomainCharacterStatById",
                ]);
@@ -396,8 +448,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainClassResources",
                   "getDomainClassResourceById",
+                  "getUsers",
                   "getDomainClasss",
                   "getDomainSubClasss",
+                  "getUserById",
                   "getDomainClassById",
                   "getDomainSubClassById",
                ]);
@@ -428,8 +482,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainClassTraits",
                   "getDomainClassTraitById",
+                  "getUsers",
                   "getDomainSubClasss",
                   "getDomainClasss",
+                  "getUserById",
                   "getDomainSubClassById",
                   "getDomainClassById",
                ]);
@@ -460,6 +516,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainConditions",
                   "getDomainConditionById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -488,6 +546,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainCreatureTypes",
                   "getDomainCreatureTypeById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -516,6 +576,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainDamageTypes",
                   "getDomainDamageTypeById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -544,6 +606,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainDices",
                   "getDomainDiceById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -572,7 +636,9 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainDiceRollSubTypes",
                   "getDomainDiceRollSubTypeById",
+                  "getUsers",
                   "getDomainDiceRollTypes",
+                  "getUserById",
                   "getDomainDiceRollTypeById",
                ]);
             }
@@ -602,6 +668,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainDiceRollTypes",
                   "getDomainDiceRollTypeById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -630,10 +698,42 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainItems",
                   "getDomainItemById",
+                  "getUsers",
                   "getQuantifiers",
                   "getQuantifiers",
+                  "getUserById",
                   "getQuantifierById",
                   "getQuantifierById",
+               ]);
+            }
+         });
+      },
+      
+      //DomainQuantifierVariant
+      useGetDomainQuantifierVariantsQuery: <H extends Parameters<typeof services.DomainQuantifierVariant.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainQuantifierVariants", params?.toString()],
+            query: () => services.DomainQuantifierVariant.getAllItems(...params)
+         });
+      },
+      useGetDomainQuantifierVariantByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getDomainQuantifierVariantById", id.toString()],
+            query: () => services.DomainQuantifierVariant.getItemById(id)
+         });
+      },
+      useSaveDomainQuantifierVariantMutation: <H extends Parameters<typeof services.DomainQuantifierVariant.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainQuantifierVariant.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainQuantifierVariants",
+                  "getDomainQuantifierVariantById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -662,6 +762,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainSizes",
                   "getDomainSizeById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -690,7 +792,9 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainSpeciess",
                   "getDomainSpeciesById",
+                  "getUsers",
                   "getDomainCreatureTypes",
+                  "getUserById",
                   "getDomainCreatureTypeById",
                ]);
             }
@@ -720,8 +824,10 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainSpells",
                   "getDomainSpellById",
+                  "getUsers",
                   "getDomainSpellSchools",
                   "getDomainDices",
+                  "getUserById",
                   "getDomainSpellSchoolById",
                   "getDomainDiceById",
                ]);
@@ -752,6 +858,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainSpellSchools",
                   "getDomainSpellSchoolById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -780,6 +888,8 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainStaticEffects",
                   "getDomainStaticEffectById",
+                  "getUsers",
+                  "getUserById",
                ]);
             }
          });
@@ -808,7 +918,9 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainSubClasss",
                   "getDomainSubClassById",
+                  "getUsers",
                   "getDomainClasss",
+                  "getUserById",
                   "getDomainClassById",
                ]);
             }
@@ -838,9 +950,11 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getEvaluatedConditionals",
                   "getEvaluatedConditionalById",
+                  "getUsers",
                   "getDomainConditions",
                   "getQuantifiers",
                   "getQuantifiers",
+                  "getUserById",
                   "getDomainConditionById",
                   "getQuantifierById",
                   "getQuantifierById",
@@ -872,6 +986,7 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getQuantifiers",
                   "getQuantifierById",
+                  "getUsers",
                   "getDomainActions",
                   "getDomainStaticEffects",
                   "getDomainConditions",
@@ -886,6 +1001,8 @@ export function composeQueryBuilderContext<
                   "getDomainSpells",
                   "getDomainConditions",
                   "getDomainDamageTypes",
+                  "getDomainQuantifierVariants",
+                  "getUserById",
                   "getDomainActionById",
                   "getDomainStaticEffectById",
                   "getDomainConditionById",
@@ -900,6 +1017,41 @@ export function composeQueryBuilderContext<
                   "getDomainSpellById",
                   "getDomainConditionById",
                   "getDomainDamageTypeById",
+                  "getDomainQuantifierVariantById",
+               ]);
+            }
+         });
+      },
+      
+      //QuantifierCostSpecifier
+      useGetQuantifierCostSpecifiersQuery: <H extends Parameters<typeof services.QuantifierCostSpecifier.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getQuantifierCostSpecifiers", params?.toString()],
+            query: () => services.QuantifierCostSpecifier.getAllItems(...params)
+         });
+      },
+      useGetQuantifierCostSpecifierByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getQuantifierCostSpecifierById", id.toString()],
+            query: () => services.QuantifierCostSpecifier.getItemById(id)
+         });
+      },
+      useSaveQuantifierCostSpecifierMutation: <H extends Parameters<typeof services.QuantifierCostSpecifier.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.QuantifierCostSpecifier.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getQuantifierCostSpecifiers",
+                  "getQuantifierCostSpecifierById",
+                  "getUsers",
+                  "getDomainCharacterStats",
+                  "getQuantifiers",
+                  "getUserById",
+                  "getDomainCharacterStatById",
+                  "getQuantifierById",
                ]);
             }
          });
@@ -928,6 +1080,42 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getUsers",
                   "getUserById",
+                  "getUsers",
+                  "getUserById",
+               ]);
+            }
+         });
+      },
+      
+      //UserRoleInstance
+      useGetUserRoleInstancesQuery: <H extends Parameters<typeof services.UserRoleInstance.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getUserRoleInstances", params?.toString()],
+            query: () => services.UserRoleInstance.getAllItems(...params)
+         });
+      },
+      useGetUserRoleInstanceByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getUserRoleInstanceById", id.toString()],
+            query: () => services.UserRoleInstance.getItemById(id)
+         });
+      },
+      useSaveUserRoleInstanceMutation: <H extends Parameters<typeof services.UserRoleInstance.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.UserRoleInstance.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getUserRoleInstances",
+                  "getUserRoleInstanceById",
+                  "getUsers",
+                  "getUsers",
+                  "getDomainAppRoles",
+                  "getUserById",
+                  "getUserById",
+                  "getDomainAppRoleById",
                ]);
             }
          });

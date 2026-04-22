@@ -35,6 +35,7 @@ export const composedAppInjectionContexts = {
     store: defineStore('globalStore', {
         state: () => stateDefault, 
         getters: stateGetters,
-        actions: stateActions
+        actions: stateActions,
+        persist: true
     })
 } as const

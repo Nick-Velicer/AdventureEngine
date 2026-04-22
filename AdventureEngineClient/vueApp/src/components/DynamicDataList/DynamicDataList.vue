@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T extends keyof typeof AppTypes">
+<script setup lang="ts">
 import { computed, h, watch } from 'vue';
 import { AppTypes } from '../../../../types/appTypes/appTypes';
 import { composedAppInjectionContexts } from '../../../../injections/composedInjectionContexts';
@@ -10,22 +10,20 @@ import DefaultListTemplate from './templates/DefaultListTemplate.vue';
 const store = composedAppInjectionContexts.store();
 
 type PropsType = {
-    table: T
+    table: keyof typeof AppTypes
 }
 
 const props = defineProps<PropsType>();
 
-//Some wack function syntax here, but getting our dynamic query context resolved into a computed value that Vue can reactively update on props change
-const query = computed(() => composedAppInjectionContexts.queries["useGet" + props.table + "sQuery" as keyof typeof composedAppInjectionContexts.queries]());
-
+const query = composedAppInjectionContexts.queries["useGet" + props.table + "sQuery" as keyof typeof composedAppInjectionContexts.queries]();
 
 </script>
 
 <template>
-    <div v-if="query?.value?.isPending === true">
+    <div v-if="query?.isPending === true">
         <Loader variant="icon"/>
     </div>
-    <div v-else-if="query?.value?.state?.data?.length < 0">
+    <div v-else-if="query?.state?.data?.length < 0">
         Unable to retrieve collection for {{ props.table }}
     </div>
     <div v-else class="container scrollWrapper">
@@ -51,7 +49,6 @@ const query = computed(() => composedAppInjectionContexts.queries["useGet" + pro
 
 
     .listItem {
-        height: 100vh;
     }
 
     .defaultItemTitle {

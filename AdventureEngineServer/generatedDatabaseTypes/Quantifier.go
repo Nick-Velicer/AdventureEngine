@@ -34,6 +34,12 @@ type Quantifier struct {
 	// AutomaticFailure corresponds to the JSON schema field "AutomaticFailure".
 	AutomaticFailure *bool `json:"AutomaticFailure" gorm:"column:AutomaticFailure" mapstructure:"AutomaticFailure"`
 
+	// ConditionsEvaluatedConditional corresponds to the JSON schema field
+	// "Conditions__EvaluatedConditional".
+
+	// CostsQuantifierCostSpecifier corresponds to the JSON schema field
+	// "Costs__QuantifierCostSpecifier".
+
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
 
@@ -46,14 +52,8 @@ type Quantifier struct {
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
-	// GivesAction corresponds to the JSON schema field "GivesAction".
-	GivesAction *bool `json:"GivesAction" gorm:"column:GivesAction" mapstructure:"GivesAction"`
-
 	// GivesAdvantage corresponds to the JSON schema field "GivesAdvantage".
 	GivesAdvantage *bool `json:"GivesAdvantage" gorm:"column:GivesAdvantage" mapstructure:"GivesAdvantage"`
-
-	// GivesBonusAction corresponds to the JSON schema field "GivesBonusAction".
-	GivesBonusAction *bool `json:"GivesBonusAction" gorm:"column:GivesBonusAction" mapstructure:"GivesBonusAction"`
 
 	// GivesDisadvantage corresponds to the JSON schema field "GivesDisadvantage".
 	GivesDisadvantage *bool `json:"GivesDisadvantage" gorm:"column:GivesDisadvantage" mapstructure:"GivesDisadvantage"`
@@ -70,48 +70,11 @@ type Quantifier struct {
 	// Id corresponds to the JSON schema field "Id".
 	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
-	// ImpactsMovementAmount corresponds to the JSON schema field
-	// "ImpactsMovementAmount".
-	ImpactsMovementAmount *bool `json:"ImpactsMovementAmount" gorm:"column:ImpactsMovementAmount" mapstructure:"ImpactsMovementAmount"`
-
 	// IntoInventory corresponds to the JSON schema field "IntoInventory".
 	IntoInventory *bool `json:"IntoInventory" gorm:"column:IntoInventory" mapstructure:"IntoInventory"`
 
-	// IsAction corresponds to the JSON schema field "IsAction".
-	IsAction *bool `json:"IsAction" gorm:"column:IsAction" mapstructure:"IsAction"`
-
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
-
-	// IsBonusAction corresponds to the JSON schema field "IsBonusAction".
-	IsBonusAction *bool `json:"IsBonusAction" gorm:"column:IsBonusAction" mapstructure:"IsBonusAction"`
-
-	// Level1SpellSlots corresponds to the JSON schema field "Level1SpellSlots".
-	Level1SpellSlots *float64 `json:"Level1SpellSlots" gorm:"column:Level1SpellSlots" mapstructure:"Level1SpellSlots"`
-
-	// Level2SpellSlots corresponds to the JSON schema field "Level2SpellSlots".
-	Level2SpellSlots *float64 `json:"Level2SpellSlots" gorm:"column:Level2SpellSlots" mapstructure:"Level2SpellSlots"`
-
-	// Level3SpellSlots corresponds to the JSON schema field "Level3SpellSlots".
-	Level3SpellSlots *float64 `json:"Level3SpellSlots" gorm:"column:Level3SpellSlots" mapstructure:"Level3SpellSlots"`
-
-	// Level4SpellSlots corresponds to the JSON schema field "Level4SpellSlots".
-	Level4SpellSlots *float64 `json:"Level4SpellSlots" gorm:"column:Level4SpellSlots" mapstructure:"Level4SpellSlots"`
-
-	// Level5SpellSlots corresponds to the JSON schema field "Level5SpellSlots".
-	Level5SpellSlots *float64 `json:"Level5SpellSlots" gorm:"column:Level5SpellSlots" mapstructure:"Level5SpellSlots"`
-
-	// Level6SpellSlots corresponds to the JSON schema field "Level6SpellSlots".
-	Level6SpellSlots *float64 `json:"Level6SpellSlots" gorm:"column:Level6SpellSlots" mapstructure:"Level6SpellSlots"`
-
-	// Level7SpellSlots corresponds to the JSON schema field "Level7SpellSlots".
-	Level7SpellSlots *float64 `json:"Level7SpellSlots" gorm:"column:Level7SpellSlots" mapstructure:"Level7SpellSlots"`
-
-	// Level8SpellSlots corresponds to the JSON schema field "Level8SpellSlots".
-	Level8SpellSlots *float64 `json:"Level8SpellSlots" gorm:"column:Level8SpellSlots" mapstructure:"Level8SpellSlots"`
-
-	// Level9SpellSlots corresponds to the JSON schema field "Level9SpellSlots".
-	Level9SpellSlots *float64 `json:"Level9SpellSlots" gorm:"column:Level9SpellSlots" mapstructure:"Level9SpellSlots"`
 
 	// LevelMaximumRequirement corresponds to the JSON schema field
 	// "LevelMaximumRequirement".
@@ -221,4 +184,8 @@ type Quantifier struct {
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
+
+	// VariantDomainQuantifierVariant corresponds to the JSON schema field
+	// "Variant__DomainQuantifierVariant".
+	Variant__DomainQuantifierVariant *int `json:"Variant__DomainQuantifierVariant" gorm:"column:Variant__DomainQuantifierVariant" mapstructure:"Variant__DomainQuantifierVariant"`
 }

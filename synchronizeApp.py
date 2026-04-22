@@ -33,6 +33,18 @@ def main():
     except Exception as e:
         print(e)
         sys.exit(1)
+    
+    try:
+        subprocess.run(["python", "regenerateFrontendQueries.py"], cwd="AdventureEngineClient")
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+
+    try:
+        subprocess.run(["python", "regenerateFrontendInjections.py"], cwd="AdventureEngineClient")
+    except Exception as e:
+        print(e)
+        sys.exit(1)
 
     try:
         subprocess.run(["python", "regenerateBackend.py"], cwd="AdventureEngineServer")

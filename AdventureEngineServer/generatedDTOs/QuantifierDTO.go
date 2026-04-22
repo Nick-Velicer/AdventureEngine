@@ -7,7 +7,7 @@ package generatedDTOs
 import (
    contextProviders "AdventureEngineServer/contextProviders"
    types "AdventureEngineServer/generatedDatabaseTypes"
-   
+   utils "AdventureEngineServer/utils"
    services "AdventureEngineServer/generatedServices"
    "errors"
    "fmt"
@@ -29,28 +29,14 @@ type QuantifierDTOAttributes struct {
    DeltaPercentage *float64
    DeltaQuantity *float64
    Description *string
-   GivesAction *bool
    GivesAdvantage *bool
-   GivesBonusAction *bool
    GivesDisadvantage *bool
    GivesResistance *bool
    HardSetPercentage *float64
    HardSetQuantity *float64
    
-   ImpactsMovementAmount *bool
    IntoInventory *bool
-   IsAction *bool
    IsActive *bool
-   IsBonusAction *bool
-   Level1SpellSlots *float64
-   Level2SpellSlots *float64
-   Level3SpellSlots *float64
-   Level4SpellSlots *float64
-   Level5SpellSlots *float64
-   Level6SpellSlots *float64
-   Level7SpellSlots *float64
-   Level8SpellSlots *float64
-   Level9SpellSlots *float64
    LevelMaximumRequirement *float64
    LevelMinimumRequirement *float64
    PreventsApplying *bool
@@ -86,9 +72,12 @@ type QuantifierDTOManyToOneRelationships struct {
    Target__DomainDiceRollType *DomainDiceRollTypeDTO
    Target__DomainSpell *DomainSpellDTO
    Target__DomainStaticEffect *DomainStaticEffectDTO
+   Variant__DomainQuantifierVariant *DomainQuantifierVariantDTO
 }
 
 type QuantifierDTOOneToManyRelationships struct {
+   Conditions__EvaluatedConditional []*EvaluatedConditionalDTO
+   Costs__QuantifierCostSpecifier []*QuantifierCostSpecifierDTO
 }
 
 type QuantifierDTORelationships struct {
@@ -142,6 +131,9 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
    var includedTarget__DomainDiceRollType *types.DomainDiceRollType
    var includedTarget__DomainSpell *types.DomainSpell
    var includedTarget__DomainStaticEffect *types.DomainStaticEffect
+   var includedVariant__DomainQuantifierVariant *types.DomainQuantifierVariant
+   var includedConditions__EvaluatedConditionals []types.EvaluatedConditional
+   var includedCosts__QuantifierCostSpecifiers []types.QuantifierCostSpecifier
    
    var Parent__DomainActionDTO *DomainActionDTO
    var Parent__DomainClassDTO *DomainClassDTO
@@ -158,6 +150,9 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
    var Target__DomainDiceRollTypeDTO *DomainDiceRollTypeDTO
    var Target__DomainSpellDTO *DomainSpellDTO
    var Target__DomainStaticEffectDTO *DomainStaticEffectDTO
+   var Variant__DomainQuantifierVariantDTO *DomainQuantifierVariantDTO
+   var Conditions__EvaluatedConditionalDTOs []*EvaluatedConditionalDTO
+   var Costs__QuantifierCostSpecifierDTOs []*QuantifierCostSpecifierDTO
    
    var err error
    
@@ -326,6 +321,45 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
       }
    }
 
+   if (quantifier.Variant__DomainQuantifierVariant != nil) {
+      includedVariant__DomainQuantifierVariant, err = services.GetDomainQuantifierVariantById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainQuantifierVariant](quantifier.Variant__DomainQuantifierVariant))
+      if err != nil {
+         return nil, err
+      }
+      Variant__DomainQuantifierVariantDTO, err = DomainQuantifierVariantToDomainQuantifierVariantDTO(&childDTOContext, includedVariant__DomainQuantifierVariant)
+      if err != nil {
+         return nil, err
+      }
+   }
+
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(includedConditions__EvaluatedConditionals).Elem().Name())) {
+      includedConditions__EvaluatedConditionals = []types.EvaluatedConditional{}
+      fmt.Println("Hit circular catch case for table EvaluatedConditional")
+   } else {
+      includedConditions__EvaluatedConditionals, err = services.GetEvaluatedConditionals(serviceContext, contextProviders.ProduceGetArgs[types.EvaluatedConditional]("Base__Quantifier", quantifier.Id))
+      if err != nil {
+         return nil, err
+      }
+      Conditions__EvaluatedConditionalDTOs, err = utils.ErrorCompatibleMap(includedConditions__EvaluatedConditionals, func(relationshipElement types.EvaluatedConditional) (*EvaluatedConditionalDTO, error) { return EvaluatedConditionalToEvaluatedConditionalDTO(&childDTOContext, &relationshipElement) })
+      if err != nil {
+         return nil, err
+      }
+   }
+
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(includedCosts__QuantifierCostSpecifiers).Elem().Name())) {
+      includedCosts__QuantifierCostSpecifiers = []types.QuantifierCostSpecifier{}
+      fmt.Println("Hit circular catch case for table QuantifierCostSpecifier")
+   } else {
+      includedCosts__QuantifierCostSpecifiers, err = services.GetQuantifierCostSpecifiers(serviceContext, contextProviders.ProduceGetArgs[types.QuantifierCostSpecifier]("Quantifier__Quantifier", quantifier.Id))
+      if err != nil {
+         return nil, err
+      }
+      Costs__QuantifierCostSpecifierDTOs, err = utils.ErrorCompatibleMap(includedCosts__QuantifierCostSpecifiers, func(relationshipElement types.QuantifierCostSpecifier) (*QuantifierCostSpecifierDTO, error) { return QuantifierCostSpecifierToQuantifierCostSpecifierDTO(&childDTOContext, &relationshipElement) })
+      if err != nil {
+         return nil, err
+      }
+   }
+
    
    return &QuantifierDTO{
       Id: quantifier.Id,
@@ -343,28 +377,14 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
          DeltaPercentage: quantifier.DeltaPercentage,
          DeltaQuantity: quantifier.DeltaQuantity,
          Description: quantifier.Description,
-         GivesAction: quantifier.GivesAction,
          GivesAdvantage: quantifier.GivesAdvantage,
-         GivesBonusAction: quantifier.GivesBonusAction,
          GivesDisadvantage: quantifier.GivesDisadvantage,
          GivesResistance: quantifier.GivesResistance,
          HardSetPercentage: quantifier.HardSetPercentage,
          HardSetQuantity: quantifier.HardSetQuantity,
          
-         ImpactsMovementAmount: quantifier.ImpactsMovementAmount,
          IntoInventory: quantifier.IntoInventory,
-         IsAction: quantifier.IsAction,
          IsActive: quantifier.IsActive,
-         IsBonusAction: quantifier.IsBonusAction,
-         Level1SpellSlots: quantifier.Level1SpellSlots,
-         Level2SpellSlots: quantifier.Level2SpellSlots,
-         Level3SpellSlots: quantifier.Level3SpellSlots,
-         Level4SpellSlots: quantifier.Level4SpellSlots,
-         Level5SpellSlots: quantifier.Level5SpellSlots,
-         Level6SpellSlots: quantifier.Level6SpellSlots,
-         Level7SpellSlots: quantifier.Level7SpellSlots,
-         Level8SpellSlots: quantifier.Level8SpellSlots,
-         Level9SpellSlots: quantifier.Level9SpellSlots,
          LevelMaximumRequirement: quantifier.LevelMaximumRequirement,
          LevelMinimumRequirement: quantifier.LevelMinimumRequirement,
          PreventsApplying: quantifier.PreventsApplying,
@@ -400,8 +420,11 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
             Target__DomainDiceRollType: Target__DomainDiceRollTypeDTO,
             Target__DomainSpell: Target__DomainSpellDTO,
             Target__DomainStaticEffect: Target__DomainStaticEffectDTO,
+            Variant__DomainQuantifierVariant: Variant__DomainQuantifierVariantDTO,
          },
          OneToMany: QuantifierDTOOneToManyRelationships {
+            Conditions__EvaluatedConditional: Conditions__EvaluatedConditionalDTOs,
+            Costs__QuantifierCostSpecifier: Costs__QuantifierCostSpecifierDTOs,
          },
       },
    }, nil
@@ -424,28 +447,14 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    tableTypeBuffer.DeltaPercentage = quantifier.Attributes.DeltaPercentage
    tableTypeBuffer.DeltaQuantity = quantifier.Attributes.DeltaQuantity
    tableTypeBuffer.Description = quantifier.Attributes.Description
-   tableTypeBuffer.GivesAction = quantifier.Attributes.GivesAction
    tableTypeBuffer.GivesAdvantage = quantifier.Attributes.GivesAdvantage
-   tableTypeBuffer.GivesBonusAction = quantifier.Attributes.GivesBonusAction
    tableTypeBuffer.GivesDisadvantage = quantifier.Attributes.GivesDisadvantage
    tableTypeBuffer.GivesResistance = quantifier.Attributes.GivesResistance
    tableTypeBuffer.HardSetPercentage = quantifier.Attributes.HardSetPercentage
    tableTypeBuffer.HardSetQuantity = quantifier.Attributes.HardSetQuantity
    
-   tableTypeBuffer.ImpactsMovementAmount = quantifier.Attributes.ImpactsMovementAmount
    tableTypeBuffer.IntoInventory = quantifier.Attributes.IntoInventory
-   tableTypeBuffer.IsAction = quantifier.Attributes.IsAction
    tableTypeBuffer.IsActive = quantifier.Attributes.IsActive
-   tableTypeBuffer.IsBonusAction = quantifier.Attributes.IsBonusAction
-   tableTypeBuffer.Level1SpellSlots = quantifier.Attributes.Level1SpellSlots
-   tableTypeBuffer.Level2SpellSlots = quantifier.Attributes.Level2SpellSlots
-   tableTypeBuffer.Level3SpellSlots = quantifier.Attributes.Level3SpellSlots
-   tableTypeBuffer.Level4SpellSlots = quantifier.Attributes.Level4SpellSlots
-   tableTypeBuffer.Level5SpellSlots = quantifier.Attributes.Level5SpellSlots
-   tableTypeBuffer.Level6SpellSlots = quantifier.Attributes.Level6SpellSlots
-   tableTypeBuffer.Level7SpellSlots = quantifier.Attributes.Level7SpellSlots
-   tableTypeBuffer.Level8SpellSlots = quantifier.Attributes.Level8SpellSlots
-   tableTypeBuffer.Level9SpellSlots = quantifier.Attributes.Level9SpellSlots
    tableTypeBuffer.LevelMaximumRequirement = quantifier.Attributes.LevelMaximumRequirement
    tableTypeBuffer.LevelMinimumRequirement = quantifier.Attributes.LevelMinimumRequirement
    tableTypeBuffer.PreventsApplying = quantifier.Attributes.PreventsApplying
@@ -522,6 +531,10 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
 
    if (quantifier.Relationships.ManyToOne.Target__DomainStaticEffect != nil) {
       tableTypeBuffer.Target__DomainStaticEffect = quantifier.Relationships.ManyToOne.Target__DomainStaticEffect.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Variant__DomainQuantifierVariant != nil) {
+      tableTypeBuffer.Variant__DomainQuantifierVariant = quantifier.Relationships.ManyToOne.Variant__DomainQuantifierVariant.Id
    }
 
    return &tableTypeBuffer

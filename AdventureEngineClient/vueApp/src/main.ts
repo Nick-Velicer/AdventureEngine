@@ -11,6 +11,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { composedAppInjectionContexts } from '../../injections/composedInjectionContexts'
 import TableView from './pages/TableManagement.vue'
 import { routes } from './utils/routes'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const appContext = createApp(App);
 
@@ -19,13 +20,16 @@ const router = createRouter({
 	routes
 });
 
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(composedAppInjectionContexts.store, import.meta.hot))
 }
 
 
 appContext.use(router);
-appContext.use(createPinia());
+appContext.use(pinia);
 appContext.use(PiniaColada, {});
 
 

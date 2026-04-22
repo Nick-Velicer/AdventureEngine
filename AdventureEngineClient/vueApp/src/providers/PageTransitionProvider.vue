@@ -32,10 +32,10 @@ const transitionNodes = {
     },
     "CampaignManagement": {
         "Home": "out",
-        "CharacterManagement": "in"
+        "CharacterManagement": "right"
     },
     "CharacterManagement": {
-        "CampaignManagement": "out"
+        "CampaignManagement": "left"
     },
 
 } as const satisfies Partial<Record<ExtractRouteBase<AppRoutePaths>, TransitionMeta>>;

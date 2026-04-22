@@ -77,8 +77,8 @@ export type Quantifier = ExtendedSchemaObject<{
         },
         OneToMany: {
             //Costs paid for this quantifier (action, bonus action, movement, spell slot, etc.)
-            Costs?: QuantifierCostSpecifier[],
-            Conditions?: EvaluatedConditional[],
+            Costs__QuantifierCostSpecifier?: QuantifierCostSpecifier[],
+            Conditions__EvaluatedConditional?: EvaluatedConditional[],
         }
     }
 }>

@@ -5,7 +5,6 @@ import type { Campaign } from '../../../types/appTypes/appTypes';
 import { useRouter } from 'vue-router';
 import SVGCard from '../components/SVGCard.vue';
 import Character from '../components/svg/Character.vue';
-import type { Component } from 'vue';
 import Compass from '../components/svg/Compass.vue';
 import Books from '../components/svg/Books.vue';
 import Bottle from '../components/svg/Bottle.vue';
@@ -22,32 +21,26 @@ const campaignNavLink = (campaignId: number ) => "/CampaignManagement/" + campai
 <template>
 	<Loader v-if="campaignsQuery.isLoading.value === true" variant="icon"/>
 	<div v-else class="pageContainer">
-		<div id="rotationTarget" class="navigationContainer">
-			<div class="navigationBorder"/>
-			<div class="navigationDial">
-				<RouterLink to="/CampaignManagement" class="linkWrapper">
-					<SVGCard text="Campaigns" :svgComponent="Compass"/>
-				</RouterLink>
-				<div class="flex items-center">
-					<RouterLink to="/CharacterManagement" class="linkWrapper">
+		<div class="aspectRatioContainer">
+			<div id="rotationTarget" class="navigationContainer">
+				<div class="navigationDial">
+					<RouterLink to="/CampaignManagement" class="linkWrapper topLinkWrapper">
+						<SVGCard text="Campaigns" :svgComponent="Compass"/>
+					</RouterLink>
+					<RouterLink to="/CharacterManagement" class="linkWrapper leftLinkWrapper">
 						<SVGCard text="Characters" :svgComponent="Character"/>
 					</RouterLink>
-					<D20/>
-					<RouterLink to="/Home" class="linkWrapper">
+					<D20 class="d20Icon"/>
+					<RouterLink to="/Home" class="linkWrapper rightLinkWrapper">
 						<SVGCard text="Lookup" :svgComponent="Books"/>
 					</RouterLink>
+					<RouterLink to="/Home" class="linkWrapper bottomLinkWrapper">
+						<SVGCard text="About" :svgComponent="Bottle"/>
+					</RouterLink>
 				</div>
-				<RouterLink to="/Home" class="linkWrapper">
-					<SVGCard text="About" :svgComponent="Bottle"/>
-				</RouterLink>
+				<D20 class="backgroundD20"/>
 			</div>
-			
 		</div>
-		<Transition name="fade" appear>
-			<div class="landingText">
-				Welcome back adventurer.
-			</div>
-		</Transition>
 	</div>
 </template>
 
@@ -63,6 +56,15 @@ const campaignNavLink = (campaignId: number ) => "/CampaignManagement/" + campai
 	flex-direction: column;
 	gap: min(v-bind("store.reactiveThemeElement("--spacing-large")"), 2vw);
 	overflow-x: hidden;
+	container-type: size;
+}
+
+.aspectRatioContainer {
+	margin-right: auto;
+	margin-left: auto;
+	width: min(100cqw, 100cqh);
+	overflow: hidden;
+	aspect-ratio: 1;
 }
 
 .navigationContainer {
@@ -78,25 +80,61 @@ const campaignNavLink = (campaignId: number ) => "/CampaignManagement/" + campai
 	height: 100%;
 	top: 0;
 	left: 0;
-	
+	z-index: 10;
 	clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
 }
 
+.backgroundD20 {
+	position: absolute;
+	width: 170%;
+	height: 170%;
+	top: -35%;
+	left: -35%;
+	z-index: 10;
+	transform: rotate(20deg); 
+	fill: v-bind("store.reactiveThemeElement("--color-background-secondary")");
+}
+
 .navigationDial {
-	flex: 1;
-	display: flex;
 	gap: min(v-bind("store.reactiveThemeElement("--spacing-large")"), 2vw);
-	flex-direction: column;
+	aspect-ratio: 1;
 	clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+	position: relative;
+	z-index: 11;
+}
+
+.linkWrapper {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	height: 25cqh;
+	width: 15cqw;
+}
+
+.topLinkWrapper {
+	transform: translate(-50%, -40cqh);
+}
+
+.bottomLinkWrapper {
+	transform: translate(-50%, 15cqh);
+}
+
+.leftLinkWrapper {
+	transform: translate(-27.5cqw, -50%);
+}
+
+.rightLinkWrapper {
+	transform: translate(12.5cqw, -50%);
+}
+
+.d20Icon {
+	position: absolute;
+	inset: 0;
+ 	margin: auto;
 }
 
 .landingText {
 	font-size: min(v-bind("store.reactiveThemeElement("--font-size-heading")") * 3, 5vw);
-}
-
-.linkWrapper {
-	flex: 1;
-	height: 100%;
 }
 
 .fade-enter-active,

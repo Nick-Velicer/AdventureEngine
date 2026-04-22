@@ -496,27 +496,27 @@ def regenerateActionsMigration():
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Attack")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Grapple")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Shove")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Cast")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Dash")
         },
         {
@@ -527,37 +527,37 @@ def regenerateActionsMigration():
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Disengage")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Help")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Interact")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Use Item")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Equip")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Unequip")
         },
         {
             "AppliesToSource": 1,
-            "IsAction": 1,
+            #"IsAction": 1,
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Hide")
         },
 

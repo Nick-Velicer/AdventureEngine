@@ -23,6 +23,7 @@ import { DomainDice as Base__DomainDice } from "../coreTypes/DomainDice";
 import { DomainDiceRollSubType as Base__DomainDiceRollSubType } from "../coreTypes/DomainDiceRollSubType";
 import { DomainDiceRollType as Base__DomainDiceRollType } from "../coreTypes/DomainDiceRollType";
 import { DomainItem as Base__DomainItem } from "../coreTypes/DomainItem";
+import { DomainQuantifierVariant as Base__DomainQuantifierVariant } from "../coreTypes/DomainQuantifierVariant";
 import { DomainSize as Base__DomainSize } from "../coreTypes/DomainSize";
 import { DomainSpecies as Base__DomainSpecies } from "../coreTypes/DomainSpecies";
 import { DomainSpell as Base__DomainSpell } from "../coreTypes/DomainSpell";
@@ -31,6 +32,7 @@ import { DomainStaticEffect as Base__DomainStaticEffect } from "../coreTypes/Dom
 import { DomainSubClass as Base__DomainSubClass } from "../coreTypes/DomainSubClass";
 import { EvaluatedConditional as Base__EvaluatedConditional } from "../coreTypes/EvaluatedConditional";
 import { Quantifier as Base__Quantifier } from "../coreTypes/Quantifier";
+import { QuantifierCostSpecifier as Base__QuantifierCostSpecifier } from "../coreTypes/QuantifierCostSpecifier";
 import { User as Base__User } from "../coreTypes/User";
 import { UserRoleInstance as Base__UserRoleInstance } from "../coreTypes/UserRoleInstance";
 
@@ -56,6 +58,7 @@ const BaseAppTypes = {
 	DomainDiceRollSubType: {} as Base__DomainDiceRollSubType,
 	DomainDiceRollType: {} as Base__DomainDiceRollType,
 	DomainItem: {} as Base__DomainItem,
+	DomainQuantifierVariant: {} as Base__DomainQuantifierVariant,
 	DomainSize: {} as Base__DomainSize,
 	DomainSpecies: {} as Base__DomainSpecies,
 	DomainSpell: {} as Base__DomainSpell,
@@ -64,6 +67,7 @@ const BaseAppTypes = {
 	DomainSubClass: {} as Base__DomainSubClass,
 	EvaluatedConditional: {} as Base__EvaluatedConditional,
 	Quantifier: {} as Base__Quantifier,
+	QuantifierCostSpecifier: {} as Base__QuantifierCostSpecifier,
 	User: {} as Base__User,
 	UserRoleInstance: {} as Base__UserRoleInstance,
 } as const satisfies Record<string, SchemaObject> 
@@ -110,6 +114,7 @@ export type DomainDice = RecursionGuardedSchemaObject<Base__DomainDice>;
 export type DomainDiceRollSubType = RecursionGuardedSchemaObject<Base__DomainDiceRollSubType>;
 export type DomainDiceRollType = RecursionGuardedSchemaObject<Base__DomainDiceRollType>;
 export type DomainItem = RecursionGuardedSchemaObject<Base__DomainItem>;
+export type DomainQuantifierVariant = RecursionGuardedSchemaObject<Base__DomainQuantifierVariant>;
 export type DomainSize = RecursionGuardedSchemaObject<Base__DomainSize>;
 export type DomainSpecies = RecursionGuardedSchemaObject<Base__DomainSpecies>;
 export type DomainSpell = RecursionGuardedSchemaObject<Base__DomainSpell>;
@@ -118,6 +123,7 @@ export type DomainStaticEffect = RecursionGuardedSchemaObject<Base__DomainStatic
 export type DomainSubClass = RecursionGuardedSchemaObject<Base__DomainSubClass>;
 export type EvaluatedConditional = RecursionGuardedSchemaObject<Base__EvaluatedConditional>;
 export type Quantifier = RecursionGuardedSchemaObject<Base__Quantifier>;
+export type QuantifierCostSpecifier = RecursionGuardedSchemaObject<Base__QuantifierCostSpecifier>;
 export type User = RecursionGuardedSchemaObject<Base__User>;
 export type UserRoleInstance = RecursionGuardedSchemaObject<Base__UserRoleInstance>;
 
@@ -143,6 +149,7 @@ export const AppTypes = {
 	DomainDiceRollSubType: {} as DomainDiceRollSubType,
 	DomainDiceRollType: {} as DomainDiceRollType,
 	DomainItem: {} as DomainItem,
+	DomainQuantifierVariant: {} as DomainQuantifierVariant,
 	DomainSize: {} as DomainSize,
 	DomainSpecies: {} as DomainSpecies,
 	DomainSpell: {} as DomainSpell,
@@ -151,6 +158,7 @@ export const AppTypes = {
 	DomainSubClass: {} as DomainSubClass,
 	EvaluatedConditional: {} as EvaluatedConditional,
 	Quantifier: {} as Quantifier,
+	QuantifierCostSpecifier: {} as QuantifierCostSpecifier,
 	User: {} as User,
 	UserRoleInstance: {} as UserRoleInstance,
 } as const satisfies Record<string, SchemaObject> 

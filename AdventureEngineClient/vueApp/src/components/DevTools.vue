@@ -2,13 +2,16 @@
 import { NSwitch} from 'naive-ui';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 import ThemeSelector from './ThemeSelector.vue';
-import type { Campaign, Character, CharacterDomainCharacterStatInstance, DomainCharacterStat } from '../../../types/appTypes/appTypes';
+import type { Campaign, Character, CharacterDomainCharacterStatInstance, CharacterDomainSubClassInstance, DomainCharacterStat, DomainSubClass } from '../../../types/appTypes/appTypes';
 import Button from './Button.vue';
 
 const store = composedAppInjectionContexts.store();
 
+const getSubclassesQuery = composedAppInjectionContexts.queries.useGetDomainSubClasssQuery;
+const saveSubclassMappingsMutation = composedAppInjectionContexts.queries.useSaveCharacterDomainSubClassInstanceMutation;
 const getStatsQuery = composedAppInjectionContexts.queries.useGetDomainCharacterStatsQuery;
 const saveCampaignMutation = composedAppInjectionContexts.queries.useSaveCampaignMutation;
+const getCharactersQuery = composedAppInjectionContexts.queries.useGetCharactersQuery;
 const saveCharacterMutation = composedAppInjectionContexts.queries.useSaveCharacterMutation;
 const saveCharacterStatsMutation = composedAppInjectionContexts.queries.useSaveCharacterDomainCharacterStatInstanceMutation;
 
@@ -63,12 +66,12 @@ async function dispatchCharactersSave(campaigns: Campaign[]) {
         }
     }));
     
-    const saveCharacter = saveCharacterMutation(characters, dispatchStatsSave).mutate;
+    const saveCharacter = saveCharacterMutation(characters, (characters) => dispatchStatsSave(characters)).mutate;
 
-    const response = await saveCharacter();
+    await saveCharacter();
 }
 
-async function dispatchStatsSave(characters: Character[]) {
+async function dispatchStatsSave(characters: Array<Character>) {
 
     const getStats = getStatsQuery().refresh;
     
@@ -90,10 +93,40 @@ async function dispatchStatsSave(characters: Character[]) {
                 OneToMany: {}
             }
         } as CharacterDomainCharacterStatInstance))).flat(Infinity),
+        () => dispatchSubclassMappingSave(characters)
+    ).mutate;
+
+    await saveStats();
+}
+
+async function dispatchSubclassMappingSave(characters: Character[]) {
+    const getSubclasses = getSubclassesQuery().refresh;
+    
+    const subclassesResponse = await getSubclasses();
+
+    const subclasses = (subclassesResponse.data as Array<DomainSubClass>);
+    
+    const saveSubclasses = saveSubclassMappingsMutation(
+        characters.map((character, index) => subclasses.slice(index, index * 2).map((subclass, index) => ({
+            Id: undefined,
+            Attributes: {
+                Level: index
+            },
+            Relationships: {
+                ManyToOne: {
+                    Character__Character: character,
+                    SubClass__DomainSubClass: subclass
+                },
+                OneToMany: {}
+            }
+        } as CharacterDomainSubClassInstance))).flat(Infinity),
         (data: any) => console.log(data)
     ).mutate;
 
-    const response = await saveStats();
+    console.log("here");
+
+    await saveSubclasses();
+    
 }
 
 </script>
