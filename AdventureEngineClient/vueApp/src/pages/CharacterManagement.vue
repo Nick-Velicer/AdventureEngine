@@ -15,24 +15,23 @@ const characterQuery = composedAppInjectionContexts.queries.useGetCharacterByIdQ
 </script>
 
 <template>
-    <section>
-		<p v-if="characterQuery.isLoading.value === true">
-		Loading...
-		</p>
-		<div v-else>
-			<div>
-				Current Character: {{ characterQuery.data.value?.Attributes?.Title}}
-			</div>
-			<div v-bind:style="{display: 'flex', gap: '2rem'}">
-				<div v-for="statInstance in characterQuery.data.value?.Relationships.OneToMany.Stats__CharacterDomainCharacterStatInstance">
-					<CharacterStatDisplay :stat-instance="statInstance"/>
-				</div>
+	<p v-if="characterQuery.isLoading.value === true">
+	Loading...
+	</p>
+	<div v-else class="restrictedWidthPage">
+		<div class="characterTitle" v-text="characterQuery.data.value?.Attributes?.Title"/>
+		<div v-bind:style="{display: 'flex', gap: '2rem'}">
+			<div v-for="statInstance in characterQuery.data.value?.Relationships.OneToMany.Stats__CharacterDomainCharacterStatInstance">
+				<div v-text="statInstance.Relationships.ManyToOne.Stat__DomainCharacterStat?.Attributes.AbbreviatedTitle"/>
+				<div v-text="statInstance.Attributes.Value"/>
 			</div>
 		</div>
-	</section>
-	
+	</div>
 </template>
 
 <style scoped>
-
+	.characterTitle {
+		font-size: min(v-bind("state.reactiveThemeElement("--font-size-heading")") * 2, 5vw);
+		font-family: v-bind("state.reactiveThemeElement("--font-family-headings")");
+	}
 </style>

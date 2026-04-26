@@ -5,10 +5,22 @@
 
 .scrollArea {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto;   
 }
 
 .scrollWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: hidden;
+}
+
+.restrictedWidthPage {
+    min-width: 700px;
+    max-width: 2000px;
+    margin-left: auto;
+    margin-right: auto;
+
     display: flex;
     flex-direction: column;
     height: 100%;

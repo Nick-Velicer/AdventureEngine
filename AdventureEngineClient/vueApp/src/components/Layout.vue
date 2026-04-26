@@ -40,8 +40,8 @@ const store = composedAppInjectionContexts.store();
     color: v-bind("store.reactiveThemeElement("--text-color-primary")");
     font-family: v-bind("store.reactiveThemeElement("--font-family-body")");
     overflow-x: hidden;
+    scrollbar-color: v-bind("store.reactiveThemeElement("--color-secondary")") rgba(0, 0, 0, 0);
 }
-
 .mainContentWrapper {
     flex: 1;
     padding: v-bind("store.reactiveThemeElement("--spacing-small")");

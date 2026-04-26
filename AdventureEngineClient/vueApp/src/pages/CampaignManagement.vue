@@ -28,9 +28,10 @@ const characterNavLink = (characterId: number ) => "/CharacterManagement/" + cha
 </script>
 
 <template>
-	<DynamicDataList v-if="typeof campaignId != 'number'" table='Campaign'/>
-	<DynamicDataList v-else table='Character'/>
-	
+	<div class="restrictedWidthPage">
+		<DynamicDataList v-if="typeof campaignId != 'number'" table='Campaign'/>
+		<DynamicDataList v-else table='Character'/>
+	</div>
 </template>
 
 <style scoped>

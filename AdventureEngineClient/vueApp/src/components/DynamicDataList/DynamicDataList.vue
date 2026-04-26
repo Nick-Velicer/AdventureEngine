@@ -26,16 +26,11 @@ const query = composedAppInjectionContexts.queries["useGet" + props.table + "sQu
     <div v-else-if="query?.state?.data?.length < 0">
         Unable to retrieve collection for {{ props.table }}
     </div>
-    <div v-else class="container scrollWrapper">
-        <div class="header">
-            {{ props.table }}
-        </div>
-        <ul class="list scrollArea">
-            <li v-for="value in query.data.value ?? []" class="listItem">
-                <Component :is="typeTemplateMapping[props.table] ?? DefaultListTemplate" :value="value"/>
-            </li>
-        </ul>
-    </div>
+    <ul v-else class="list scrollArea">
+        <li v-for="value in query.data.value ?? []" class="listItem">
+            <Component :is="typeTemplateMapping[props.table] ?? DefaultListTemplate" :value="value"/>
+        </li>
+    </ul>
 </template>
 
 <style scoped>
@@ -43,8 +38,7 @@ const query = composedAppInjectionContexts.queries["useGet" + props.table + "sQu
         gap: v-bind("store.reactiveThemeElement("--spacing-large")");
     }
 
-    .header {
-
+    .list {
     }
 
 
