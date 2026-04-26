@@ -23,13 +23,16 @@ import { DomainDice as Base__DomainDice } from "../coreTypes/DomainDice";
 import { DomainDiceRollSubType as Base__DomainDiceRollSubType } from "../coreTypes/DomainDiceRollSubType";
 import { DomainDiceRollType as Base__DomainDiceRollType } from "../coreTypes/DomainDiceRollType";
 import { DomainItem as Base__DomainItem } from "../coreTypes/DomainItem";
+import { DomainLanguage as Base__DomainLanguage } from "../coreTypes/DomainLanguage";
 import { DomainQuantifierVariant as Base__DomainQuantifierVariant } from "../coreTypes/DomainQuantifierVariant";
 import { DomainSize as Base__DomainSize } from "../coreTypes/DomainSize";
+import { DomainSkill as Base__DomainSkill } from "../coreTypes/DomainSkill";
 import { DomainSpecies as Base__DomainSpecies } from "../coreTypes/DomainSpecies";
 import { DomainSpell as Base__DomainSpell } from "../coreTypes/DomainSpell";
 import { DomainSpellSchool as Base__DomainSpellSchool } from "../coreTypes/DomainSpellSchool";
 import { DomainStaticEffect as Base__DomainStaticEffect } from "../coreTypes/DomainStaticEffect";
 import { DomainSubClass as Base__DomainSubClass } from "../coreTypes/DomainSubClass";
+import { DomainWeaponCategory as Base__DomainWeaponCategory } from "../coreTypes/DomainWeaponCategory";
 import { EvaluatedConditional as Base__EvaluatedConditional } from "../coreTypes/EvaluatedConditional";
 import { Quantifier as Base__Quantifier } from "../coreTypes/Quantifier";
 import { QuantifierCostSpecifier as Base__QuantifierCostSpecifier } from "../coreTypes/QuantifierCostSpecifier";
@@ -58,13 +61,16 @@ const BaseAppTypes = {
 	DomainDiceRollSubType: {} as Base__DomainDiceRollSubType,
 	DomainDiceRollType: {} as Base__DomainDiceRollType,
 	DomainItem: {} as Base__DomainItem,
+	DomainLanguage: {} as Base__DomainLanguage,
 	DomainQuantifierVariant: {} as Base__DomainQuantifierVariant,
 	DomainSize: {} as Base__DomainSize,
+	DomainSkill: {} as Base__DomainSkill,
 	DomainSpecies: {} as Base__DomainSpecies,
 	DomainSpell: {} as Base__DomainSpell,
 	DomainSpellSchool: {} as Base__DomainSpellSchool,
 	DomainStaticEffect: {} as Base__DomainStaticEffect,
 	DomainSubClass: {} as Base__DomainSubClass,
+	DomainWeaponCategory: {} as Base__DomainWeaponCategory,
 	EvaluatedConditional: {} as Base__EvaluatedConditional,
 	Quantifier: {} as Base__Quantifier,
 	QuantifierCostSpecifier: {} as Base__QuantifierCostSpecifier,
@@ -114,13 +120,16 @@ export type DomainDice = RecursionGuardedSchemaObject<Base__DomainDice>;
 export type DomainDiceRollSubType = RecursionGuardedSchemaObject<Base__DomainDiceRollSubType>;
 export type DomainDiceRollType = RecursionGuardedSchemaObject<Base__DomainDiceRollType>;
 export type DomainItem = RecursionGuardedSchemaObject<Base__DomainItem>;
+export type DomainLanguage = RecursionGuardedSchemaObject<Base__DomainLanguage>;
 export type DomainQuantifierVariant = RecursionGuardedSchemaObject<Base__DomainQuantifierVariant>;
 export type DomainSize = RecursionGuardedSchemaObject<Base__DomainSize>;
+export type DomainSkill = RecursionGuardedSchemaObject<Base__DomainSkill>;
 export type DomainSpecies = RecursionGuardedSchemaObject<Base__DomainSpecies>;
 export type DomainSpell = RecursionGuardedSchemaObject<Base__DomainSpell>;
 export type DomainSpellSchool = RecursionGuardedSchemaObject<Base__DomainSpellSchool>;
 export type DomainStaticEffect = RecursionGuardedSchemaObject<Base__DomainStaticEffect>;
 export type DomainSubClass = RecursionGuardedSchemaObject<Base__DomainSubClass>;
+export type DomainWeaponCategory = RecursionGuardedSchemaObject<Base__DomainWeaponCategory>;
 export type EvaluatedConditional = RecursionGuardedSchemaObject<Base__EvaluatedConditional>;
 export type Quantifier = RecursionGuardedSchemaObject<Base__Quantifier>;
 export type QuantifierCostSpecifier = RecursionGuardedSchemaObject<Base__QuantifierCostSpecifier>;
@@ -149,13 +158,16 @@ export const AppTypes = {
 	DomainDiceRollSubType: {} as DomainDiceRollSubType,
 	DomainDiceRollType: {} as DomainDiceRollType,
 	DomainItem: {} as DomainItem,
+	DomainLanguage: {} as DomainLanguage,
 	DomainQuantifierVariant: {} as DomainQuantifierVariant,
 	DomainSize: {} as DomainSize,
+	DomainSkill: {} as DomainSkill,
 	DomainSpecies: {} as DomainSpecies,
 	DomainSpell: {} as DomainSpell,
 	DomainSpellSchool: {} as DomainSpellSchool,
 	DomainStaticEffect: {} as DomainStaticEffect,
 	DomainSubClass: {} as DomainSubClass,
+	DomainWeaponCategory: {} as DomainWeaponCategory,
 	EvaluatedConditional: {} as EvaluatedConditional,
 	Quantifier: {} as Quantifier,
 	QuantifierCostSpecifier: {} as QuantifierCostSpecifier,

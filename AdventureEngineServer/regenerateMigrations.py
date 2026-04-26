@@ -33,9 +33,13 @@ spellSchools = []
 spells = []
 classes = []
 subClasses = []
+skills = []
 conditions = []
 classTraits = []
 quantifiers = []
+weaponCategories = []
+languages = []
+tools=[]
 
 #This will be applied to the beginning of migrations to preserve the dependent order for foreign keys
 migrationOrderNumber = 1
@@ -83,6 +87,9 @@ def main():
         regenerateDomainDiceRollTypeMigration,
         regenerateDomainDiceRollSubTypeMigration,
         regenerateBasicStatMigration,
+        regenerateSkillsMigration,
+        regenerateWeaponCategoriesMigration,
+        regenerateLanguagesMigration,
         regenerateActionsMigration,
         regenerateDomainClassMigration,
         regenerateDamageTypesMigration,
@@ -205,6 +212,7 @@ def regenerateBaseUsers():
     ]
 
     users = produceMigrationFileFromObjects("User", userMeta)
+
 
 def regenerateAppRoles():
     global roles
@@ -446,6 +454,93 @@ def regenerateBasicStatMigration():
     ])
 
     baseStats = produceMigrationFileFromObjects("DomainCharacterStat", baseStats)
+
+
+def regenerateSkillsMigration():
+    global skills
+
+    skillMapping = {
+        "Strength": ["Athletics"],
+        "Dexterity": ["Acrobatics", "Sleight of Hand", "Stealth"],
+        "Intelligence": ["Arcana", "History", "Investigation", "Nature", "Religion"],
+        "Wisdom": ["Animal Handling", "Insight", "Medicine", "Perception", "Survival"],
+        "Charisma": ["Deception", "Intimidation", "Performance", "Persuation"]
+    }
+
+
+    for stat in skillMapping.keys():
+        statFkId = getForeignKeyIdForTitle(baseStats, stat)
+        for skill in skillMapping[stat]:
+            skills.append({
+                "Title": skill,
+                "ParentStat__DomainCharacterStat": statFkId
+            })
+
+    skills = produceMigrationFileFromObjects("DomainSkill", skills)
+
+
+def regenerateWeaponCategoriesMigration():
+    global weaponCategories
+
+    categoryTitles = [
+        "Simple",
+        "Martial",
+        "Melee",
+        "Ranged",
+        "Ammunition",
+        "Finesse",
+        "Heavy",
+        "Light",
+        "Loading",
+        "Reach",
+        "Special",
+        "Thrown",
+        "Two-Handed",
+        "Versatile",
+        "Improvised",
+        "Silvered"
+    ]
+
+    weaponCategories = [
+        {
+            "Title": title
+        } 
+        for title in categoryTitles
+    ]
+
+    weaponCategories = produceMigrationFileFromObjects("DomainWeaponCategory", weaponCategories)
+
+
+def regenerateLanguagesMigration():
+    global languages
+
+    languageTitles = [
+        "Common",
+        "Dwarvish",
+        "Elvish",
+        "Giant",
+        "Gnomish",
+        "Goblin",
+        "Halfling",
+        "Orcish",
+        "Abyssal",
+        "Celestial",
+        "Draconic",
+        "Deep Speech",
+        "Infernal",
+        "Primordial",
+        "Sylvan",
+        "Undercommon"
+    ]
+
+    languages = [
+        {
+            "Title": title
+        } 
+        for title in languageTitles
+    ]
+
+    weaponCategories = produceMigrationFileFromObjects("DomainLanguage", languages)
 
 
 def regenerateActionsMigration():

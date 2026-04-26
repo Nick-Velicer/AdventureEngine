@@ -23,13 +23,16 @@ import * as DomainDiceService from "../../services/generated/DomainDiceService";
 import * as DomainDiceRollSubTypeService from "../../services/generated/DomainDiceRollSubTypeService";
 import * as DomainDiceRollTypeService from "../../services/generated/DomainDiceRollTypeService";
 import * as DomainItemService from "../../services/generated/DomainItemService";
+import * as DomainLanguageService from "../../services/generated/DomainLanguageService";
 import * as DomainQuantifierVariantService from "../../services/generated/DomainQuantifierVariantService";
 import * as DomainSizeService from "../../services/generated/DomainSizeService";
+import * as DomainSkillService from "../../services/generated/DomainSkillService";
 import * as DomainSpeciesService from "../../services/generated/DomainSpeciesService";
 import * as DomainSpellService from "../../services/generated/DomainSpellService";
 import * as DomainSpellSchoolService from "../../services/generated/DomainSpellSchoolService";
 import * as DomainStaticEffectService from "../../services/generated/DomainStaticEffectService";
 import * as DomainSubClassService from "../../services/generated/DomainSubClassService";
+import * as DomainWeaponCategoryService from "../../services/generated/DomainWeaponCategoryService";
 import * as EvaluatedConditionalService from "../../services/generated/EvaluatedConditionalService";
 import * as QuantifierService from "../../services/generated/QuantifierService";
 import * as QuantifierCostSpecifierService from "../../services/generated/QuantifierCostSpecifierService";
@@ -142,6 +145,11 @@ export const generatedInjectableServices = {
       getItemById: DomainItemService.getDomainItembyId,
       saveItem: DomainItemService.saveDomainItem
    },
+   DomainLanguage: {
+      getAllItems: DomainLanguageService.getDomainLanguages,
+      getItemById: DomainLanguageService.getDomainLanguagebyId,
+      saveItem: DomainLanguageService.saveDomainLanguage
+   },
    DomainQuantifierVariant: {
       getAllItems: DomainQuantifierVariantService.getDomainQuantifierVariants,
       getItemById: DomainQuantifierVariantService.getDomainQuantifierVariantbyId,
@@ -151,6 +159,11 @@ export const generatedInjectableServices = {
       getAllItems: DomainSizeService.getDomainSizes,
       getItemById: DomainSizeService.getDomainSizebyId,
       saveItem: DomainSizeService.saveDomainSize
+   },
+   DomainSkill: {
+      getAllItems: DomainSkillService.getDomainSkills,
+      getItemById: DomainSkillService.getDomainSkillbyId,
+      saveItem: DomainSkillService.saveDomainSkill
    },
    DomainSpecies: {
       getAllItems: DomainSpeciesService.getDomainSpeciess,
@@ -176,6 +189,11 @@ export const generatedInjectableServices = {
       getAllItems: DomainSubClassService.getDomainSubClasss,
       getItemById: DomainSubClassService.getDomainSubClassbyId,
       saveItem: DomainSubClassService.saveDomainSubClass
+   },
+   DomainWeaponCategory: {
+      getAllItems: DomainWeaponCategoryService.getDomainWeaponCategorys,
+      getItemById: DomainWeaponCategoryService.getDomainWeaponCategorybyId,
+      saveItem: DomainWeaponCategoryService.saveDomainWeaponCategory
    },
    EvaluatedConditional: {
       getAllItems: EvaluatedConditionalService.getEvaluatedConditionals,
