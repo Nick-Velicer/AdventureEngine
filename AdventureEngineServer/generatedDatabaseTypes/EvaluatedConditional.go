@@ -21,9 +21,9 @@ type EvaluatedConditional struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
-	// IsTrueDomainCondition corresponds to the JSON schema field
-	// "IsTrue__DomainCondition".
-	IsTrue__DomainCondition *int `json:"IsTrue__DomainCondition" gorm:"column:IsTrue__DomainCondition" mapstructure:"IsTrue__DomainCondition"`
+	// IsTrueDomainBooleanCondition corresponds to the JSON schema field
+	// "IsTrue__DomainBooleanCondition".
+	IsTrue__DomainBooleanCondition *int `json:"IsTrue__DomainBooleanCondition" gorm:"column:IsTrue__DomainBooleanCondition" mapstructure:"IsTrue__DomainBooleanCondition"`
 
 	// ModifierQuantifier corresponds to the JSON schema field "Modifier__Quantifier".
 	Modifier__Quantifier *int `json:"Modifier__Quantifier" gorm:"column:Modifier__Quantifier" mapstructure:"Modifier__Quantifier"`

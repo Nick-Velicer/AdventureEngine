@@ -1,6 +1,7 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 import { Character } from "./Character";
-import { DomainCharacterStat } from "./DomainCharacterStat";
+import { DomainBooleanCondition } from "./DomainBooleanCondition";
+import { DomainEntityStat } from "./DomainEntityStat";
 import { DomainCondition } from "./DomainCondition";
 import { Quantifier } from "./Quantifier";
 
@@ -15,7 +16,7 @@ export type EvaluatedConditional = ExtendedSchemaObject<{
     },
     Relationships: {
         ManyToOne: {
-            IsTrue__DomainCondition: DomainCondition
+            IsTrue__DomainBooleanCondition: DomainBooleanCondition
             Base__Quantifier: Quantifier,
             Modifier__Quantifier: Quantifier
         },

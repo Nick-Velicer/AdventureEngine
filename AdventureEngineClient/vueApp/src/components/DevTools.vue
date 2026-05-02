@@ -2,18 +2,18 @@
 import { NSwitch} from 'naive-ui';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 import ThemeSelector from './ThemeSelector.vue';
-import type { Campaign, Character, CharacterDomainCharacterStatInstance, CharacterDomainSubClassInstance, DomainCharacterStat, DomainSubClass } from '../../../types/appTypes/appTypes';
+import type { Campaign, Character, CharacterDomainEntityStatInstance, CharacterDomainSubClassInstance, DomainEntityStat, DomainSubClass } from '../../../types/appTypes/appTypes';
 import Button from './Button.vue';
 
 const store = composedAppInjectionContexts.store();
 
 const getSubclassesQuery = composedAppInjectionContexts.queries.useGetDomainSubClasssQuery;
 const saveSubclassMappingsMutation = composedAppInjectionContexts.queries.useSaveCharacterDomainSubClassInstanceMutation;
-const getStatsQuery = composedAppInjectionContexts.queries.useGetDomainCharacterStatsQuery;
+const getStatsQuery = composedAppInjectionContexts.queries.useGetDomainEntityStatsQuery;
 const saveCampaignMutation = composedAppInjectionContexts.queries.useSaveCampaignMutation;
 const getCharactersQuery = composedAppInjectionContexts.queries.useGetCharactersQuery;
 const saveCharacterMutation = composedAppInjectionContexts.queries.useSaveCharacterMutation;
-const saveCharacterStatsMutation = composedAppInjectionContexts.queries.useSaveCharacterDomainCharacterStatInstanceMutation;
+const saveCharacterStatsMutation = composedAppInjectionContexts.queries.useSaveCharacterDomainEntityStatInstanceMutation;
 
 
 
@@ -77,7 +77,7 @@ async function dispatchStatsSave(characters: Array<Character>) {
     
     const stats = await getStats();
 
-    const baseStats = (stats.data as Array<DomainCharacterStat>).filter(stat => stat.Attributes.IsBaseStat === true);
+    const baseStats = (stats.data as Array<DomainEntityStat>).filter(stat => stat.Attributes.IsBaseStat === true);
 
     const saveStats = saveCharacterStatsMutation(
         characters.map(character => baseStats.map((stat, index) => ({
@@ -88,11 +88,11 @@ async function dispatchStatsSave(characters: Array<Character>) {
             Relationships: {
                 ManyToOne: {
                     Character__Character: character,
-                    Stat__DomainCharacterStat: stat
+                    Stat__DomainEntityStat: stat
                 },
                 OneToMany: {}
             }
-        } as CharacterDomainCharacterStatInstance))).flat(Infinity),
+        } as CharacterDomainEntityStatInstance))).flat(Infinity),
         () => dispatchSubclassMappingSave(characters)
     ).mutate;
 

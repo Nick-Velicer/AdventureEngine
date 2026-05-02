@@ -4,24 +4,26 @@
 
 import * as CampaignService from "../../services/generated/CampaignService";
 import * as CharacterService from "../../services/generated/CharacterService";
-import * as CharacterDomainCharacterStatInstanceService from "../../services/generated/CharacterDomainCharacterStatInstanceService";
 import * as CharacterDomainConditionInstanceService from "../../services/generated/CharacterDomainConditionInstanceService";
+import * as CharacterDomainEntityStatInstanceService from "../../services/generated/CharacterDomainEntityStatInstanceService";
 import * as CharacterDomainSubClassInstanceService from "../../services/generated/CharacterDomainSubClassInstanceService";
 import * as ClassPrimaryAbilityService from "../../services/generated/ClassPrimaryAbilityService";
 import * as ClassSaveService from "../../services/generated/ClassSaveService";
 import * as ClassSpellService from "../../services/generated/ClassSpellService";
 import * as DomainActionService from "../../services/generated/DomainActionService";
 import * as DomainAppRoleService from "../../services/generated/DomainAppRoleService";
-import * as DomainCharacterStatService from "../../services/generated/DomainCharacterStatService";
+import * as DomainBooleanConditionService from "../../services/generated/DomainBooleanConditionService";
 import * as DomainClassService from "../../services/generated/DomainClassService";
 import * as DomainClassResourceService from "../../services/generated/DomainClassResourceService";
 import * as DomainClassTraitService from "../../services/generated/DomainClassTraitService";
 import * as DomainConditionService from "../../services/generated/DomainConditionService";
 import * as DomainCreatureTypeService from "../../services/generated/DomainCreatureTypeService";
+import * as DomainCurrencyDenominationService from "../../services/generated/DomainCurrencyDenominationService";
 import * as DomainDamageTypeService from "../../services/generated/DomainDamageTypeService";
 import * as DomainDiceService from "../../services/generated/DomainDiceService";
 import * as DomainDiceRollSubTypeService from "../../services/generated/DomainDiceRollSubTypeService";
 import * as DomainDiceRollTypeService from "../../services/generated/DomainDiceRollTypeService";
+import * as DomainEntityStatService from "../../services/generated/DomainEntityStatService";
 import * as DomainItemService from "../../services/generated/DomainItemService";
 import * as DomainLanguageService from "../../services/generated/DomainLanguageService";
 import * as DomainQuantifierVariantService from "../../services/generated/DomainQuantifierVariantService";
@@ -32,7 +34,9 @@ import * as DomainSpellService from "../../services/generated/DomainSpellService
 import * as DomainSpellSchoolService from "../../services/generated/DomainSpellSchoolService";
 import * as DomainStaticEffectService from "../../services/generated/DomainStaticEffectService";
 import * as DomainSubClassService from "../../services/generated/DomainSubClassService";
+import * as DomainWeaponService from "../../services/generated/DomainWeaponService";
 import * as DomainWeaponCategoryService from "../../services/generated/DomainWeaponCategoryService";
+import * as DomainWeaponDomainWeaponCategoryInstanceService from "../../services/generated/DomainWeaponDomainWeaponCategoryInstanceService";
 import * as EvaluatedConditionalService from "../../services/generated/EvaluatedConditionalService";
 import * as QuantifierService from "../../services/generated/QuantifierService";
 import * as QuantifierCostSpecifierService from "../../services/generated/QuantifierCostSpecifierService";
@@ -50,15 +54,15 @@ export const generatedInjectableServices = {
       getItemById: CharacterService.getCharacterbyId,
       saveItem: CharacterService.saveCharacter
    },
-   CharacterDomainCharacterStatInstance: {
-      getAllItems: CharacterDomainCharacterStatInstanceService.getCharacterDomainCharacterStatInstances,
-      getItemById: CharacterDomainCharacterStatInstanceService.getCharacterDomainCharacterStatInstancebyId,
-      saveItem: CharacterDomainCharacterStatInstanceService.saveCharacterDomainCharacterStatInstance
-   },
    CharacterDomainConditionInstance: {
       getAllItems: CharacterDomainConditionInstanceService.getCharacterDomainConditionInstances,
       getItemById: CharacterDomainConditionInstanceService.getCharacterDomainConditionInstancebyId,
       saveItem: CharacterDomainConditionInstanceService.saveCharacterDomainConditionInstance
+   },
+   CharacterDomainEntityStatInstance: {
+      getAllItems: CharacterDomainEntityStatInstanceService.getCharacterDomainEntityStatInstances,
+      getItemById: CharacterDomainEntityStatInstanceService.getCharacterDomainEntityStatInstancebyId,
+      saveItem: CharacterDomainEntityStatInstanceService.saveCharacterDomainEntityStatInstance
    },
    CharacterDomainSubClassInstance: {
       getAllItems: CharacterDomainSubClassInstanceService.getCharacterDomainSubClassInstances,
@@ -90,10 +94,10 @@ export const generatedInjectableServices = {
       getItemById: DomainAppRoleService.getDomainAppRolebyId,
       saveItem: DomainAppRoleService.saveDomainAppRole
    },
-   DomainCharacterStat: {
-      getAllItems: DomainCharacterStatService.getDomainCharacterStats,
-      getItemById: DomainCharacterStatService.getDomainCharacterStatbyId,
-      saveItem: DomainCharacterStatService.saveDomainCharacterStat
+   DomainBooleanCondition: {
+      getAllItems: DomainBooleanConditionService.getDomainBooleanConditions,
+      getItemById: DomainBooleanConditionService.getDomainBooleanConditionbyId,
+      saveItem: DomainBooleanConditionService.saveDomainBooleanCondition
    },
    DomainClass: {
       getAllItems: DomainClassService.getDomainClasss,
@@ -120,6 +124,11 @@ export const generatedInjectableServices = {
       getItemById: DomainCreatureTypeService.getDomainCreatureTypebyId,
       saveItem: DomainCreatureTypeService.saveDomainCreatureType
    },
+   DomainCurrencyDenomination: {
+      getAllItems: DomainCurrencyDenominationService.getDomainCurrencyDenominations,
+      getItemById: DomainCurrencyDenominationService.getDomainCurrencyDenominationbyId,
+      saveItem: DomainCurrencyDenominationService.saveDomainCurrencyDenomination
+   },
    DomainDamageType: {
       getAllItems: DomainDamageTypeService.getDomainDamageTypes,
       getItemById: DomainDamageTypeService.getDomainDamageTypebyId,
@@ -139,6 +148,11 @@ export const generatedInjectableServices = {
       getAllItems: DomainDiceRollTypeService.getDomainDiceRollTypes,
       getItemById: DomainDiceRollTypeService.getDomainDiceRollTypebyId,
       saveItem: DomainDiceRollTypeService.saveDomainDiceRollType
+   },
+   DomainEntityStat: {
+      getAllItems: DomainEntityStatService.getDomainEntityStats,
+      getItemById: DomainEntityStatService.getDomainEntityStatbyId,
+      saveItem: DomainEntityStatService.saveDomainEntityStat
    },
    DomainItem: {
       getAllItems: DomainItemService.getDomainItems,
@@ -190,10 +204,20 @@ export const generatedInjectableServices = {
       getItemById: DomainSubClassService.getDomainSubClassbyId,
       saveItem: DomainSubClassService.saveDomainSubClass
    },
+   DomainWeapon: {
+      getAllItems: DomainWeaponService.getDomainWeapons,
+      getItemById: DomainWeaponService.getDomainWeaponbyId,
+      saveItem: DomainWeaponService.saveDomainWeapon
+   },
    DomainWeaponCategory: {
       getAllItems: DomainWeaponCategoryService.getDomainWeaponCategorys,
       getItemById: DomainWeaponCategoryService.getDomainWeaponCategorybyId,
       saveItem: DomainWeaponCategoryService.saveDomainWeaponCategory
+   },
+   DomainWeaponDomainWeaponCategoryInstance: {
+      getAllItems: DomainWeaponDomainWeaponCategoryInstanceService.getDomainWeaponDomainWeaponCategoryInstances,
+      getItemById: DomainWeaponDomainWeaponCategoryInstanceService.getDomainWeaponDomainWeaponCategoryInstancebyId,
+      saveItem: DomainWeaponDomainWeaponCategoryInstanceService.saveDomainWeaponDomainWeaponCategoryInstance
    },
    EvaluatedConditional: {
       getAllItems: EvaluatedConditionalService.getEvaluatedConditionals,

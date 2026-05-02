@@ -24,9 +24,9 @@ type ClassSaveJson struct {
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
 
-	// StatDomainCharacterStat corresponds to the JSON schema field
-	// "Stat__DomainCharacterStat".
-	StatDomainCharacterStat *float64 `json:"Stat__DomainCharacterStat,omitempty" yaml:"Stat__DomainCharacterStat,omitempty" mapstructure:"Stat__DomainCharacterStat,omitempty"`
+	// StatDomainEntityStat corresponds to the JSON schema field
+	// "Stat__DomainEntityStat".
+	StatDomainEntityStat *float64 `json:"Stat__DomainEntityStat,omitempty" yaml:"Stat__DomainEntityStat,omitempty" mapstructure:"Stat__DomainEntityStat,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

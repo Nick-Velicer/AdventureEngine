@@ -6,9 +6,13 @@ type QuantifierCostSpecifierJson struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
 
-	// CostDomainCharacterStat corresponds to the JSON schema field
-	// "Cost__DomainCharacterStat".
-	CostDomainCharacterStat *float64 `json:"Cost__DomainCharacterStat,omitempty" yaml:"Cost__DomainCharacterStat,omitempty" mapstructure:"Cost__DomainCharacterStat,omitempty"`
+	// CostDomainCurrencyDenomination corresponds to the JSON schema field
+	// "Cost__DomainCurrencyDenomination".
+	CostDomainCurrencyDenomination *float64 `json:"Cost__DomainCurrencyDenomination,omitempty" yaml:"Cost__DomainCurrencyDenomination,omitempty" mapstructure:"Cost__DomainCurrencyDenomination,omitempty"`
+
+	// CostDomainEntityStat corresponds to the JSON schema field
+	// "Cost__DomainEntityStat".
+	CostDomainEntityStat *float64 `json:"Cost__DomainEntityStat,omitempty" yaml:"Cost__DomainEntityStat,omitempty" mapstructure:"Cost__DomainEntityStat,omitempty"`
 
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`

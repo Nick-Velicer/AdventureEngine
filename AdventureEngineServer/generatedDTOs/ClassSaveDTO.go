@@ -28,7 +28,7 @@ type ClassSaveDTOAttributes struct {
 type ClassSaveDTOManyToOneRelationships struct {
    Class__DomainClass *DomainClassDTO
    ResourceOwner__User *UserDTO
-   Stat__DomainCharacterStat *DomainCharacterStatDTO
+   Stat__DomainEntityStat *DomainEntityStatDTO
 }
 
 type ClassSaveDTOOneToManyRelationships struct {
@@ -72,11 +72,11 @@ func ClassSaveToClassSaveDTO(context *contextProviders.DTOContext, classSave *ty
    
    var includedClass__DomainClass *types.DomainClass
    var includedResourceOwner__User *types.User
-   var includedStat__DomainCharacterStat *types.DomainCharacterStat
+   var includedStat__DomainEntityStat *types.DomainEntityStat
    
    var Class__DomainClassDTO *DomainClassDTO
    var ResourceOwner__UserDTO *UserDTO
-   var Stat__DomainCharacterStatDTO *DomainCharacterStatDTO
+   var Stat__DomainEntityStatDTO *DomainEntityStatDTO
    
    var err error
    
@@ -102,12 +102,12 @@ func ClassSaveToClassSaveDTO(context *contextProviders.DTOContext, classSave *ty
       }
    }
 
-   if (classSave.Stat__DomainCharacterStat != nil) {
-      includedStat__DomainCharacterStat, err = services.GetDomainCharacterStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCharacterStat](classSave.Stat__DomainCharacterStat))
+   if (classSave.Stat__DomainEntityStat != nil) {
+      includedStat__DomainEntityStat, err = services.GetDomainEntityStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainEntityStat](classSave.Stat__DomainEntityStat))
       if err != nil {
          return nil, err
       }
-      Stat__DomainCharacterStatDTO, err = DomainCharacterStatToDomainCharacterStatDTO(&childDTOContext, includedStat__DomainCharacterStat)
+      Stat__DomainEntityStatDTO, err = DomainEntityStatToDomainEntityStatDTO(&childDTOContext, includedStat__DomainEntityStat)
       if err != nil {
          return nil, err
       }
@@ -129,7 +129,7 @@ func ClassSaveToClassSaveDTO(context *contextProviders.DTOContext, classSave *ty
          ManyToOne: ClassSaveDTOManyToOneRelationships {
             Class__DomainClass: Class__DomainClassDTO,
             ResourceOwner__User: ResourceOwner__UserDTO,
-            Stat__DomainCharacterStat: Stat__DomainCharacterStatDTO,
+            Stat__DomainEntityStat: Stat__DomainEntityStatDTO,
          },
          OneToMany: ClassSaveDTOOneToManyRelationships {
          },
@@ -157,8 +157,8 @@ func ClassSaveDTOToClassSave(classSave *ClassSaveDTO) *types.ClassSave {
       tableTypeBuffer.ResourceOwner__User = classSave.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
-   if (classSave.Relationships.ManyToOne.Stat__DomainCharacterStat != nil) {
-      tableTypeBuffer.Stat__DomainCharacterStat = classSave.Relationships.ManyToOne.Stat__DomainCharacterStat.Id
+   if (classSave.Relationships.ManyToOne.Stat__DomainEntityStat != nil) {
+      tableTypeBuffer.Stat__DomainEntityStat = classSave.Relationships.ManyToOne.Stat__DomainEntityStat.Id
    }
 
    return &tableTypeBuffer

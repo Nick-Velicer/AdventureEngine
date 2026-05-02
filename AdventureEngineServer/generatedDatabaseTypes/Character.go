@@ -32,8 +32,8 @@ type Character struct {
 	// "Species__DomainSpecies".
 	Species__DomainSpecies *int `json:"Species__DomainSpecies" gorm:"column:Species__DomainSpecies" mapstructure:"Species__DomainSpecies"`
 
-	// StatsCharacterDomainCharacterStatInstance corresponds to the JSON schema field
-	// "Stats__CharacterDomainCharacterStatInstance".
+	// StatsCharacterDomainEntityStatInstance corresponds to the JSON schema field
+	// "Stats__CharacterDomainEntityStatInstance".
 
 	// SubClassesCharacterDomainSubClassInstance corresponds to the JSON schema field
 	// "SubClasses__CharacterDomainSubClassInstance".

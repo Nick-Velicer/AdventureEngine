@@ -31,9 +31,9 @@ type DomainClassJson struct {
 	// SavesClassSave corresponds to the JSON schema field "Saves__ClassSave".
 	SavesClassSave []float64 `json:"Saves__ClassSave,omitempty" yaml:"Saves__ClassSave,omitempty" mapstructure:"Saves__ClassSave,omitempty"`
 
-	// SpellcastingStatDomainCharacterStat corresponds to the JSON schema field
-	// "SpellcastingStat__DomainCharacterStat".
-	SpellcastingStatDomainCharacterStat *float64 `json:"SpellcastingStat__DomainCharacterStat,omitempty" yaml:"SpellcastingStat__DomainCharacterStat,omitempty" mapstructure:"SpellcastingStat__DomainCharacterStat,omitempty"`
+	// SpellcastingStatDomainEntityStat corresponds to the JSON schema field
+	// "SpellcastingStat__DomainEntityStat".
+	SpellcastingStatDomainEntityStat *float64 `json:"SpellcastingStat__DomainEntityStat,omitempty" yaml:"SpellcastingStat__DomainEntityStat,omitempty" mapstructure:"SpellcastingStat__DomainEntityStat,omitempty"`
 
 	// SubClassesDomainSubClass corresponds to the JSON schema field
 	// "SubClasses__DomainSubClass".

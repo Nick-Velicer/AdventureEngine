@@ -100,6 +100,10 @@ type QuantifierJson struct {
 	// "Parent__DomainCondition".
 	ParentDomainCondition *float64 `json:"Parent__DomainCondition,omitempty" yaml:"Parent__DomainCondition,omitempty" mapstructure:"Parent__DomainCondition,omitempty"`
 
+	// ParentDomainCurrencyDenomination corresponds to the JSON schema field
+	// "Parent__DomainCurrencyDenomination".
+	ParentDomainCurrencyDenomination *float64 `json:"Parent__DomainCurrencyDenomination,omitempty" yaml:"Parent__DomainCurrencyDenomination,omitempty" mapstructure:"Parent__DomainCurrencyDenomination,omitempty"`
+
 	// ParentDomainStaticEffect corresponds to the JSON schema field
 	// "Parent__DomainStaticEffect".
 	ParentDomainStaticEffect *float64 `json:"Parent__DomainStaticEffect,omitempty" yaml:"Parent__DomainStaticEffect,omitempty" mapstructure:"Parent__DomainStaticEffect,omitempty"`
@@ -107,6 +111,9 @@ type QuantifierJson struct {
 	// ParentDomainSubClass corresponds to the JSON schema field
 	// "Parent__DomainSubClass".
 	ParentDomainSubClass *float64 `json:"Parent__DomainSubClass,omitempty" yaml:"Parent__DomainSubClass,omitempty" mapstructure:"Parent__DomainSubClass,omitempty"`
+
+	// ParentDomainWeapon corresponds to the JSON schema field "Parent__DomainWeapon".
+	ParentDomainWeapon *float64 `json:"Parent__DomainWeapon,omitempty" yaml:"Parent__DomainWeapon,omitempty" mapstructure:"Parent__DomainWeapon,omitempty"`
 
 	// PreventsApplying corresponds to the JSON schema field "PreventsApplying".
 	PreventsApplying *bool `json:"PreventsApplying,omitempty" yaml:"PreventsApplying,omitempty" mapstructure:"PreventsApplying,omitempty"`
@@ -148,17 +155,20 @@ type QuantifierJson struct {
 	// TargetDomainAction corresponds to the JSON schema field "Target__DomainAction".
 	TargetDomainAction *float64 `json:"Target__DomainAction,omitempty" yaml:"Target__DomainAction,omitempty" mapstructure:"Target__DomainAction,omitempty"`
 
-	// TargetDomainCharacterStat corresponds to the JSON schema field
-	// "Target__DomainCharacterStat".
-	TargetDomainCharacterStat *float64 `json:"Target__DomainCharacterStat,omitempty" yaml:"Target__DomainCharacterStat,omitempty" mapstructure:"Target__DomainCharacterStat,omitempty"`
-
 	// TargetDomainCondition corresponds to the JSON schema field
 	// "Target__DomainCondition".
 	TargetDomainCondition *float64 `json:"Target__DomainCondition,omitempty" yaml:"Target__DomainCondition,omitempty" mapstructure:"Target__DomainCondition,omitempty"`
 
+	// TargetDomainCurrencyDenomination corresponds to the JSON schema field
+	// "Target__DomainCurrencyDenomination".
+	TargetDomainCurrencyDenomination *float64 `json:"Target__DomainCurrencyDenomination,omitempty" yaml:"Target__DomainCurrencyDenomination,omitempty" mapstructure:"Target__DomainCurrencyDenomination,omitempty"`
+
 	// TargetDomainDamageType corresponds to the JSON schema field
 	// "Target__DomainDamageType".
 	TargetDomainDamageType *float64 `json:"Target__DomainDamageType,omitempty" yaml:"Target__DomainDamageType,omitempty" mapstructure:"Target__DomainDamageType,omitempty"`
+
+	// TargetDomainDice corresponds to the JSON schema field "Target__DomainDice".
+	TargetDomainDice *float64 `json:"Target__DomainDice,omitempty" yaml:"Target__DomainDice,omitempty" mapstructure:"Target__DomainDice,omitempty"`
 
 	// TargetDomainDiceRollSubType corresponds to the JSON schema field
 	// "Target__DomainDiceRollSubType".
@@ -167,6 +177,10 @@ type QuantifierJson struct {
 	// TargetDomainDiceRollType corresponds to the JSON schema field
 	// "Target__DomainDiceRollType".
 	TargetDomainDiceRollType *float64 `json:"Target__DomainDiceRollType,omitempty" yaml:"Target__DomainDiceRollType,omitempty" mapstructure:"Target__DomainDiceRollType,omitempty"`
+
+	// TargetDomainEntityStat corresponds to the JSON schema field
+	// "Target__DomainEntityStat".
+	TargetDomainEntityStat *float64 `json:"Target__DomainEntityStat,omitempty" yaml:"Target__DomainEntityStat,omitempty" mapstructure:"Target__DomainEntityStat,omitempty"`
 
 	// TargetDomainSpell corresponds to the JSON schema field "Target__DomainSpell".
 	TargetDomainSpell *float64 `json:"Target__DomainSpell,omitempty" yaml:"Target__DomainSpell,omitempty" mapstructure:"Target__DomainSpell,omitempty"`
@@ -177,6 +191,10 @@ type QuantifierJson struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// TriggerDomainAction corresponds to the JSON schema field
+	// "Trigger__DomainAction".
+	TriggerDomainAction *float64 `json:"Trigger__DomainAction,omitempty" yaml:"Trigger__DomainAction,omitempty" mapstructure:"Trigger__DomainAction,omitempty"`
 
 	// UntilLongRest corresponds to the JSON schema field "UntilLongRest".
 	UntilLongRest *bool `json:"UntilLongRest,omitempty" yaml:"UntilLongRest,omitempty" mapstructure:"UntilLongRest,omitempty"`

@@ -1,5 +1,5 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
-import { DomainCharacterStat } from "./DomainCharacterStat";
+import { DomainEntityStat } from "./DomainEntityStat";
   
 //Common, Dwarvish, Abyssal, etc.
 export type DomainLanguage = ExtendedSchemaObject<{

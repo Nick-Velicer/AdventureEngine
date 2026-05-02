@@ -32,9 +32,9 @@ type CharacterJson struct {
 	// "Species__DomainSpecies".
 	SpeciesDomainSpecies *float64 `json:"Species__DomainSpecies,omitempty" yaml:"Species__DomainSpecies,omitempty" mapstructure:"Species__DomainSpecies,omitempty"`
 
-	// StatsCharacterDomainCharacterStatInstance corresponds to the JSON schema field
-	// "Stats__CharacterDomainCharacterStatInstance".
-	StatsCharacterDomainCharacterStatInstance []float64 `json:"Stats__CharacterDomainCharacterStatInstance,omitempty" yaml:"Stats__CharacterDomainCharacterStatInstance,omitempty" mapstructure:"Stats__CharacterDomainCharacterStatInstance,omitempty"`
+	// StatsCharacterDomainEntityStatInstance corresponds to the JSON schema field
+	// "Stats__CharacterDomainEntityStatInstance".
+	StatsCharacterDomainEntityStatInstance []float64 `json:"Stats__CharacterDomainEntityStatInstance,omitempty" yaml:"Stats__CharacterDomainEntityStatInstance,omitempty" mapstructure:"Stats__CharacterDomainEntityStatInstance,omitempty"`
 
 	// SubClassesCharacterDomainSubClassInstance corresponds to the JSON schema field
 	// "SubClasses__CharacterDomainSubClassInstance".

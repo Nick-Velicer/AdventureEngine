@@ -24,9 +24,9 @@ type ClassPrimaryAbility struct {
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
 
-	// StatDomainCharacterStat corresponds to the JSON schema field
-	// "Stat__DomainCharacterStat".
-	Stat__DomainCharacterStat *int `json:"Stat__DomainCharacterStat" gorm:"column:Stat__DomainCharacterStat" mapstructure:"Stat__DomainCharacterStat"`
+	// StatDomainEntityStat corresponds to the JSON schema field
+	// "Stat__DomainEntityStat".
+	Stat__DomainEntityStat *int `json:"Stat__DomainEntityStat" gorm:"column:Stat__DomainEntityStat" mapstructure:"Stat__DomainEntityStat"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`

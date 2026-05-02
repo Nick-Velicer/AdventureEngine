@@ -1,11 +1,11 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
-import { DomainCharacterStat } from "./DomainCharacterStat";
+import { DomainEntityStat } from "./DomainEntityStat";
   
 export type DomainSkill = ExtendedSchemaObject<{
     Attributes: {},
     Relationships: {
         ManyToOne: {
-            ParentStat__DomainCharacterStat: DomainCharacterStat
+            ParentStat__DomainEntityStat: DomainEntityStat
         },
         OneToMany: {}
     }

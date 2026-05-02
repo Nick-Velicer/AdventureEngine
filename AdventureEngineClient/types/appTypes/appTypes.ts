@@ -4,24 +4,26 @@
 import { IsEqual } from "type-fest";import { SchemaObject } from "../SchemaObject";
 import { Campaign as Base__Campaign } from "../coreTypes/Campaign";
 import { Character as Base__Character } from "../coreTypes/Character";
-import { CharacterDomainCharacterStatInstance as Base__CharacterDomainCharacterStatInstance } from "../coreTypes/CharacterDomainCharacterStatInstance";
 import { CharacterDomainConditionInstance as Base__CharacterDomainConditionInstance } from "../coreTypes/CharacterDomainConditionInstance";
+import { CharacterDomainEntityStatInstance as Base__CharacterDomainEntityStatInstance } from "../coreTypes/CharacterDomainEntityStatInstance";
 import { CharacterDomainSubClassInstance as Base__CharacterDomainSubClassInstance } from "../coreTypes/CharacterDomainSubClassInstance";
 import { ClassPrimaryAbility as Base__ClassPrimaryAbility } from "../coreTypes/ClassPrimaryAbility";
 import { ClassSave as Base__ClassSave } from "../coreTypes/ClassSave";
 import { ClassSpell as Base__ClassSpell } from "../coreTypes/ClassSpell";
 import { DomainAction as Base__DomainAction } from "../coreTypes/DomainAction";
 import { DomainAppRole as Base__DomainAppRole } from "../coreTypes/DomainAppRole";
-import { DomainCharacterStat as Base__DomainCharacterStat } from "../coreTypes/DomainCharacterStat";
+import { DomainBooleanCondition as Base__DomainBooleanCondition } from "../coreTypes/DomainBooleanCondition";
 import { DomainClass as Base__DomainClass } from "../coreTypes/DomainClass";
 import { DomainClassResource as Base__DomainClassResource } from "../coreTypes/DomainClassResource";
 import { DomainClassTrait as Base__DomainClassTrait } from "../coreTypes/DomainClassTrait";
 import { DomainCondition as Base__DomainCondition } from "../coreTypes/DomainCondition";
 import { DomainCreatureType as Base__DomainCreatureType } from "../coreTypes/DomainCreatureType";
+import { DomainCurrencyDenomination as Base__DomainCurrencyDenomination } from "../coreTypes/DomainCurrencyDenomination";
 import { DomainDamageType as Base__DomainDamageType } from "../coreTypes/DomainDamageType";
 import { DomainDice as Base__DomainDice } from "../coreTypes/DomainDice";
 import { DomainDiceRollSubType as Base__DomainDiceRollSubType } from "../coreTypes/DomainDiceRollSubType";
 import { DomainDiceRollType as Base__DomainDiceRollType } from "../coreTypes/DomainDiceRollType";
+import { DomainEntityStat as Base__DomainEntityStat } from "../coreTypes/DomainEntityStat";
 import { DomainItem as Base__DomainItem } from "../coreTypes/DomainItem";
 import { DomainLanguage as Base__DomainLanguage } from "../coreTypes/DomainLanguage";
 import { DomainQuantifierVariant as Base__DomainQuantifierVariant } from "../coreTypes/DomainQuantifierVariant";
@@ -32,7 +34,9 @@ import { DomainSpell as Base__DomainSpell } from "../coreTypes/DomainSpell";
 import { DomainSpellSchool as Base__DomainSpellSchool } from "../coreTypes/DomainSpellSchool";
 import { DomainStaticEffect as Base__DomainStaticEffect } from "../coreTypes/DomainStaticEffect";
 import { DomainSubClass as Base__DomainSubClass } from "../coreTypes/DomainSubClass";
+import { DomainWeapon as Base__DomainWeapon } from "../coreTypes/DomainWeapon";
 import { DomainWeaponCategory as Base__DomainWeaponCategory } from "../coreTypes/DomainWeaponCategory";
+import { DomainWeaponDomainWeaponCategoryInstance as Base__DomainWeaponDomainWeaponCategoryInstance } from "../coreTypes/DomainWeaponDomainWeaponCategoryInstance";
 import { EvaluatedConditional as Base__EvaluatedConditional } from "../coreTypes/EvaluatedConditional";
 import { Quantifier as Base__Quantifier } from "../coreTypes/Quantifier";
 import { QuantifierCostSpecifier as Base__QuantifierCostSpecifier } from "../coreTypes/QuantifierCostSpecifier";
@@ -42,24 +46,26 @@ import { UserRoleInstance as Base__UserRoleInstance } from "../coreTypes/UserRol
 const BaseAppTypes = {
 	Campaign: {} as Base__Campaign,
 	Character: {} as Base__Character,
-	CharacterDomainCharacterStatInstance: {} as Base__CharacterDomainCharacterStatInstance,
 	CharacterDomainConditionInstance: {} as Base__CharacterDomainConditionInstance,
+	CharacterDomainEntityStatInstance: {} as Base__CharacterDomainEntityStatInstance,
 	CharacterDomainSubClassInstance: {} as Base__CharacterDomainSubClassInstance,
 	ClassPrimaryAbility: {} as Base__ClassPrimaryAbility,
 	ClassSave: {} as Base__ClassSave,
 	ClassSpell: {} as Base__ClassSpell,
 	DomainAction: {} as Base__DomainAction,
 	DomainAppRole: {} as Base__DomainAppRole,
-	DomainCharacterStat: {} as Base__DomainCharacterStat,
+	DomainBooleanCondition: {} as Base__DomainBooleanCondition,
 	DomainClass: {} as Base__DomainClass,
 	DomainClassResource: {} as Base__DomainClassResource,
 	DomainClassTrait: {} as Base__DomainClassTrait,
 	DomainCondition: {} as Base__DomainCondition,
 	DomainCreatureType: {} as Base__DomainCreatureType,
+	DomainCurrencyDenomination: {} as Base__DomainCurrencyDenomination,
 	DomainDamageType: {} as Base__DomainDamageType,
 	DomainDice: {} as Base__DomainDice,
 	DomainDiceRollSubType: {} as Base__DomainDiceRollSubType,
 	DomainDiceRollType: {} as Base__DomainDiceRollType,
+	DomainEntityStat: {} as Base__DomainEntityStat,
 	DomainItem: {} as Base__DomainItem,
 	DomainLanguage: {} as Base__DomainLanguage,
 	DomainQuantifierVariant: {} as Base__DomainQuantifierVariant,
@@ -70,7 +76,9 @@ const BaseAppTypes = {
 	DomainSpellSchool: {} as Base__DomainSpellSchool,
 	DomainStaticEffect: {} as Base__DomainStaticEffect,
 	DomainSubClass: {} as Base__DomainSubClass,
+	DomainWeapon: {} as Base__DomainWeapon,
 	DomainWeaponCategory: {} as Base__DomainWeaponCategory,
+	DomainWeaponDomainWeaponCategoryInstance: {} as Base__DomainWeaponDomainWeaponCategoryInstance,
 	EvaluatedConditional: {} as Base__EvaluatedConditional,
 	Quantifier: {} as Base__Quantifier,
 	QuantifierCostSpecifier: {} as Base__QuantifierCostSpecifier,
@@ -101,24 +109,26 @@ type RecursionGuardedSchemaObject<T extends SchemaObject, G extends (typeof Base
 
 export type Campaign = RecursionGuardedSchemaObject<Base__Campaign>;
 export type Character = RecursionGuardedSchemaObject<Base__Character>;
-export type CharacterDomainCharacterStatInstance = RecursionGuardedSchemaObject<Base__CharacterDomainCharacterStatInstance>;
 export type CharacterDomainConditionInstance = RecursionGuardedSchemaObject<Base__CharacterDomainConditionInstance>;
+export type CharacterDomainEntityStatInstance = RecursionGuardedSchemaObject<Base__CharacterDomainEntityStatInstance>;
 export type CharacterDomainSubClassInstance = RecursionGuardedSchemaObject<Base__CharacterDomainSubClassInstance>;
 export type ClassPrimaryAbility = RecursionGuardedSchemaObject<Base__ClassPrimaryAbility>;
 export type ClassSave = RecursionGuardedSchemaObject<Base__ClassSave>;
 export type ClassSpell = RecursionGuardedSchemaObject<Base__ClassSpell>;
 export type DomainAction = RecursionGuardedSchemaObject<Base__DomainAction>;
 export type DomainAppRole = RecursionGuardedSchemaObject<Base__DomainAppRole>;
-export type DomainCharacterStat = RecursionGuardedSchemaObject<Base__DomainCharacterStat>;
+export type DomainBooleanCondition = RecursionGuardedSchemaObject<Base__DomainBooleanCondition>;
 export type DomainClass = RecursionGuardedSchemaObject<Base__DomainClass>;
 export type DomainClassResource = RecursionGuardedSchemaObject<Base__DomainClassResource>;
 export type DomainClassTrait = RecursionGuardedSchemaObject<Base__DomainClassTrait>;
 export type DomainCondition = RecursionGuardedSchemaObject<Base__DomainCondition>;
 export type DomainCreatureType = RecursionGuardedSchemaObject<Base__DomainCreatureType>;
+export type DomainCurrencyDenomination = RecursionGuardedSchemaObject<Base__DomainCurrencyDenomination>;
 export type DomainDamageType = RecursionGuardedSchemaObject<Base__DomainDamageType>;
 export type DomainDice = RecursionGuardedSchemaObject<Base__DomainDice>;
 export type DomainDiceRollSubType = RecursionGuardedSchemaObject<Base__DomainDiceRollSubType>;
 export type DomainDiceRollType = RecursionGuardedSchemaObject<Base__DomainDiceRollType>;
+export type DomainEntityStat = RecursionGuardedSchemaObject<Base__DomainEntityStat>;
 export type DomainItem = RecursionGuardedSchemaObject<Base__DomainItem>;
 export type DomainLanguage = RecursionGuardedSchemaObject<Base__DomainLanguage>;
 export type DomainQuantifierVariant = RecursionGuardedSchemaObject<Base__DomainQuantifierVariant>;
@@ -129,7 +139,9 @@ export type DomainSpell = RecursionGuardedSchemaObject<Base__DomainSpell>;
 export type DomainSpellSchool = RecursionGuardedSchemaObject<Base__DomainSpellSchool>;
 export type DomainStaticEffect = RecursionGuardedSchemaObject<Base__DomainStaticEffect>;
 export type DomainSubClass = RecursionGuardedSchemaObject<Base__DomainSubClass>;
+export type DomainWeapon = RecursionGuardedSchemaObject<Base__DomainWeapon>;
 export type DomainWeaponCategory = RecursionGuardedSchemaObject<Base__DomainWeaponCategory>;
+export type DomainWeaponDomainWeaponCategoryInstance = RecursionGuardedSchemaObject<Base__DomainWeaponDomainWeaponCategoryInstance>;
 export type EvaluatedConditional = RecursionGuardedSchemaObject<Base__EvaluatedConditional>;
 export type Quantifier = RecursionGuardedSchemaObject<Base__Quantifier>;
 export type QuantifierCostSpecifier = RecursionGuardedSchemaObject<Base__QuantifierCostSpecifier>;
@@ -139,24 +151,26 @@ export type UserRoleInstance = RecursionGuardedSchemaObject<Base__UserRoleInstan
 export const AppTypes = {
 	Campaign: {} as Campaign,
 	Character: {} as Character,
-	CharacterDomainCharacterStatInstance: {} as CharacterDomainCharacterStatInstance,
 	CharacterDomainConditionInstance: {} as CharacterDomainConditionInstance,
+	CharacterDomainEntityStatInstance: {} as CharacterDomainEntityStatInstance,
 	CharacterDomainSubClassInstance: {} as CharacterDomainSubClassInstance,
 	ClassPrimaryAbility: {} as ClassPrimaryAbility,
 	ClassSave: {} as ClassSave,
 	ClassSpell: {} as ClassSpell,
 	DomainAction: {} as DomainAction,
 	DomainAppRole: {} as DomainAppRole,
-	DomainCharacterStat: {} as DomainCharacterStat,
+	DomainBooleanCondition: {} as DomainBooleanCondition,
 	DomainClass: {} as DomainClass,
 	DomainClassResource: {} as DomainClassResource,
 	DomainClassTrait: {} as DomainClassTrait,
 	DomainCondition: {} as DomainCondition,
 	DomainCreatureType: {} as DomainCreatureType,
+	DomainCurrencyDenomination: {} as DomainCurrencyDenomination,
 	DomainDamageType: {} as DomainDamageType,
 	DomainDice: {} as DomainDice,
 	DomainDiceRollSubType: {} as DomainDiceRollSubType,
 	DomainDiceRollType: {} as DomainDiceRollType,
+	DomainEntityStat: {} as DomainEntityStat,
 	DomainItem: {} as DomainItem,
 	DomainLanguage: {} as DomainLanguage,
 	DomainQuantifierVariant: {} as DomainQuantifierVariant,
@@ -167,7 +181,9 @@ export const AppTypes = {
 	DomainSpellSchool: {} as DomainSpellSchool,
 	DomainStaticEffect: {} as DomainStaticEffect,
 	DomainSubClass: {} as DomainSubClass,
+	DomainWeapon: {} as DomainWeapon,
 	DomainWeaponCategory: {} as DomainWeaponCategory,
+	DomainWeaponDomainWeaponCategoryInstance: {} as DomainWeaponDomainWeaponCategoryInstance,
 	EvaluatedConditional: {} as EvaluatedConditional,
 	Quantifier: {} as Quantifier,
 	QuantifierCostSpecifier: {} as QuantifierCostSpecifier,

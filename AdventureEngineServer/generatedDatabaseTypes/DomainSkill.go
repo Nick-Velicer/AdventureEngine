@@ -18,9 +18,9 @@ type DomainSkill struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
-	// ParentStatDomainCharacterStat corresponds to the JSON schema field
-	// "ParentStat__DomainCharacterStat".
-	ParentStat__DomainCharacterStat *int `json:"ParentStat__DomainCharacterStat" gorm:"column:ParentStat__DomainCharacterStat" mapstructure:"ParentStat__DomainCharacterStat"`
+	// ParentStatDomainEntityStat corresponds to the JSON schema field
+	// "ParentStat__DomainEntityStat".
+	ParentStat__DomainEntityStat *int `json:"ParentStat__DomainEntityStat" gorm:"column:ParentStat__DomainEntityStat" mapstructure:"ParentStat__DomainEntityStat"`
 
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`

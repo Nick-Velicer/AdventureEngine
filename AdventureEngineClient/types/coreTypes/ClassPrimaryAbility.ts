@@ -1,6 +1,6 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 import { Character } from "./Character";
-import { DomainCharacterStat } from "./DomainCharacterStat";
+import { DomainEntityStat } from "./DomainEntityStat";
 import { DomainClass } from "./DomainClass";
   
 export type ClassPrimaryAbility = ExtendedSchemaObject<{
@@ -10,7 +10,7 @@ export type ClassPrimaryAbility = ExtendedSchemaObject<{
     Relationships: {
         ManyToOne: {
             Class__DomainClass: DomainClass,
-            Stat__DomainCharacterStat: DomainCharacterStat
+            Stat__DomainEntityStat: DomainEntityStat
         },
         OneToMany: {}
     }

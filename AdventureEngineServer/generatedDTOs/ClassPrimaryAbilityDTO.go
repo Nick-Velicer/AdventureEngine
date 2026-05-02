@@ -28,7 +28,7 @@ type ClassPrimaryAbilityDTOAttributes struct {
 type ClassPrimaryAbilityDTOManyToOneRelationships struct {
    Class__DomainClass *DomainClassDTO
    ResourceOwner__User *UserDTO
-   Stat__DomainCharacterStat *DomainCharacterStatDTO
+   Stat__DomainEntityStat *DomainEntityStatDTO
 }
 
 type ClassPrimaryAbilityDTOOneToManyRelationships struct {
@@ -72,11 +72,11 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(context *contextProviders.DTOCo
    
    var includedClass__DomainClass *types.DomainClass
    var includedResourceOwner__User *types.User
-   var includedStat__DomainCharacterStat *types.DomainCharacterStat
+   var includedStat__DomainEntityStat *types.DomainEntityStat
    
    var Class__DomainClassDTO *DomainClassDTO
    var ResourceOwner__UserDTO *UserDTO
-   var Stat__DomainCharacterStatDTO *DomainCharacterStatDTO
+   var Stat__DomainEntityStatDTO *DomainEntityStatDTO
    
    var err error
    
@@ -102,12 +102,12 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(context *contextProviders.DTOCo
       }
    }
 
-   if (classPrimaryAbility.Stat__DomainCharacterStat != nil) {
-      includedStat__DomainCharacterStat, err = services.GetDomainCharacterStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCharacterStat](classPrimaryAbility.Stat__DomainCharacterStat))
+   if (classPrimaryAbility.Stat__DomainEntityStat != nil) {
+      includedStat__DomainEntityStat, err = services.GetDomainEntityStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainEntityStat](classPrimaryAbility.Stat__DomainEntityStat))
       if err != nil {
          return nil, err
       }
-      Stat__DomainCharacterStatDTO, err = DomainCharacterStatToDomainCharacterStatDTO(&childDTOContext, includedStat__DomainCharacterStat)
+      Stat__DomainEntityStatDTO, err = DomainEntityStatToDomainEntityStatDTO(&childDTOContext, includedStat__DomainEntityStat)
       if err != nil {
          return nil, err
       }
@@ -129,7 +129,7 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(context *contextProviders.DTOCo
          ManyToOne: ClassPrimaryAbilityDTOManyToOneRelationships {
             Class__DomainClass: Class__DomainClassDTO,
             ResourceOwner__User: ResourceOwner__UserDTO,
-            Stat__DomainCharacterStat: Stat__DomainCharacterStatDTO,
+            Stat__DomainEntityStat: Stat__DomainEntityStatDTO,
          },
          OneToMany: ClassPrimaryAbilityDTOOneToManyRelationships {
          },
@@ -157,8 +157,8 @@ func ClassPrimaryAbilityDTOToClassPrimaryAbility(classPrimaryAbility *ClassPrima
       tableTypeBuffer.ResourceOwner__User = classPrimaryAbility.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
-   if (classPrimaryAbility.Relationships.ManyToOne.Stat__DomainCharacterStat != nil) {
-      tableTypeBuffer.Stat__DomainCharacterStat = classPrimaryAbility.Relationships.ManyToOne.Stat__DomainCharacterStat.Id
+   if (classPrimaryAbility.Relationships.ManyToOne.Stat__DomainEntityStat != nil) {
+      tableTypeBuffer.Stat__DomainEntityStat = classPrimaryAbility.Relationships.ManyToOne.Stat__DomainEntityStat.Id
    }
 
    return &tableTypeBuffer

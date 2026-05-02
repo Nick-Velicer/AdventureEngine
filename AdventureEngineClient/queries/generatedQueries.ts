@@ -97,40 +97,6 @@ export function composeQueryBuilderContext<
          });
       },
       
-      //CharacterDomainCharacterStatInstance
-      useGetCharacterDomainCharacterStatInstancesQuery: <H extends Parameters<typeof services.CharacterDomainCharacterStatInstance.getAllItems>>(...params: H) => {
-         return queryHandler({
-            key: ["getCharacterDomainCharacterStatInstances", params?.toString()],
-            query: () => services.CharacterDomainCharacterStatInstance.getAllItems(...params)
-         });
-      },
-      useGetCharacterDomainCharacterStatInstanceByIdQuery: (id: number) => {
-         return queryHandler({
-            key: ["getCharacterDomainCharacterStatInstanceById", id.toString()],
-            query: () => services.CharacterDomainCharacterStatInstance.getItemById(id)
-         });
-      },
-      useSaveCharacterDomainCharacterStatInstanceMutation: <H extends Parameters<typeof services.CharacterDomainCharacterStatInstance.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
-         const queryCache = cacheHandler();
-         return mutationHandler({
-            mutation: () => services.CharacterDomainCharacterStatInstance.saveItem(obj),
-            onSuccess: async (data: H, ...args) => {
-               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
-               onSuccess(data);
-               queryInvalidator(queryCache, [
-                  "getCharacterDomainCharacterStatInstances",
-                  "getCharacterDomainCharacterStatInstanceById",
-                  "getUsers",
-                  "getCharacters",
-                  "getDomainCharacterStats",
-                  "getUserById",
-                  "getCharacterById",
-                  "getDomainCharacterStatById",
-               ]);
-            }
-         });
-      },
-      
       //CharacterDomainConditionInstance
       useGetCharacterDomainConditionInstancesQuery: <H extends Parameters<typeof services.CharacterDomainConditionInstance.getAllItems>>(...params: H) => {
          return queryHandler({
@@ -160,6 +126,40 @@ export function composeQueryBuilderContext<
                   "getUserById",
                   "getCharacterById",
                   "getDomainConditionById",
+               ]);
+            }
+         });
+      },
+      
+      //CharacterDomainEntityStatInstance
+      useGetCharacterDomainEntityStatInstancesQuery: <H extends Parameters<typeof services.CharacterDomainEntityStatInstance.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getCharacterDomainEntityStatInstances", params?.toString()],
+            query: () => services.CharacterDomainEntityStatInstance.getAllItems(...params)
+         });
+      },
+      useGetCharacterDomainEntityStatInstanceByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getCharacterDomainEntityStatInstanceById", id.toString()],
+            query: () => services.CharacterDomainEntityStatInstance.getItemById(id)
+         });
+      },
+      useSaveCharacterDomainEntityStatInstanceMutation: <H extends Parameters<typeof services.CharacterDomainEntityStatInstance.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.CharacterDomainEntityStatInstance.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getCharacterDomainEntityStatInstances",
+                  "getCharacterDomainEntityStatInstanceById",
+                  "getUsers",
+                  "getCharacters",
+                  "getDomainEntityStats",
+                  "getUserById",
+                  "getCharacterById",
+                  "getDomainEntityStatById",
                ]);
             }
          });
@@ -224,10 +224,10 @@ export function composeQueryBuilderContext<
                   "getClassPrimaryAbilityById",
                   "getUsers",
                   "getDomainClasss",
-                  "getDomainCharacterStats",
+                  "getDomainEntityStats",
                   "getUserById",
                   "getDomainClassById",
-                  "getDomainCharacterStatById",
+                  "getDomainEntityStatById",
                ]);
             }
          });
@@ -258,10 +258,10 @@ export function composeQueryBuilderContext<
                   "getClassSaveById",
                   "getUsers",
                   "getDomainClasss",
-                  "getDomainCharacterStats",
+                  "getDomainEntityStats",
                   "getUserById",
                   "getDomainClassById",
-                  "getDomainCharacterStatById",
+                  "getDomainEntityStatById",
                ]);
             }
          });
@@ -361,29 +361,29 @@ export function composeQueryBuilderContext<
          });
       },
       
-      //DomainCharacterStat
-      useGetDomainCharacterStatsQuery: <H extends Parameters<typeof services.DomainCharacterStat.getAllItems>>(...params: H) => {
+      //DomainBooleanCondition
+      useGetDomainBooleanConditionsQuery: <H extends Parameters<typeof services.DomainBooleanCondition.getAllItems>>(...params: H) => {
          return queryHandler({
-            key: ["getDomainCharacterStats", params?.toString()],
-            query: () => services.DomainCharacterStat.getAllItems(...params)
+            key: ["getDomainBooleanConditions", params?.toString()],
+            query: () => services.DomainBooleanCondition.getAllItems(...params)
          });
       },
-      useGetDomainCharacterStatByIdQuery: (id: number) => {
+      useGetDomainBooleanConditionByIdQuery: (id: number) => {
          return queryHandler({
-            key: ["getDomainCharacterStatById", id.toString()],
-            query: () => services.DomainCharacterStat.getItemById(id)
+            key: ["getDomainBooleanConditionById", id.toString()],
+            query: () => services.DomainBooleanCondition.getItemById(id)
          });
       },
-      useSaveDomainCharacterStatMutation: <H extends Parameters<typeof services.DomainCharacterStat.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+      useSaveDomainBooleanConditionMutation: <H extends Parameters<typeof services.DomainBooleanCondition.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
          const queryCache = cacheHandler();
          return mutationHandler({
-            mutation: () => services.DomainCharacterStat.saveItem(obj),
+            mutation: () => services.DomainBooleanCondition.saveItem(obj),
             onSuccess: async (data: H, ...args) => {
                //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
                onSuccess(data);
                queryInvalidator(queryCache, [
-                  "getDomainCharacterStats",
-                  "getDomainCharacterStatById",
+                  "getDomainBooleanConditions",
+                  "getDomainBooleanConditionById",
                   "getUsers",
                   "getUserById",
                ]);
@@ -416,10 +416,10 @@ export function composeQueryBuilderContext<
                   "getDomainClassById",
                   "getUsers",
                   "getDomainDices",
-                  "getDomainCharacterStats",
+                  "getDomainEntityStats",
                   "getUserById",
                   "getDomainDiceById",
-                  "getDomainCharacterStatById",
+                  "getDomainEntityStatById",
                ]);
             }
          });
@@ -553,6 +553,36 @@ export function composeQueryBuilderContext<
          });
       },
       
+      //DomainCurrencyDenomination
+      useGetDomainCurrencyDenominationsQuery: <H extends Parameters<typeof services.DomainCurrencyDenomination.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainCurrencyDenominations", params?.toString()],
+            query: () => services.DomainCurrencyDenomination.getAllItems(...params)
+         });
+      },
+      useGetDomainCurrencyDenominationByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getDomainCurrencyDenominationById", id.toString()],
+            query: () => services.DomainCurrencyDenomination.getItemById(id)
+         });
+      },
+      useSaveDomainCurrencyDenominationMutation: <H extends Parameters<typeof services.DomainCurrencyDenomination.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainCurrencyDenomination.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainCurrencyDenominations",
+                  "getDomainCurrencyDenominationById",
+                  "getUsers",
+                  "getUserById",
+               ]);
+            }
+         });
+      },
+      
       //DomainDamageType
       useGetDomainDamageTypesQuery: <H extends Parameters<typeof services.DomainDamageType.getAllItems>>(...params: H) => {
          return queryHandler({
@@ -668,6 +698,36 @@ export function composeQueryBuilderContext<
                queryInvalidator(queryCache, [
                   "getDomainDiceRollTypes",
                   "getDomainDiceRollTypeById",
+                  "getUsers",
+                  "getUserById",
+               ]);
+            }
+         });
+      },
+      
+      //DomainEntityStat
+      useGetDomainEntityStatsQuery: <H extends Parameters<typeof services.DomainEntityStat.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainEntityStats", params?.toString()],
+            query: () => services.DomainEntityStat.getAllItems(...params)
+         });
+      },
+      useGetDomainEntityStatByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getDomainEntityStatById", id.toString()],
+            query: () => services.DomainEntityStat.getItemById(id)
+         });
+      },
+      useSaveDomainEntityStatMutation: <H extends Parameters<typeof services.DomainEntityStat.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainEntityStat.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainEntityStats",
+                  "getDomainEntityStatById",
                   "getUsers",
                   "getUserById",
                ]);
@@ -823,9 +883,9 @@ export function composeQueryBuilderContext<
                   "getDomainSkills",
                   "getDomainSkillById",
                   "getUsers",
-                  "getDomainCharacterStats",
+                  "getDomainEntityStats",
                   "getUserById",
-                  "getDomainCharacterStatById",
+                  "getDomainEntityStatById",
                ]);
             }
          });
@@ -989,6 +1049,36 @@ export function composeQueryBuilderContext<
          });
       },
       
+      //DomainWeapon
+      useGetDomainWeaponsQuery: <H extends Parameters<typeof services.DomainWeapon.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainWeapons", params?.toString()],
+            query: () => services.DomainWeapon.getAllItems(...params)
+         });
+      },
+      useGetDomainWeaponByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getDomainWeaponById", id.toString()],
+            query: () => services.DomainWeapon.getItemById(id)
+         });
+      },
+      useSaveDomainWeaponMutation: <H extends Parameters<typeof services.DomainWeapon.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainWeapon.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainWeapons",
+                  "getDomainWeaponById",
+                  "getUsers",
+                  "getUserById",
+               ]);
+            }
+         });
+      },
+      
       //DomainWeaponCategory
       useGetDomainWeaponCategorysQuery: <H extends Parameters<typeof services.DomainWeaponCategory.getAllItems>>(...params: H) => {
          return queryHandler({
@@ -1019,6 +1109,40 @@ export function composeQueryBuilderContext<
          });
       },
       
+      //DomainWeaponDomainWeaponCategoryInstance
+      useGetDomainWeaponDomainWeaponCategoryInstancesQuery: <H extends Parameters<typeof services.DomainWeaponDomainWeaponCategoryInstance.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainWeaponDomainWeaponCategoryInstances", params?.toString()],
+            query: () => services.DomainWeaponDomainWeaponCategoryInstance.getAllItems(...params)
+         });
+      },
+      useGetDomainWeaponDomainWeaponCategoryInstanceByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getDomainWeaponDomainWeaponCategoryInstanceById", id.toString()],
+            query: () => services.DomainWeaponDomainWeaponCategoryInstance.getItemById(id)
+         });
+      },
+      useSaveDomainWeaponDomainWeaponCategoryInstanceMutation: <H extends Parameters<typeof services.DomainWeaponDomainWeaponCategoryInstance.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainWeaponDomainWeaponCategoryInstance.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainWeaponDomainWeaponCategoryInstances",
+                  "getDomainWeaponDomainWeaponCategoryInstanceById",
+                  "getUsers",
+                  "getDomainWeapons",
+                  "getDomainWeaponCategorys",
+                  "getUserById",
+                  "getDomainWeaponById",
+                  "getDomainWeaponCategoryById",
+               ]);
+            }
+         });
+      },
+      
       //EvaluatedConditional
       useGetEvaluatedConditionalsQuery: <H extends Parameters<typeof services.EvaluatedConditional.getAllItems>>(...params: H) => {
          return queryHandler({
@@ -1043,11 +1167,11 @@ export function composeQueryBuilderContext<
                   "getEvaluatedConditionals",
                   "getEvaluatedConditionalById",
                   "getUsers",
-                  "getDomainConditions",
+                  "getDomainBooleanConditions",
                   "getQuantifiers",
                   "getQuantifiers",
                   "getUserById",
-                  "getDomainConditionById",
+                  "getDomainBooleanConditionById",
                   "getQuantifierById",
                   "getQuantifierById",
                ]);
@@ -1085,14 +1209,19 @@ export function composeQueryBuilderContext<
                   "getDomainClassTraits",
                   "getDomainSubClasss",
                   "getDomainClasss",
+                  "getDomainWeapons",
+                  "getDomainCurrencyDenominations",
                   "getDomainStaticEffects",
-                  "getDomainCharacterStats",
+                  "getDomainEntityStats",
+                  "getDomainDices",
                   "getDomainDiceRollTypes",
                   "getDomainDiceRollSubTypes",
                   "getDomainActions",
                   "getDomainSpells",
                   "getDomainConditions",
                   "getDomainDamageTypes",
+                  "getDomainCurrencyDenominations",
+                  "getDomainActions",
                   "getDomainQuantifierVariants",
                   "getUserById",
                   "getDomainActionById",
@@ -1101,14 +1230,19 @@ export function composeQueryBuilderContext<
                   "getDomainClassTraitById",
                   "getDomainSubClassById",
                   "getDomainClassById",
+                  "getDomainWeaponById",
+                  "getDomainCurrencyDenominationById",
                   "getDomainStaticEffectById",
-                  "getDomainCharacterStatById",
+                  "getDomainEntityStatById",
+                  "getDomainDiceById",
                   "getDomainDiceRollTypeById",
                   "getDomainDiceRollSubTypeById",
                   "getDomainActionById",
                   "getDomainSpellById",
                   "getDomainConditionById",
                   "getDomainDamageTypeById",
+                  "getDomainCurrencyDenominationById",
+                  "getDomainActionById",
                   "getDomainQuantifierVariantById",
                ]);
             }
@@ -1139,10 +1273,12 @@ export function composeQueryBuilderContext<
                   "getQuantifierCostSpecifiers",
                   "getQuantifierCostSpecifierById",
                   "getUsers",
-                  "getDomainCharacterStats",
+                  "getDomainEntityStats",
+                  "getDomainCurrencyDenominations",
                   "getQuantifiers",
                   "getUserById",
-                  "getDomainCharacterStatById",
+                  "getDomainEntityStatById",
+                  "getDomainCurrencyDenominationById",
                   "getQuantifierById",
                ]);
             }

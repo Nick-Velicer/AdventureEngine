@@ -29,9 +29,9 @@ type DomainClass struct {
 
 	// SavesClassSave corresponds to the JSON schema field "Saves__ClassSave".
 
-	// SpellcastingStatDomainCharacterStat corresponds to the JSON schema field
-	// "SpellcastingStat__DomainCharacterStat".
-	SpellcastingStat__DomainCharacterStat *int `json:"SpellcastingStat__DomainCharacterStat" gorm:"column:SpellcastingStat__DomainCharacterStat" mapstructure:"SpellcastingStat__DomainCharacterStat"`
+	// SpellcastingStatDomainEntityStat corresponds to the JSON schema field
+	// "SpellcastingStat__DomainEntityStat".
+	SpellcastingStat__DomainEntityStat *int `json:"SpellcastingStat__DomainEntityStat" gorm:"column:SpellcastingStat__DomainEntityStat" mapstructure:"SpellcastingStat__DomainEntityStat"`
 
 	// SubClassesDomainSubClass corresponds to the JSON schema field
 	// "SubClasses__DomainSubClass".

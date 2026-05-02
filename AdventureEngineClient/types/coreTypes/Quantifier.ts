@@ -1,18 +1,21 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 import { DomainAction } from "./DomainAction";
-import { DomainCharacterStat } from "./DomainCharacterStat";
+import { DomainEntityStat } from "./DomainEntityStat";
 import { DomainClass } from "./DomainClass";
 import { DomainClassTrait } from "./DomainClassTrait";
 import { DomainCondition } from "./DomainCondition";
 import { DomainDamageType } from "./DomainDamageType";
+import { DomainDice } from "./DomainDice";
 import { DomainDiceRollSubType } from "./DomainDiceRollSubType";
 import { DomainDiceRollType } from "./DomainDiceRollType";
 import { DomainQuantifierVariant } from "./DomainQuantifierVariant";
 import { DomainSpell } from "./DomainSpell";
 import { DomainStaticEffect } from "./DomainStaticEffect";
 import { DomainSubClass } from "./DomainSubClass";
+import { DomainWeapon } from "./DomainWeapon";
 import { EvaluatedConditional } from "./EvaluatedConditional";
 import { QuantifierCostSpecifier } from "./QuantifierCostSpecifier";
+import { DomainCurrencyDenomination } from "./DomainCurrencyDenomination";
 
 export type Quantifier = ExtendedSchemaObject<{
     Attributes: {
@@ -62,16 +65,22 @@ export type Quantifier = ExtendedSchemaObject<{
             Parent__DomainClassTrait?: DomainClassTrait,
             Parent__DomainSubClass?: DomainSubClass,
             Parent__DomainClass?: DomainClass,
+            Parent__DomainWeapon?: DomainWeapon,
+            Parent__DomainCurrencyDenomination?: DomainCurrencyDenomination,
 
             //Keys for other effects or targets that a quantifier may have (distinguished from what their source node is)
             Target__DomainStaticEffect?: DomainStaticEffect,
-            Target__DomainCharacterStat?: DomainCharacterStat,
+            Target__DomainEntityStat?: DomainEntityStat,
+            Target__DomainDice?: DomainDice,
             Target__DomainDiceRollType?: DomainDiceRollType,
             Target__DomainDiceRollSubType?: DomainDiceRollSubType,
             Target__DomainAction?: DomainAction,
             Target__DomainSpell?: DomainSpell,
             Target__DomainCondition?: DomainCondition,
             Target__DomainDamageType?: DomainDamageType,
+            Target__DomainCurrencyDenomination?: DomainCurrencyDenomination,
+
+            Trigger__DomainAction?: DomainAction,
 
             Variant__DomainQuantifierVariant?: DomainQuantifierVariant,
         },

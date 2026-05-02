@@ -18,9 +18,9 @@ type DomainSkillJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
-	// ParentStatDomainCharacterStat corresponds to the JSON schema field
-	// "ParentStat__DomainCharacterStat".
-	ParentStatDomainCharacterStat *float64 `json:"ParentStat__DomainCharacterStat,omitempty" yaml:"ParentStat__DomainCharacterStat,omitempty" mapstructure:"ParentStat__DomainCharacterStat,omitempty"`
+	// ParentStatDomainEntityStat corresponds to the JSON schema field
+	// "ParentStat__DomainEntityStat".
+	ParentStatDomainEntityStat *float64 `json:"ParentStat__DomainEntityStat,omitempty" yaml:"ParentStat__DomainEntityStat,omitempty" mapstructure:"ParentStat__DomainEntityStat,omitempty"`
 
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`

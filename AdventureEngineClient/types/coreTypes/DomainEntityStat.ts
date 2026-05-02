@@ -1,7 +1,9 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 
-//Str/Cha/Con..., ALSO gold quantity, number of actions, derived stats (investigation, athletics, etc.), any effect-targetable meta-information about a character
+//Str/Cha/Con..., ALSO gold quantity, number of actions, derived stats (investigation, athletics, etc.), any effect-targetable meta-information about an entity,
+//this is also used for properties on items such as weight or amount of charges
 /*
+weight: number
 strength: number,
 dexterity: number,
 constitution: number,
@@ -15,7 +17,7 @@ baseWalkingSpeed: number,
 baseSwimmingSpeed: number,
 */
 
-export type DomainCharacterStat = ExtendedSchemaObject<{
+export type DomainEntityStat = ExtendedSchemaObject<{
     Attributes: {
         IsBaseStat: boolean
     },

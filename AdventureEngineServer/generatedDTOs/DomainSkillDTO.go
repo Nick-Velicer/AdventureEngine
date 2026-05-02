@@ -26,7 +26,7 @@ type DomainSkillDTOAttributes struct {
 }
 
 type DomainSkillDTOManyToOneRelationships struct {
-   ParentStat__DomainCharacterStat *DomainCharacterStatDTO
+   ParentStat__DomainEntityStat *DomainEntityStatDTO
    ResourceOwner__User *UserDTO
 }
 
@@ -69,20 +69,20 @@ func DomainSkillToDomainSkillDTO(context *contextProviders.DTOContext, domainSki
       CurrentUser: nil,
    }
    
-   var includedParentStat__DomainCharacterStat *types.DomainCharacterStat
+   var includedParentStat__DomainEntityStat *types.DomainEntityStat
    var includedResourceOwner__User *types.User
    
-   var ParentStat__DomainCharacterStatDTO *DomainCharacterStatDTO
+   var ParentStat__DomainEntityStatDTO *DomainEntityStatDTO
    var ResourceOwner__UserDTO *UserDTO
    
    var err error
    
-   if (domainSkill.ParentStat__DomainCharacterStat != nil) {
-      includedParentStat__DomainCharacterStat, err = services.GetDomainCharacterStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCharacterStat](domainSkill.ParentStat__DomainCharacterStat))
+   if (domainSkill.ParentStat__DomainEntityStat != nil) {
+      includedParentStat__DomainEntityStat, err = services.GetDomainEntityStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainEntityStat](domainSkill.ParentStat__DomainEntityStat))
       if err != nil {
          return nil, err
       }
-      ParentStat__DomainCharacterStatDTO, err = DomainCharacterStatToDomainCharacterStatDTO(&childDTOContext, includedParentStat__DomainCharacterStat)
+      ParentStat__DomainEntityStatDTO, err = DomainEntityStatToDomainEntityStatDTO(&childDTOContext, includedParentStat__DomainEntityStat)
       if err != nil {
          return nil, err
       }
@@ -113,7 +113,7 @@ func DomainSkillToDomainSkillDTO(context *contextProviders.DTOContext, domainSki
       },
       Relationships: DomainSkillDTORelationships{
          ManyToOne: DomainSkillDTOManyToOneRelationships {
-            ParentStat__DomainCharacterStat: ParentStat__DomainCharacterStatDTO,
+            ParentStat__DomainEntityStat: ParentStat__DomainEntityStatDTO,
             ResourceOwner__User: ResourceOwner__UserDTO,
          },
          OneToMany: DomainSkillDTOOneToManyRelationships {
@@ -134,8 +134,8 @@ func DomainSkillDTOToDomainSkill(domainSkill *DomainSkillDTO) *types.DomainSkill
    tableTypeBuffer.Title = domainSkill.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainSkill.Attributes.UpdatedAt
    
-   if (domainSkill.Relationships.ManyToOne.ParentStat__DomainCharacterStat != nil) {
-      tableTypeBuffer.ParentStat__DomainCharacterStat = domainSkill.Relationships.ManyToOne.ParentStat__DomainCharacterStat.Id
+   if (domainSkill.Relationships.ManyToOne.ParentStat__DomainEntityStat != nil) {
+      tableTypeBuffer.ParentStat__DomainEntityStat = domainSkill.Relationships.ManyToOne.ParentStat__DomainEntityStat.Id
    }
 
    if (domainSkill.Relationships.ManyToOne.ResourceOwner__User != nil) {

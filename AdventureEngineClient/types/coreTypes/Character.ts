@@ -1,6 +1,6 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 import { Campaign } from "./Campaign";
-import { CharacterDomainCharacterStatInstance } from "./CharacterDomainCharacterStatInstance";
+import { CharacterDomainEntityStatInstance } from "./CharacterDomainEntityStatInstance";
 import { CharacterDomainSubClassInstance } from "./CharacterDomainSubClassInstance";
 import { DomainSize } from "./DomainSize";
 import { DomainSpecies } from "./DomainSpecies";
@@ -17,7 +17,7 @@ export type Character = ExtendedSchemaObject<{
         },
         OneToMany: {
             SubClasses__CharacterDomainSubClassInstance?: CharacterDomainSubClassInstance[],
-            Stats__CharacterDomainCharacterStatInstance?: CharacterDomainCharacterStatInstance[]
+            Stats__CharacterDomainEntityStatInstance?: CharacterDomainEntityStatInstance[]
         }
     }
 }>

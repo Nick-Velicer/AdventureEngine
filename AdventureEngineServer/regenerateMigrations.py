@@ -27,7 +27,7 @@ dice = []
 diceRollTypes = []
 diceRollSubTypes = []
 damageTypes = []
-baseStats = []
+entityStats = []
 actions = []
 spellSchools = []
 spells = []
@@ -39,7 +39,11 @@ classTraits = []
 quantifiers = []
 weaponCategories = []
 languages = []
-tools=[]
+tools = []
+quantifierVariants = []
+weapons = []
+weaponCategoryMappings = []
+currencyDenominations = []
 
 #This will be applied to the beginning of migrations to preserve the dependent order for foreign keys
 migrationOrderNumber = 1
@@ -90,7 +94,10 @@ def main():
         regenerateSkillsMigration,
         regenerateWeaponCategoriesMigration,
         regenerateLanguagesMigration,
+        regenerateQuantifierVariants,
+        regenerateCurrencyDenominations,
         regenerateActionsMigration,
+        regenerateWeaponsAndRelatedTables,
         regenerateDomainClassMigration,
         regenerateDamageTypesMigration,
         regenerateDomainSubClassMigration,
@@ -313,21 +320,16 @@ def regenerateDomainDiceRollSubTypeMigration():
 def regenerateBasicStatMigration():
     baseStatNames = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
 
-    global baseStats
+    global entityStats
 
-    baseStats = [
+    entityStats = [
         {
             "Title": title,
             "AbbreviatedTitle": title[:3].upper(),
             "IsBaseStat": 1,
         } for title in baseStatNames]
 
-    baseStats.extend([
-        {
-            "Title": "Gold Amount",
-            "AbbreviatedTitle": "Gold",
-            "IsBaseStat": 0,
-        },
+    entityStats.extend([
         {
             "Title": "Movement Speed",
             "AbbreviatedTitle": "Speed",
@@ -372,6 +374,11 @@ def regenerateBasicStatMigration():
             "Title": "Weight",
             "AbbreviatedTitle": "Weight",
             "IsBaseStat": 0,
+        },
+        {
+            "Title": "Cost",
+            "AbbreviatedTitle": "Cost",
+            "IsBaseStat": 0
         },
         #We are tracking spell slots here as a resource for the player
         #even though the base is always 0, modified by their class
@@ -453,7 +460,7 @@ def regenerateBasicStatMigration():
         }
     ])
 
-    baseStats = produceMigrationFileFromObjects("DomainCharacterStat", baseStats)
+    entityStats = produceMigrationFileFromObjects("DomainEntityStat", entityStats)
 
 
 def regenerateSkillsMigration():
@@ -469,11 +476,11 @@ def regenerateSkillsMigration():
 
 
     for stat in skillMapping.keys():
-        statFkId = getForeignKeyIdForTitle(baseStats, stat)
+        statFkId = getForeignKeyIdForTitle(entityStats, stat)
         for skill in skillMapping[stat]:
             skills.append({
                 "Title": skill,
-                "ParentStat__DomainCharacterStat": statFkId
+                "ParentStat__DomainEntityStat": statFkId
             })
 
     skills = produceMigrationFileFromObjects("DomainSkill", skills)
@@ -540,13 +547,83 @@ def regenerateLanguagesMigration():
         for title in languageTitles
     ]
 
-    weaponCategories = produceMigrationFileFromObjects("DomainLanguage", languages)
+    languages = produceMigrationFileFromObjects("DomainLanguage", languages)
 
 
+def regenerateQuantifierVariants():
+    global quantifierVariants
+
+    variantTitles = [
+        "Triggered Effect",
+        "Static Effect",
+        "Action",
+        "Entity Property",
+    ]
+
+    quantifierVariants = [
+        {
+            "Title": title
+        } 
+        for title in variantTitles
+    ]
+
+    quantifierVariants = produceMigrationFileFromObjects("DomainQuantifierVariant", quantifierVariants)
+
+
+def regenerateCurrencyDenominations():
+    global currencyDenominations
+    global quantifierVariants
+
+    currencyDenominations = [
+        {
+            "Title": "Copper Piece",
+            "AbbreviatedTitle": "CP",
+            "IsLowestDenomination": 1,
+            "MultipleOfLowestDenomination": 1
+        },
+        {
+            "Title": "Silver Piece",
+            "AbbreviatedTitle": "SP",
+            "IsLowestDenomination": 0,
+            "MultipleOfLowestDenomination": 10
+        },
+        {
+            "Title": "Electrum Piece",
+            "AbbreviatedTitle": "EP",
+            "IsLowestDenomination": 1,
+            "MultipleOfLowestDenomination": 50
+        },
+        {
+            "Title": "Gold Piece",
+            "AbbreviatedTitle": "GP",
+            "IsLowestDenomination": 0,
+            "MultipleOfLowestDenomination": 100
+        },
+        {
+            "Title": "Platinum Piece",
+            "AbbreviatedTitle": "PP",
+            "IsLowestDenomination": 0,
+            "MultipleOfLowestDenomination": 1000
+        }
+    ]
+
+    currencyDenominations = produceMigrationFileFromObjects("DomainCurrencyDenomination", currencyDenominations)
+
+    #Applying the same weight to all coins
+    quantifiers.extend([
+        {
+            "Parent__DomainCurrencyDenomination": currency["Id"],
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(currencyDenominations, "Weight"),
+            "DeltaQuantity": 0.02
+        } for currency in currencyDenominations
+    ])
+
+    
 def regenerateActionsMigration():
 
     global actions
-    global baseStats
+    global entityStats
     global quantifiers
 
     actionTitles = [
@@ -568,25 +645,25 @@ def regenerateActionsMigration():
         {
             "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Speed"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Speed"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Climb")
         },
         {
             "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Speed"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Speed"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Swim")
         },
         {
             "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Speed"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Speed"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Crawl")
         },
         {
             "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Available"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Available"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Stand Up")
         },
         {
@@ -617,7 +694,7 @@ def regenerateActionsMigration():
         {
             "AppliesToSource": 1,
             "DeltaPercentage": 2,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Movement Speed"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Speed"),
             "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Dash")
         },
         {
@@ -659,11 +736,325 @@ def regenerateActionsMigration():
     ])
 
 
+def regenerateWeaponsAndRelatedTables():
+    global weapons
+    global weaponCategories
+    global weaponCategoryMappings
+    global damageTypes
+    global quantifiers
+    global dice
+    global actions
+    global entityStats
+
+    weaponMeta = {
+        "Club": {
+            "Cost": "1 sp",
+            "Damage": "1d4 Bludgeoning",
+            "Weight": 2,
+            "Categories": ["Light"]
+        },
+        "Dagger": {
+            "Cost": "2 gp",
+            "Damage": "1d4 Piercing",
+            "Weight": 1,
+            "Categories": ["Finesse", "Light", "Thrown"],
+            "MinRange": 20,
+            "MaxRange": 60
+        },
+        "Greatclub": {
+            "Cost": "2 sp",
+            "Damage": "1d8 Bludgeoning",
+            "Weight": 10,
+            "Categories": ["Two-Handed"]
+        },
+        "Handaxe": {
+            "Cost": "5 gp",
+            "Damage": "1d6 Slashing",
+            "Weight": 2,
+            "Categories": ["Light", "Thrown"],
+            "MinRange": 20,
+            "MaxRange": 60
+        },
+        "Javelin": {
+            "Cost": "5 sp",
+            "Damage": "1d6 Piercing",
+            "Weight": 2,
+            "Categories": ["Thrown"],
+            "MinRange": 30,
+            "MaxRange": 120
+        },
+        "Lighthammer": {
+            "Cost": "2 gp",
+            "Damage": "1d4 Bludgeoning",
+            "Weight": 2,
+            "Categories": ["Light", "Thrown"],
+            "MinRange": 20,
+            "MaxRange": 60
+        },
+        "Mace": {
+            "Cost": "5 gp",
+            "Damage": "1d6 Bludgeoning",
+            "Weight": 4
+        },
+        "Quarterstaff": {
+            "Cost": "2 sp",
+            "Damage": "1d6 Bludgeoning",
+            "Weight": 4,
+            "Categories": ["Versatile (1d8)"]
+        },
+        "Sickle": {
+            "Cost": "1 gp",
+            "Damage": "1d4 Slashing",
+            "Weight": 2,
+            "Categories": ["Light"]
+        },
+        "Spear": {
+            "Cost": "1 gp",
+            "Damage": "1d6 Piercing",
+            "Weight": 3,
+            "Categories": ["Thrown", "Versatile (1d8)"]
+        },
+        "Unarmed Strike": {
+            "Damage": "1 Bludgeoning"
+        },
+        "Light Crossbow": {
+            "Cost": "25 gp",
+            "Damage": "1d8 Piercing",
+            "Weight": 5,
+            "Categories": ["Ammunition", "Loading", "Two-Handed"],
+            "MinRange": 80,
+            "MaxRange": 320
+        },
+        "Dart": {
+            "Cost": "5 cp",
+            "Damage": "1d4 Piercing",
+            "Weight": 1/4,
+            "Categories": ["Finesse", "Thrown"],
+            "MinRange": 20,
+            "MaxRange": 60
+        },
+        "Shortbow": {
+            "Cost": "25 gp",
+            "Damage": "1d6 Piercing",
+            "Weight": 2,
+            "Categories": ["Ammunition", "Two-Handed"],
+            "MinRange": 80,
+            "MaxRange": 320
+        },
+        "Sling": {
+            "Cost": "1 sp",
+            "Damage": "1d4 Bludgeoning",
+            "Categories": ["Ammunition"],
+            "MinRange": 30,
+            "MaxRange": 120
+        },
+        "Battleaxe": {
+            "Cost": "10 gp",
+            "Damage": "1d8 Slashing",
+            "Weight": 4,
+            "Categories": ["Versatile (1d10)"]
+        },
+        "Flail": {
+            "Cost": "10 gp",
+            "Damage": "1d8 Bludgeoning",
+            "Weight": 2
+        },
+        "Glaive": {
+            "Cost": "20 gp",
+            "Damage": "1d10 Slashing",
+            "Weight": 6,
+            "Categories": ["Heavy", "Reach", "Two-Handed"]
+        },
+        "Greataxe": {
+            "Cost": "30 gp",
+            "Damage": "1d12 Slashing",
+            "Weight": 7,
+            "Categories": ["Heavy", "Two-Handed"]
+        },
+        "Greatsword": {
+            "Cost": "50 gp",
+            "Damage": "2d6 Slashing",
+            "Weight": 6,
+            "Categories": ["Heavy", "Two-Handed"]
+        },
+        "Halberd": {
+            "Cost": "20 gp",
+            "Damage": "1d10 Slashing",
+            "Weight": 6,
+            "Categories": ["Heavy", "Reach", "Two-Handed"]
+        },
+        "Lance": {
+            "Cost": "10 gp",
+            "Damage": "1d12 Piercing",
+            "Weight": 6,
+            "Categories": ["Reach", "Special"]
+        },
+        "Longsword": {
+            "Cost": "15 gp",
+            "Damage": "1d8 Slashing",
+            "Weight": 3,
+            "Categories": ["Versatile (1d10)"]
+        },
+        "Maul": {
+            "Cost": "10 gp",
+            "Damage": "2d6 Bludgeoning",
+            "Weight": 10,
+            "Categories": ["Heavy", "Two-Handed"]
+        },
+        "Morningstar": {
+            "Cost": "15 gp",
+            "Damage": "1d8 Piercing",
+            "Weight": 4
+        },
+        "Pike": {
+            "Cost": "5 gp",
+            "Damage": "1d10 Piercing",
+            "Weight": 18,
+            "Categories": ["Heavy", "Reach", "Two-Handed"]
+        },
+        "Rapier": {
+            "Cost": "25 gp",
+            "Damage": "1d8 Piercing",
+            "Weight": 2,
+            "Categories": ["Finesse"]
+        },
+        "Scimitar": {
+            "Cost": "25 gp",
+            "Damage": "1d6 Slashing",
+            "Weight": 3,
+            "Categories": ["Finesse", "Light"]
+        },
+        "Shortsword": {
+            "Cost": "10 gp",
+            "Damage": "1d6 Piercing",
+            "Weight": 2,
+            "Categories": ["Finesse", "Light"]
+        },
+        "Trident": {
+            "Cost": "5 gp",
+            "Damage": "1d6 Piercing",
+            "Weight": 4,
+            "Categories": ["Thrown", "Versatile (1d8)"],
+            "MinRange": 20,
+            "MaxRange": 60
+        },
+        "Warpick": {
+            "Cost": "5 gp",
+            "Damage": "1d8 Piercing",
+            "Weight": 2
+        },
+        "Warhammer": {
+            "Cost": "15 gp",
+            "Damage": "1d8 Bludgeoning",
+            "Weight": 2,
+            "Categories": ["Versatile (1d8)"]
+        },
+        "Whip": {
+            "Cost": "2 gp",
+            "Damage": "1d4 Slashing",
+            "Weight": 3,
+            "Categories": ["Finesse", "Reach"]
+        },
+        "Blowgun": {
+            "Cost": "10 gp",
+            "Damage": "1 Piercing",
+            "Weight": 1,
+            "Categories": ["Ammunition", "Loading"],
+            "MinRange": 25,
+            "MaxRange": 100
+        },
+        "Hand Crossbow": {
+            "Cost": "75 gp",
+            "Damage": "1d6 Piercing",
+            "Weight": 3,
+            "Categories": ["Ammunition", "Light", "Loading"],
+            "MinRange": 30,
+            "MaxRange": 120
+        },
+        "Heavy Crossbow": {
+            "Cost": "50 gp",
+            "Damage": "1d10 Piercing",
+            "Weight": 18,
+            "Categories": ["Ammunition", "Heavy", "Loading", "Two-Handed"],
+            "MinRange": 100,
+            "MaxRange": 400
+        },
+        "Longbow": {
+            "Cost": "50 gp",
+            "Damage": "1d8 Piercing",
+            "Weight": 2,
+            "Categories": ["Ammunition", "Heavy", "Two-Handed"],
+            "MinRange": 150,
+            "MaxRange": 600
+        },
+        "Net": {
+            "Cost": "1 gp",
+            "Weight": 3,
+            "Categories": ["Special", "Thrown"],
+            "MinRange": 5,
+            "MaxRange": 15
+        }
+    }
+
+    weapons = [
+        {
+            "Title": title
+        } 
+        for title in weaponMeta.keys()
+    ]
+
+    weapons = produceMigrationFileFromObjects("DomainWeapon", weapons)
+
+    for weaponTitle in weaponMeta:
+        currentMeta = weaponMeta[weaponTitle]
+        if "Categories" in currentMeta:
+            for category in currentMeta["Categories"]:
+                weaponCategoryMappings.append({
+                    "Weapon__DomainWeapon": getForeignKeyIdForTitle(weapons, weaponTitle),
+                    "Category__DomainWeaponCategory": getForeignKeyIdForTitle(weapons, category)
+                })
+        
+        if "Damage" in currentMeta:
+            damageAmount, damageType = currentMeta["Damage"].split(" ")
+            quantifiers.extend([
+                {
+                    "Parent__DomainWeapon": getForeignKeyIdForTitle(weapons, weaponTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Triggered Event"),
+                    "Trigger__DomainAction": getForeignKeyIdForTitle(actions, "Attack"),
+                    "DeltaQuantity": damageAmount.split("d")[0],
+                    
+                    "Target__DomainDice": getForeignKeyIdForTitle(dice, "d" + damageAmount.split("d")[1]) if "d" in damageAmount else None,
+                    "Target__DomainDamageType": getForeignKeyIdForTitle(damageTypes, damageType),
+                }
+            ])
+        
+        if "Cost" in currentMeta:
+            costAmount, costType = currentMeta["Cost"].split(" ")
+
+            #A bit of hard-coding, as a treat, since we aren't seeing other currencies beyond
+            #gold from the weapon table
+            abbreviatedTitleMapping = {
+                "cp": "Copper Piece",
+                "gp": "Gold Piece",
+                "sp": "Silver Piece"
+            }
+
+            quantifiers.extend([
+                {
+                    "Parent__DomainWeapon": getForeignKeyIdForTitle(weapons, weaponTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Cost"),
+                    "DeltaQuantity": costAmount,
+                    "Target__DomainCurrencyDenomination": getForeignKeyIdForTitle(currencyDenominations, abbreviatedTitleMapping[costType]),
+                }
+            ])
+        
+
 def regenerateDomainClassMigration():
     
     global dice
     global classes
-    global baseStats
+    global entityStats
 
     #Directly assigning values here since there's not really a convenient way to generate/map from a simpler collection for this
     classes = [
@@ -676,19 +1067,19 @@ def regenerateDomainClassMigration():
             "Title": "Bard",
             "Description": "Bards are expert at inspiring others, soothing hurts, disheartening foes, and creating illusions.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d8"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma")
         },
         {
             "Title": "Cleric",
-            "Description": "Clerics can reach out to the divine magic of the Outer Planes and channel it to bolster people and battle foes.",
+            "Description": "Clerics can Reach out to the divine magic of the Outer Planes and channel it to bolster people and battle foes.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d8"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom")
         },
         {
             "Title": "Druid",
             "Description": "Druids call on the forces of nature, harnessing magic to heal, transform into animals, and wield elemental destruction.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d8"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom")
         },
         {
             "Title": "Fighter",
@@ -704,43 +1095,43 @@ def regenerateDomainClassMigration():
             "Title": "Paladin",
             "Description": "Paladins live on the front lines of the cosmic struggle, united by their oaths against the forces of annihilation.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d10"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma")
         },
         {
             "Title": "Ranger",
             "Description": "Rangers are honed with deadly focus and harness primal powers to protect the world from the ravages of monsters and tyrants.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d10"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom")
         },
         {
             "Title": "Rogue",
             "Description": "Rogues have a knack for finding the solution to just about any problem, prioritizing subtle strikes over brute strength.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d8"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom")
         },
         {
             "Title": "Sorcerer",
             "Description": "Sorcerers harness and channel the raw, roiling power of innate magic that is stamped into their very being.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d6"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma")
         },
         {
             "Title": "Warlock",
             "Description": "Warlocks quest for knowledge that lies hidden in the fabric of the multiverse, piecing together arcane secrets to bolster their own power.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d8"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma")
         },
         {
             "Title": "Wizard",
-            "Description": "Wizards cast spells of explosive fire, arcing lightning, subtle deception, and spectacular transformations.",
+            "Description": "Wizards cast spells of explosive fire, arcing Lightning, subtle deception, and spectacular transformations.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d6"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Intelligence")
         },
         {
             "Title": "Artificer",
             "Description": "Masters of invention, artificers use ingenuity and magic to unlock extraordinary capabilities in objects.",
             "HitDie__DomainDice": getForeignKeyIdForTitle(dice, "d8"),
-            "SpellcastingStat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence")
+            "SpellcastingStat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Intelligence")
         },
     ]
 
@@ -823,7 +1214,7 @@ def regenerateDomainSubClassMigration():
         {
             "Title": "Evoker",
             "AbbreviatedTitle": "Evoker",
-            "Description": "Your studies focus on magic that creates powerful elemental effects such as bitter cold, searing flame, rolling thunder, crackling lightning, and burning acid. Some Evokers find employment in military forces, serving as artillery to blast armies from afar. Others use their power to protect others, while some seek their own gain.",
+            "Description": "Your studies focus on magic that creates powerful elemental effects such as bitter cold, searing flame, rolling thunder, crackling Lightning, and burning acid. Some Evokers find employment in military forces, serving as artillery to blast armies from afar. Others use their power to protect others, while some seek their own gain.",
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Wizard")
         },
         {
@@ -863,7 +1254,7 @@ def regenerateDamageTypesMigration():
 
 def regenerateDomainConditionsMigration():
 
-    global baseStats
+    global entityStats
     global actions
     global damageTypes
     global conditions
@@ -971,21 +1362,21 @@ def regenerateDomainConditionsMigration():
             "GivesAdvantage": 1,
             "AppliesAgainstTargetsForSourceOnly": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
         },
         {
             "GivesAdvantage": 1,
             "AppliesAgainstTargetsForSourceOnly": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Intelligence"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
         },
         {
             "GivesAdvantage": 1,
             "AppliesAgainstTargetsForSourceOnly": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
         },
         #endregion
@@ -1031,8 +1422,8 @@ def regenerateDomainConditionsMigration():
         {
             "AppliesToTargets": 1,
             "HardSetQuantity": 0,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Actions"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Reactions"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Actions"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Reactions"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Incapacitated")
         },
         {
@@ -1048,7 +1439,7 @@ def regenerateDomainConditionsMigration():
             "AppliesToTargets": 1,
             "PreventsReceiving": 1,
             "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Seen"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Reactions"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Reactions"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Invisible")
         },
         {
@@ -1075,28 +1466,28 @@ def regenerateDomainConditionsMigration():
             "AppliesToTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
         },
         {
             "AppliesToTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
         },
         {
             "AppliesToTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
         },
         {
             "AppliesToTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
         },
         {
@@ -1123,7 +1514,7 @@ def regenerateDomainConditionsMigration():
         {
             "AppliesToTargets": 1,
             "DeltaPercentage": 10,
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Weight"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Weight"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
         },
         {
@@ -1148,28 +1539,28 @@ def regenerateDomainConditionsMigration():
             "AppliesToTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
         },
         {
             "AppliesToTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
         },
         {
             "AppliesToTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
         },
         {
             "AppliesToTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
         },
         *[
@@ -1251,7 +1642,7 @@ def regenerateDomainConditionsMigration():
             "AppliesToTargets": 1,
             "GivesDisadvantage": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Restrained")
         },
         #endregion
@@ -1274,14 +1665,14 @@ def regenerateDomainConditionsMigration():
             "AppliesAgainstTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Stunned")
         },
         {
             "AppliesAgainstTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Stunned")
         },
         {
@@ -1315,14 +1706,14 @@ def regenerateDomainConditionsMigration():
             "AppliesAgainstTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
         },
         {
             "AppliesAgainstTargets": 1,
             "AutomaticFailure": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
-            "Target__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
         },
         {
@@ -1378,7 +1769,7 @@ def regenerateDomainClassTraitAndAssociatedQuantifiersMigration():
 
             "ClassTrait__DomainClassTrait": getForeignKeyIdForTitle(classTraits, "Barbarian") 
         },
-        #Rage is a bonus action if wearing heavy armor
+        #Rage is a bonus action if wearing Heavy armor
         {
 
         }
@@ -1392,112 +1783,112 @@ def regenerateDomainClassTraitAndAssociatedQuantifiersMigration():
 def regenerateSavingThrowsMigration():
 
     global classes
-    global baseStats
+    global entityStats
 
     savingThrows = [
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Constitution"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Constitution"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Bard"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Bard"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Cleric"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Cleric"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Druid"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Intelligence"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Druid"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Fighter"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Fighter"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Constitution"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Constitution"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Monk"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Monk"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Paladin"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Paladin"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Ranger"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Strength"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Ranger"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Rogue"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Dexterity"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Rogue"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Intelligence"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Sorcerer"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Constitution"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Constitution"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Sorcerer"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Warlock"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Warlock"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Charisma"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Wizard"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Intelligence"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Warlock"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Wisdom"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Artificer"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Constitution"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Constitution"),
         },
         {
             "Class__DomainClass": getForeignKeyIdForTitle(classes, "Artificer"),
-            "Stat__DomainCharacterStat": getForeignKeyIdForTitle(baseStats, "Intelligence"),
+            "Stat__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Intelligence"),
         },
     ]
 

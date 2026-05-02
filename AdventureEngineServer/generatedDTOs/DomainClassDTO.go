@@ -28,7 +28,7 @@ type DomainClassDTOAttributes struct {
 type DomainClassDTOManyToOneRelationships struct {
    HitDie__DomainDice *DomainDiceDTO
    ResourceOwner__User *UserDTO
-   SpellcastingStat__DomainCharacterStat *DomainCharacterStatDTO
+   SpellcastingStat__DomainEntityStat *DomainEntityStatDTO
 }
 
 type DomainClassDTOOneToManyRelationships struct {
@@ -75,14 +75,14 @@ func DomainClassToDomainClassDTO(context *contextProviders.DTOContext, domainCla
    
    var includedHitDie__DomainDice *types.DomainDice
    var includedResourceOwner__User *types.User
-   var includedSpellcastingStat__DomainCharacterStat *types.DomainCharacterStat
+   var includedSpellcastingStat__DomainEntityStat *types.DomainEntityStat
    var includedPrimaryStats__ClassPrimaryAbilitys []types.ClassPrimaryAbility
    var includedSaves__ClassSaves []types.ClassSave
    var includedSubClasses__DomainSubClasss []types.DomainSubClass
    
    var HitDie__DomainDiceDTO *DomainDiceDTO
    var ResourceOwner__UserDTO *UserDTO
-   var SpellcastingStat__DomainCharacterStatDTO *DomainCharacterStatDTO
+   var SpellcastingStat__DomainEntityStatDTO *DomainEntityStatDTO
    var PrimaryStats__ClassPrimaryAbilityDTOs []*ClassPrimaryAbilityDTO
    var Saves__ClassSaveDTOs []*ClassSaveDTO
    var SubClasses__DomainSubClassDTOs []*DomainSubClassDTO
@@ -111,12 +111,12 @@ func DomainClassToDomainClassDTO(context *contextProviders.DTOContext, domainCla
       }
    }
 
-   if (domainClass.SpellcastingStat__DomainCharacterStat != nil) {
-      includedSpellcastingStat__DomainCharacterStat, err = services.GetDomainCharacterStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCharacterStat](domainClass.SpellcastingStat__DomainCharacterStat))
+   if (domainClass.SpellcastingStat__DomainEntityStat != nil) {
+      includedSpellcastingStat__DomainEntityStat, err = services.GetDomainEntityStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainEntityStat](domainClass.SpellcastingStat__DomainEntityStat))
       if err != nil {
          return nil, err
       }
-      SpellcastingStat__DomainCharacterStatDTO, err = DomainCharacterStatToDomainCharacterStatDTO(&childDTOContext, includedSpellcastingStat__DomainCharacterStat)
+      SpellcastingStat__DomainEntityStatDTO, err = DomainEntityStatToDomainEntityStatDTO(&childDTOContext, includedSpellcastingStat__DomainEntityStat)
       if err != nil {
          return nil, err
       }
@@ -180,7 +180,7 @@ func DomainClassToDomainClassDTO(context *contextProviders.DTOContext, domainCla
          ManyToOne: DomainClassDTOManyToOneRelationships {
             HitDie__DomainDice: HitDie__DomainDiceDTO,
             ResourceOwner__User: ResourceOwner__UserDTO,
-            SpellcastingStat__DomainCharacterStat: SpellcastingStat__DomainCharacterStatDTO,
+            SpellcastingStat__DomainEntityStat: SpellcastingStat__DomainEntityStatDTO,
          },
          OneToMany: DomainClassDTOOneToManyRelationships {
             PrimaryStats__ClassPrimaryAbility: PrimaryStats__ClassPrimaryAbilityDTOs,
@@ -211,8 +211,8 @@ func DomainClassDTOToDomainClass(domainClass *DomainClassDTO) *types.DomainClass
       tableTypeBuffer.ResourceOwner__User = domainClass.Relationships.ManyToOne.ResourceOwner__User.Id
    }
 
-   if (domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat != nil) {
-      tableTypeBuffer.SpellcastingStat__DomainCharacterStat = domainClass.Relationships.ManyToOne.SpellcastingStat__DomainCharacterStat.Id
+   if (domainClass.Relationships.ManyToOne.SpellcastingStat__DomainEntityStat != nil) {
+      tableTypeBuffer.SpellcastingStat__DomainEntityStat = domainClass.Relationships.ManyToOne.SpellcastingStat__DomainEntityStat.Id
    }
 
    return &tableTypeBuffer

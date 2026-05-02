@@ -61,17 +61,22 @@ type QuantifierDTOManyToOneRelationships struct {
    Parent__DomainClass *DomainClassDTO
    Parent__DomainClassTrait *DomainClassTraitDTO
    Parent__DomainCondition *DomainConditionDTO
+   Parent__DomainCurrencyDenomination *DomainCurrencyDenominationDTO
    Parent__DomainStaticEffect *DomainStaticEffectDTO
    Parent__DomainSubClass *DomainSubClassDTO
+   Parent__DomainWeapon *DomainWeaponDTO
    ResourceOwner__User *UserDTO
    Target__DomainAction *DomainActionDTO
-   Target__DomainCharacterStat *DomainCharacterStatDTO
    Target__DomainCondition *DomainConditionDTO
+   Target__DomainCurrencyDenomination *DomainCurrencyDenominationDTO
    Target__DomainDamageType *DomainDamageTypeDTO
+   Target__DomainDice *DomainDiceDTO
    Target__DomainDiceRollSubType *DomainDiceRollSubTypeDTO
    Target__DomainDiceRollType *DomainDiceRollTypeDTO
+   Target__DomainEntityStat *DomainEntityStatDTO
    Target__DomainSpell *DomainSpellDTO
    Target__DomainStaticEffect *DomainStaticEffectDTO
+   Trigger__DomainAction *DomainActionDTO
    Variant__DomainQuantifierVariant *DomainQuantifierVariantDTO
 }
 
@@ -120,17 +125,22 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
    var includedParent__DomainClass *types.DomainClass
    var includedParent__DomainClassTrait *types.DomainClassTrait
    var includedParent__DomainCondition *types.DomainCondition
+   var includedParent__DomainCurrencyDenomination *types.DomainCurrencyDenomination
    var includedParent__DomainStaticEffect *types.DomainStaticEffect
    var includedParent__DomainSubClass *types.DomainSubClass
+   var includedParent__DomainWeapon *types.DomainWeapon
    var includedResourceOwner__User *types.User
    var includedTarget__DomainAction *types.DomainAction
-   var includedTarget__DomainCharacterStat *types.DomainCharacterStat
    var includedTarget__DomainCondition *types.DomainCondition
+   var includedTarget__DomainCurrencyDenomination *types.DomainCurrencyDenomination
    var includedTarget__DomainDamageType *types.DomainDamageType
+   var includedTarget__DomainDice *types.DomainDice
    var includedTarget__DomainDiceRollSubType *types.DomainDiceRollSubType
    var includedTarget__DomainDiceRollType *types.DomainDiceRollType
+   var includedTarget__DomainEntityStat *types.DomainEntityStat
    var includedTarget__DomainSpell *types.DomainSpell
    var includedTarget__DomainStaticEffect *types.DomainStaticEffect
+   var includedTrigger__DomainAction *types.DomainAction
    var includedVariant__DomainQuantifierVariant *types.DomainQuantifierVariant
    var includedConditions__EvaluatedConditionals []types.EvaluatedConditional
    var includedCosts__QuantifierCostSpecifiers []types.QuantifierCostSpecifier
@@ -139,17 +149,22 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
    var Parent__DomainClassDTO *DomainClassDTO
    var Parent__DomainClassTraitDTO *DomainClassTraitDTO
    var Parent__DomainConditionDTO *DomainConditionDTO
+   var Parent__DomainCurrencyDenominationDTO *DomainCurrencyDenominationDTO
    var Parent__DomainStaticEffectDTO *DomainStaticEffectDTO
    var Parent__DomainSubClassDTO *DomainSubClassDTO
+   var Parent__DomainWeaponDTO *DomainWeaponDTO
    var ResourceOwner__UserDTO *UserDTO
    var Target__DomainActionDTO *DomainActionDTO
-   var Target__DomainCharacterStatDTO *DomainCharacterStatDTO
    var Target__DomainConditionDTO *DomainConditionDTO
+   var Target__DomainCurrencyDenominationDTO *DomainCurrencyDenominationDTO
    var Target__DomainDamageTypeDTO *DomainDamageTypeDTO
+   var Target__DomainDiceDTO *DomainDiceDTO
    var Target__DomainDiceRollSubTypeDTO *DomainDiceRollSubTypeDTO
    var Target__DomainDiceRollTypeDTO *DomainDiceRollTypeDTO
+   var Target__DomainEntityStatDTO *DomainEntityStatDTO
    var Target__DomainSpellDTO *DomainSpellDTO
    var Target__DomainStaticEffectDTO *DomainStaticEffectDTO
+   var Trigger__DomainActionDTO *DomainActionDTO
    var Variant__DomainQuantifierVariantDTO *DomainQuantifierVariantDTO
    var Conditions__EvaluatedConditionalDTOs []*EvaluatedConditionalDTO
    var Costs__QuantifierCostSpecifierDTOs []*QuantifierCostSpecifierDTO
@@ -200,6 +215,17 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
       }
    }
 
+   if (quantifier.Parent__DomainCurrencyDenomination != nil) {
+      includedParent__DomainCurrencyDenomination, err = services.GetDomainCurrencyDenominationById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCurrencyDenomination](quantifier.Parent__DomainCurrencyDenomination))
+      if err != nil {
+         return nil, err
+      }
+      Parent__DomainCurrencyDenominationDTO, err = DomainCurrencyDenominationToDomainCurrencyDenominationDTO(&childDTOContext, includedParent__DomainCurrencyDenomination)
+      if err != nil {
+         return nil, err
+      }
+   }
+
    if (quantifier.Parent__DomainStaticEffect != nil) {
       includedParent__DomainStaticEffect, err = services.GetDomainStaticEffectById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainStaticEffect](quantifier.Parent__DomainStaticEffect))
       if err != nil {
@@ -217,6 +243,17 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
          return nil, err
       }
       Parent__DomainSubClassDTO, err = DomainSubClassToDomainSubClassDTO(&childDTOContext, includedParent__DomainSubClass)
+      if err != nil {
+         return nil, err
+      }
+   }
+
+   if (quantifier.Parent__DomainWeapon != nil) {
+      includedParent__DomainWeapon, err = services.GetDomainWeaponById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainWeapon](quantifier.Parent__DomainWeapon))
+      if err != nil {
+         return nil, err
+      }
+      Parent__DomainWeaponDTO, err = DomainWeaponToDomainWeaponDTO(&childDTOContext, includedParent__DomainWeapon)
       if err != nil {
          return nil, err
       }
@@ -244,17 +281,6 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
       }
    }
 
-   if (quantifier.Target__DomainCharacterStat != nil) {
-      includedTarget__DomainCharacterStat, err = services.GetDomainCharacterStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCharacterStat](quantifier.Target__DomainCharacterStat))
-      if err != nil {
-         return nil, err
-      }
-      Target__DomainCharacterStatDTO, err = DomainCharacterStatToDomainCharacterStatDTO(&childDTOContext, includedTarget__DomainCharacterStat)
-      if err != nil {
-         return nil, err
-      }
-   }
-
    if (quantifier.Target__DomainCondition != nil) {
       includedTarget__DomainCondition, err = services.GetDomainConditionById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCondition](quantifier.Target__DomainCondition))
       if err != nil {
@@ -266,12 +292,34 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
       }
    }
 
+   if (quantifier.Target__DomainCurrencyDenomination != nil) {
+      includedTarget__DomainCurrencyDenomination, err = services.GetDomainCurrencyDenominationById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCurrencyDenomination](quantifier.Target__DomainCurrencyDenomination))
+      if err != nil {
+         return nil, err
+      }
+      Target__DomainCurrencyDenominationDTO, err = DomainCurrencyDenominationToDomainCurrencyDenominationDTO(&childDTOContext, includedTarget__DomainCurrencyDenomination)
+      if err != nil {
+         return nil, err
+      }
+   }
+
    if (quantifier.Target__DomainDamageType != nil) {
       includedTarget__DomainDamageType, err = services.GetDomainDamageTypeById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainDamageType](quantifier.Target__DomainDamageType))
       if err != nil {
          return nil, err
       }
       Target__DomainDamageTypeDTO, err = DomainDamageTypeToDomainDamageTypeDTO(&childDTOContext, includedTarget__DomainDamageType)
+      if err != nil {
+         return nil, err
+      }
+   }
+
+   if (quantifier.Target__DomainDice != nil) {
+      includedTarget__DomainDice, err = services.GetDomainDiceById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainDice](quantifier.Target__DomainDice))
+      if err != nil {
+         return nil, err
+      }
+      Target__DomainDiceDTO, err = DomainDiceToDomainDiceDTO(&childDTOContext, includedTarget__DomainDice)
       if err != nil {
          return nil, err
       }
@@ -299,6 +347,17 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
       }
    }
 
+   if (quantifier.Target__DomainEntityStat != nil) {
+      includedTarget__DomainEntityStat, err = services.GetDomainEntityStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainEntityStat](quantifier.Target__DomainEntityStat))
+      if err != nil {
+         return nil, err
+      }
+      Target__DomainEntityStatDTO, err = DomainEntityStatToDomainEntityStatDTO(&childDTOContext, includedTarget__DomainEntityStat)
+      if err != nil {
+         return nil, err
+      }
+   }
+
    if (quantifier.Target__DomainSpell != nil) {
       includedTarget__DomainSpell, err = services.GetDomainSpellById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainSpell](quantifier.Target__DomainSpell))
       if err != nil {
@@ -316,6 +375,17 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
          return nil, err
       }
       Target__DomainStaticEffectDTO, err = DomainStaticEffectToDomainStaticEffectDTO(&childDTOContext, includedTarget__DomainStaticEffect)
+      if err != nil {
+         return nil, err
+      }
+   }
+
+   if (quantifier.Trigger__DomainAction != nil) {
+      includedTrigger__DomainAction, err = services.GetDomainActionById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainAction](quantifier.Trigger__DomainAction))
+      if err != nil {
+         return nil, err
+      }
+      Trigger__DomainActionDTO, err = DomainActionToDomainActionDTO(&childDTOContext, includedTrigger__DomainAction)
       if err != nil {
          return nil, err
       }
@@ -409,17 +479,22 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
             Parent__DomainClass: Parent__DomainClassDTO,
             Parent__DomainClassTrait: Parent__DomainClassTraitDTO,
             Parent__DomainCondition: Parent__DomainConditionDTO,
+            Parent__DomainCurrencyDenomination: Parent__DomainCurrencyDenominationDTO,
             Parent__DomainStaticEffect: Parent__DomainStaticEffectDTO,
             Parent__DomainSubClass: Parent__DomainSubClassDTO,
+            Parent__DomainWeapon: Parent__DomainWeaponDTO,
             ResourceOwner__User: ResourceOwner__UserDTO,
             Target__DomainAction: Target__DomainActionDTO,
-            Target__DomainCharacterStat: Target__DomainCharacterStatDTO,
             Target__DomainCondition: Target__DomainConditionDTO,
+            Target__DomainCurrencyDenomination: Target__DomainCurrencyDenominationDTO,
             Target__DomainDamageType: Target__DomainDamageTypeDTO,
+            Target__DomainDice: Target__DomainDiceDTO,
             Target__DomainDiceRollSubType: Target__DomainDiceRollSubTypeDTO,
             Target__DomainDiceRollType: Target__DomainDiceRollTypeDTO,
+            Target__DomainEntityStat: Target__DomainEntityStatDTO,
             Target__DomainSpell: Target__DomainSpellDTO,
             Target__DomainStaticEffect: Target__DomainStaticEffectDTO,
+            Trigger__DomainAction: Trigger__DomainActionDTO,
             Variant__DomainQuantifierVariant: Variant__DomainQuantifierVariantDTO,
          },
          OneToMany: QuantifierDTOOneToManyRelationships {
@@ -489,12 +564,20 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
       tableTypeBuffer.Parent__DomainCondition = quantifier.Relationships.ManyToOne.Parent__DomainCondition.Id
    }
 
+   if (quantifier.Relationships.ManyToOne.Parent__DomainCurrencyDenomination != nil) {
+      tableTypeBuffer.Parent__DomainCurrencyDenomination = quantifier.Relationships.ManyToOne.Parent__DomainCurrencyDenomination.Id
+   }
+
    if (quantifier.Relationships.ManyToOne.Parent__DomainStaticEffect != nil) {
       tableTypeBuffer.Parent__DomainStaticEffect = quantifier.Relationships.ManyToOne.Parent__DomainStaticEffect.Id
    }
 
    if (quantifier.Relationships.ManyToOne.Parent__DomainSubClass != nil) {
       tableTypeBuffer.Parent__DomainSubClass = quantifier.Relationships.ManyToOne.Parent__DomainSubClass.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Parent__DomainWeapon != nil) {
+      tableTypeBuffer.Parent__DomainWeapon = quantifier.Relationships.ManyToOne.Parent__DomainWeapon.Id
    }
 
    if (quantifier.Relationships.ManyToOne.ResourceOwner__User != nil) {
@@ -505,16 +588,20 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
       tableTypeBuffer.Target__DomainAction = quantifier.Relationships.ManyToOne.Target__DomainAction.Id
    }
 
-   if (quantifier.Relationships.ManyToOne.Target__DomainCharacterStat != nil) {
-      tableTypeBuffer.Target__DomainCharacterStat = quantifier.Relationships.ManyToOne.Target__DomainCharacterStat.Id
-   }
-
    if (quantifier.Relationships.ManyToOne.Target__DomainCondition != nil) {
       tableTypeBuffer.Target__DomainCondition = quantifier.Relationships.ManyToOne.Target__DomainCondition.Id
    }
 
+   if (quantifier.Relationships.ManyToOne.Target__DomainCurrencyDenomination != nil) {
+      tableTypeBuffer.Target__DomainCurrencyDenomination = quantifier.Relationships.ManyToOne.Target__DomainCurrencyDenomination.Id
+   }
+
    if (quantifier.Relationships.ManyToOne.Target__DomainDamageType != nil) {
       tableTypeBuffer.Target__DomainDamageType = quantifier.Relationships.ManyToOne.Target__DomainDamageType.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainDice != nil) {
+      tableTypeBuffer.Target__DomainDice = quantifier.Relationships.ManyToOne.Target__DomainDice.Id
    }
 
    if (quantifier.Relationships.ManyToOne.Target__DomainDiceRollSubType != nil) {
@@ -525,12 +612,20 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
       tableTypeBuffer.Target__DomainDiceRollType = quantifier.Relationships.ManyToOne.Target__DomainDiceRollType.Id
    }
 
+   if (quantifier.Relationships.ManyToOne.Target__DomainEntityStat != nil) {
+      tableTypeBuffer.Target__DomainEntityStat = quantifier.Relationships.ManyToOne.Target__DomainEntityStat.Id
+   }
+
    if (quantifier.Relationships.ManyToOne.Target__DomainSpell != nil) {
       tableTypeBuffer.Target__DomainSpell = quantifier.Relationships.ManyToOne.Target__DomainSpell.Id
    }
 
    if (quantifier.Relationships.ManyToOne.Target__DomainStaticEffect != nil) {
       tableTypeBuffer.Target__DomainStaticEffect = quantifier.Relationships.ManyToOne.Target__DomainStaticEffect.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Trigger__DomainAction != nil) {
+      tableTypeBuffer.Trigger__DomainAction = quantifier.Relationships.ManyToOne.Trigger__DomainAction.Id
    }
 
    if (quantifier.Relationships.ManyToOne.Variant__DomainQuantifierVariant != nil) {

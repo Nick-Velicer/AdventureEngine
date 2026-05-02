@@ -1,5 +1,6 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
-import { DomainCharacterStat } from "./DomainCharacterStat";
+import { DomainEntityStat } from "./DomainEntityStat";
+import { DomainCurrencyDenomination } from "./DomainCurrencyDenomination";
 import { Quantifier } from "./Quantifier";
 
 export type QuantifierCostSpecifier = ExtendedSchemaObject<{
@@ -11,7 +12,8 @@ export type QuantifierCostSpecifier = ExtendedSchemaObject<{
     },
     Relationships: {
         ManyToOne: {
-            Cost__DomainCharacterStat?: DomainCharacterStat,
+            Cost__DomainEntityStat?: DomainEntityStat,
+            Cost__DomainCurrencyDenomination?: DomainCurrencyDenomination,
             Quantifier__Quantifier?: Quantifier
         },
         OneToMany: {

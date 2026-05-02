@@ -1,6 +1,6 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 import { Character } from "./Character";
-import { DomainCharacterStat } from "./DomainCharacterStat";
+import { DomainEntityStat } from "./DomainEntityStat";
 import { DomainSubClass } from "./DomainSubClass";
   
 //Ranged, melee, simple, martial, finesse, etc.

@@ -1,5 +1,5 @@
 import  { testDarkTheme, themeDefault, type ThemeVariables } from '../theme/themeConfig'
-import { AppTypes, type User, type DomainCharacterStat, type DomainDice } from '../types/appTypes/appTypes'
+import { AppTypes, type User, type DomainEntityStat, type DomainDice } from '../types/appTypes/appTypes'
 
 export type StoreShape = typeof stateDefault
 
@@ -13,7 +13,7 @@ export const stateDefault = {
     //Tables that realistically will not be changing, and are used often enough 
     //for UI organization that being able to access them synchronously makes life a lot easier
     staticTables: {
-        DomainCharacterStat: undefined as Array<DomainCharacterStat> | undefined,
+        DomainEntityStat: undefined as Array<DomainEntityStat> | undefined,
         DomainDice: undefined as Array<DomainDice> | undefined
     } satisfies Partial<Record<keyof typeof AppTypes, Array<typeof AppTypes[keyof typeof AppTypes]> | undefined>>
 }

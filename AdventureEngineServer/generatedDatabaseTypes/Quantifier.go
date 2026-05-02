@@ -98,6 +98,10 @@ type Quantifier struct {
 	// "Parent__DomainCondition".
 	Parent__DomainCondition *int `json:"Parent__DomainCondition" gorm:"column:Parent__DomainCondition" mapstructure:"Parent__DomainCondition"`
 
+	// ParentDomainCurrencyDenomination corresponds to the JSON schema field
+	// "Parent__DomainCurrencyDenomination".
+	Parent__DomainCurrencyDenomination *int `json:"Parent__DomainCurrencyDenomination" gorm:"column:Parent__DomainCurrencyDenomination" mapstructure:"Parent__DomainCurrencyDenomination"`
+
 	// ParentDomainStaticEffect corresponds to the JSON schema field
 	// "Parent__DomainStaticEffect".
 	Parent__DomainStaticEffect *int `json:"Parent__DomainStaticEffect" gorm:"column:Parent__DomainStaticEffect" mapstructure:"Parent__DomainStaticEffect"`
@@ -105,6 +109,9 @@ type Quantifier struct {
 	// ParentDomainSubClass corresponds to the JSON schema field
 	// "Parent__DomainSubClass".
 	Parent__DomainSubClass *int `json:"Parent__DomainSubClass" gorm:"column:Parent__DomainSubClass" mapstructure:"Parent__DomainSubClass"`
+
+	// ParentDomainWeapon corresponds to the JSON schema field "Parent__DomainWeapon".
+	Parent__DomainWeapon *int `json:"Parent__DomainWeapon" gorm:"column:Parent__DomainWeapon" mapstructure:"Parent__DomainWeapon"`
 
 	// PreventsApplying corresponds to the JSON schema field "PreventsApplying".
 	PreventsApplying *bool `json:"PreventsApplying" gorm:"column:PreventsApplying" mapstructure:"PreventsApplying"`
@@ -146,17 +153,20 @@ type Quantifier struct {
 	// TargetDomainAction corresponds to the JSON schema field "Target__DomainAction".
 	Target__DomainAction *int `json:"Target__DomainAction" gorm:"column:Target__DomainAction" mapstructure:"Target__DomainAction"`
 
-	// TargetDomainCharacterStat corresponds to the JSON schema field
-	// "Target__DomainCharacterStat".
-	Target__DomainCharacterStat *int `json:"Target__DomainCharacterStat" gorm:"column:Target__DomainCharacterStat" mapstructure:"Target__DomainCharacterStat"`
-
 	// TargetDomainCondition corresponds to the JSON schema field
 	// "Target__DomainCondition".
 	Target__DomainCondition *int `json:"Target__DomainCondition" gorm:"column:Target__DomainCondition" mapstructure:"Target__DomainCondition"`
 
+	// TargetDomainCurrencyDenomination corresponds to the JSON schema field
+	// "Target__DomainCurrencyDenomination".
+	Target__DomainCurrencyDenomination *int `json:"Target__DomainCurrencyDenomination" gorm:"column:Target__DomainCurrencyDenomination" mapstructure:"Target__DomainCurrencyDenomination"`
+
 	// TargetDomainDamageType corresponds to the JSON schema field
 	// "Target__DomainDamageType".
 	Target__DomainDamageType *int `json:"Target__DomainDamageType" gorm:"column:Target__DomainDamageType" mapstructure:"Target__DomainDamageType"`
+
+	// TargetDomainDice corresponds to the JSON schema field "Target__DomainDice".
+	Target__DomainDice *int `json:"Target__DomainDice" gorm:"column:Target__DomainDice" mapstructure:"Target__DomainDice"`
 
 	// TargetDomainDiceRollSubType corresponds to the JSON schema field
 	// "Target__DomainDiceRollSubType".
@@ -165,6 +175,10 @@ type Quantifier struct {
 	// TargetDomainDiceRollType corresponds to the JSON schema field
 	// "Target__DomainDiceRollType".
 	Target__DomainDiceRollType *int `json:"Target__DomainDiceRollType" gorm:"column:Target__DomainDiceRollType" mapstructure:"Target__DomainDiceRollType"`
+
+	// TargetDomainEntityStat corresponds to the JSON schema field
+	// "Target__DomainEntityStat".
+	Target__DomainEntityStat *int `json:"Target__DomainEntityStat" gorm:"column:Target__DomainEntityStat" mapstructure:"Target__DomainEntityStat"`
 
 	// TargetDomainSpell corresponds to the JSON schema field "Target__DomainSpell".
 	Target__DomainSpell *int `json:"Target__DomainSpell" gorm:"column:Target__DomainSpell" mapstructure:"Target__DomainSpell"`
@@ -175,6 +189,10 @@ type Quantifier struct {
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// TriggerDomainAction corresponds to the JSON schema field
+	// "Trigger__DomainAction".
+	Trigger__DomainAction *int `json:"Trigger__DomainAction" gorm:"column:Trigger__DomainAction" mapstructure:"Trigger__DomainAction"`
 
 	// UntilLongRest corresponds to the JSON schema field "UntilLongRest".
 	UntilLongRest *bool `json:"UntilLongRest" gorm:"column:UntilLongRest" mapstructure:"UntilLongRest"`

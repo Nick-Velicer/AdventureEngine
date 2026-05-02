@@ -33,7 +33,7 @@ type CharacterDTOManyToOneRelationships struct {
 }
 
 type CharacterDTOOneToManyRelationships struct {
-   Stats__CharacterDomainCharacterStatInstance []*CharacterDomainCharacterStatInstanceDTO
+   Stats__CharacterDomainEntityStatInstance []*CharacterDomainEntityStatInstanceDTO
    SubClasses__CharacterDomainSubClassInstance []*CharacterDomainSubClassInstanceDTO
 }
 
@@ -77,14 +77,14 @@ func CharacterToCharacterDTO(context *contextProviders.DTOContext, character *ty
    var includedCurrentSize__DomainSize *types.DomainSize
    var includedResourceOwner__User *types.User
    var includedSpecies__DomainSpecies *types.DomainSpecies
-   var includedStats__CharacterDomainCharacterStatInstances []types.CharacterDomainCharacterStatInstance
+   var includedStats__CharacterDomainEntityStatInstances []types.CharacterDomainEntityStatInstance
    var includedSubClasses__CharacterDomainSubClassInstances []types.CharacterDomainSubClassInstance
    
    var Campaign__CampaignDTO *CampaignDTO
    var CurrentSize__DomainSizeDTO *DomainSizeDTO
    var ResourceOwner__UserDTO *UserDTO
    var Species__DomainSpeciesDTO *DomainSpeciesDTO
-   var Stats__CharacterDomainCharacterStatInstanceDTOs []*CharacterDomainCharacterStatInstanceDTO
+   var Stats__CharacterDomainEntityStatInstanceDTOs []*CharacterDomainEntityStatInstanceDTO
    var SubClasses__CharacterDomainSubClassInstanceDTOs []*CharacterDomainSubClassInstanceDTO
    
    var err error
@@ -133,15 +133,15 @@ func CharacterToCharacterDTO(context *contextProviders.DTOContext, character *ty
       }
    }
 
-   if (slices.Contains(context.TraversedTables, reflect.TypeOf(includedStats__CharacterDomainCharacterStatInstances).Elem().Name())) {
-      includedStats__CharacterDomainCharacterStatInstances = []types.CharacterDomainCharacterStatInstance{}
-      fmt.Println("Hit circular catch case for table CharacterDomainCharacterStatInstance")
+   if (slices.Contains(context.TraversedTables, reflect.TypeOf(includedStats__CharacterDomainEntityStatInstances).Elem().Name())) {
+      includedStats__CharacterDomainEntityStatInstances = []types.CharacterDomainEntityStatInstance{}
+      fmt.Println("Hit circular catch case for table CharacterDomainEntityStatInstance")
    } else {
-      includedStats__CharacterDomainCharacterStatInstances, err = services.GetCharacterDomainCharacterStatInstances(serviceContext, contextProviders.ProduceGetArgs[types.CharacterDomainCharacterStatInstance]("Character__Character", character.Id))
+      includedStats__CharacterDomainEntityStatInstances, err = services.GetCharacterDomainEntityStatInstances(serviceContext, contextProviders.ProduceGetArgs[types.CharacterDomainEntityStatInstance]("Character__Character", character.Id))
       if err != nil {
          return nil, err
       }
-      Stats__CharacterDomainCharacterStatInstanceDTOs, err = utils.ErrorCompatibleMap(includedStats__CharacterDomainCharacterStatInstances, func(relationshipElement types.CharacterDomainCharacterStatInstance) (*CharacterDomainCharacterStatInstanceDTO, error) { return CharacterDomainCharacterStatInstanceToCharacterDomainCharacterStatInstanceDTO(&childDTOContext, &relationshipElement) })
+      Stats__CharacterDomainEntityStatInstanceDTOs, err = utils.ErrorCompatibleMap(includedStats__CharacterDomainEntityStatInstances, func(relationshipElement types.CharacterDomainEntityStatInstance) (*CharacterDomainEntityStatInstanceDTO, error) { return CharacterDomainEntityStatInstanceToCharacterDomainEntityStatInstanceDTO(&childDTOContext, &relationshipElement) })
       if err != nil {
          return nil, err
       }
@@ -181,7 +181,7 @@ func CharacterToCharacterDTO(context *contextProviders.DTOContext, character *ty
             Species__DomainSpecies: Species__DomainSpeciesDTO,
          },
          OneToMany: CharacterDTOOneToManyRelationships {
-            Stats__CharacterDomainCharacterStatInstance: Stats__CharacterDomainCharacterStatInstanceDTOs,
+            Stats__CharacterDomainEntityStatInstance: Stats__CharacterDomainEntityStatInstanceDTOs,
             SubClasses__CharacterDomainSubClassInstance: SubClasses__CharacterDomainSubClassInstanceDTOs,
          },
       },
