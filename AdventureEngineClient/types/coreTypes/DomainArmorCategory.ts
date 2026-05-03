@@ -1,7 +1,7 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
   
-//Ranged, melee, simple, martial, finesse, etc.
-export type DomainWeaponCategory = ExtendedSchemaObject<{
+//light, medium, heavy, shield
+export type DomainArmorCategory = ExtendedSchemaObject<{
     Attributes: {},
     Relationships: {
         ManyToOne: {},

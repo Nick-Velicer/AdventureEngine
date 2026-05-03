@@ -26,6 +26,7 @@ import { DomainDiceRollType as Base__DomainDiceRollType } from "../coreTypes/Dom
 import { DomainEntityStat as Base__DomainEntityStat } from "../coreTypes/DomainEntityStat";
 import { DomainItem as Base__DomainItem } from "../coreTypes/DomainItem";
 import { DomainLanguage as Base__DomainLanguage } from "../coreTypes/DomainLanguage";
+import { DomainModifierMechanic as Base__DomainModifierMechanic } from "../coreTypes/DomainModifierMechanic";
 import { DomainQuantifierVariant as Base__DomainQuantifierVariant } from "../coreTypes/DomainQuantifierVariant";
 import { DomainSize as Base__DomainSize } from "../coreTypes/DomainSize";
 import { DomainSkill as Base__DomainSkill } from "../coreTypes/DomainSkill";
@@ -34,6 +35,8 @@ import { DomainSpell as Base__DomainSpell } from "../coreTypes/DomainSpell";
 import { DomainSpellSchool as Base__DomainSpellSchool } from "../coreTypes/DomainSpellSchool";
 import { DomainStaticEffect as Base__DomainStaticEffect } from "../coreTypes/DomainStaticEffect";
 import { DomainSubClass as Base__DomainSubClass } from "../coreTypes/DomainSubClass";
+import { DomainTool as Base__DomainTool } from "../coreTypes/DomainTool";
+import { DomainToolCategory as Base__DomainToolCategory } from "../coreTypes/DomainToolCategory";
 import { DomainWeapon as Base__DomainWeapon } from "../coreTypes/DomainWeapon";
 import { DomainWeaponCategory as Base__DomainWeaponCategory } from "../coreTypes/DomainWeaponCategory";
 import { DomainWeaponDomainWeaponCategoryInstance as Base__DomainWeaponDomainWeaponCategoryInstance } from "../coreTypes/DomainWeaponDomainWeaponCategoryInstance";
@@ -68,6 +71,7 @@ const BaseAppTypes = {
 	DomainEntityStat: {} as Base__DomainEntityStat,
 	DomainItem: {} as Base__DomainItem,
 	DomainLanguage: {} as Base__DomainLanguage,
+	DomainModifierMechanic: {} as Base__DomainModifierMechanic,
 	DomainQuantifierVariant: {} as Base__DomainQuantifierVariant,
 	DomainSize: {} as Base__DomainSize,
 	DomainSkill: {} as Base__DomainSkill,
@@ -76,6 +80,8 @@ const BaseAppTypes = {
 	DomainSpellSchool: {} as Base__DomainSpellSchool,
 	DomainStaticEffect: {} as Base__DomainStaticEffect,
 	DomainSubClass: {} as Base__DomainSubClass,
+	DomainTool: {} as Base__DomainTool,
+	DomainToolCategory: {} as Base__DomainToolCategory,
 	DomainWeapon: {} as Base__DomainWeapon,
 	DomainWeaponCategory: {} as Base__DomainWeaponCategory,
 	DomainWeaponDomainWeaponCategoryInstance: {} as Base__DomainWeaponDomainWeaponCategoryInstance,
@@ -131,6 +137,7 @@ export type DomainDiceRollType = RecursionGuardedSchemaObject<Base__DomainDiceRo
 export type DomainEntityStat = RecursionGuardedSchemaObject<Base__DomainEntityStat>;
 export type DomainItem = RecursionGuardedSchemaObject<Base__DomainItem>;
 export type DomainLanguage = RecursionGuardedSchemaObject<Base__DomainLanguage>;
+export type DomainModifierMechanic = RecursionGuardedSchemaObject<Base__DomainModifierMechanic>;
 export type DomainQuantifierVariant = RecursionGuardedSchemaObject<Base__DomainQuantifierVariant>;
 export type DomainSize = RecursionGuardedSchemaObject<Base__DomainSize>;
 export type DomainSkill = RecursionGuardedSchemaObject<Base__DomainSkill>;
@@ -139,6 +146,8 @@ export type DomainSpell = RecursionGuardedSchemaObject<Base__DomainSpell>;
 export type DomainSpellSchool = RecursionGuardedSchemaObject<Base__DomainSpellSchool>;
 export type DomainStaticEffect = RecursionGuardedSchemaObject<Base__DomainStaticEffect>;
 export type DomainSubClass = RecursionGuardedSchemaObject<Base__DomainSubClass>;
+export type DomainTool = RecursionGuardedSchemaObject<Base__DomainTool>;
+export type DomainToolCategory = RecursionGuardedSchemaObject<Base__DomainToolCategory>;
 export type DomainWeapon = RecursionGuardedSchemaObject<Base__DomainWeapon>;
 export type DomainWeaponCategory = RecursionGuardedSchemaObject<Base__DomainWeaponCategory>;
 export type DomainWeaponDomainWeaponCategoryInstance = RecursionGuardedSchemaObject<Base__DomainWeaponDomainWeaponCategoryInstance>;
@@ -173,6 +182,7 @@ export const AppTypes = {
 	DomainEntityStat: {} as DomainEntityStat,
 	DomainItem: {} as DomainItem,
 	DomainLanguage: {} as DomainLanguage,
+	DomainModifierMechanic: {} as DomainModifierMechanic,
 	DomainQuantifierVariant: {} as DomainQuantifierVariant,
 	DomainSize: {} as DomainSize,
 	DomainSkill: {} as DomainSkill,
@@ -181,6 +191,8 @@ export const AppTypes = {
 	DomainSpellSchool: {} as DomainSpellSchool,
 	DomainStaticEffect: {} as DomainStaticEffect,
 	DomainSubClass: {} as DomainSubClass,
+	DomainTool: {} as DomainTool,
+	DomainToolCategory: {} as DomainToolCategory,
 	DomainWeapon: {} as DomainWeapon,
 	DomainWeaponCategory: {} as DomainWeaponCategory,
 	DomainWeaponDomainWeaponCategoryInstance: {} as DomainWeaponDomainWeaponCategoryInstance,

@@ -44,6 +44,11 @@ quantifierVariants = []
 weapons = []
 weaponCategoryMappings = []
 currencyDenominations = []
+modifierMechanics = []
+toolCategories = [],
+tools = []
+armorCategories = []
+armor = []
 
 #This will be applied to the beginning of migrations to preserve the dependent order for foreign keys
 migrationOrderNumber = 1
@@ -98,6 +103,10 @@ def main():
         regenerateCurrencyDenominations,
         regenerateActionsMigration,
         regenerateWeaponsAndRelatedTables,
+        regenerateToolCategories,
+        regenerateToolsAndRelatedTables,
+        regenerateArmorCategories,
+        regenerateArmorAndRelatedTables,
         regenerateDomainClassMigration,
         regenerateDamageTypesMigration,
         regenerateDomainSubClassMigration,
@@ -570,6 +579,26 @@ def regenerateQuantifierVariants():
     quantifierVariants = produceMigrationFileFromObjects("DomainQuantifierVariant", quantifierVariants)
 
 
+def regenerateModifierMechanics():
+    global modifierMechanics
+
+    mechanicTitles = [
+        "Advantage",
+        "Disadvantage",
+        "Resistance",
+        "Proficiency",
+    ]
+
+    modifierMechanics = [
+        {
+            "Title": title
+        } 
+        for title in mechanicTitles
+    ]
+
+    modifierMechanics = produceMigrationFileFromObjects("DomainModifierMechanic", modifierMechanics)
+
+
 def regenerateCurrencyDenominations():
     global currencyDenominations
     global quantifierVariants
@@ -751,13 +780,13 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "1 sp",
             "Damage": "1d4 Bludgeoning",
             "Weight": 2,
-            "Categories": ["Light"]
+            "Categories": ["Light", "Simple", "Melee"]
         },
         "Dagger": {
             "Cost": "2 gp",
             "Damage": "1d4 Piercing",
             "Weight": 1,
-            "Categories": ["Finesse", "Light", "Thrown"],
+            "Categories": ["Finesse", "Light", "Thrown", "Simple", "Melee"],
             "MinRange": 20,
             "MaxRange": 60
         },
@@ -765,13 +794,13 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "2 sp",
             "Damage": "1d8 Bludgeoning",
             "Weight": 10,
-            "Categories": ["Two-Handed"]
+            "Categories": ["Two-Handed", "Simple", "Melee"]
         },
         "Handaxe": {
             "Cost": "5 gp",
             "Damage": "1d6 Slashing",
             "Weight": 2,
-            "Categories": ["Light", "Thrown"],
+            "Categories": ["Light", "Thrown", "Simple", "Melee"],
             "MinRange": 20,
             "MaxRange": 60
         },
@@ -779,7 +808,7 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "5 sp",
             "Damage": "1d6 Piercing",
             "Weight": 2,
-            "Categories": ["Thrown"],
+            "Categories": ["Thrown", "Simple", "Melee"],
             "MinRange": 30,
             "MaxRange": 120
         },
@@ -787,7 +816,7 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "2 gp",
             "Damage": "1d4 Bludgeoning",
             "Weight": 2,
-            "Categories": ["Light", "Thrown"],
+            "Categories": ["Light", "Thrown", "Simple", "Melee"],
             "MinRange": 20,
             "MaxRange": 60
         },
@@ -800,7 +829,7 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "2 sp",
             "Damage": "1d6 Bludgeoning",
             "Weight": 4,
-            "Categories": ["Versatile (1d8)"]
+            "Categories": ["Versatile (1d8)", "Simple", "Melee"]
         },
         "Sickle": {
             "Cost": "1 gp",
@@ -812,16 +841,17 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "1 gp",
             "Damage": "1d6 Piercing",
             "Weight": 3,
-            "Categories": ["Thrown", "Versatile (1d8)"]
+            "Categories": ["Thrown", "Versatile (1d8)", "Simple", "Melee"]
         },
         "Unarmed Strike": {
-            "Damage": "1 Bludgeoning"
+            "Damage": "1 Bludgeoning",
+            "Categories": ["Simple", "Melee"]
         },
         "Light Crossbow": {
             "Cost": "25 gp",
             "Damage": "1d8 Piercing",
             "Weight": 5,
-            "Categories": ["Ammunition", "Loading", "Two-Handed"],
+            "Categories": ["Ammunition", "Loading", "Two-Handed", "Simple", "Ranged"],
             "MinRange": 80,
             "MaxRange": 320
         },
@@ -829,7 +859,7 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "5 cp",
             "Damage": "1d4 Piercing",
             "Weight": 1/4,
-            "Categories": ["Finesse", "Thrown"],
+            "Categories": ["Finesse", "Thrown", "Simple", "Ranged"],
             "MinRange": 20,
             "MaxRange": 60
         },
@@ -837,14 +867,14 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "25 gp",
             "Damage": "1d6 Piercing",
             "Weight": 2,
-            "Categories": ["Ammunition", "Two-Handed"],
+            "Categories": ["Ammunition", "Two-Handed", "Simple", "Ranged"],
             "MinRange": 80,
             "MaxRange": 320
         },
         "Sling": {
             "Cost": "1 sp",
             "Damage": "1d4 Bludgeoning",
-            "Categories": ["Ammunition"],
+            "Categories": ["Ammunition", "Simple", "Ranged"],
             "MinRange": 30,
             "MaxRange": 120
         },
@@ -852,114 +882,117 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "10 gp",
             "Damage": "1d8 Slashing",
             "Weight": 4,
-            "Categories": ["Versatile (1d10)"]
+            "Categories": ["Versatile (1d10)", "Martial", "Melee"]
         },
         "Flail": {
             "Cost": "10 gp",
             "Damage": "1d8 Bludgeoning",
-            "Weight": 2
+            "Weight": 2,
+            "Categories": ["Martial", "Melee"]
         },
         "Glaive": {
             "Cost": "20 gp",
             "Damage": "1d10 Slashing",
             "Weight": 6,
-            "Categories": ["Heavy", "Reach", "Two-Handed"]
+            "Categories": ["Heavy", "Reach", "Two-Handed", "Martial", "Melee"]
         },
         "Greataxe": {
             "Cost": "30 gp",
             "Damage": "1d12 Slashing",
             "Weight": 7,
-            "Categories": ["Heavy", "Two-Handed"]
+            "Categories": ["Heavy", "Two-Handed", "Martial", "Melee"]
         },
         "Greatsword": {
             "Cost": "50 gp",
             "Damage": "2d6 Slashing",
             "Weight": 6,
-            "Categories": ["Heavy", "Two-Handed"]
+            "Categories": ["Heavy", "Two-Handed", "Martial", "Melee"]
         },
         "Halberd": {
             "Cost": "20 gp",
             "Damage": "1d10 Slashing",
             "Weight": 6,
-            "Categories": ["Heavy", "Reach", "Two-Handed"]
+            "Categories": ["Heavy", "Reach", "Two-Handed", "Martial", "Melee"]
         },
         "Lance": {
             "Cost": "10 gp",
             "Damage": "1d12 Piercing",
             "Weight": 6,
-            "Categories": ["Reach", "Special"]
+            "Categories": ["Reach", "Special", "Martial", "Melee"]
         },
         "Longsword": {
             "Cost": "15 gp",
             "Damage": "1d8 Slashing",
             "Weight": 3,
-            "Categories": ["Versatile (1d10)"]
+            "Categories": ["Versatile (1d10)", "Martial", "Melee"]
         },
         "Maul": {
             "Cost": "10 gp",
             "Damage": "2d6 Bludgeoning",
             "Weight": 10,
-            "Categories": ["Heavy", "Two-Handed"]
+            "Categories": ["Heavy", "Two-Handed", "Martial", "Melee"]
         },
         "Morningstar": {
             "Cost": "15 gp",
             "Damage": "1d8 Piercing",
-            "Weight": 4
+            "Weight": 4,
+            "Categories": ["Martial", "Melee"]
         },
         "Pike": {
             "Cost": "5 gp",
             "Damage": "1d10 Piercing",
             "Weight": 18,
-            "Categories": ["Heavy", "Reach", "Two-Handed"]
+            "Categories": ["Heavy", "Reach", "Two-Handed", "Martial", "Melee"]
         },
         "Rapier": {
             "Cost": "25 gp",
             "Damage": "1d8 Piercing",
             "Weight": 2,
-            "Categories": ["Finesse"]
+            "Categories": ["Finesse", "Martial", "Melee"]
         },
         "Scimitar": {
             "Cost": "25 gp",
             "Damage": "1d6 Slashing",
             "Weight": 3,
-            "Categories": ["Finesse", "Light"]
+            "Categories": ["Finesse", "Light", "Martial", "Melee"]
         },
         "Shortsword": {
             "Cost": "10 gp",
             "Damage": "1d6 Piercing",
             "Weight": 2,
-            "Categories": ["Finesse", "Light"]
+            "Categories": ["Finesse", "Light", "Martial", "Melee"]
         },
         "Trident": {
             "Cost": "5 gp",
             "Damage": "1d6 Piercing",
             "Weight": 4,
-            "Categories": ["Thrown", "Versatile (1d8)"],
+            "Categories": ["Thrown", "Versatile (1d8)", "Martial", "Melee"],
             "MinRange": 20,
             "MaxRange": 60
         },
         "Warpick": {
             "Cost": "5 gp",
             "Damage": "1d8 Piercing",
-            "Weight": 2
+            "Weight": 2,
+            "Categories": ["Martial", "Melee"]
         },
         "Warhammer": {
             "Cost": "15 gp",
             "Damage": "1d8 Bludgeoning",
             "Weight": 2,
-            "Categories": ["Versatile (1d8)"]
+            "Categories": ["Versatile (1d8)", "Martial", "Melee"]
         },
         "Whip": {
             "Cost": "2 gp",
             "Damage": "1d4 Slashing",
             "Weight": 3,
-            "Categories": ["Finesse", "Reach"]
+            "Categories": ["Finesse", "Reach", "Martial", "Melee"]
         },
         "Blowgun": {
             "Cost": "10 gp",
             "Damage": "1 Piercing",
             "Weight": 1,
-            "Categories": ["Ammunition", "Loading"],
+            "Categories": ["Ammunition", "Loading", "Martial", "Ranged"],
             "MinRange": 25,
             "MaxRange": 100
         },
@@ -967,7 +1000,7 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "75 gp",
             "Damage": "1d6 Piercing",
             "Weight": 3,
-            "Categories": ["Ammunition", "Light", "Loading"],
+            "Categories": ["Ammunition", "Light", "Loading", "Martial", "Ranged"],
             "MinRange": 30,
             "MaxRange": 120
         },
@@ -975,7 +1008,7 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "50 gp",
             "Damage": "1d10 Piercing",
             "Weight": 18,
-            "Categories": ["Ammunition", "Heavy", "Loading", "Two-Handed"],
+            "Categories": ["Ammunition", "Heavy", "Loading", "Two-Handed", "Martial", "Ranged"],
             "MinRange": 100,
             "MaxRange": 400
         },
@@ -983,14 +1016,14 @@ def regenerateWeaponsAndRelatedTables():
             "Cost": "50 gp",
             "Damage": "1d8 Piercing",
             "Weight": 2,
-            "Categories": ["Ammunition", "Heavy", "Two-Handed"],
+            "Categories": ["Ammunition", "Heavy", "Two-Handed", "Martial", "Ranged"],
             "MinRange": 150,
             "MaxRange": 600
         },
         "Net": {
             "Cost": "1 gp",
             "Weight": 3,
-            "Categories": ["Special", "Thrown"],
+            "Categories": ["Special", "Thrown", "Martial", "Ranged"],
             "MinRange": 5,
             "MaxRange": 15
         }
@@ -1011,7 +1044,7 @@ def regenerateWeaponsAndRelatedTables():
             for category in currentMeta["Categories"]:
                 weaponCategoryMappings.append({
                     "Weapon__DomainWeapon": getForeignKeyIdForTitle(weapons, weaponTitle),
-                    "Category__DomainWeaponCategory": getForeignKeyIdForTitle(weapons, category)
+                    "Category__DomainWeaponCategory": getForeignKeyIdForTitle(weaponCategories, category)
                 })
         
         if "Damage" in currentMeta:
@@ -1048,7 +1081,442 @@ def regenerateWeaponsAndRelatedTables():
                     "Target__DomainCurrencyDenomination": getForeignKeyIdForTitle(currencyDenominations, abbreviatedTitleMapping[costType]),
                 }
             ])
+
+        if "Weight" in currentMeta:
+            quantifiers.extend([
+                {
+                    "Parent__DomainWeapon": getForeignKeyIdForTitle(weapons, weaponTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Weight"),
+                    "DeltaQuantity": currentMeta["Weight"]
+                }
+            ])
+
+
+def regenerateToolCategories():
+    global toolCategories
+
+    categoryTitles = [
+        "Artisan's Tool",
+        "Gaming Set",
+        "Musical Instrument",
+        "Miscellaneous"
+    ]
+
+    toolCategories = [
+        {
+            "Title": title
+        } 
+        for title in categoryTitles
+    ]
+
+    toolCategories = produceMigrationFileFromObjects("DomainToolCategory", toolCategories)
+
+
+def regenerateToolsAndRelatedTables():
+    global toolCategories
+    global tools
+    global quantifiers
+    global quantifierVariants
+
+    toolMeta = {
+        "Alchemist's Supplies": {
+            "Cost": "50 gp",
+            "Weight": 	8,
+            "Category": "Artisan's Tool"
+        },
+        "Brewer's Supplies": {
+            "Cost": "20 gp",
+            "Weight": 	9,
+            "Category": "Artisan's Tool"
+        },
+        "Calligrapher's Supplies": {
+            "Cost": "10 gp",
+            "Weight": 	5,
+            "Category": "Artisan's Tool"
+        },
+        "Carpenter's Tools": {
+            "Cost": "8 gp",
+            "Weight": 	6,
+            "Category": "Artisan's Tool"
+        },
+        "Cartographer's Tools": {
+            "Cost": "15 gp",
+            "Weight": 	6,
+            "Category": "Artisan's Tool"
+        },
+        "Cobbler's Tools": {
+            "Cost": "5 gp",
+            "Weight": 	5,
+            "Category": "Artisan's Tool"
+        },
+        "Cook's Utensils": {
+            "Cost": "1 gp",
+            "Weight": 	8,
+            "Category": "Artisan's Tool"
+        },
+        "Glassblower's Tools": {
+            "Cost": "30 gp",
+            "Weight": 	5,
+            "Category": "Artisan's Tool"
+        },
+        "Jeweler's Tools": {
+            "Cost": "25 gp",
+            "Weight": 	2,
+            "Category": "Artisan's Tool"
+        },
+        "Leatherworker's Tools": {
+            "Cost": "5 gp",
+            "Weight": 	5,
+            "Category": "Artisan's Tool"
+        },
+        "Mason's Tools": {
+            "Cost": "10 gp",
+            "Weight": 	8,
+            "Category": "Artisan's Tool"
+        },
+        "Painter's Supplies": {
+            "Cost": "10 gp",
+            "Weight": 	5,
+            "Category": "Artisan's Tool"
+        },
+        "Potter's Tools": {
+            "Cost": "10 gp",
+            "Weight": 	3,
+            "Category": "Artisan's Tool"
+        },
+        "Smith's Tools": {
+            "Cost": "20 gp",
+            "Weight": 	8,
+            "Category": "Artisan's Tool"
+        },
+        "Tinker's Tools": {
+            "Cost": "50 gp",
+            "Weight": 	10,
+            "Category": "Artisan's Tool"
+        },
+        "Weaver's Tools": {
+            "Cost": "1 gp",
+            "Weight": 	5,
+            "Category": "Artisan's Tool"
+        },
+        "Woodcarver's Tools": {
+            "Cost": "1 gp",
+            "Weight": 	5,
+            "Category": "Artisan's Tool"
+        },
+        "Dice Set": {
+            "Cost": "1 sp",
+            "Category": "Gaming Set"
+        },
+        "Dragonchess Set": {
+            "Cost": "1 gp",
+            "Weight": 0.5,
+            "Category": "Gaming Set"
+        },
+        "Playing Card Set": {
+            "Cost": "5 sp",
+            "Category": "Gaming Set"
+        },
+        "Three-Dragon Ante Set": {
+            "Cost": "1 gp",
+            "Category": "Gaming Set"
+        },
+        "Bagpipes": {
+            "Cost": "30 gp",
+            "Weight": 6,
+            "Category": "Musical Instrument"
+        },
+        "Drum": {
+            "Cost": "6 gp",
+            "Weight": 3,
+            "Category": "Musical Instrument"
+        },
+        "Dulcimer": {
+            "Cost": "25 gp",
+            "Weight": 	10,
+            "Category": "Musical Instrument"
+        },
+        "Flute": {
+            "Cost": "2 gp",
+            "Weight": 	1,
+            "Category": "Musical Instrument"
+        },
+        "Lute": {
+            "Cost": "35 gp",
+            "Weight": 	2,
+            "Category": "Musical Instrument"
+        },
+        "Lyre": {
+            "Cost": "30 gp",
+            "Weight": 	2,
+            "Category": "Musical Instrument"
+        },
+        "Horn": {
+            "Cost": "3 gp",
+            "Weight": 	2,
+            "Category": "Musical Instrument"
+        },
+        "Pan Flute": {
+            "Cost": "12 gp",
+            "Weight": 	2,
+            "Category": "Musical Instrument"
+        },
+        "Shawm": {
+            "Cost": "2 gp",
+            "Weight": 	1,
+            "Category": "Musical Instrument"
+        },
+        "Viol": {
+            "Cost": "30 gp",
+            "Weight": 	1,
+            "Category": "Musical Instrument"
+        },
+        "Disguise Kit": {
+            "Cost": "25 gp",
+            "Weight": 	3,
+            "Category": "Miscellaneous"
+        },
+        "Forgery Kit": {
+            "Cost": "15 gp",
+            "Weight": 	5,
+            "Category": "Miscellaneous"
+        },
+        "Herbalism Kit": {
+            "Cost": "5 gp",
+            "Weight": 	3,
+            "Category": "Miscellaneous"
+        },
+        "Navigator's Tools": {
+            "Cost": "25 gp",
+            "Weight": 	2,
+            "Category": "Miscellaneous"
+        },
+        "Poisoner's Kit": {
+            "Cost": "50 gp",
+            "Weight": 	2,
+            "Category": "Miscellaneous"
+        },
+        "Thieves' Tools": {
+            "Cost": "25 gp",
+            "Weight": 	1,
+            "Category": "Miscellaneous"
+        }
+    }
+
+    tools = [
+        {
+            "Title": title,
+            "Category__DomainToolCategory": getForeignKeyIdForTitle(toolCategories, toolMeta[title]["Category"])
+        } 
+        for title in toolMeta.keys()
+    ]
+
+    tools = produceMigrationFileFromObjects("DomainTool", tools)
+
+    for toolTitle in toolMeta:
+        currentMeta = toolMeta[toolTitle]
         
+        if "Cost" in currentMeta:
+            costAmount, costType = currentMeta["Cost"].split(" ")
+
+            #A bit of hard-coding, as a treat, since we aren't seeing other currencies beyond
+            #gold from the weapon table
+            abbreviatedTitleMapping = {
+                "cp": "Copper Piece",
+                "gp": "Gold Piece",
+                "sp": "Silver Piece"
+            }
+
+            quantifiers.extend([
+                {
+                    "Parent__DomainWeapon": getForeignKeyIdForTitle(tools, toolTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Cost"),
+                    "DeltaQuantity": costAmount,
+                    "Target__DomainCurrencyDenomination": getForeignKeyIdForTitle(currencyDenominations, abbreviatedTitleMapping[costType]),
+                }
+            ])
+        
+        if "Weight" in currentMeta:
+            quantifiers.extend([
+                {
+                    "Parent__DomainWeapon": getForeignKeyIdForTitle(tools, toolTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Weight"),
+                    "DeltaQuantity": currentMeta["Weight"]
+                }
+            ])
+
+
+def regenerateArmorCategories():
+    global armorCategories
+
+    categoryTitles = [
+        "Light Armor",
+        "Medium Armor",
+        "Heavy Armor",
+        "Shield"
+    ]
+
+    armorCategories = [
+        {
+            "Title": title
+        } 
+        for title in categoryTitles
+    ]
+
+    armorCategories = produceMigrationFileFromObjects("DomainArmorCategory", armorCategories)
+
+
+def regenerateArmorAndRelatedTables():
+    global armorCategories
+    global armor
+    global quantifiers
+    global quantifierVariants
+
+    armorMeta = {
+        "Padded Armor": {
+            "AC": 11,
+            "Weight": 8,
+            "Cost": "5 gp",
+            "StealthDisadvantage": 1,
+            "Category": "Light Armor"
+        },
+        "Leather Armor": {
+            "AC": 11,
+            "Weight": 10,
+            "Cost": "10 gp",
+            "Category": "Light Armor"
+        },
+        "Studded Leather Armor": {
+            "AC": 12,
+            "Weight": 10,
+            "Cost": "10 gp",
+            "Category": "Light Armor"
+        },
+        "Hide Armor": {
+            "AC": 12,
+            "Weight": 12,
+            "Cost": "10 gp",
+            "Category": "Medium Armor"
+        },
+        "Chain Shirt": {
+            "AC": 13,
+            "Weight": 20,
+            "Cost": "50 gp",
+            "Category": "Medium Armor"
+        },
+        "Scale Mail": {
+            "AC": 14,
+            "Weight": 45,
+            "Cost": "50 gp",
+            "StealthDisadvantage": 1,
+            "Category": "Medium Armor"
+        },
+        "Spiked Armor": {
+            "AC": 14,
+            "Weight": 45,
+            "Cost": "75 gp",
+            "StealthDisadvantage": 1,
+            "Category": "Medium Armor"
+        },
+        "Breastplate": {
+            "AC": 14,
+            "Weight": 20,
+            "Cost": "400 gp",
+            "Category": "Medium Armor"
+        },
+        "Halfplate": {
+            "AC": 15,
+            "Weight": 40,
+            "Cost": "750 gp",
+            "StealthDisadvantage": 1,
+            "Category": "Medium Armor"
+        },
+        "Ring Mail": {
+            "AC": 14,
+            "Weight": 40,
+            "Cost": "30 gp",
+            "StealthDisadvantage": 1,
+            "Category": "Heavy Armor"
+        },
+        "Chain Mail": {
+            "AC": 16,
+            "Strength": 13,
+            "Weight": 55,
+            "Cost": "75 gp",
+            "StealthDisadvantage": 1,
+            "Category": "Heavy Armor"
+        },
+        "Splint Armor": {
+            "AC": 17,
+            "Strength": 15,
+            "Weight": 60,
+            "Cost": "200 gp",
+            "StealthDisadvantage": 1,
+            "Category": "Heavy Armor"
+        },
+        "Plate Armor": {
+            "AC": 18,
+            "Strength": 15,
+            "Weight": 65,
+            "Cost": "1500 gp",
+            "StealthDisadvantage": 1,
+            "Category": "Heavy Armor"
+        },
+        "Shield": {
+            "Weight": 6,
+            "Cost": "10 gp",
+            "Category": "Shield"
+        }
+    }
+
+    armor = [
+        {
+            "Title": title,
+            "Category__DomainArmorCategory": getForeignKeyIdForTitle(armorCategories, armorMeta[title]["Category"])
+        } 
+        for title in armorMeta.keys()
+    ]
+
+    armor = produceMigrationFileFromObjects("DomainArmor", armor)
+
+    for armorTitle in armorMeta:
+        currentMeta = armorMeta[armorTitle]
+        
+        if "Cost" in currentMeta:
+            costAmount, costType = currentMeta["Cost"].split(" ")
+
+            abbreviatedTitleMapping = {
+                "cp": "Copper Piece",
+                "gp": "Gold Piece",
+                "sp": "Silver Piece"
+            }
+
+            quantifiers.extend([
+                {
+                    "Parent__DomainArmor": getForeignKeyIdForTitle(armor, armorTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Cost"),
+                    "DeltaQuantity": costAmount,
+                    "Target__DomainCurrencyDenomination": getForeignKeyIdForTitle(currencyDenominations, abbreviatedTitleMapping[costType]),
+                }
+            ])
+        
+        if "Weight" in currentMeta:
+            quantifiers.extend([
+                {
+                    "Parent__DomainArmor": getForeignKeyIdForTitle(armor, armorTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Weight"),
+                    "DeltaQuantity": currentMeta["Weight"]
+                }
+            ])
+
+        #I'll do the remaining quantifiers later when I want to figure out the conditionals 
+        #for this (equip time, strength minimums), sourced from https://dnd5e.wikidot.com/armor
+
 
 def regenerateDomainClassMigration():
     
@@ -1225,8 +1693,33 @@ def regenerateDomainSubClassMigration():
         }
     ]
 
-    classes = produceMigrationFileFromObjects("DomainSubClass", subClasses)
+    subClasses = produceMigrationFileFromObjects("DomainSubClass", subClasses)
 
+def regenerateProficienciesMigration():
+    global classes
+    global subClasses
+    global skills
+    global armor
+    global tools
+
+    #how on earth do we do max/min options and multiclass variants for this?
+    proficiencyOptionsMeta = {
+        "Barbarian": {
+            "Skills": ["Animal Handling", "Athletics", "Intimidation", "Nature", "Perception", "Survival"]
+        },
+        "Bard": {
+            "Skills": []
+        }
+    }
+
+    proficiencySetMeta = {
+        "Barbarian": {
+            "Weapons": ["Simple", "Martial"],
+            "Armor": ["Light Armor", "Medium Armor", "Shield"]
+        },
+    }
+
+    classes = produceMigrationFileFromObjects("DomainSubClass", subClasses)
 
 def regenerateDamageTypesMigration():
     global damageTypes
@@ -1260,6 +1753,7 @@ def regenerateDomainConditionsMigration():
     global conditions
     global diceRollTypes
     global quantifiers
+    global modifierMechanics
 
     conditions = [
         {
@@ -1338,13 +1832,13 @@ def regenerateDomainConditionsMigration():
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Blinded")
         },
         {
-            "GivesDisadvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Disadvantage"),
             "AppliesToTargets": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Blinded")
         },
         {
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "AppliesAgainstTargets": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Blinded")
@@ -1359,21 +1853,21 @@ def regenerateDomainConditionsMigration():
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
         },
         {
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "AppliesAgainstTargetsForSourceOnly": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
             "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Charisma"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
         },
         {
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "AppliesAgainstTargetsForSourceOnly": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
             "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Intelligence"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Charmed")
         },
         {
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "AppliesAgainstTargetsForSourceOnly": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
             "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Wisdom"),
@@ -1392,7 +1886,7 @@ def regenerateDomainConditionsMigration():
 
         #region Frightened
         {
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "AppliesAgainstTargetsForSourceOnly": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(actions, "Check"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Frightened")
@@ -1444,13 +1938,13 @@ def regenerateDomainConditionsMigration():
         },
         {
             "AppliesAgainstTargets": 1,
-            "GivesDisadvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Disadvantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Invisible")
         },
         {
             "AppliesToTargets": 1,
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Invisible")
         },
@@ -1492,7 +1986,7 @@ def regenerateDomainConditionsMigration():
         },
         {
             "AppliesAgainstTargets": 1,
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
         },
@@ -1531,7 +2025,7 @@ def regenerateDomainConditionsMigration():
         },
         {
             "AppliesAgainstTargets": 1,
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
         },
@@ -1566,7 +2060,7 @@ def regenerateDomainConditionsMigration():
         *[
             {
             "AppliesToTargets": 1,
-            "GivesResistance": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Resistance"),
             "Target__DomainDamageType": damageType["Id"],
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Petrified")
             } for damageType in damageTypes
@@ -1582,13 +2076,13 @@ def regenerateDomainConditionsMigration():
         #region Poisoned
         {
             "AppliesToTargets": 1,
-            "GivesDisadvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Disadvantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Poisoned")
         },
         {
             "AppliesToTargets": 1,
-            "GivesDisadvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Disadvantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Poisoned")
         },
@@ -1605,7 +2099,7 @@ def regenerateDomainConditionsMigration():
         ],
         {
             "AppliesToTargets": 1,
-            "GivesDisadvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Disadvantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Prone")
         },
@@ -1628,19 +2122,19 @@ def regenerateDomainConditionsMigration():
         ],
         {
             "AppliesAgainstTargets": 1,
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Restrained")
         },
         {
             "AppliesToTargets": 1,
-            "GivesDisadvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Disadvantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Restrained")
         },
         {
             "AppliesToTargets": 1,
-            "GivesDisadvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Disadvantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
             "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Dexterity"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Restrained")
@@ -1677,7 +2171,7 @@ def regenerateDomainConditionsMigration():
         },
         {
             "AppliesAgainstTargets": 1,
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Stunned")
         },
@@ -1718,7 +2212,7 @@ def regenerateDomainConditionsMigration():
         },
         {
             "AppliesAgainstTargets": 1,
-            "GivesAdvantage": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
         },

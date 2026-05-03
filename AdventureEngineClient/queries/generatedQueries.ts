@@ -799,6 +799,36 @@ export function composeQueryBuilderContext<
          });
       },
       
+      //DomainModifierMechanic
+      useGetDomainModifierMechanicsQuery: <H extends Parameters<typeof services.DomainModifierMechanic.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainModifierMechanics", params?.toString()],
+            query: () => services.DomainModifierMechanic.getAllItems(...params)
+         });
+      },
+      useGetDomainModifierMechanicByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getDomainModifierMechanicById", id.toString()],
+            query: () => services.DomainModifierMechanic.getItemById(id)
+         });
+      },
+      useSaveDomainModifierMechanicMutation: <H extends Parameters<typeof services.DomainModifierMechanic.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainModifierMechanic.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainModifierMechanics",
+                  "getDomainModifierMechanicById",
+                  "getUsers",
+                  "getUserById",
+               ]);
+            }
+         });
+      },
+      
       //DomainQuantifierVariant
       useGetDomainQuantifierVariantsQuery: <H extends Parameters<typeof services.DomainQuantifierVariant.getAllItems>>(...params: H) => {
          return queryHandler({
@@ -1049,6 +1079,68 @@ export function composeQueryBuilderContext<
          });
       },
       
+      //DomainTool
+      useGetDomainToolsQuery: <H extends Parameters<typeof services.DomainTool.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainTools", params?.toString()],
+            query: () => services.DomainTool.getAllItems(...params)
+         });
+      },
+      useGetDomainToolByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getDomainToolById", id.toString()],
+            query: () => services.DomainTool.getItemById(id)
+         });
+      },
+      useSaveDomainToolMutation: <H extends Parameters<typeof services.DomainTool.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainTool.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainTools",
+                  "getDomainToolById",
+                  "getUsers",
+                  "getDomainToolCategorys",
+                  "getUserById",
+                  "getDomainToolCategoryById",
+               ]);
+            }
+         });
+      },
+      
+      //DomainToolCategory
+      useGetDomainToolCategorysQuery: <H extends Parameters<typeof services.DomainToolCategory.getAllItems>>(...params: H) => {
+         return queryHandler({
+            key: ["getDomainToolCategorys", params?.toString()],
+            query: () => services.DomainToolCategory.getAllItems(...params)
+         });
+      },
+      useGetDomainToolCategoryByIdQuery: (id: number) => {
+         return queryHandler({
+            key: ["getDomainToolCategoryById", id.toString()],
+            query: () => services.DomainToolCategory.getItemById(id)
+         });
+      },
+      useSaveDomainToolCategoryMutation: <H extends Parameters<typeof services.DomainToolCategory.saveItem>[0]>(obj: H, onSuccess: (data: H) => any) => {
+         const queryCache = cacheHandler();
+         return mutationHandler({
+            mutation: () => services.DomainToolCategory.saveItem(obj),
+            onSuccess: async (data: H, ...args) => {
+               //This is a standin for ".then(value => ...)" since for SOME reason mutations don't allow you to get the value back directly
+               onSuccess(data);
+               queryInvalidator(queryCache, [
+                  "getDomainToolCategorys",
+                  "getDomainToolCategoryById",
+                  "getUsers",
+                  "getUserById",
+               ]);
+            }
+         });
+      },
+      
       //DomainWeapon
       useGetDomainWeaponsQuery: <H extends Parameters<typeof services.DomainWeapon.getAllItems>>(...params: H) => {
          return queryHandler({
@@ -1221,6 +1313,10 @@ export function composeQueryBuilderContext<
                   "getDomainConditions",
                   "getDomainDamageTypes",
                   "getDomainCurrencyDenominations",
+                  "getDomainWeaponCategorys",
+                  "getDomainSkills",
+                  "getDomainLanguages",
+                  "getDomainModifierMechanics",
                   "getDomainActions",
                   "getDomainQuantifierVariants",
                   "getUserById",
@@ -1242,6 +1338,10 @@ export function composeQueryBuilderContext<
                   "getDomainConditionById",
                   "getDomainDamageTypeById",
                   "getDomainCurrencyDenominationById",
+                  "getDomainWeaponCategoryById",
+                  "getDomainSkillById",
+                  "getDomainLanguageById",
+                  "getDomainModifierMechanicById",
                   "getDomainActionById",
                   "getDomainQuantifierVariantById",
                ]);

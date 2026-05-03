@@ -16,6 +16,12 @@ import { DomainWeapon } from "./DomainWeapon";
 import { EvaluatedConditional } from "./EvaluatedConditional";
 import { QuantifierCostSpecifier } from "./QuantifierCostSpecifier";
 import { DomainCurrencyDenomination } from "./DomainCurrencyDenomination";
+import { DomainWeaponCategory } from "./DomainWeaponCategory";
+import { DomainSkill } from "./DomainSkill";
+import { DomainLanguage } from "./DomainLanguage";
+import { DomainModifierMechanic } from "./DomainModifierMechanic";
+import { CharacterDomainSubClassInstance } from "./CharacterDomainSubClassInstance";
+import { DomainArmor } from "./DomainArmor";
 
 export type Quantifier = ExtendedSchemaObject<{
     Attributes: {
@@ -43,17 +49,20 @@ export type Quantifier = ExtendedSchemaObject<{
         //If only the specific source/target should be counted for the quantifier calculation (e.g. a charmed entity has disabled attack roles against the source)
         AppliesAgainstSourceForTargetsOnly?: boolean,
         AppliesAgainstTargetsForSourceOnly?: boolean,
-        GivesAdvantage?: boolean,
-        GivesDisadvantage?: boolean,
         AutomaticFailure?: boolean,
         AutomaticCritical?: boolean,
         PreventsReceiving?: boolean,
         PreventsApplying?: boolean,
+        Gives?: boolean,
         Removes?: boolean,
         RemovedOn?: boolean,
         GivesResistance?: boolean,
         IntoInventory?: boolean,
         Range?: number,
+        UseTargetInstanceValue?: boolean,
+        TargetValueMaximum?: number,
+        TargetValueMinumum?: number,
+        TimeUntilResolution?: number,
     },
     Relationships: {
         ManyToOne: {
@@ -67,6 +76,8 @@ export type Quantifier = ExtendedSchemaObject<{
             Parent__DomainClass?: DomainClass,
             Parent__DomainWeapon?: DomainWeapon,
             Parent__DomainCurrencyDenomination?: DomainCurrencyDenomination,
+            Parent__CharacterDomainSubClassInstance?: CharacterDomainSubClassInstance,
+            Parent__DomainArmor?: DomainArmor,
 
             //Keys for other effects or targets that a quantifier may have (distinguished from what their source node is)
             Target__DomainStaticEffect?: DomainStaticEffect,
@@ -79,6 +90,10 @@ export type Quantifier = ExtendedSchemaObject<{
             Target__DomainCondition?: DomainCondition,
             Target__DomainDamageType?: DomainDamageType,
             Target__DomainCurrencyDenomination?: DomainCurrencyDenomination,
+            Target__DomainWeaponCategory?: DomainWeaponCategory,
+            Target__DomainSkill?: DomainSkill,
+            Target__DomainLanguage?: DomainLanguage,
+            Target__DomainModifierMechanic?: DomainModifierMechanic,
 
             Trigger__DomainAction?: DomainAction,
 

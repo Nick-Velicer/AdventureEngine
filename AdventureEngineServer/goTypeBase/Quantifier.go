@@ -54,11 +54,8 @@ type QuantifierJson struct {
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
 
-	// GivesAdvantage corresponds to the JSON schema field "GivesAdvantage".
-	GivesAdvantage *bool `json:"GivesAdvantage,omitempty" yaml:"GivesAdvantage,omitempty" mapstructure:"GivesAdvantage,omitempty"`
-
-	// GivesDisadvantage corresponds to the JSON schema field "GivesDisadvantage".
-	GivesDisadvantage *bool `json:"GivesDisadvantage,omitempty" yaml:"GivesDisadvantage,omitempty" mapstructure:"GivesDisadvantage,omitempty"`
+	// Gives corresponds to the JSON schema field "Gives".
+	Gives *bool `json:"Gives,omitempty" yaml:"Gives,omitempty" mapstructure:"Gives,omitempty"`
 
 	// GivesResistance corresponds to the JSON schema field "GivesResistance".
 	GivesResistance *bool `json:"GivesResistance,omitempty" yaml:"GivesResistance,omitempty" mapstructure:"GivesResistance,omitempty"`
@@ -182,12 +179,27 @@ type QuantifierJson struct {
 	// "Target__DomainEntityStat".
 	TargetDomainEntityStat *float64 `json:"Target__DomainEntityStat,omitempty" yaml:"Target__DomainEntityStat,omitempty" mapstructure:"Target__DomainEntityStat,omitempty"`
 
+	// TargetDomainLanguage corresponds to the JSON schema field
+	// "Target__DomainLanguage".
+	TargetDomainLanguage *float64 `json:"Target__DomainLanguage,omitempty" yaml:"Target__DomainLanguage,omitempty" mapstructure:"Target__DomainLanguage,omitempty"`
+
+	// TargetDomainModifierMechanic corresponds to the JSON schema field
+	// "Target__DomainModifierMechanic".
+	TargetDomainModifierMechanic *float64 `json:"Target__DomainModifierMechanic,omitempty" yaml:"Target__DomainModifierMechanic,omitempty" mapstructure:"Target__DomainModifierMechanic,omitempty"`
+
+	// TargetDomainSkill corresponds to the JSON schema field "Target__DomainSkill".
+	TargetDomainSkill *float64 `json:"Target__DomainSkill,omitempty" yaml:"Target__DomainSkill,omitempty" mapstructure:"Target__DomainSkill,omitempty"`
+
 	// TargetDomainSpell corresponds to the JSON schema field "Target__DomainSpell".
 	TargetDomainSpell *float64 `json:"Target__DomainSpell,omitempty" yaml:"Target__DomainSpell,omitempty" mapstructure:"Target__DomainSpell,omitempty"`
 
 	// TargetDomainStaticEffect corresponds to the JSON schema field
 	// "Target__DomainStaticEffect".
 	TargetDomainStaticEffect *float64 `json:"Target__DomainStaticEffect,omitempty" yaml:"Target__DomainStaticEffect,omitempty" mapstructure:"Target__DomainStaticEffect,omitempty"`
+
+	// TargetDomainWeaponCategory corresponds to the JSON schema field
+	// "Target__DomainWeaponCategory".
+	TargetDomainWeaponCategory *float64 `json:"Target__DomainWeaponCategory,omitempty" yaml:"Target__DomainWeaponCategory,omitempty" mapstructure:"Target__DomainWeaponCategory,omitempty"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`

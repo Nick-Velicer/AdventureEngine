@@ -29,8 +29,7 @@ type QuantifierDTOAttributes struct {
    DeltaPercentage *float64
    DeltaQuantity *float64
    Description *string
-   GivesAdvantage *bool
-   GivesDisadvantage *bool
+   Gives *bool
    GivesResistance *bool
    HardSetPercentage *float64
    HardSetQuantity *float64
@@ -74,8 +73,12 @@ type QuantifierDTOManyToOneRelationships struct {
    Target__DomainDiceRollSubType *DomainDiceRollSubTypeDTO
    Target__DomainDiceRollType *DomainDiceRollTypeDTO
    Target__DomainEntityStat *DomainEntityStatDTO
+   Target__DomainLanguage *DomainLanguageDTO
+   Target__DomainModifierMechanic *DomainModifierMechanicDTO
+   Target__DomainSkill *DomainSkillDTO
    Target__DomainSpell *DomainSpellDTO
    Target__DomainStaticEffect *DomainStaticEffectDTO
+   Target__DomainWeaponCategory *DomainWeaponCategoryDTO
    Trigger__DomainAction *DomainActionDTO
    Variant__DomainQuantifierVariant *DomainQuantifierVariantDTO
 }
@@ -138,8 +141,12 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
    var includedTarget__DomainDiceRollSubType *types.DomainDiceRollSubType
    var includedTarget__DomainDiceRollType *types.DomainDiceRollType
    var includedTarget__DomainEntityStat *types.DomainEntityStat
+   var includedTarget__DomainLanguage *types.DomainLanguage
+   var includedTarget__DomainModifierMechanic *types.DomainModifierMechanic
+   var includedTarget__DomainSkill *types.DomainSkill
    var includedTarget__DomainSpell *types.DomainSpell
    var includedTarget__DomainStaticEffect *types.DomainStaticEffect
+   var includedTarget__DomainWeaponCategory *types.DomainWeaponCategory
    var includedTrigger__DomainAction *types.DomainAction
    var includedVariant__DomainQuantifierVariant *types.DomainQuantifierVariant
    var includedConditions__EvaluatedConditionals []types.EvaluatedConditional
@@ -162,8 +169,12 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
    var Target__DomainDiceRollSubTypeDTO *DomainDiceRollSubTypeDTO
    var Target__DomainDiceRollTypeDTO *DomainDiceRollTypeDTO
    var Target__DomainEntityStatDTO *DomainEntityStatDTO
+   var Target__DomainLanguageDTO *DomainLanguageDTO
+   var Target__DomainModifierMechanicDTO *DomainModifierMechanicDTO
+   var Target__DomainSkillDTO *DomainSkillDTO
    var Target__DomainSpellDTO *DomainSpellDTO
    var Target__DomainStaticEffectDTO *DomainStaticEffectDTO
+   var Target__DomainWeaponCategoryDTO *DomainWeaponCategoryDTO
    var Trigger__DomainActionDTO *DomainActionDTO
    var Variant__DomainQuantifierVariantDTO *DomainQuantifierVariantDTO
    var Conditions__EvaluatedConditionalDTOs []*EvaluatedConditionalDTO
@@ -358,6 +369,39 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
       }
    }
 
+   if (quantifier.Target__DomainLanguage != nil) {
+      includedTarget__DomainLanguage, err = services.GetDomainLanguageById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainLanguage](quantifier.Target__DomainLanguage))
+      if err != nil {
+         return nil, err
+      }
+      Target__DomainLanguageDTO, err = DomainLanguageToDomainLanguageDTO(&childDTOContext, includedTarget__DomainLanguage)
+      if err != nil {
+         return nil, err
+      }
+   }
+
+   if (quantifier.Target__DomainModifierMechanic != nil) {
+      includedTarget__DomainModifierMechanic, err = services.GetDomainModifierMechanicById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainModifierMechanic](quantifier.Target__DomainModifierMechanic))
+      if err != nil {
+         return nil, err
+      }
+      Target__DomainModifierMechanicDTO, err = DomainModifierMechanicToDomainModifierMechanicDTO(&childDTOContext, includedTarget__DomainModifierMechanic)
+      if err != nil {
+         return nil, err
+      }
+   }
+
+   if (quantifier.Target__DomainSkill != nil) {
+      includedTarget__DomainSkill, err = services.GetDomainSkillById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainSkill](quantifier.Target__DomainSkill))
+      if err != nil {
+         return nil, err
+      }
+      Target__DomainSkillDTO, err = DomainSkillToDomainSkillDTO(&childDTOContext, includedTarget__DomainSkill)
+      if err != nil {
+         return nil, err
+      }
+   }
+
    if (quantifier.Target__DomainSpell != nil) {
       includedTarget__DomainSpell, err = services.GetDomainSpellById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainSpell](quantifier.Target__DomainSpell))
       if err != nil {
@@ -375,6 +419,17 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
          return nil, err
       }
       Target__DomainStaticEffectDTO, err = DomainStaticEffectToDomainStaticEffectDTO(&childDTOContext, includedTarget__DomainStaticEffect)
+      if err != nil {
+         return nil, err
+      }
+   }
+
+   if (quantifier.Target__DomainWeaponCategory != nil) {
+      includedTarget__DomainWeaponCategory, err = services.GetDomainWeaponCategoryById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainWeaponCategory](quantifier.Target__DomainWeaponCategory))
+      if err != nil {
+         return nil, err
+      }
+      Target__DomainWeaponCategoryDTO, err = DomainWeaponCategoryToDomainWeaponCategoryDTO(&childDTOContext, includedTarget__DomainWeaponCategory)
       if err != nil {
          return nil, err
       }
@@ -447,8 +502,7 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
          DeltaPercentage: quantifier.DeltaPercentage,
          DeltaQuantity: quantifier.DeltaQuantity,
          Description: quantifier.Description,
-         GivesAdvantage: quantifier.GivesAdvantage,
-         GivesDisadvantage: quantifier.GivesDisadvantage,
+         Gives: quantifier.Gives,
          GivesResistance: quantifier.GivesResistance,
          HardSetPercentage: quantifier.HardSetPercentage,
          HardSetQuantity: quantifier.HardSetQuantity,
@@ -492,8 +546,12 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
             Target__DomainDiceRollSubType: Target__DomainDiceRollSubTypeDTO,
             Target__DomainDiceRollType: Target__DomainDiceRollTypeDTO,
             Target__DomainEntityStat: Target__DomainEntityStatDTO,
+            Target__DomainLanguage: Target__DomainLanguageDTO,
+            Target__DomainModifierMechanic: Target__DomainModifierMechanicDTO,
+            Target__DomainSkill: Target__DomainSkillDTO,
             Target__DomainSpell: Target__DomainSpellDTO,
             Target__DomainStaticEffect: Target__DomainStaticEffectDTO,
+            Target__DomainWeaponCategory: Target__DomainWeaponCategoryDTO,
             Trigger__DomainAction: Trigger__DomainActionDTO,
             Variant__DomainQuantifierVariant: Variant__DomainQuantifierVariantDTO,
          },
@@ -522,8 +580,7 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    tableTypeBuffer.DeltaPercentage = quantifier.Attributes.DeltaPercentage
    tableTypeBuffer.DeltaQuantity = quantifier.Attributes.DeltaQuantity
    tableTypeBuffer.Description = quantifier.Attributes.Description
-   tableTypeBuffer.GivesAdvantage = quantifier.Attributes.GivesAdvantage
-   tableTypeBuffer.GivesDisadvantage = quantifier.Attributes.GivesDisadvantage
+   tableTypeBuffer.Gives = quantifier.Attributes.Gives
    tableTypeBuffer.GivesResistance = quantifier.Attributes.GivesResistance
    tableTypeBuffer.HardSetPercentage = quantifier.Attributes.HardSetPercentage
    tableTypeBuffer.HardSetQuantity = quantifier.Attributes.HardSetQuantity
@@ -616,12 +673,28 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
       tableTypeBuffer.Target__DomainEntityStat = quantifier.Relationships.ManyToOne.Target__DomainEntityStat.Id
    }
 
+   if (quantifier.Relationships.ManyToOne.Target__DomainLanguage != nil) {
+      tableTypeBuffer.Target__DomainLanguage = quantifier.Relationships.ManyToOne.Target__DomainLanguage.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainModifierMechanic != nil) {
+      tableTypeBuffer.Target__DomainModifierMechanic = quantifier.Relationships.ManyToOne.Target__DomainModifierMechanic.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainSkill != nil) {
+      tableTypeBuffer.Target__DomainSkill = quantifier.Relationships.ManyToOne.Target__DomainSkill.Id
+   }
+
    if (quantifier.Relationships.ManyToOne.Target__DomainSpell != nil) {
       tableTypeBuffer.Target__DomainSpell = quantifier.Relationships.ManyToOne.Target__DomainSpell.Id
    }
 
    if (quantifier.Relationships.ManyToOne.Target__DomainStaticEffect != nil) {
       tableTypeBuffer.Target__DomainStaticEffect = quantifier.Relationships.ManyToOne.Target__DomainStaticEffect.Id
+   }
+
+   if (quantifier.Relationships.ManyToOne.Target__DomainWeaponCategory != nil) {
+      tableTypeBuffer.Target__DomainWeaponCategory = quantifier.Relationships.ManyToOne.Target__DomainWeaponCategory.Id
    }
 
    if (quantifier.Relationships.ManyToOne.Trigger__DomainAction != nil) {

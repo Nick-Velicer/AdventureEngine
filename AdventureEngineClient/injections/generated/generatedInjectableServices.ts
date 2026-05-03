@@ -26,6 +26,7 @@ import * as DomainDiceRollTypeService from "../../services/generated/DomainDiceR
 import * as DomainEntityStatService from "../../services/generated/DomainEntityStatService";
 import * as DomainItemService from "../../services/generated/DomainItemService";
 import * as DomainLanguageService from "../../services/generated/DomainLanguageService";
+import * as DomainModifierMechanicService from "../../services/generated/DomainModifierMechanicService";
 import * as DomainQuantifierVariantService from "../../services/generated/DomainQuantifierVariantService";
 import * as DomainSizeService from "../../services/generated/DomainSizeService";
 import * as DomainSkillService from "../../services/generated/DomainSkillService";
@@ -34,6 +35,8 @@ import * as DomainSpellService from "../../services/generated/DomainSpellService
 import * as DomainSpellSchoolService from "../../services/generated/DomainSpellSchoolService";
 import * as DomainStaticEffectService from "../../services/generated/DomainStaticEffectService";
 import * as DomainSubClassService from "../../services/generated/DomainSubClassService";
+import * as DomainToolService from "../../services/generated/DomainToolService";
+import * as DomainToolCategoryService from "../../services/generated/DomainToolCategoryService";
 import * as DomainWeaponService from "../../services/generated/DomainWeaponService";
 import * as DomainWeaponCategoryService from "../../services/generated/DomainWeaponCategoryService";
 import * as DomainWeaponDomainWeaponCategoryInstanceService from "../../services/generated/DomainWeaponDomainWeaponCategoryInstanceService";
@@ -164,6 +167,11 @@ export const generatedInjectableServices = {
       getItemById: DomainLanguageService.getDomainLanguagebyId,
       saveItem: DomainLanguageService.saveDomainLanguage
    },
+   DomainModifierMechanic: {
+      getAllItems: DomainModifierMechanicService.getDomainModifierMechanics,
+      getItemById: DomainModifierMechanicService.getDomainModifierMechanicbyId,
+      saveItem: DomainModifierMechanicService.saveDomainModifierMechanic
+   },
    DomainQuantifierVariant: {
       getAllItems: DomainQuantifierVariantService.getDomainQuantifierVariants,
       getItemById: DomainQuantifierVariantService.getDomainQuantifierVariantbyId,
@@ -203,6 +211,16 @@ export const generatedInjectableServices = {
       getAllItems: DomainSubClassService.getDomainSubClasss,
       getItemById: DomainSubClassService.getDomainSubClassbyId,
       saveItem: DomainSubClassService.saveDomainSubClass
+   },
+   DomainTool: {
+      getAllItems: DomainToolService.getDomainTools,
+      getItemById: DomainToolService.getDomainToolbyId,
+      saveItem: DomainToolService.saveDomainTool
+   },
+   DomainToolCategory: {
+      getAllItems: DomainToolCategoryService.getDomainToolCategorys,
+      getItemById: DomainToolCategoryService.getDomainToolCategorybyId,
+      saveItem: DomainToolCategoryService.saveDomainToolCategory
    },
    DomainWeapon: {
       getAllItems: DomainWeaponService.getDomainWeapons,

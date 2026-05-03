@@ -1,7 +1,7 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
   
-//Ranged, melee, simple, martial, finesse, etc.
-export type DomainWeaponCategory = ExtendedSchemaObject<{
+//musical instrument, artisan's tools, etc.
+export type DomainToolCategory = ExtendedSchemaObject<{
     Attributes: {},
     Relationships: {
         ManyToOne: {},

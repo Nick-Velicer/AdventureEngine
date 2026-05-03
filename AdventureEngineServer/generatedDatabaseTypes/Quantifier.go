@@ -52,11 +52,8 @@ type Quantifier struct {
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
 
-	// GivesAdvantage corresponds to the JSON schema field "GivesAdvantage".
-	GivesAdvantage *bool `json:"GivesAdvantage" gorm:"column:GivesAdvantage" mapstructure:"GivesAdvantage"`
-
-	// GivesDisadvantage corresponds to the JSON schema field "GivesDisadvantage".
-	GivesDisadvantage *bool `json:"GivesDisadvantage" gorm:"column:GivesDisadvantage" mapstructure:"GivesDisadvantage"`
+	// Gives corresponds to the JSON schema field "Gives".
+	Gives *bool `json:"Gives" gorm:"column:Gives" mapstructure:"Gives"`
 
 	// GivesResistance corresponds to the JSON schema field "GivesResistance".
 	GivesResistance *bool `json:"GivesResistance" gorm:"column:GivesResistance" mapstructure:"GivesResistance"`
@@ -180,12 +177,27 @@ type Quantifier struct {
 	// "Target__DomainEntityStat".
 	Target__DomainEntityStat *int `json:"Target__DomainEntityStat" gorm:"column:Target__DomainEntityStat" mapstructure:"Target__DomainEntityStat"`
 
+	// TargetDomainLanguage corresponds to the JSON schema field
+	// "Target__DomainLanguage".
+	Target__DomainLanguage *int `json:"Target__DomainLanguage" gorm:"column:Target__DomainLanguage" mapstructure:"Target__DomainLanguage"`
+
+	// TargetDomainModifierMechanic corresponds to the JSON schema field
+	// "Target__DomainModifierMechanic".
+	Target__DomainModifierMechanic *int `json:"Target__DomainModifierMechanic" gorm:"column:Target__DomainModifierMechanic" mapstructure:"Target__DomainModifierMechanic"`
+
+	// TargetDomainSkill corresponds to the JSON schema field "Target__DomainSkill".
+	Target__DomainSkill *int `json:"Target__DomainSkill" gorm:"column:Target__DomainSkill" mapstructure:"Target__DomainSkill"`
+
 	// TargetDomainSpell corresponds to the JSON schema field "Target__DomainSpell".
 	Target__DomainSpell *int `json:"Target__DomainSpell" gorm:"column:Target__DomainSpell" mapstructure:"Target__DomainSpell"`
 
 	// TargetDomainStaticEffect corresponds to the JSON schema field
 	// "Target__DomainStaticEffect".
 	Target__DomainStaticEffect *int `json:"Target__DomainStaticEffect" gorm:"column:Target__DomainStaticEffect" mapstructure:"Target__DomainStaticEffect"`
+
+	// TargetDomainWeaponCategory corresponds to the JSON schema field
+	// "Target__DomainWeaponCategory".
+	Target__DomainWeaponCategory *int `json:"Target__DomainWeaponCategory" gorm:"column:Target__DomainWeaponCategory" mapstructure:"Target__DomainWeaponCategory"`
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
