@@ -2,9 +2,13 @@
 
 package goTypeBase
 
-type DomainItemJson struct {
+type DomainArmorJson struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
+	// CategoryDomainArmorCategory corresponds to the JSON schema field
+	// "Category__DomainArmorCategory".
+	CategoryDomainArmorCategory *float64 `json:"Category__DomainArmorCategory,omitempty" yaml:"Category__DomainArmorCategory,omitempty" mapstructure:"Category__DomainArmorCategory,omitempty"`
 
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
@@ -17,10 +21,6 @@ type DomainItemJson struct {
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
-
-	// ItemGroupDomainItemGroup corresponds to the JSON schema field
-	// "ItemGroup__DomainItemGroup".
-	ItemGroupDomainItemGroup *float64 `json:"ItemGroup__DomainItemGroup,omitempty" yaml:"ItemGroup__DomainItemGroup,omitempty" mapstructure:"ItemGroup__DomainItemGroup,omitempty"`
 
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`

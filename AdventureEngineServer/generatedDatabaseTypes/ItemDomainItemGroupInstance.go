@@ -2,7 +2,7 @@
 
 package generatedDatabaseTypes
 
-type DomainItem struct {
+type ItemDomainItemGroupInstance struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
 
@@ -21,6 +21,18 @@ type DomainItem struct {
 	// ItemGroupDomainItemGroup corresponds to the JSON schema field
 	// "ItemGroup__DomainItemGroup".
 	ItemGroup__DomainItemGroup *int `json:"ItemGroup__DomainItemGroup" gorm:"column:ItemGroup__DomainItemGroup" mapstructure:"ItemGroup__DomainItemGroup"`
+
+	// ItemDomainItem corresponds to the JSON schema field "Item__DomainItem".
+	Item__DomainItem *int `json:"Item__DomainItem" gorm:"column:Item__DomainItem" mapstructure:"Item__DomainItem"`
+
+	// ItemDomainTool corresponds to the JSON schema field "Item__DomainTool".
+	Item__DomainTool *int `json:"Item__DomainTool" gorm:"column:Item__DomainTool" mapstructure:"Item__DomainTool"`
+
+	// ItemDomainWeapon corresponds to the JSON schema field "Item__DomainWeapon".
+	Item__DomainWeapon *int `json:"Item__DomainWeapon" gorm:"column:Item__DomainWeapon" mapstructure:"Item__DomainWeapon"`
+
+	// Quantity corresponds to the JSON schema field "Quantity".
+	Quantity float64 `json:"Quantity" gorm:"column:Quantity" mapstructure:"Quantity"`
 
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`

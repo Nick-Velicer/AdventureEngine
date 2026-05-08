@@ -2,7 +2,7 @@
 
 package goTypeBase
 
-type DomainItemJson struct {
+type DomainArmorCategoryJson struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
 
@@ -17,10 +17,6 @@ type DomainItemJson struct {
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
-
-	// ItemGroupDomainItemGroup corresponds to the JSON schema field
-	// "ItemGroup__DomainItemGroup".
-	ItemGroupDomainItemGroup *float64 `json:"ItemGroup__DomainItemGroup,omitempty" yaml:"ItemGroup__DomainItemGroup,omitempty" mapstructure:"ItemGroup__DomainItemGroup,omitempty"`
 
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`

@@ -2,9 +2,12 @@
 
 package goTypeBase
 
-type DomainItemJson struct {
+type DomainClassLevelAdditionJson struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
+
+	// ClassDomainClass corresponds to the JSON schema field "Class__DomainClass".
+	ClassDomainClass *float64 `json:"Class__DomainClass,omitempty" yaml:"Class__DomainClass,omitempty" mapstructure:"Class__DomainClass,omitempty"`
 
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
@@ -18,15 +21,22 @@ type DomainItemJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
-	// ItemGroupDomainItemGroup corresponds to the JSON schema field
-	// "ItemGroup__DomainItemGroup".
-	ItemGroupDomainItemGroup *float64 `json:"ItemGroup__DomainItemGroup,omitempty" yaml:"ItemGroup__DomainItemGroup,omitempty" mapstructure:"ItemGroup__DomainItemGroup,omitempty"`
+	// Level corresponds to the JSON schema field "Level".
+	Level float64 `json:"Level" yaml:"Level" mapstructure:"Level"`
 
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
 
+	// SubclassDomainSubClass corresponds to the JSON schema field
+	// "Subclass__DomainSubClass".
+	SubclassDomainSubClass *float64 `json:"Subclass__DomainSubClass,omitempty" yaml:"Subclass__DomainSubClass,omitempty" mapstructure:"Subclass__DomainSubClass,omitempty"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// UnavailableForMultiClass corresponds to the JSON schema field
+	// "UnavailableForMultiClass".
+	UnavailableForMultiClass bool `json:"UnavailableForMultiClass" yaml:"UnavailableForMultiClass" mapstructure:"UnavailableForMultiClass"`
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`

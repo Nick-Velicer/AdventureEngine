@@ -22,6 +22,9 @@ import { DomainLanguage } from "./DomainLanguage";
 import { DomainModifierMechanic } from "./DomainModifierMechanic";
 import { CharacterDomainSubClassInstance } from "./CharacterDomainSubClassInstance";
 import { DomainArmor } from "./DomainArmor";
+import { DomainClassLevelAddition } from "./DomainClassLevelAddition";
+import { DomainItem } from "./DomainItem";
+import { DomainItemGroup } from "./DomainItemGroup";
 
 export type Quantifier = ExtendedSchemaObject<{
     Attributes: {
@@ -63,6 +66,8 @@ export type Quantifier = ExtendedSchemaObject<{
         TargetValueMaximum?: number,
         TargetValueMinumum?: number,
         TimeUntilResolution?: number,
+        //If populated, use child quantifiers that reference this one and use a maximum selection amount specified here
+        ModalChoiceMaximum?: number, 
     },
     Relationships: {
         ManyToOne: {
@@ -78,6 +83,11 @@ export type Quantifier = ExtendedSchemaObject<{
             Parent__DomainCurrencyDenomination?: DomainCurrencyDenomination,
             Parent__CharacterDomainSubClassInstance?: CharacterDomainSubClassInstance,
             Parent__DomainArmor?: DomainArmor,
+            Parent__DomainClassLevelAddition?: DomainClassLevelAddition,
+            Parent__DomainItem?: DomainItem,
+            Parent__DomainItemGroup?: DomainItemGroup,
+            //Mostly used for modal references
+            Parent__Quantifier?: Quantifier,
 
             //Keys for other effects or targets that a quantifier may have (distinguished from what their source node is)
             Target__DomainStaticEffect?: DomainStaticEffect,

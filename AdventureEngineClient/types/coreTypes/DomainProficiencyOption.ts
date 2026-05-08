@@ -8,7 +8,7 @@ import { DomainWeaponCategory } from "./DomainWeaponCategory";
 
 //A pseudo-mapping table for selectable proficiency options for classes,
 //subclasses, feats, etc.
-export type DomainClassSkillProficiencyOptions = ExtendedSchemaObject<{
+export type DomainProficiencyOption = ExtendedSchemaObject<{
     Attributes: {},
     Relationships: {
         ManyToOne: {

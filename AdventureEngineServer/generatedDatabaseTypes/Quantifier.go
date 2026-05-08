@@ -81,11 +81,25 @@ type Quantifier struct {
 	// "LevelMinimumRequirement".
 	LevelMinimumRequirement *float64 `json:"LevelMinimumRequirement" gorm:"column:LevelMinimumRequirement" mapstructure:"LevelMinimumRequirement"`
 
+	// ModalChoiceMaximum corresponds to the JSON schema field "ModalChoiceMaximum".
+	ModalChoiceMaximum *float64 `json:"ModalChoiceMaximum" gorm:"column:ModalChoiceMaximum" mapstructure:"ModalChoiceMaximum"`
+
+	// ParentCharacterDomainSubClassInstance corresponds to the JSON schema field
+	// "Parent__CharacterDomainSubClassInstance".
+	Parent__CharacterDomainSubClassInstance *int `json:"Parent__CharacterDomainSubClassInstance" gorm:"column:Parent__CharacterDomainSubClassInstance" mapstructure:"Parent__CharacterDomainSubClassInstance"`
+
 	// ParentDomainAction corresponds to the JSON schema field "Parent__DomainAction".
 	Parent__DomainAction *int `json:"Parent__DomainAction" gorm:"column:Parent__DomainAction" mapstructure:"Parent__DomainAction"`
 
+	// ParentDomainArmor corresponds to the JSON schema field "Parent__DomainArmor".
+	Parent__DomainArmor *int `json:"Parent__DomainArmor" gorm:"column:Parent__DomainArmor" mapstructure:"Parent__DomainArmor"`
+
 	// ParentDomainClass corresponds to the JSON schema field "Parent__DomainClass".
 	Parent__DomainClass *int `json:"Parent__DomainClass" gorm:"column:Parent__DomainClass" mapstructure:"Parent__DomainClass"`
+
+	// ParentDomainClassLevelAddition corresponds to the JSON schema field
+	// "Parent__DomainClassLevelAddition".
+	Parent__DomainClassLevelAddition *int `json:"Parent__DomainClassLevelAddition" gorm:"column:Parent__DomainClassLevelAddition" mapstructure:"Parent__DomainClassLevelAddition"`
 
 	// ParentDomainClassTrait corresponds to the JSON schema field
 	// "Parent__DomainClassTrait".
@@ -99,6 +113,13 @@ type Quantifier struct {
 	// "Parent__DomainCurrencyDenomination".
 	Parent__DomainCurrencyDenomination *int `json:"Parent__DomainCurrencyDenomination" gorm:"column:Parent__DomainCurrencyDenomination" mapstructure:"Parent__DomainCurrencyDenomination"`
 
+	// ParentDomainItem corresponds to the JSON schema field "Parent__DomainItem".
+	Parent__DomainItem *int `json:"Parent__DomainItem" gorm:"column:Parent__DomainItem" mapstructure:"Parent__DomainItem"`
+
+	// ParentDomainItemGroup corresponds to the JSON schema field
+	// "Parent__DomainItemGroup".
+	Parent__DomainItemGroup *int `json:"Parent__DomainItemGroup" gorm:"column:Parent__DomainItemGroup" mapstructure:"Parent__DomainItemGroup"`
+
 	// ParentDomainStaticEffect corresponds to the JSON schema field
 	// "Parent__DomainStaticEffect".
 	Parent__DomainStaticEffect *int `json:"Parent__DomainStaticEffect" gorm:"column:Parent__DomainStaticEffect" mapstructure:"Parent__DomainStaticEffect"`
@@ -109,6 +130,9 @@ type Quantifier struct {
 
 	// ParentDomainWeapon corresponds to the JSON schema field "Parent__DomainWeapon".
 	Parent__DomainWeapon *int `json:"Parent__DomainWeapon" gorm:"column:Parent__DomainWeapon" mapstructure:"Parent__DomainWeapon"`
+
+	// ParentQuantifier corresponds to the JSON schema field "Parent__Quantifier".
+	Parent__Quantifier *int `json:"Parent__Quantifier" gorm:"column:Parent__Quantifier" mapstructure:"Parent__Quantifier"`
 
 	// PreventsApplying corresponds to the JSON schema field "PreventsApplying".
 	PreventsApplying *bool `json:"PreventsApplying" gorm:"column:PreventsApplying" mapstructure:"PreventsApplying"`
@@ -146,6 +170,12 @@ type Quantifier struct {
 
 	// TargetMinimum corresponds to the JSON schema field "TargetMinimum".
 	TargetMinimum *float64 `json:"TargetMinimum" gorm:"column:TargetMinimum" mapstructure:"TargetMinimum"`
+
+	// TargetValueMaximum corresponds to the JSON schema field "TargetValueMaximum".
+	TargetValueMaximum *float64 `json:"TargetValueMaximum" gorm:"column:TargetValueMaximum" mapstructure:"TargetValueMaximum"`
+
+	// TargetValueMinumum corresponds to the JSON schema field "TargetValueMinumum".
+	TargetValueMinumum *float64 `json:"TargetValueMinumum" gorm:"column:TargetValueMinumum" mapstructure:"TargetValueMinumum"`
 
 	// TargetDomainAction corresponds to the JSON schema field "Target__DomainAction".
 	Target__DomainAction *int `json:"Target__DomainAction" gorm:"column:Target__DomainAction" mapstructure:"Target__DomainAction"`
@@ -199,6 +229,9 @@ type Quantifier struct {
 	// "Target__DomainWeaponCategory".
 	Target__DomainWeaponCategory *int `json:"Target__DomainWeaponCategory" gorm:"column:Target__DomainWeaponCategory" mapstructure:"Target__DomainWeaponCategory"`
 
+	// TimeUntilResolution corresponds to the JSON schema field "TimeUntilResolution".
+	TimeUntilResolution *float64 `json:"TimeUntilResolution" gorm:"column:TimeUntilResolution" mapstructure:"TimeUntilResolution"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 
@@ -214,6 +247,10 @@ type Quantifier struct {
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
+
+	// UseTargetInstanceValue corresponds to the JSON schema field
+	// "UseTargetInstanceValue".
+	UseTargetInstanceValue *bool `json:"UseTargetInstanceValue" gorm:"column:UseTargetInstanceValue" mapstructure:"UseTargetInstanceValue"`
 
 	// VariantDomainQuantifierVariant corresponds to the JSON schema field
 	// "Variant__DomainQuantifierVariant".

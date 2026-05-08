@@ -1,5 +1,5 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
-import { DomainToolCategory } from "./DomainToolCategory";
+import { DomainArmorCategory } from "./DomainArmorCategory";
 import { DomainWeaponDomainWeaponCategoryInstance } from "./DomainWeaponDomainWeaponCategoryInstance";
   
 //Bagpipes, glassblowers tools, disguise kit, etc.

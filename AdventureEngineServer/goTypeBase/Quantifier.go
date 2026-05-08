@@ -83,11 +83,25 @@ type QuantifierJson struct {
 	// "LevelMinimumRequirement".
 	LevelMinimumRequirement *float64 `json:"LevelMinimumRequirement,omitempty" yaml:"LevelMinimumRequirement,omitempty" mapstructure:"LevelMinimumRequirement,omitempty"`
 
+	// ModalChoiceMaximum corresponds to the JSON schema field "ModalChoiceMaximum".
+	ModalChoiceMaximum *float64 `json:"ModalChoiceMaximum,omitempty" yaml:"ModalChoiceMaximum,omitempty" mapstructure:"ModalChoiceMaximum,omitempty"`
+
+	// ParentCharacterDomainSubClassInstance corresponds to the JSON schema field
+	// "Parent__CharacterDomainSubClassInstance".
+	ParentCharacterDomainSubClassInstance *float64 `json:"Parent__CharacterDomainSubClassInstance,omitempty" yaml:"Parent__CharacterDomainSubClassInstance,omitempty" mapstructure:"Parent__CharacterDomainSubClassInstance,omitempty"`
+
 	// ParentDomainAction corresponds to the JSON schema field "Parent__DomainAction".
 	ParentDomainAction *float64 `json:"Parent__DomainAction,omitempty" yaml:"Parent__DomainAction,omitempty" mapstructure:"Parent__DomainAction,omitempty"`
 
+	// ParentDomainArmor corresponds to the JSON schema field "Parent__DomainArmor".
+	ParentDomainArmor *float64 `json:"Parent__DomainArmor,omitempty" yaml:"Parent__DomainArmor,omitempty" mapstructure:"Parent__DomainArmor,omitempty"`
+
 	// ParentDomainClass corresponds to the JSON schema field "Parent__DomainClass".
 	ParentDomainClass *float64 `json:"Parent__DomainClass,omitempty" yaml:"Parent__DomainClass,omitempty" mapstructure:"Parent__DomainClass,omitempty"`
+
+	// ParentDomainClassLevelAddition corresponds to the JSON schema field
+	// "Parent__DomainClassLevelAddition".
+	ParentDomainClassLevelAddition *float64 `json:"Parent__DomainClassLevelAddition,omitempty" yaml:"Parent__DomainClassLevelAddition,omitempty" mapstructure:"Parent__DomainClassLevelAddition,omitempty"`
 
 	// ParentDomainClassTrait corresponds to the JSON schema field
 	// "Parent__DomainClassTrait".
@@ -101,6 +115,13 @@ type QuantifierJson struct {
 	// "Parent__DomainCurrencyDenomination".
 	ParentDomainCurrencyDenomination *float64 `json:"Parent__DomainCurrencyDenomination,omitempty" yaml:"Parent__DomainCurrencyDenomination,omitempty" mapstructure:"Parent__DomainCurrencyDenomination,omitempty"`
 
+	// ParentDomainItem corresponds to the JSON schema field "Parent__DomainItem".
+	ParentDomainItem *float64 `json:"Parent__DomainItem,omitempty" yaml:"Parent__DomainItem,omitempty" mapstructure:"Parent__DomainItem,omitempty"`
+
+	// ParentDomainItemGroup corresponds to the JSON schema field
+	// "Parent__DomainItemGroup".
+	ParentDomainItemGroup *float64 `json:"Parent__DomainItemGroup,omitempty" yaml:"Parent__DomainItemGroup,omitempty" mapstructure:"Parent__DomainItemGroup,omitempty"`
+
 	// ParentDomainStaticEffect corresponds to the JSON schema field
 	// "Parent__DomainStaticEffect".
 	ParentDomainStaticEffect *float64 `json:"Parent__DomainStaticEffect,omitempty" yaml:"Parent__DomainStaticEffect,omitempty" mapstructure:"Parent__DomainStaticEffect,omitempty"`
@@ -111,6 +132,9 @@ type QuantifierJson struct {
 
 	// ParentDomainWeapon corresponds to the JSON schema field "Parent__DomainWeapon".
 	ParentDomainWeapon *float64 `json:"Parent__DomainWeapon,omitempty" yaml:"Parent__DomainWeapon,omitempty" mapstructure:"Parent__DomainWeapon,omitempty"`
+
+	// ParentQuantifier corresponds to the JSON schema field "Parent__Quantifier".
+	ParentQuantifier *float64 `json:"Parent__Quantifier,omitempty" yaml:"Parent__Quantifier,omitempty" mapstructure:"Parent__Quantifier,omitempty"`
 
 	// PreventsApplying corresponds to the JSON schema field "PreventsApplying".
 	PreventsApplying *bool `json:"PreventsApplying,omitempty" yaml:"PreventsApplying,omitempty" mapstructure:"PreventsApplying,omitempty"`
@@ -148,6 +172,12 @@ type QuantifierJson struct {
 
 	// TargetMinimum corresponds to the JSON schema field "TargetMinimum".
 	TargetMinimum *float64 `json:"TargetMinimum,omitempty" yaml:"TargetMinimum,omitempty" mapstructure:"TargetMinimum,omitempty"`
+
+	// TargetValueMaximum corresponds to the JSON schema field "TargetValueMaximum".
+	TargetValueMaximum *float64 `json:"TargetValueMaximum,omitempty" yaml:"TargetValueMaximum,omitempty" mapstructure:"TargetValueMaximum,omitempty"`
+
+	// TargetValueMinumum corresponds to the JSON schema field "TargetValueMinumum".
+	TargetValueMinumum *float64 `json:"TargetValueMinumum,omitempty" yaml:"TargetValueMinumum,omitempty" mapstructure:"TargetValueMinumum,omitempty"`
 
 	// TargetDomainAction corresponds to the JSON schema field "Target__DomainAction".
 	TargetDomainAction *float64 `json:"Target__DomainAction,omitempty" yaml:"Target__DomainAction,omitempty" mapstructure:"Target__DomainAction,omitempty"`
@@ -201,6 +231,9 @@ type QuantifierJson struct {
 	// "Target__DomainWeaponCategory".
 	TargetDomainWeaponCategory *float64 `json:"Target__DomainWeaponCategory,omitempty" yaml:"Target__DomainWeaponCategory,omitempty" mapstructure:"Target__DomainWeaponCategory,omitempty"`
 
+	// TimeUntilResolution corresponds to the JSON schema field "TimeUntilResolution".
+	TimeUntilResolution *float64 `json:"TimeUntilResolution,omitempty" yaml:"TimeUntilResolution,omitempty" mapstructure:"TimeUntilResolution,omitempty"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
 
@@ -216,6 +249,10 @@ type QuantifierJson struct {
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
+
+	// UseTargetInstanceValue corresponds to the JSON schema field
+	// "UseTargetInstanceValue".
+	UseTargetInstanceValue *bool `json:"UseTargetInstanceValue,omitempty" yaml:"UseTargetInstanceValue,omitempty" mapstructure:"UseTargetInstanceValue,omitempty"`
 
 	// VariantDomainQuantifierVariant corresponds to the JSON schema field
 	// "Variant__DomainQuantifierVariant".

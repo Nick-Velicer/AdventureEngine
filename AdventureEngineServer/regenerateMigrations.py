@@ -49,6 +49,8 @@ toolCategories = [],
 tools = []
 armorCategories = []
 armor = []
+itemGroups = []
+items = []
 
 #This will be applied to the beginning of migrations to preserve the dependent order for foreign keys
 migrationOrderNumber = 1
@@ -107,6 +109,9 @@ def main():
         regenerateToolsAndRelatedTables,
         regenerateArmorCategories,
         regenerateArmorAndRelatedTables,
+        regenerateItemGroupsMigration,
+        regenerateItemsMigration,
+        regenerateItemGroupMappingsMigration,
         regenerateDomainClassMigration,
         regenerateDamageTypesMigration,
         regenerateDomainSubClassMigration,
@@ -567,6 +572,7 @@ def regenerateQuantifierVariants():
         "Static Effect",
         "Action",
         "Entity Property",
+        "Modal Choice",
     ]
 
     quantifierVariants = [
@@ -1518,6 +1524,379 @@ def regenerateArmorAndRelatedTables():
         #for this (equip time, strength minimums), sourced from https://dnd5e.wikidot.com/armor
 
 
+def regenerateItemGroupsMigration():
+    global items
+    global currencyDenominations
+    global quantifiers
+
+    groupMeta = {
+        "Burglar's Pack": {
+            "Description": "A faded canvas sack holding tools of silent intrusion and forced entry.",
+            "Cost": "16 gp"
+        },
+        "Diplomat's Pack": {
+            "Description": "An unassuming chest, containing formal dress and drafting tools fit for an ambassador's journey.",
+            "Cost": "16 gp"
+        },
+        "Dungeoneer's Pack": {
+            "Description": "A sturdy pack of essentials for those willing to venture into darker depths.",
+            "Cost": "12 gp"
+        },
+        "Entertainer's Pack": {
+            "Description": "Lightweight trappings, used to make merry and conjure laughter while off the beaten path.",
+            "Cost": "40 gp"
+        },
+        "Explorer's Pack": {
+            "Description": "A basic collection of venturing tools, offering a semblance of comfort against the harsh wilderness.",
+            "Cost": "10 gp"
+        },
+        "Priest's Pack": {
+            "Description": "A humble pack to supply a clerical journey, bolstered by the faith's intangibles.",
+            "Cost": "19 gp"
+        },
+        "Scholar's Pack": {
+            "Description": "Tools equally weighted for survival and reference, to ensure that knowledge gained makes the returned trip.",
+            "Cost": "40 gp"
+        }
+    }
+
+    itemGroups = [
+        {
+            "Title": groupTitle,
+            "Description": groupMeta[groupTitle]["Description"]
+        } 
+        for groupTitle in groupMeta
+    ]
+
+    itemGroups = produceMigrationFileFromObjects("DomainItemGroup", itemGroups)
+
+    for groupTitle in groupMeta:
+        currentMeta = groupMeta[groupTitle]
+        
+        if "Cost" in currentMeta:
+            costAmount, costType = currentMeta["Cost"].split(" ")
+
+            abbreviatedTitleMapping = {
+                "cp": "Copper Piece",
+                "gp": "Gold Piece",
+                "sp": "Silver Piece"
+            }
+
+            quantifiers.extend([
+                {
+                    "Parent__DomainItemGroup": getForeignKeyIdForTitle(itemGroups, groupTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Cost"),
+                    "DeltaQuantity": costAmount,
+                    "Target__DomainCurrencyDenomination": getForeignKeyIdForTitle(currencyDenominations, abbreviatedTitleMapping[costType]),
+                }
+            ])
+
+
+def regenerateItemsMigration():
+    global items
+    global currencyDenominations
+
+    #Containers such as backpacks and chests are being ignored for now until inventory management gets
+    #more fleshed out, since being able to put items in other items is an entire pain in the ass quantifier-speaking.
+    itemMeta = {
+        "Ball Bearings (1000)": {
+            "Description": "Each more cold and frictionless than the last.",
+            "Cost": "1 gp",
+            "Weight": 2,
+        },
+        "String (10 ft.)": {
+            "Description": "A thin strand, to bind or measure.",
+            "Cost": "1 sp"
+        },
+        "Bell": {
+            "Description": "Its ring can signal through darkest night and thickest fog.",
+            "Cost": "1 gp"
+        },
+        "Candle": {
+            "Description": "Although simple, its uses are illuminating and numerous.",
+            "Cost": "5 cp"
+        },
+        "Crowbar": {
+            "Description": "From portable leverage comes new possibility.",
+            "Cost": "2 gp",
+            "Weight": 5,
+        },
+        "Hammer": {
+            "Description": "Belying a rougher intention, it yields repair and creation.",
+            "Cost": "3 gp",
+            "Weight": 1,
+        },
+        "Piton": {
+            "Description": "Useful for climbing, if one desires a higher purpose.",
+            "Cost": "5 cp",
+            "Weight": 0.25,
+        },
+        "Hooded Lantern": {
+            "Description": "Its fuel will return to dust, but not before it shines brightly one last time.",
+            "Cost": "5 gp",
+            "Weight": 2,
+        },
+        "Oil Flask": {
+            "Description": "A treasure from deep beneath the ground, uniquely prized for its function over form.",
+            "Cost": "5 gp",
+            "Weight": 2,
+        },
+        "Ration": {
+            "Description": "Culinary sophistication is often the first sacrificed luxury on a hard journey.",
+            "Cost": "5 sp",
+            "Weight": 2,
+        },
+        "Tinderbox": {
+            "Description": "Able to coax warmth from even the most unforgiving of places.",
+            "Cost": "5 sp",
+            "Weight": 1,
+        },
+        "Waterskin": {
+            "Description": "A common monk's exercise asks, 'Which informs which: the shape of the waterskin, or the flow of the water inside?'.",
+            "Cost": "2 sp",
+            "Weight": 5,
+        },
+        "Fine Clothes": {
+            "Description": "Deriving function from form, the appearance they provide is often more effective than their raw physical qualities.",
+            "Cost": "15 gp",
+            "Weight": 6,
+        },
+        "Ink (1 oz.)": {
+            "Description": "Its value lies in the written word it can convey.",
+            "Cost": "10 gp"
+        },
+        "Ink Pen": {
+            "Description": "Oft-considered mightier than the sword, but still equally as sharp.",
+            "Cost": "2 cp"
+        },
+        "Lamp": {
+            "Description": "A flame is not easily controlled or contained, however this manages both with ease.",
+            "Cost": "5 sp",
+            "Weight": 1,
+        },
+        "Hemp Rope (50ft.)": {
+            "Description": "While many adventuring tools are more valuable, few offer such flexibility of application.",
+            "Cost": "1 gp",
+            "Weight": 10,
+        },
+        "Torch": {
+            "Description": "Without it, having portable fire becomes significantly more dangerous.",
+            "Cost": "1 cp",
+            "Weight": 1,
+        },
+        "Sheet of Paper": {
+            "Description": "Its blank facade offers a gateway to expression and possibility.",
+            "Cost": "2 sp"
+        },
+        "Perfume Vial": {
+            "Description": "Some consider it of magical origin, the ability to gift elegance with mere mists.",
+            "Cost": "5 gp",
+        },
+        "Sealing Wax": {
+            "Description": "To protect from prying eyes, or warn thereof.",
+            "Cost": "5 sp",
+        },
+        "Soap": {
+            "Description": "It offers a cleansing repreive for body and mind alike.",
+            "Cost": "2 cp",
+        },
+        "Bedroll": {
+            "Description": "Bad sleep does not a successful journey make.",
+            "Cost": "1 gp",
+            "Weight": 7,
+        },
+        "Blanket": {
+            "Description": "The comfort it provides can offer more warmth than any fire.",
+            "Cost": "5 sp",
+            "Weight": 3,
+        },
+        "Costume": {
+            "Description": "In obscuring one's appearance, often the most true self springs forth.",
+            "Cost": "5 gp",
+            "Weight": 4,
+        },
+        "Alms Box": {
+            "Description": "Only in the hands of the selfless can it elevate beyond a simple coinpurse.",
+        },
+        "Censer": {
+            "Description": "Of all vessels for burning, this is one of the few that offers purpose beyond warmth and light.",
+        },
+        "Vestments": {
+            "Description": "Signifies an alignment with faith, for better or for worse.",
+        },
+        "Bag of Sand": {
+            "Description": "Used to both prepare the page and blot dry information it now contains.",
+        },
+        "Small Knife": {
+            "Description": "One does not require a sword to slice an apple.",
+        },
+        "Sheet of Parchment": {
+            "Description": "Thin, stretched hide, for only the most valuable and long-lasting transcription.",
+            "Cost": "1 sp"
+        },
+        "Mess Kit": {
+            "Description": "The fork and knife are small, yet provide perhaps the mightiest service to their wielder.",
+            "Cost": "1 sp",
+            "Weight": 1,
+        }
+    }
+
+    items = [
+        {
+            "Title": title,
+            "Description": itemMeta[title]["Description"]
+        } 
+        for title in itemMeta.keys()
+    ]
+
+    items = produceMigrationFileFromObjects("DomainItem", items)
+
+    for itemTitle in itemMeta:
+        currentMeta = itemMeta[itemTitle]
+        
+        if "Cost" in currentMeta:
+            costAmount, costType = currentMeta["Cost"].split(" ")
+
+            abbreviatedTitleMapping = {
+                "cp": "Copper Piece",
+                "gp": "Gold Piece",
+                "sp": "Silver Piece"
+            }
+
+            quantifiers.extend([
+                {
+                    "Parent__DomainItem": getForeignKeyIdForTitle(items, itemTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Cost"),
+                    "DeltaQuantity": costAmount,
+                    "Target__DomainCurrencyDenomination": getForeignKeyIdForTitle(currencyDenominations, abbreviatedTitleMapping[costType]),
+                }
+            ])
+
+        if "Weight" in currentMeta:
+            quantifiers.extend([
+                {
+                    "Parent__DomainItem": getForeignKeyIdForTitle(items, itemTitle),
+                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Weight"),
+                    "DeltaQuantity": currentMeta["Weight"]
+                }
+            ])
+
+
+def regenerateItemGroupMappingsMigration():
+    global items
+    global itemGroups
+
+    groupMeta = {
+        "Burglar's Pack": [
+            "Ball Bearings (1000)",
+            "String (10 ft.)",
+            "Bell",
+            *(["Candle"] * 5),
+            "Crowbar",
+            "Hammer",
+            *(["Piton"] * 10),
+            "Hooded Lantern",
+            *(["Oil Flask"] * 2),
+            *(["Ration"] * 5),
+            "Tinderbox",
+            "Waterskin"
+        ],
+        "Diplomat's Pack": [
+            "Fine Clothes",
+            "Ink (1 oz.)",
+            "Ink Pen",
+            "Lamp",
+            *(["Oil Flask"] * 2),
+            *(["Sheet of Paper"] * 5),
+            "Perfume Vial",
+            "Sealing Wax",
+            "Soap"
+        ],
+        "Dungeoneer's Pack": [
+            "Crowbar",
+            "Hammer",
+            *(["Piton"] * 10),
+            *(["Torch"] * 10),
+            "Tinderbox",
+            *(["Ration"] * 10),
+            "Waterskin",
+            "Hemp Rope (50 ft.)"
+        ],
+        "Entertainer's Pack": [
+            "Bedroll",
+            *(["Costume"] * 2),
+            *(["Candle"] * 5),
+            *(["Ration"] * 5),
+            "Waterskin",
+            "Disguise Kit"
+        ],
+        "Explorer's Pack": [
+            "Bedroll",
+            "Mess Kit",
+            "Tinderbox",
+            *(["Torch"] * 10),
+            *(["Ration"] * 10),
+            "Waterskin",
+            "Hemp Rope (50 ft.)"
+        ],
+        "Priest's Pack": [
+            "Blanket",
+            "Tinderbox",
+            "Alms Box",
+            *(["Candles"] * 10),
+            *(["Incense"] * 2),
+            "Censer",
+            "Vestments",
+            *(["Rations"] * 2),
+            "Waterskin"
+        ],
+        "Scholar's Pack": [
+            "Ink (1 oz.)",
+            "Ink Pen",
+            *(["Sheet of Parchment"] * 10),
+            "Bag of Sand",
+            "Small Knife",
+        ]
+    }
+
+    itemMappings = []
+
+    for group in groupMeta:
+        
+        currentItemList = groupMeta[group]
+
+        itemCounts = {}
+
+        for item in currentItemList:
+            # get(item, 0) returns the current count or 0 if the item isn't in the map yet
+            itemCounts[item] = itemCounts.get(item, 0) + 1
+            
+
+        for item in currentItemList:
+
+            currentMapping = {
+                "Quantity": itemCounts[item]
+            }
+
+            baseTable = "DomainItem"
+            fk = getForeignKeyIdForTitle(items, item)
+
+            if fk == None:
+                baseTable = "DomainTool"
+                fk = getForeignKeyIdForTitle(tools, item)
+            
+            if fk == None:
+                baseTable = "DomainWeapon"
+                fk = getForeignKeyIdForTitle(weapons, item)
+
+            currentMapping["Item__" + baseTable] = fk
+    
+    itemMappings = produceMigrationFileFromObjects("ItemDomainItemGroupInstance", itemMappings)
+
+
 def regenerateDomainClassMigration():
     
     global dice
@@ -1695,7 +2074,8 @@ def regenerateDomainSubClassMigration():
 
     subClasses = produceMigrationFileFromObjects("DomainSubClass", subClasses)
 
-def regenerateProficienciesMigration():
+
+def regenerateDomainClassLevelAdditionMigration():
     global classes
     global subClasses
     global skills
@@ -1703,9 +2083,42 @@ def regenerateProficienciesMigration():
     global tools
 
     #how on earth do we do max/min options and multiclass variants for this?
-    proficiencyOptionsMeta = {
+    classMeta = {
         "Barbarian": {
-            "Skills": ["Animal Handling", "Athletics", "Intimidation", "Nature", "Perception", "Survival"]
+            "1": {
+                "DomainSkill": {
+                    "Select": 2,
+                    "Range": ["Animal Handling", "Athletics", "Intimidation", "Nature", "Perception", "Survival"]
+                },
+                "DomainWeaponCategory": {
+                    "Range": ["Simple", "Martial"]
+                },
+                "DomainArmorCategory": {
+                    "Range": ["Light Armor", "Medium Armor", "Shield"]
+                },
+                "DomainWeapon": {
+                    "Range"
+                },
+                "TitledGroups": {
+                    "Starting Equipment": {
+                        "Select": 1,
+                        "Range": [
+                            {
+                                "DomainWeapon": {
+                                    "Quantity": 1,
+                                    "Title": "Greataxe"
+                                },
+                                "DomainWeapon": {
+                                    "Quantity": 4,
+                                    "Title": "Handaxe"
+                                },
+
+                            }
+                        ]
+                    }
+                }
+            }
+            
         },
         "Bard": {
             "Skills": []
@@ -1720,6 +2133,7 @@ def regenerateProficienciesMigration():
     }
 
     classes = produceMigrationFileFromObjects("DomainSubClass", subClasses)
+
 
 def regenerateDamageTypesMigration():
     global damageTypes

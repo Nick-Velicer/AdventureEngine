@@ -12,8 +12,11 @@ import * as ClassSaveService from "../../services/generated/ClassSaveService";
 import * as ClassSpellService from "../../services/generated/ClassSpellService";
 import * as DomainActionService from "../../services/generated/DomainActionService";
 import * as DomainAppRoleService from "../../services/generated/DomainAppRoleService";
+import * as DomainArmorService from "../../services/generated/DomainArmorService";
+import * as DomainArmorCategoryService from "../../services/generated/DomainArmorCategoryService";
 import * as DomainBooleanConditionService from "../../services/generated/DomainBooleanConditionService";
 import * as DomainClassService from "../../services/generated/DomainClassService";
+import * as DomainClassLevelAdditionService from "../../services/generated/DomainClassLevelAdditionService";
 import * as DomainClassResourceService from "../../services/generated/DomainClassResourceService";
 import * as DomainClassTraitService from "../../services/generated/DomainClassTraitService";
 import * as DomainConditionService from "../../services/generated/DomainConditionService";
@@ -25,8 +28,10 @@ import * as DomainDiceRollSubTypeService from "../../services/generated/DomainDi
 import * as DomainDiceRollTypeService from "../../services/generated/DomainDiceRollTypeService";
 import * as DomainEntityStatService from "../../services/generated/DomainEntityStatService";
 import * as DomainItemService from "../../services/generated/DomainItemService";
+import * as DomainItemGroupService from "../../services/generated/DomainItemGroupService";
 import * as DomainLanguageService from "../../services/generated/DomainLanguageService";
 import * as DomainModifierMechanicService from "../../services/generated/DomainModifierMechanicService";
+import * as DomainProficiencyOptionService from "../../services/generated/DomainProficiencyOptionService";
 import * as DomainQuantifierVariantService from "../../services/generated/DomainQuantifierVariantService";
 import * as DomainSizeService from "../../services/generated/DomainSizeService";
 import * as DomainSkillService from "../../services/generated/DomainSkillService";
@@ -41,6 +46,7 @@ import * as DomainWeaponService from "../../services/generated/DomainWeaponServi
 import * as DomainWeaponCategoryService from "../../services/generated/DomainWeaponCategoryService";
 import * as DomainWeaponDomainWeaponCategoryInstanceService from "../../services/generated/DomainWeaponDomainWeaponCategoryInstanceService";
 import * as EvaluatedConditionalService from "../../services/generated/EvaluatedConditionalService";
+import * as ItemDomainItemGroupInstanceService from "../../services/generated/ItemDomainItemGroupInstanceService";
 import * as QuantifierService from "../../services/generated/QuantifierService";
 import * as QuantifierCostSpecifierService from "../../services/generated/QuantifierCostSpecifierService";
 import * as UserService from "../../services/generated/UserService";
@@ -97,6 +103,16 @@ export const generatedInjectableServices = {
       getItemById: DomainAppRoleService.getDomainAppRolebyId,
       saveItem: DomainAppRoleService.saveDomainAppRole
    },
+   DomainArmor: {
+      getAllItems: DomainArmorService.getDomainArmors,
+      getItemById: DomainArmorService.getDomainArmorbyId,
+      saveItem: DomainArmorService.saveDomainArmor
+   },
+   DomainArmorCategory: {
+      getAllItems: DomainArmorCategoryService.getDomainArmorCategorys,
+      getItemById: DomainArmorCategoryService.getDomainArmorCategorybyId,
+      saveItem: DomainArmorCategoryService.saveDomainArmorCategory
+   },
    DomainBooleanCondition: {
       getAllItems: DomainBooleanConditionService.getDomainBooleanConditions,
       getItemById: DomainBooleanConditionService.getDomainBooleanConditionbyId,
@@ -106,6 +122,11 @@ export const generatedInjectableServices = {
       getAllItems: DomainClassService.getDomainClasss,
       getItemById: DomainClassService.getDomainClassbyId,
       saveItem: DomainClassService.saveDomainClass
+   },
+   DomainClassLevelAddition: {
+      getAllItems: DomainClassLevelAdditionService.getDomainClassLevelAdditions,
+      getItemById: DomainClassLevelAdditionService.getDomainClassLevelAdditionbyId,
+      saveItem: DomainClassLevelAdditionService.saveDomainClassLevelAddition
    },
    DomainClassResource: {
       getAllItems: DomainClassResourceService.getDomainClassResources,
@@ -162,6 +183,11 @@ export const generatedInjectableServices = {
       getItemById: DomainItemService.getDomainItembyId,
       saveItem: DomainItemService.saveDomainItem
    },
+   DomainItemGroup: {
+      getAllItems: DomainItemGroupService.getDomainItemGroups,
+      getItemById: DomainItemGroupService.getDomainItemGroupbyId,
+      saveItem: DomainItemGroupService.saveDomainItemGroup
+   },
    DomainLanguage: {
       getAllItems: DomainLanguageService.getDomainLanguages,
       getItemById: DomainLanguageService.getDomainLanguagebyId,
@@ -171,6 +197,11 @@ export const generatedInjectableServices = {
       getAllItems: DomainModifierMechanicService.getDomainModifierMechanics,
       getItemById: DomainModifierMechanicService.getDomainModifierMechanicbyId,
       saveItem: DomainModifierMechanicService.saveDomainModifierMechanic
+   },
+   DomainProficiencyOption: {
+      getAllItems: DomainProficiencyOptionService.getDomainProficiencyOptions,
+      getItemById: DomainProficiencyOptionService.getDomainProficiencyOptionbyId,
+      saveItem: DomainProficiencyOptionService.saveDomainProficiencyOption
    },
    DomainQuantifierVariant: {
       getAllItems: DomainQuantifierVariantService.getDomainQuantifierVariants,
@@ -241,6 +272,11 @@ export const generatedInjectableServices = {
       getAllItems: EvaluatedConditionalService.getEvaluatedConditionals,
       getItemById: EvaluatedConditionalService.getEvaluatedConditionalbyId,
       saveItem: EvaluatedConditionalService.saveEvaluatedConditional
+   },
+   ItemDomainItemGroupInstance: {
+      getAllItems: ItemDomainItemGroupInstanceService.getItemDomainItemGroupInstances,
+      getItemById: ItemDomainItemGroupInstanceService.getItemDomainItemGroupInstancebyId,
+      saveItem: ItemDomainItemGroupInstanceService.saveItemDomainItemGroupInstance
    },
    Quantifier: {
       getAllItems: QuantifierService.getQuantifiers,

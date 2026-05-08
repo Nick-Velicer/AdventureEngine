@@ -2,7 +2,7 @@
 
 package generatedDatabaseTypes
 
-type DomainItem struct {
+type DomainItemGroup struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
 
@@ -17,10 +17,6 @@ type DomainItem struct {
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
-
-	// ItemGroupDomainItemGroup corresponds to the JSON schema field
-	// "ItemGroup__DomainItemGroup".
-	ItemGroup__DomainItemGroup *int `json:"ItemGroup__DomainItemGroup" gorm:"column:ItemGroup__DomainItemGroup" mapstructure:"ItemGroup__DomainItemGroup"`
 
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`

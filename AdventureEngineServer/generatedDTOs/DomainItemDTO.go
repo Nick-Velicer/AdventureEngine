@@ -18,7 +18,6 @@ import (
 type DomainItemDTOAttributes struct {
    AbbreviatedTitle *string
    CreatedAt *string
-   CustomEffectText *string
    Description *string
    
    IsActive *bool
@@ -27,9 +26,8 @@ type DomainItemDTOAttributes struct {
 }
 
 type DomainItemDTOManyToOneRelationships struct {
-   OneHanded__Quantifier *QuantifierDTO
+   ItemGroup__DomainItemGroup *DomainItemGroupDTO
    ResourceOwner__User *UserDTO
-   TwoHanded__Quantifier *QuantifierDTO
 }
 
 type DomainItemDTOOneToManyRelationships struct {
@@ -71,22 +69,20 @@ func DomainItemToDomainItemDTO(context *contextProviders.DTOContext, domainItem 
       CurrentUser: nil,
    }
    
-   var includedOneHanded__Quantifier *types.Quantifier
+   var includedItemGroup__DomainItemGroup *types.DomainItemGroup
    var includedResourceOwner__User *types.User
-   var includedTwoHanded__Quantifier *types.Quantifier
    
-   var OneHanded__QuantifierDTO *QuantifierDTO
+   var ItemGroup__DomainItemGroupDTO *DomainItemGroupDTO
    var ResourceOwner__UserDTO *UserDTO
-   var TwoHanded__QuantifierDTO *QuantifierDTO
    
    var err error
    
-   if (domainItem.OneHanded__Quantifier != nil) {
-      includedOneHanded__Quantifier, err = services.GetQuantifierById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Quantifier](domainItem.OneHanded__Quantifier))
+   if (domainItem.ItemGroup__DomainItemGroup != nil) {
+      includedItemGroup__DomainItemGroup, err = services.GetDomainItemGroupById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainItemGroup](domainItem.ItemGroup__DomainItemGroup))
       if err != nil {
          return nil, err
       }
-      OneHanded__QuantifierDTO, err = QuantifierToQuantifierDTO(&childDTOContext, includedOneHanded__Quantifier)
+      ItemGroup__DomainItemGroupDTO, err = DomainItemGroupToDomainItemGroupDTO(&childDTOContext, includedItemGroup__DomainItemGroup)
       if err != nil {
          return nil, err
       }
@@ -103,24 +99,12 @@ func DomainItemToDomainItemDTO(context *contextProviders.DTOContext, domainItem 
       }
    }
 
-   if (domainItem.TwoHanded__Quantifier != nil) {
-      includedTwoHanded__Quantifier, err = services.GetQuantifierById(serviceContext, contextProviders.ProduceGetByIdArgs[types.Quantifier](domainItem.TwoHanded__Quantifier))
-      if err != nil {
-         return nil, err
-      }
-      TwoHanded__QuantifierDTO, err = QuantifierToQuantifierDTO(&childDTOContext, includedTwoHanded__Quantifier)
-      if err != nil {
-         return nil, err
-      }
-   }
-
    
    return &DomainItemDTO{
       Id: domainItem.Id,
       Attributes: DomainItemDTOAttributes{
          AbbreviatedTitle: domainItem.AbbreviatedTitle,
          CreatedAt: domainItem.CreatedAt,
-         CustomEffectText: domainItem.CustomEffectText,
          Description: domainItem.Description,
          
          IsActive: domainItem.IsActive,
@@ -129,9 +113,8 @@ func DomainItemToDomainItemDTO(context *contextProviders.DTOContext, domainItem 
       },
       Relationships: DomainItemDTORelationships{
          ManyToOne: DomainItemDTOManyToOneRelationships {
-            OneHanded__Quantifier: OneHanded__QuantifierDTO,
+            ItemGroup__DomainItemGroup: ItemGroup__DomainItemGroupDTO,
             ResourceOwner__User: ResourceOwner__UserDTO,
-            TwoHanded__Quantifier: TwoHanded__QuantifierDTO,
          },
          OneToMany: DomainItemDTOOneToManyRelationships {
          },
@@ -145,23 +128,18 @@ func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) *types.DomainItem {
    tableTypeBuffer.Id = domainItem.Id
    tableTypeBuffer.AbbreviatedTitle = domainItem.Attributes.AbbreviatedTitle
    tableTypeBuffer.CreatedAt = domainItem.Attributes.CreatedAt
-   tableTypeBuffer.CustomEffectText = domainItem.Attributes.CustomEffectText
    tableTypeBuffer.Description = domainItem.Attributes.Description
    
    tableTypeBuffer.IsActive = domainItem.Attributes.IsActive
    tableTypeBuffer.Title = domainItem.Attributes.Title
    tableTypeBuffer.UpdatedAt = domainItem.Attributes.UpdatedAt
    
-   if (domainItem.Relationships.ManyToOne.OneHanded__Quantifier != nil) {
-      tableTypeBuffer.OneHanded__Quantifier = domainItem.Relationships.ManyToOne.OneHanded__Quantifier.Id
+   if (domainItem.Relationships.ManyToOne.ItemGroup__DomainItemGroup != nil) {
+      tableTypeBuffer.ItemGroup__DomainItemGroup = domainItem.Relationships.ManyToOne.ItemGroup__DomainItemGroup.Id
    }
 
    if (domainItem.Relationships.ManyToOne.ResourceOwner__User != nil) {
       tableTypeBuffer.ResourceOwner__User = domainItem.Relationships.ManyToOne.ResourceOwner__User.Id
-   }
-
-   if (domainItem.Relationships.ManyToOne.TwoHanded__Quantifier != nil) {
-      tableTypeBuffer.TwoHanded__Quantifier = domainItem.Relationships.ManyToOne.TwoHanded__Quantifier.Id
    }
 
    return &tableTypeBuffer

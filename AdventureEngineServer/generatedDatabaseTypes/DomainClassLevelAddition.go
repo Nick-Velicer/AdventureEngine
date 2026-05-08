@@ -2,9 +2,12 @@
 
 package generatedDatabaseTypes
 
-type DomainItem struct {
+type DomainClassLevelAddition struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
+
+	// ClassDomainClass corresponds to the JSON schema field "Class__DomainClass".
+	Class__DomainClass *int `json:"Class__DomainClass" gorm:"column:Class__DomainClass" mapstructure:"Class__DomainClass"`
 
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
@@ -18,15 +21,22 @@ type DomainItem struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
-	// ItemGroupDomainItemGroup corresponds to the JSON schema field
-	// "ItemGroup__DomainItemGroup".
-	ItemGroup__DomainItemGroup *int `json:"ItemGroup__DomainItemGroup" gorm:"column:ItemGroup__DomainItemGroup" mapstructure:"ItemGroup__DomainItemGroup"`
+	// Level corresponds to the JSON schema field "Level".
+	Level float64 `json:"Level" gorm:"column:Level" mapstructure:"Level"`
 
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
 
+	// SubclassDomainSubClass corresponds to the JSON schema field
+	// "Subclass__DomainSubClass".
+	Subclass__DomainSubClass *int `json:"Subclass__DomainSubClass" gorm:"column:Subclass__DomainSubClass" mapstructure:"Subclass__DomainSubClass"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
+
+	// UnavailableForMultiClass corresponds to the JSON schema field
+	// "UnavailableForMultiClass".
+	UnavailableForMultiClass bool `json:"UnavailableForMultiClass" gorm:"column:UnavailableForMultiClass" mapstructure:"UnavailableForMultiClass"`
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
