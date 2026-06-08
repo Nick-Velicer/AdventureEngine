@@ -115,6 +115,7 @@ def main():
         regenerateDomainClassMigration,
         regenerateDamageTypesMigration,
         regenerateDomainSubClassMigration,
+        regenerateDomainClassTraitAndAssociatedQuantifiersMigration,
         regenerateDomainConditionsMigration,
         regenerateSavingThrowsMigration,
         regenerateSpellSchoolsMigration,
@@ -185,7 +186,7 @@ def writeInsertLines(fileName: str, lines: list):
     f.close()
 
 
-def produceMigrationFileFromObjects(tableName: str, objects: list):
+def produceMigrationFileFromObjects(tableName: str, objects: list[dict]):
     #We do not reference the objects from the global instance for this even though that 
     #is available for use for fk-dependent migrations, since not all migrations will end up 
     #writing to a global context.
@@ -193,11 +194,25 @@ def produceMigrationFileFromObjects(tableName: str, objects: list):
     global migrationOrderNumber
     global migrationTotal
 
+    '''
+    #removing all the ordered child elements before we initialize the
+    #database elements
+    extractedChildren = [obj.pop("children", None) for obj in objects]
+    '''
+
     #Generating ids for each item, this will overwrite any passed in id
     objects = [{**obj, **{
         "Id": (index + 1),
         "IsActive": 1
     }} for index, obj in enumerate(objects)]
+
+    '''
+    #generating foreign key links to generated items for their children
+    childObjects = [{**obj, **{
+        "Id": (index + 1),
+        "IsActive": 1
+    }} for index, obj in enumerate(extractedChildren)]
+    '''
 
     lines = produceInsertStatementsForObjects(tableName, typeMetas[tableName], objects)
     writeInsertLines(migrationsBaseDir + '/' + str(migrationOrderNumber).zfill(math.floor(math.log(migrationTotal))) + '__' + tableName + '.sql', lines)
@@ -226,6 +241,7 @@ def regenerateBaseUsers():
 
     userMeta = [
         {
+            "Type": "User",
             "Title": "Application Root",
             "Username": "root",
             "Password": bcrypt.hashpw(defaultPassword, bcrypt.gensalt(15)).decode('utf-8')
@@ -240,7 +256,7 @@ def regenerateAppRoles():
 
     roleTitles = ["Root", "Admin", "Base User"]
 
-    roles = produceMigrationFileFromObjects("DomainAppRole", [{ "Title": title} for title in roleTitles])
+    roles = produceMigrationFileFromObjects("DomainAppRole", [{ "Title": title, "Type": "DomainAppRole"} for title in roleTitles])
 
 
 def regenerateRoleMappings():
@@ -249,6 +265,7 @@ def regenerateRoleMappings():
     global roleMappings
 
     roleMappings = produceMigrationFileFromObjects("UserRoleInstance", [{
+        "Type": "UserRoleInstance",
         "User__User": getForeignKeyIdForTitle(users, "Application Root"),
         "Role__DomainAppRole": getForeignKeyIdForTitle(roles, "Root")
     }])
@@ -263,6 +280,7 @@ def regenerateDiceMigration():
     dice = [
         {
             "Title": "d" + str(faceCount),
+            "Type": "DomainDice",
             "Minimum": 1,
             "Maximum": faceCount,
             "Description": "A " + str(faceCount) + "-sided dice"
@@ -275,25 +293,12 @@ def regenerateDomainDiceRollTypeMigration():
     
     global diceRollTypes
 
-    diceRollTypes = [
-        {
-            "Title": "Attack"
-        },
-        {
-            "Title": "Damage"
-        },
-        {
-            "Title": "Initiative"
-        },
-        {
-            "Title": "Check"
-        },
-        {
-            "Title": "Save"
-        },
-    ]
+    typeTitles = ["Attack", "Damage", "Initiative", "Check", "Save"]
 
-    diceRollTypes = produceMigrationFileFromObjects("DomainDiceRollType", diceRollTypes)
+    diceRollTypes = produceMigrationFileFromObjects("DomainDiceRollType", [{
+        "Title": title,
+        "Type": "DomainDiceRollType"
+    } for title in typeTitles])
 
 
 def regenerateDomainDiceRollSubTypeMigration():
@@ -304,26 +309,32 @@ def regenerateDomainDiceRollSubTypeMigration():
     diceRollTypes = [
         {
             "Title": "Melee Spell",
+            "Type": "DomainDiceRollSubType",
             "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack")
         },
         {
             "Title": "Melee Damage",
+            "Type": "DomainDiceRollSubType",
             "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack")
         },
         {
             "Title": "Ranged Spell",
+            "Type": "DomainDiceRollSubType",
             "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack")
         },
         {
             "Title": "Ranged Damage",
+            "Type": "DomainDiceRollSubType",
             "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack")
         },
         {
             "Title": "Sight",
+            "Type": "DomainDiceRollSubType",
             "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check")
         },
         {
             "Title": "Hearing",
+            "Type": "DomainDiceRollSubType",
             "SuperType__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check")
         },
     ]
@@ -474,7 +485,7 @@ def regenerateBasicStatMigration():
         }
     ])
 
-    entityStats = produceMigrationFileFromObjects("DomainEntityStat", entityStats)
+    entityStats = produceMigrationFileFromObjects("DomainEntityStat", [{"Title": "DomainEntityStat", **stat} for stat in entityStats])
 
 
 def regenerateSkillsMigration():
@@ -494,6 +505,7 @@ def regenerateSkillsMigration():
         for skill in skillMapping[stat]:
             skills.append({
                 "Title": skill,
+                "Type": "DomainSkill",
                 "ParentStat__DomainEntityStat": statFkId
             })
 
@@ -524,7 +536,8 @@ def regenerateWeaponCategoriesMigration():
 
     weaponCategories = [
         {
-            "Title": title
+            "Title": title,
+            "Type": "DomainWeaponCategory",
         } 
         for title in categoryTitles
     ]
@@ -556,7 +569,8 @@ def regenerateLanguagesMigration():
 
     languages = [
         {
-            "Title": title
+            "Title": title,
+            "Type": "DomainLanguage"
         } 
         for title in languageTitles
     ]
@@ -577,7 +591,8 @@ def regenerateQuantifierVariants():
 
     quantifierVariants = [
         {
-            "Title": title
+            "Title": title,
+            "Type": "DomainQuantifierVariant"
         } 
         for title in variantTitles
     ]
@@ -597,7 +612,8 @@ def regenerateModifierMechanics():
 
     modifierMechanics = [
         {
-            "Title": title
+            "Title": title,
+            "Type": "DomainModifierMechanic",
         } 
         for title in mechanicTitles
     ]
@@ -642,7 +658,7 @@ def regenerateCurrencyDenominations():
         }
     ]
 
-    currencyDenominations = produceMigrationFileFromObjects("DomainCurrencyDenomination", currencyDenominations)
+    currencyDenominations = produceMigrationFileFromObjects("DomainCurrencyDenomination", [{"Title": "DomainCurrencyDenomination", **currency} for currency in currencyDenominations])
 
     #Applying the same weight to all coins
     quantifiers.extend([
@@ -672,7 +688,7 @@ def regenerateActionsMigration():
         "Speak"
     ]
 
-    actions = [{ "Title": title } for title in actionTitles]
+    actions = [{ "Title": title, "Type": "DomainAction" } for title in actionTitles]
 
     actions = produceMigrationFileFromObjects("DomainAction", actions)
 
@@ -681,91 +697,91 @@ def regenerateActionsMigration():
             "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
             "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Speed"),
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Climb")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Climb")
         },
         {
             "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
             "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Speed"),
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Swim")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Swim")
         },
         {
             "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
             "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Speed"),
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Crawl")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Crawl")
         },
         {
             "AppliesToSource": 1,
             "DeltaPercentage": 0.5,
             "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Available"),
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Stand Up")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Stand Up")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Attack")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Attack")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Grapple")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Grapple")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Shove")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Shove")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Cast")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Cast")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Dash")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Dash")
         },
         {
             "AppliesToSource": 1,
             "DeltaPercentage": 2,
             "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Movement Speed"),
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Dash")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Dash")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Disengage")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Disengage")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Help")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Help")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Interact")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Interact")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Use Item")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Use Item")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Equip")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Equip")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Unequip")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Unequip")
         },
         {
             "AppliesToSource": 1,
             #"IsAction": 1,
-            "Parent__DomainAction": getForeignKeyIdForTitle(conditions, "Hide")
+            "Parent__DomainAction": getForeignKeyIdForTitle(actions, "Hide")
         },
 
     ])
@@ -1037,7 +1053,8 @@ def regenerateWeaponsAndRelatedTables():
 
     weapons = [
         {
-            "Title": title
+            "Title": title,
+            "Type": "DomainWeapon"
         } 
         for title in weaponMeta.keys()
     ]
@@ -1111,7 +1128,8 @@ def regenerateToolCategories():
 
     toolCategories = [
         {
-            "Title": title
+            "Title": title,
+            "Type": "DomainToolCategory"
         } 
         for title in categoryTitles
     ]
@@ -1313,6 +1331,7 @@ def regenerateToolsAndRelatedTables():
     tools = [
         {
             "Title": title,
+            "Type": "DomainTool",
             "Category__DomainToolCategory": getForeignKeyIdForTitle(toolCategories, toolMeta[title]["Category"])
         } 
         for title in toolMeta.keys()
@@ -1367,7 +1386,8 @@ def regenerateArmorCategories():
 
     armorCategories = [
         {
-            "Title": title
+            "Title": title,
+            "Type": "DomainArmorCategory"
         } 
         for title in categoryTitles
     ]
@@ -1481,6 +1501,7 @@ def regenerateArmorAndRelatedTables():
     armor = [
         {
             "Title": title,
+            "Type": "DomainArmor",
             "Category__DomainArmorCategory": getForeignKeyIdForTitle(armorCategories, armorMeta[title]["Category"])
         } 
         for title in armorMeta.keys()
@@ -1563,6 +1584,7 @@ def regenerateItemGroupsMigration():
     itemGroups = [
         {
             "Title": groupTitle,
+            "Type": "DomainItemGroup",
             "Description": groupMeta[groupTitle]["Description"]
         } 
         for groupTitle in groupMeta
@@ -1745,6 +1767,7 @@ def regenerateItemsMigration():
     items = [
         {
             "Title": title,
+            "Type": "DomainItem",
             "Description": itemMeta[title]["Description"]
         } 
         for title in itemMeta.keys()
@@ -1878,7 +1901,8 @@ def regenerateItemGroupMappingsMigration():
         for item in currentItemList:
 
             currentMapping = {
-                "Quantity": itemCounts[item]
+                "Quantity": itemCounts[item],
+                "Type": "ItemDomainItemGroupInstance"
             }
 
             baseTable = "DomainItem"
@@ -1982,7 +2006,7 @@ def regenerateDomainClassMigration():
         },
     ]
 
-    classes = produceMigrationFileFromObjects("DomainClass", classes)
+    classes = produceMigrationFileFromObjects("DomainClass", [{"Type": "DomainClass", **domainClass} for domainClass in classes])
 
 
 def regenerateDomainSubClassMigration():
@@ -2072,7 +2096,46 @@ def regenerateDomainSubClassMigration():
         }
     ]
 
-    subClasses = produceMigrationFileFromObjects("DomainSubClass", subClasses)
+    subClasses = produceMigrationFileFromObjects("DomainSubClass", [{"Type": "DomainSubClass", **subClass} for subClass in subClasses])
+
+
+def regenerateDomainClassTraitAndAssociatedQuantifiersMigration():
+    
+    global classes
+    global subClasses
+    global classTraits
+    global conditions
+    global quantifiers
+
+    #region Barbarian 
+    
+    classTraits.extend([
+        {
+            "Title": "Rage",
+            "AbbreviatedTitle": "Rage",
+            "Description": "Imbue yourself with a primal power called Rage, a force that grants you extraordinary might and resilience.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian")
+        },
+        {
+            "Title": "Wild Shape",
+            "AbbreviatedTitle": "Wild Shape",
+            "Description": "Magically assume the shape of an animal, allowing you all the strength and flexibility of a new form.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Druid")
+        },
+    ])
+
+    #endregion
+
+    classTraits = produceMigrationFileFromObjects("DomainClassTrait", [{"Type": "DomainClassTrait", **trait} for trait in classTraits])
+
+    quantifiers.extend([
+        {
+            "Parent__DomainClassTrait": getForeignKeyIdForTitle(classTraits, "Rage"),
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Action"),
+            "AppliesToSource": 1, 
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged"),
+        }
+    ])
 
 
 def regenerateDomainClassLevelAdditionMigration():
@@ -2086,22 +2149,31 @@ def regenerateDomainClassLevelAdditionMigration():
     classMeta = {
         "Barbarian": {
             "1": {
-                "DomainSkill": {
-                    "Select": 2,
-                    "Range": ["Animal Handling", "Athletics", "Intimidation", "Nature", "Perception", "Survival"]
-                },
-                "DomainWeaponCategory": {
-                    "Range": ["Simple", "Martial"]
-                },
-                "DomainArmorCategory": {
-                    "Range": ["Light Armor", "Medium Armor", "Shield"]
-                },
-                "DomainWeapon": {
-                    "Range"
+                "UntitledGroups": {
+                    "DomainSkill": {
+                        "MulticlassAccessible": False,
+                        "Select": 2,
+                        "Range": ["Animal Handling", "Athletics", "Intimidation", "Nature", "Perception", "Survival"]
+                    },
+                    "DomainWeaponCategory": {
+                        "MulticlassAccessible": False,
+                        "Range": ["Simple"]
+                    },
+                    "DomainWeaponCategory": {
+                        "Range": ["Martial"]
+                    },
+                    "DomainArmorCategory": {
+                        "MulticlassAccessible": False,
+                        "Range": ["Light Armor", "Medium Armor"]
+                    },
+                    "DomainArmorCategory": {
+                        "Range": ["Shield"]
+                    }
                 },
                 "TitledGroups": {
                     "Starting Equipment": {
                         "Select": 1,
+                        "MulticlassAccessible": False,
                         "Range": [
                             {
                                 "DomainWeapon": {
@@ -2112,12 +2184,25 @@ def regenerateDomainClassLevelAdditionMigration():
                                     "Quantity": 4,
                                     "Title": "Handaxe"
                                 },
-
+                                "DomainItemGroup": {
+                                    "Quantity": 1,
+                                    "Title": "Explorer's Pack"
+                                },
+                                "DomainCurrencyDenomination": {
+                                    "Quantity": 15,
+                                    "Title": "Gold Piece"
+                                }
+                            },
+                            {
+                                "DomainCurrencyDenomination": {
+                                    "Quantity": 75,
+                                    "Title": "Gold Piece"
+                                }
                             }
                         ]
                     }
                 }
-            }
+            },
             
         },
         "Bard": {
@@ -2154,7 +2239,7 @@ def regenerateDamageTypesMigration():
         "Psychic"
     ]
 
-    damageTypes = [{ "Title": title } for title in damageTypeTitles]
+    damageTypes = [{ "Title": title, "Type": "DomainDamageType" } for title in damageTypeTitles]
 
     damageTypes = produceMigrationFileFromObjects("DomainDamageType", damageTypes)
 
@@ -2235,7 +2320,7 @@ def regenerateDomainConditionsMigration():
         },
     ]
 
-    conditions = produceMigrationFileFromObjects("DomainCondition", conditions)
+    conditions = produceMigrationFileFromObjects("DomainCondition", [{"Type": "DomainCondition", **condition} for condition in conditions])
 
     quantifiers.extend([
         #region Blinded
@@ -2642,51 +2727,6 @@ def regenerateDomainConditionsMigration():
         #TODO The exhaustion condition at some point when I've got more of a mind to figure out leveled quantitifiers for conditions and spells and such
     ])
 
-
-def regenerateDomainClassTraitAndAssociatedQuantifiersMigration():
-    
-    global classes
-    global subClasses
-    global classTraits
-    global quantifiers
-
-    #region Barbarian 
-    
-    classTraits.extend([
-        {
-            "Title": "Rage",
-            "AbbreviatedTitle": "Rage",
-            "Description": "You can imbue yourself with a primal power called Rage, a force that grants you extraordinary might and resilience.",
-            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian")
-        }
-    ])
-
-    #endregion
-
-    classTraits = produceMigrationFileFromObjects("DomainClassTrait", classTraits)
-
-    #region Quantifiers
-
-    #region Barbarian
-
-    quantifiers.extend([
-        {
-            "Quantity": 2,
-            "LevelMinimumRequirement": 1,
-            ""
-
-            "ClassTrait__DomainClassTrait": getForeignKeyIdForTitle(classTraits, "Barbarian") 
-        },
-        #Rage is a bonus action if wearing Heavy armor
-        {
-
-        }
-    ])
-
-    #endregion
-
-    #endregion
-
     
 def regenerateSavingThrowsMigration():
 
@@ -2800,7 +2840,7 @@ def regenerateSavingThrowsMigration():
         },
     ]
 
-    savingThrows = produceMigrationFileFromObjects("ClassSave", savingThrows)
+    savingThrows = produceMigrationFileFromObjects("ClassSave", [{"Type": "ClassSave", **save} for save in savingThrows])
     
 
 def regenerateSpellSchoolsMigration():
@@ -2834,7 +2874,7 @@ def regenerateSpellSchoolsMigration():
         },
     ]
 
-    spellSchools = produceMigrationFileFromObjects("DomainSpellSchool", spellSchools)
+    spellSchools = produceMigrationFileFromObjects("DomainSpellSchool", [{"Type": "DomainSpellSchool", **school} for school in spellSchools])
 
 
 def regenerateSpellsAndClassSpellsMigrations():
@@ -2950,7 +2990,7 @@ def regenerateSpellsAndClassSpellsMigrations():
         
         spells.append(spellObjectBuffer)
     
-    spells = produceMigrationFileFromObjects("DomainSpell", spells)
+    spells = produceMigrationFileFromObjects("DomainSpell", [{"Type": "DomainSpell", **spell} for spell in spells])
 
     #Additionally generating the class-spell access context
     convertedClassSpellMappings = []
@@ -2962,12 +3002,12 @@ def regenerateSpellsAndClassSpellsMigrations():
                 "Spell__DomainSpell": getForeignKeyIdForTitle(spells, spellTitle)
             })
 
-    produceMigrationFileFromObjects("ClassSpell", spellSchools)
+    produceMigrationFileFromObjects("ClassSpell", [{"Type": "ClassSpell", **classSpell} for classSpell in spellSchools])
 
 
 def regenerateQuantifiersMigration():
     global quantifiers
-    quantifiers = produceMigrationFileFromObjects("Quantifier", quantifiers)
+    quantifiers = produceMigrationFileFromObjects("Quantifier", [{"Type": "Quantifier", **quantifier} for quantifier in quantifiers])
 
 
 #endregion

@@ -21,6 +21,7 @@ export type BaseRelationships = {
 
 export type SchemaObject = {
     Id: number | undefined,
+    Type: string | undefined,
     Attributes: Record<string, any>,
     //The typescript-json-schema library does not process conditional types correctly (for some reason
     //it defaults to the false case), hence the need to manually specify relationships that are 
@@ -40,6 +41,7 @@ export type ExtendedSchemaObject<T extends {
     }
 }> = {
     Id: number | undefined,
+    Type: string | undefined,
     Attributes: BaseAttributes & T["Attributes"],
     Relationships: MergeDeep<BaseRelationships, T["Relationships"]>,
 }
@@ -48,8 +50,11 @@ export type ExtendedSchemaObject<T extends {
 export type FlattenedSchemaObject<T extends SchemaObject> = (
     Merge<
         Merge<
-            Merge<{ 
-                Id: T["Id"] }, 
+            Merge<
+                { 
+                    Id: T["Id"],
+                    Type: T["Type"]
+                }, 
                 T["Attributes"]
             >, 
         //We are cheating slightly with the foreign key flattening to let the Go side of things
