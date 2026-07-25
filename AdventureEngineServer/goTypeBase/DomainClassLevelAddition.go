@@ -34,6 +34,9 @@ type DomainClassLevelAdditionJson struct {
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
 
+	// Type corresponds to the JSON schema field "Type".
+	Type *string `json:"Type,omitempty" yaml:"Type,omitempty" mapstructure:"Type,omitempty"`
+
 	// UnavailableForMultiClass corresponds to the JSON schema field
 	// "UnavailableForMultiClass".
 	UnavailableForMultiClass bool `json:"UnavailableForMultiClass" yaml:"UnavailableForMultiClass" mapstructure:"UnavailableForMultiClass"`

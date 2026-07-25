@@ -14,7 +14,6 @@ import { DomainAction as Base__DomainAction } from "../coreTypes/DomainAction";
 import { DomainAppRole as Base__DomainAppRole } from "../coreTypes/DomainAppRole";
 import { DomainArmor as Base__DomainArmor } from "../coreTypes/DomainArmor";
 import { DomainArmorCategory as Base__DomainArmorCategory } from "../coreTypes/DomainArmorCategory";
-import { DomainBooleanCondition as Base__DomainBooleanCondition } from "../coreTypes/DomainBooleanCondition";
 import { DomainClass as Base__DomainClass } from "../coreTypes/DomainClass";
 import { DomainClassLevelAddition as Base__DomainClassLevelAddition } from "../coreTypes/DomainClassLevelAddition";
 import { DomainClassResource as Base__DomainClassResource } from "../coreTypes/DomainClassResource";
@@ -26,11 +25,14 @@ import { DomainDamageType as Base__DomainDamageType } from "../coreTypes/DomainD
 import { DomainDice as Base__DomainDice } from "../coreTypes/DomainDice";
 import { DomainDiceRollSubType as Base__DomainDiceRollSubType } from "../coreTypes/DomainDiceRollSubType";
 import { DomainDiceRollType as Base__DomainDiceRollType } from "../coreTypes/DomainDiceRollType";
+import { DomainEffectStat as Base__DomainEffectStat } from "../coreTypes/DomainEffectStat";
 import { DomainEntityStat as Base__DomainEntityStat } from "../coreTypes/DomainEntityStat";
+import { DomainGameEvent as Base__DomainGameEvent } from "../coreTypes/DomainGameEvent";
 import { DomainItem as Base__DomainItem } from "../coreTypes/DomainItem";
 import { DomainItemGroup as Base__DomainItemGroup } from "../coreTypes/DomainItemGroup";
 import { DomainLanguage as Base__DomainLanguage } from "../coreTypes/DomainLanguage";
 import { DomainModifierMechanic as Base__DomainModifierMechanic } from "../coreTypes/DomainModifierMechanic";
+import { DomainOperator as Base__DomainOperator } from "../coreTypes/DomainOperator";
 import { DomainProficiencyOption as Base__DomainProficiencyOption } from "../coreTypes/DomainProficiencyOption";
 import { DomainQuantifierVariant as Base__DomainQuantifierVariant } from "../coreTypes/DomainQuantifierVariant";
 import { DomainSize as Base__DomainSize } from "../coreTypes/DomainSize";
@@ -45,10 +47,9 @@ import { DomainToolCategory as Base__DomainToolCategory } from "../coreTypes/Dom
 import { DomainWeapon as Base__DomainWeapon } from "../coreTypes/DomainWeapon";
 import { DomainWeaponCategory as Base__DomainWeaponCategory } from "../coreTypes/DomainWeaponCategory";
 import { DomainWeaponDomainWeaponCategoryInstance as Base__DomainWeaponDomainWeaponCategoryInstance } from "../coreTypes/DomainWeaponDomainWeaponCategoryInstance";
-import { EvaluatedConditional as Base__EvaluatedConditional } from "../coreTypes/EvaluatedConditional";
+import { EvaluationNode as Base__EvaluationNode } from "../coreTypes/EvaluationNode";
 import { ItemDomainItemGroupInstance as Base__ItemDomainItemGroupInstance } from "../coreTypes/ItemDomainItemGroupInstance";
 import { Quantifier as Base__Quantifier } from "../coreTypes/Quantifier";
-import { QuantifierCostSpecifier as Base__QuantifierCostSpecifier } from "../coreTypes/QuantifierCostSpecifier";
 import { User as Base__User } from "../coreTypes/User";
 import { UserRoleInstance as Base__UserRoleInstance } from "../coreTypes/UserRoleInstance";
 
@@ -65,7 +66,6 @@ const BaseAppTypes = {
 	DomainAppRole: {} as Base__DomainAppRole,
 	DomainArmor: {} as Base__DomainArmor,
 	DomainArmorCategory: {} as Base__DomainArmorCategory,
-	DomainBooleanCondition: {} as Base__DomainBooleanCondition,
 	DomainClass: {} as Base__DomainClass,
 	DomainClassLevelAddition: {} as Base__DomainClassLevelAddition,
 	DomainClassResource: {} as Base__DomainClassResource,
@@ -77,11 +77,14 @@ const BaseAppTypes = {
 	DomainDice: {} as Base__DomainDice,
 	DomainDiceRollSubType: {} as Base__DomainDiceRollSubType,
 	DomainDiceRollType: {} as Base__DomainDiceRollType,
+	DomainEffectStat: {} as Base__DomainEffectStat,
 	DomainEntityStat: {} as Base__DomainEntityStat,
+	DomainGameEvent: {} as Base__DomainGameEvent,
 	DomainItem: {} as Base__DomainItem,
 	DomainItemGroup: {} as Base__DomainItemGroup,
 	DomainLanguage: {} as Base__DomainLanguage,
 	DomainModifierMechanic: {} as Base__DomainModifierMechanic,
+	DomainOperator: {} as Base__DomainOperator,
 	DomainProficiencyOption: {} as Base__DomainProficiencyOption,
 	DomainQuantifierVariant: {} as Base__DomainQuantifierVariant,
 	DomainSize: {} as Base__DomainSize,
@@ -96,10 +99,9 @@ const BaseAppTypes = {
 	DomainWeapon: {} as Base__DomainWeapon,
 	DomainWeaponCategory: {} as Base__DomainWeaponCategory,
 	DomainWeaponDomainWeaponCategoryInstance: {} as Base__DomainWeaponDomainWeaponCategoryInstance,
-	EvaluatedConditional: {} as Base__EvaluatedConditional,
+	EvaluationNode: {} as Base__EvaluationNode,
 	ItemDomainItemGroupInstance: {} as Base__ItemDomainItemGroupInstance,
 	Quantifier: {} as Base__Quantifier,
-	QuantifierCostSpecifier: {} as Base__QuantifierCostSpecifier,
 	User: {} as Base__User,
 	UserRoleInstance: {} as Base__UserRoleInstance,
 } as const satisfies Record<string, SchemaObject> 
@@ -137,7 +139,6 @@ export type DomainAction = RecursionGuardedSchemaObject<Base__DomainAction>;
 export type DomainAppRole = RecursionGuardedSchemaObject<Base__DomainAppRole>;
 export type DomainArmor = RecursionGuardedSchemaObject<Base__DomainArmor>;
 export type DomainArmorCategory = RecursionGuardedSchemaObject<Base__DomainArmorCategory>;
-export type DomainBooleanCondition = RecursionGuardedSchemaObject<Base__DomainBooleanCondition>;
 export type DomainClass = RecursionGuardedSchemaObject<Base__DomainClass>;
 export type DomainClassLevelAddition = RecursionGuardedSchemaObject<Base__DomainClassLevelAddition>;
 export type DomainClassResource = RecursionGuardedSchemaObject<Base__DomainClassResource>;
@@ -149,11 +150,14 @@ export type DomainDamageType = RecursionGuardedSchemaObject<Base__DomainDamageTy
 export type DomainDice = RecursionGuardedSchemaObject<Base__DomainDice>;
 export type DomainDiceRollSubType = RecursionGuardedSchemaObject<Base__DomainDiceRollSubType>;
 export type DomainDiceRollType = RecursionGuardedSchemaObject<Base__DomainDiceRollType>;
+export type DomainEffectStat = RecursionGuardedSchemaObject<Base__DomainEffectStat>;
 export type DomainEntityStat = RecursionGuardedSchemaObject<Base__DomainEntityStat>;
+export type DomainGameEvent = RecursionGuardedSchemaObject<Base__DomainGameEvent>;
 export type DomainItem = RecursionGuardedSchemaObject<Base__DomainItem>;
 export type DomainItemGroup = RecursionGuardedSchemaObject<Base__DomainItemGroup>;
 export type DomainLanguage = RecursionGuardedSchemaObject<Base__DomainLanguage>;
 export type DomainModifierMechanic = RecursionGuardedSchemaObject<Base__DomainModifierMechanic>;
+export type DomainOperator = RecursionGuardedSchemaObject<Base__DomainOperator>;
 export type DomainProficiencyOption = RecursionGuardedSchemaObject<Base__DomainProficiencyOption>;
 export type DomainQuantifierVariant = RecursionGuardedSchemaObject<Base__DomainQuantifierVariant>;
 export type DomainSize = RecursionGuardedSchemaObject<Base__DomainSize>;
@@ -168,10 +172,9 @@ export type DomainToolCategory = RecursionGuardedSchemaObject<Base__DomainToolCa
 export type DomainWeapon = RecursionGuardedSchemaObject<Base__DomainWeapon>;
 export type DomainWeaponCategory = RecursionGuardedSchemaObject<Base__DomainWeaponCategory>;
 export type DomainWeaponDomainWeaponCategoryInstance = RecursionGuardedSchemaObject<Base__DomainWeaponDomainWeaponCategoryInstance>;
-export type EvaluatedConditional = RecursionGuardedSchemaObject<Base__EvaluatedConditional>;
+export type EvaluationNode = RecursionGuardedSchemaObject<Base__EvaluationNode>;
 export type ItemDomainItemGroupInstance = RecursionGuardedSchemaObject<Base__ItemDomainItemGroupInstance>;
 export type Quantifier = RecursionGuardedSchemaObject<Base__Quantifier>;
-export type QuantifierCostSpecifier = RecursionGuardedSchemaObject<Base__QuantifierCostSpecifier>;
 export type User = RecursionGuardedSchemaObject<Base__User>;
 export type UserRoleInstance = RecursionGuardedSchemaObject<Base__UserRoleInstance>;
 
@@ -188,7 +191,6 @@ export const AppTypes = {
 	DomainAppRole: {} as DomainAppRole,
 	DomainArmor: {} as DomainArmor,
 	DomainArmorCategory: {} as DomainArmorCategory,
-	DomainBooleanCondition: {} as DomainBooleanCondition,
 	DomainClass: {} as DomainClass,
 	DomainClassLevelAddition: {} as DomainClassLevelAddition,
 	DomainClassResource: {} as DomainClassResource,
@@ -200,11 +202,14 @@ export const AppTypes = {
 	DomainDice: {} as DomainDice,
 	DomainDiceRollSubType: {} as DomainDiceRollSubType,
 	DomainDiceRollType: {} as DomainDiceRollType,
+	DomainEffectStat: {} as DomainEffectStat,
 	DomainEntityStat: {} as DomainEntityStat,
+	DomainGameEvent: {} as DomainGameEvent,
 	DomainItem: {} as DomainItem,
 	DomainItemGroup: {} as DomainItemGroup,
 	DomainLanguage: {} as DomainLanguage,
 	DomainModifierMechanic: {} as DomainModifierMechanic,
+	DomainOperator: {} as DomainOperator,
 	DomainProficiencyOption: {} as DomainProficiencyOption,
 	DomainQuantifierVariant: {} as DomainQuantifierVariant,
 	DomainSize: {} as DomainSize,
@@ -219,10 +224,9 @@ export const AppTypes = {
 	DomainWeapon: {} as DomainWeapon,
 	DomainWeaponCategory: {} as DomainWeaponCategory,
 	DomainWeaponDomainWeaponCategoryInstance: {} as DomainWeaponDomainWeaponCategoryInstance,
-	EvaluatedConditional: {} as EvaluatedConditional,
+	EvaluationNode: {} as EvaluationNode,
 	ItemDomainItemGroupInstance: {} as ItemDomainItemGroupInstance,
 	Quantifier: {} as Quantifier,
-	QuantifierCostSpecifier: {} as QuantifierCostSpecifier,
 	User: {} as User,
 	UserRoleInstance: {} as UserRoleInstance,
 } as const satisfies Record<string, SchemaObject> 

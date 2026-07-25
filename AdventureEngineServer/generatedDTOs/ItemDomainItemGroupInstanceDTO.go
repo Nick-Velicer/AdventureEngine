@@ -23,6 +23,7 @@ type ItemDomainItemGroupInstanceDTOAttributes struct {
    IsActive *bool
    Quantity float64
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -153,6 +154,7 @@ func ItemDomainItemGroupInstanceToItemDomainItemGroupInstanceDTO(context *contex
          IsActive: itemDomainItemGroupInstance.IsActive,
          Quantity: itemDomainItemGroupInstance.Quantity,
          Title: itemDomainItemGroupInstance.Title,
+         Type: itemDomainItemGroupInstance.Type,
          UpdatedAt: itemDomainItemGroupInstance.UpdatedAt,
       },
       Relationships: ItemDomainItemGroupInstanceDTORelationships{
@@ -180,6 +182,7 @@ func ItemDomainItemGroupInstanceDTOToItemDomainItemGroupInstance(itemDomainItemG
    tableTypeBuffer.IsActive = itemDomainItemGroupInstance.Attributes.IsActive
    tableTypeBuffer.Quantity = itemDomainItemGroupInstance.Attributes.Quantity
    tableTypeBuffer.Title = itemDomainItemGroupInstance.Attributes.Title
+   tableTypeBuffer.Type = itemDomainItemGroupInstance.Attributes.Type
    tableTypeBuffer.UpdatedAt = itemDomainItemGroupInstance.Attributes.UpdatedAt
    
    if (itemDomainItemGroupInstance.Relationships.ManyToOne.ItemGroup__DomainItemGroup != nil) {

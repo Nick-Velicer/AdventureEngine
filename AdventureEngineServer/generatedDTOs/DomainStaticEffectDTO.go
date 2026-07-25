@@ -22,6 +22,7 @@ type DomainStaticEffectDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -95,6 +96,7 @@ func DomainStaticEffectToDomainStaticEffectDTO(context *contextProviders.DTOCont
          
          IsActive: domainStaticEffect.IsActive,
          Title: domainStaticEffect.Title,
+         Type: domainStaticEffect.Type,
          UpdatedAt: domainStaticEffect.UpdatedAt,
       },
       Relationships: DomainStaticEffectDTORelationships{
@@ -117,6 +119,7 @@ func DomainStaticEffectDTOToDomainStaticEffect(domainStaticEffect *DomainStaticE
    
    tableTypeBuffer.IsActive = domainStaticEffect.Attributes.IsActive
    tableTypeBuffer.Title = domainStaticEffect.Attributes.Title
+   tableTypeBuffer.Type = domainStaticEffect.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainStaticEffect.Attributes.UpdatedAt
    
    if (domainStaticEffect.Relationships.ManyToOne.ResourceOwner__User != nil) {

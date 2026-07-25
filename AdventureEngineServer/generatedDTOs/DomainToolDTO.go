@@ -22,6 +22,7 @@ type DomainToolDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -109,6 +110,7 @@ func DomainToolToDomainToolDTO(context *contextProviders.DTOContext, domainTool 
          
          IsActive: domainTool.IsActive,
          Title: domainTool.Title,
+         Type: domainTool.Type,
          UpdatedAt: domainTool.UpdatedAt,
       },
       Relationships: DomainToolDTORelationships{
@@ -132,6 +134,7 @@ func DomainToolDTOToDomainTool(domainTool *DomainToolDTO) *types.DomainTool {
    
    tableTypeBuffer.IsActive = domainTool.Attributes.IsActive
    tableTypeBuffer.Title = domainTool.Attributes.Title
+   tableTypeBuffer.Type = domainTool.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainTool.Attributes.UpdatedAt
    
    if (domainTool.Relationships.ManyToOne.Category__DomainToolCategory != nil) {

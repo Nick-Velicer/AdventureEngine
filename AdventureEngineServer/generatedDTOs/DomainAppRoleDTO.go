@@ -22,6 +22,7 @@ type DomainAppRoleDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -95,6 +96,7 @@ func DomainAppRoleToDomainAppRoleDTO(context *contextProviders.DTOContext, domai
          
          IsActive: domainAppRole.IsActive,
          Title: domainAppRole.Title,
+         Type: domainAppRole.Type,
          UpdatedAt: domainAppRole.UpdatedAt,
       },
       Relationships: DomainAppRoleDTORelationships{
@@ -117,6 +119,7 @@ func DomainAppRoleDTOToDomainAppRole(domainAppRole *DomainAppRoleDTO) *types.Dom
    
    tableTypeBuffer.IsActive = domainAppRole.Attributes.IsActive
    tableTypeBuffer.Title = domainAppRole.Attributes.Title
+   tableTypeBuffer.Type = domainAppRole.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainAppRole.Attributes.UpdatedAt
    
    if (domainAppRole.Relationships.ManyToOne.ResourceOwner__User != nil) {

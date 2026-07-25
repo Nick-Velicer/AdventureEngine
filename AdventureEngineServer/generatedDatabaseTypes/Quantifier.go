@@ -22,11 +22,18 @@ type Quantifier struct {
 	// "AppliesAgainstTargetsForSourceOnly".
 	AppliesAgainstTargetsForSourceOnly *bool `json:"AppliesAgainstTargetsForSourceOnly" gorm:"column:AppliesAgainstTargetsForSourceOnly" mapstructure:"AppliesAgainstTargetsForSourceOnly"`
 
+	// AppliesToEffect corresponds to the JSON schema field "AppliesToEffect".
+	AppliesToEffect *bool `json:"AppliesToEffect" gorm:"column:AppliesToEffect" mapstructure:"AppliesToEffect"`
+
 	// AppliesToSource corresponds to the JSON schema field "AppliesToSource".
 	AppliesToSource *bool `json:"AppliesToSource" gorm:"column:AppliesToSource" mapstructure:"AppliesToSource"`
 
 	// AppliesToTargets corresponds to the JSON schema field "AppliesToTargets".
 	AppliesToTargets *bool `json:"AppliesToTargets" gorm:"column:AppliesToTargets" mapstructure:"AppliesToTargets"`
+
+	// ApplyToCurrentEventContext corresponds to the JSON schema field
+	// "ApplyToCurrentEventContext".
+	ApplyToCurrentEventContext *bool `json:"ApplyToCurrentEventContext" gorm:"column:ApplyToCurrentEventContext" mapstructure:"ApplyToCurrentEventContext"`
 
 	// AutomaticCritical corresponds to the JSON schema field "AutomaticCritical".
 	AutomaticCritical *bool `json:"AutomaticCritical" gorm:"column:AutomaticCritical" mapstructure:"AutomaticCritical"`
@@ -34,11 +41,7 @@ type Quantifier struct {
 	// AutomaticFailure corresponds to the JSON schema field "AutomaticFailure".
 	AutomaticFailure *bool `json:"AutomaticFailure" gorm:"column:AutomaticFailure" mapstructure:"AutomaticFailure"`
 
-	// ConditionsEvaluatedConditional corresponds to the JSON schema field
-	// "Conditions__EvaluatedConditional".
-
-	// CostsQuantifierCostSpecifier corresponds to the JSON schema field
-	// "Costs__QuantifierCostSpecifier".
+	// ChildrenQuantifier corresponds to the JSON schema field "Children__Quantifier".
 
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
@@ -49,8 +52,14 @@ type Quantifier struct {
 	// DeltaQuantity corresponds to the JSON schema field "DeltaQuantity".
 	DeltaQuantity *float64 `json:"DeltaQuantity" gorm:"column:DeltaQuantity" mapstructure:"DeltaQuantity"`
 
+	// DeltaTargetValue corresponds to the JSON schema field "DeltaTargetValue".
+	DeltaTargetValue *bool `json:"DeltaTargetValue" gorm:"column:DeltaTargetValue" mapstructure:"DeltaTargetValue"`
+
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
+
+	// EvaluationTreeEvaluationNode corresponds to the JSON schema field
+	// "EvaluationTree__EvaluationNode".
 
 	// Gives corresponds to the JSON schema field "Gives".
 	Gives *bool `json:"Gives" gorm:"column:Gives" mapstructure:"Gives"`
@@ -64,6 +73,9 @@ type Quantifier struct {
 	// HardSetQuantity corresponds to the JSON schema field "HardSetQuantity".
 	HardSetQuantity *float64 `json:"HardSetQuantity" gorm:"column:HardSetQuantity" mapstructure:"HardSetQuantity"`
 
+	// HardSetTargetValue corresponds to the JSON schema field "HardSetTargetValue".
+	HardSetTargetValue *bool `json:"HardSetTargetValue" gorm:"column:HardSetTargetValue" mapstructure:"HardSetTargetValue"`
+
 	// Id corresponds to the JSON schema field "Id".
 	Id *int `json:"Id" gorm:"primaryKey;column:Id" mapstructure:"Id"`
 
@@ -72,17 +84,6 @@ type Quantifier struct {
 
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
-
-	// LevelMaximumRequirement corresponds to the JSON schema field
-	// "LevelMaximumRequirement".
-	LevelMaximumRequirement *float64 `json:"LevelMaximumRequirement" gorm:"column:LevelMaximumRequirement" mapstructure:"LevelMaximumRequirement"`
-
-	// LevelMinimumRequirement corresponds to the JSON schema field
-	// "LevelMinimumRequirement".
-	LevelMinimumRequirement *float64 `json:"LevelMinimumRequirement" gorm:"column:LevelMinimumRequirement" mapstructure:"LevelMinimumRequirement"`
-
-	// ModalChoiceMaximum corresponds to the JSON schema field "ModalChoiceMaximum".
-	ModalChoiceMaximum *float64 `json:"ModalChoiceMaximum" gorm:"column:ModalChoiceMaximum" mapstructure:"ModalChoiceMaximum"`
 
 	// ParentCharacterDomainSubClassInstance corresponds to the JSON schema field
 	// "Parent__CharacterDomainSubClassInstance".
@@ -131,6 +132,10 @@ type Quantifier struct {
 	// ParentDomainWeapon corresponds to the JSON schema field "Parent__DomainWeapon".
 	Parent__DomainWeapon *int `json:"Parent__DomainWeapon" gorm:"column:Parent__DomainWeapon" mapstructure:"Parent__DomainWeapon"`
 
+	// ParentEvaluationNode corresponds to the JSON schema field
+	// "Parent__EvaluationNode".
+	Parent__EvaluationNode *int `json:"Parent__EvaluationNode" gorm:"column:Parent__EvaluationNode" mapstructure:"Parent__EvaluationNode"`
+
 	// ParentQuantifier corresponds to the JSON schema field "Parent__Quantifier".
 	Parent__Quantifier *int `json:"Parent__Quantifier" gorm:"column:Parent__Quantifier" mapstructure:"Parent__Quantifier"`
 
@@ -139,19 +144,6 @@ type Quantifier struct {
 
 	// PreventsReceiving corresponds to the JSON schema field "PreventsReceiving".
 	PreventsReceiving *bool `json:"PreventsReceiving" gorm:"column:PreventsReceiving" mapstructure:"PreventsReceiving"`
-
-	// QuantityRestoredOnShortRest corresponds to the JSON schema field
-	// "QuantityRestoredOnShortRest".
-	QuantityRestoredOnShortRest *float64 `json:"QuantityRestoredOnShortRest" gorm:"column:QuantityRestoredOnShortRest" mapstructure:"QuantityRestoredOnShortRest"`
-
-	// Range corresponds to the JSON schema field "Range".
-	Range *float64 `json:"Range" gorm:"column:Range" mapstructure:"Range"`
-
-	// RefreshOnLongRest corresponds to the JSON schema field "RefreshOnLongRest".
-	RefreshOnLongRest *bool `json:"RefreshOnLongRest" gorm:"column:RefreshOnLongRest" mapstructure:"RefreshOnLongRest"`
-
-	// RefreshOnShortRest corresponds to the JSON schema field "RefreshOnShortRest".
-	RefreshOnShortRest *bool `json:"RefreshOnShortRest" gorm:"column:RefreshOnShortRest" mapstructure:"RefreshOnShortRest"`
 
 	// RemovedOn corresponds to the JSON schema field "RemovedOn".
 	RemovedOn *bool `json:"RemovedOn" gorm:"column:RemovedOn" mapstructure:"RemovedOn"`
@@ -164,18 +156,6 @@ type Quantifier struct {
 
 	// ShouldReplace corresponds to the JSON schema field "ShouldReplace".
 	ShouldReplace *bool `json:"ShouldReplace" gorm:"column:ShouldReplace" mapstructure:"ShouldReplace"`
-
-	// TargetMaximum corresponds to the JSON schema field "TargetMaximum".
-	TargetMaximum *float64 `json:"TargetMaximum" gorm:"column:TargetMaximum" mapstructure:"TargetMaximum"`
-
-	// TargetMinimum corresponds to the JSON schema field "TargetMinimum".
-	TargetMinimum *float64 `json:"TargetMinimum" gorm:"column:TargetMinimum" mapstructure:"TargetMinimum"`
-
-	// TargetValueMaximum corresponds to the JSON schema field "TargetValueMaximum".
-	TargetValueMaximum *float64 `json:"TargetValueMaximum" gorm:"column:TargetValueMaximum" mapstructure:"TargetValueMaximum"`
-
-	// TargetValueMinumum corresponds to the JSON schema field "TargetValueMinumum".
-	TargetValueMinumum *float64 `json:"TargetValueMinumum" gorm:"column:TargetValueMinumum" mapstructure:"TargetValueMinumum"`
 
 	// TargetDomainAction corresponds to the JSON schema field "Target__DomainAction".
 	Target__DomainAction *int `json:"Target__DomainAction" gorm:"column:Target__DomainAction" mapstructure:"Target__DomainAction"`
@@ -203,6 +183,10 @@ type Quantifier struct {
 	// "Target__DomainDiceRollType".
 	Target__DomainDiceRollType *int `json:"Target__DomainDiceRollType" gorm:"column:Target__DomainDiceRollType" mapstructure:"Target__DomainDiceRollType"`
 
+	// TargetDomainEffectStat corresponds to the JSON schema field
+	// "Target__DomainEffectStat".
+	Target__DomainEffectStat *int `json:"Target__DomainEffectStat" gorm:"column:Target__DomainEffectStat" mapstructure:"Target__DomainEffectStat"`
+
 	// TargetDomainEntityStat corresponds to the JSON schema field
 	// "Target__DomainEntityStat".
 	Target__DomainEntityStat *int `json:"Target__DomainEntityStat" gorm:"column:Target__DomainEntityStat" mapstructure:"Target__DomainEntityStat"`
@@ -229,9 +213,6 @@ type Quantifier struct {
 	// "Target__DomainWeaponCategory".
 	Target__DomainWeaponCategory *int `json:"Target__DomainWeaponCategory" gorm:"column:Target__DomainWeaponCategory" mapstructure:"Target__DomainWeaponCategory"`
 
-	// TimeUntilResolution corresponds to the JSON schema field "TimeUntilResolution".
-	TimeUntilResolution *float64 `json:"TimeUntilResolution" gorm:"column:TimeUntilResolution" mapstructure:"TimeUntilResolution"`
-
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 
@@ -239,18 +220,22 @@ type Quantifier struct {
 	// "Trigger__DomainAction".
 	Trigger__DomainAction *int `json:"Trigger__DomainAction" gorm:"column:Trigger__DomainAction" mapstructure:"Trigger__DomainAction"`
 
-	// UntilLongRest corresponds to the JSON schema field "UntilLongRest".
-	UntilLongRest *bool `json:"UntilLongRest" gorm:"column:UntilLongRest" mapstructure:"UntilLongRest"`
+	// TriggerDomainCondition corresponds to the JSON schema field
+	// "Trigger__DomainCondition".
+	Trigger__DomainCondition *int `json:"Trigger__DomainCondition" gorm:"column:Trigger__DomainCondition" mapstructure:"Trigger__DomainCondition"`
 
-	// UntilShortRest corresponds to the JSON schema field "UntilShortRest".
-	UntilShortRest *bool `json:"UntilShortRest" gorm:"column:UntilShortRest" mapstructure:"UntilShortRest"`
+	// TriggerDomainGameEvent corresponds to the JSON schema field
+	// "Trigger__DomainGameEvent".
+	Trigger__DomainGameEvent *int `json:"Trigger__DomainGameEvent" gorm:"column:Trigger__DomainGameEvent" mapstructure:"Trigger__DomainGameEvent"`
+
+	// Type corresponds to the JSON schema field "Type".
+	Type *string `json:"Type" gorm:"column:Type" mapstructure:"Type"`
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 
-	// UseTargetInstanceValue corresponds to the JSON schema field
-	// "UseTargetInstanceValue".
-	UseTargetInstanceValue *bool `json:"UseTargetInstanceValue" gorm:"column:UseTargetInstanceValue" mapstructure:"UseTargetInstanceValue"`
+	// Uses corresponds to the JSON schema field "Uses".
+	Uses *bool `json:"Uses" gorm:"column:Uses" mapstructure:"Uses"`
 
 	// VariantDomainQuantifierVariant corresponds to the JSON schema field
 	// "Variant__DomainQuantifierVariant".

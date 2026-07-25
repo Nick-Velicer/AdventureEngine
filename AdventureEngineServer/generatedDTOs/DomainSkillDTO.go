@@ -22,6 +22,7 @@ type DomainSkillDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -109,6 +110,7 @@ func DomainSkillToDomainSkillDTO(context *contextProviders.DTOContext, domainSki
          
          IsActive: domainSkill.IsActive,
          Title: domainSkill.Title,
+         Type: domainSkill.Type,
          UpdatedAt: domainSkill.UpdatedAt,
       },
       Relationships: DomainSkillDTORelationships{
@@ -132,6 +134,7 @@ func DomainSkillDTOToDomainSkill(domainSkill *DomainSkillDTO) *types.DomainSkill
    
    tableTypeBuffer.IsActive = domainSkill.Attributes.IsActive
    tableTypeBuffer.Title = domainSkill.Attributes.Title
+   tableTypeBuffer.Type = domainSkill.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainSkill.Attributes.UpdatedAt
    
    if (domainSkill.Relationships.ManyToOne.ParentStat__DomainEntityStat != nil) {

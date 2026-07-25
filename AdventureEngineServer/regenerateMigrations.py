@@ -41,6 +41,7 @@ weaponCategories = []
 languages = []
 tools = []
 quantifierVariants = []
+events = []
 weapons = []
 weaponCategoryMappings = []
 currencyDenominations = []
@@ -51,6 +52,9 @@ armorCategories = []
 armor = []
 itemGroups = []
 items = []
+operators = []
+gameEvents = []
+effectStats = []
 
 #This will be applied to the beginning of migrations to preserve the dependent order for foreign keys
 migrationOrderNumber = 1
@@ -97,7 +101,10 @@ def main():
         regenerateDiceMigration,
         regenerateDomainDiceRollTypeMigration,
         regenerateDomainDiceRollSubTypeMigration,
+        regenerateDomainOperatorMigration,
+        regenerateDomainGameEventMigration,
         regenerateBasicStatMigration,
+        regenerateEffectStatMigration,
         regenerateSkillsMigration,
         regenerateWeaponCategoriesMigration,
         regenerateLanguagesMigration,
@@ -115,8 +122,8 @@ def main():
         regenerateDomainClassMigration,
         regenerateDamageTypesMigration,
         regenerateDomainSubClassMigration,
-        regenerateDomainClassTraitAndAssociatedQuantifiersMigration,
         regenerateDomainConditionsMigration,
+        regenerateDomainClassTraitAndAssociatedQuantifiersMigration,
         regenerateSavingThrowsMigration,
         regenerateSpellSchoolsMigration,
         regenerateSpellsAndClassSpellsMigrations,
@@ -141,8 +148,7 @@ def produceInsertStatementsForObjects(tableName: str, typeMeta: dict, objects: l
         return []
 
     def generateInsertStatement(obj: dict):
-        baseInsertStatement = 'INSERT INTO ' + tableName + '(\n\t' 
-
+        baseInsertStatement = 'INSERT INTO ' + tableName + '(\n\t'
         columnOrder = list(obj.keys())
 
         baseInsertStatement += "".join([column + (',\n\t' if index != len(columnOrder)-1 else '\n') for index, column in enumerate(columnOrder)])
@@ -191,31 +197,84 @@ def produceMigrationFileFromObjects(tableName: str, objects: list[dict]):
     #is available for use for fk-dependent migrations, since not all migrations will end up 
     #writing to a global context.
 
+    #tracking for what id to populate by type
+    idCounts = {
+        tableName: 1
+    }
+
+    #tracking for child objects that need to be added
+    #after their parent
+    trackedChildren = []
+
+    def produceIdSeededObjectTree(currentNode: dict):
+        if "Type" not in currentNode:
+            raise RuntimeError("No type available to initialize object id.")
+        
+        currentType = currentNode["Type"]
+        
+        #Initializing or incrementing our id count for the corresponding type
+        if currentNode["Type"] not in idCounts:
+            idCounts[currentType] = 1
+        else:
+            idCounts[currentType] += 1
+
+        currentNode["Id"] = idCounts[currentType]
+        currentNode["IsActive"] = 1
+        
+        #Expecting an array of dicts with shape {
+        #   "Relationship": "MyRelationshipName__RelationshipTableName",
+        #   "Value": { the actual child object dict }
+        #}
+
+        if "Children" in currentNode:
+            for childMeta in currentNode["Children"]:
+                if ("Value" not in childMeta) or ("Relationship" not in childMeta):
+                    raise RuntimeError("Unexpected child meta shape for object: " + childMeta)
+                
+                produceIdSeededObjectTree(childMeta["Value"])
+                childMeta["Value"][childMeta["Relationship"]] = currentNode["Id"]
+
+    
+    def recursivelyPopChildren(currentNode: dict):
+        nonlocal trackedChildren
+        if "Children" in currentNode:
+            trackedChildren += [{**child["Value"], child["Relationship"]: currentNode["Id"]} for child in currentNode["Children"]]
+            recursivelyPopChildren(currentNode["Children"])
+            del currentNode["Children"]
+
     global migrationOrderNumber
     global migrationTotal
 
-    '''
-    #removing all the ordered child elements before we initialize the
-    #database elements
-    extractedChildren = [obj.pop("children", None) for obj in objects]
-    '''
+    if len(objects) == 0:
+        return []
+    
+    rootType = ""
 
-    #Generating ids for each item, this will overwrite any passed in id
-    objects = [{**obj, **{
-        "Id": (index + 1),
-        "IsActive": 1
-    }} for index, obj in enumerate(objects)]
+    try:
+        rootType = objects[0]["Type"]
+    except:
+        raise RuntimeError("Could not initialize object type check for attempted " + tableName + " migration generation.")
 
-    '''
-    #generating foreign key links to generated items for their children
-    childObjects = [{**obj, **{
-        "Id": (index + 1),
-        "IsActive": 1
-    }} for index, obj in enumerate(extractedChildren)]
-    '''
+    if not all(obj["Type"] == rootType for obj in objects):
+        raise RuntimeError("All root object nodes must be of type " + rootType + " for attempted generation of " + tableName + " migration.")
+ 
+    try:
+        for obj in objects:
+            produceIdSeededObjectTree(obj)
+    except RuntimeError as error:
+        raise error
+
+    for obj in objects:
+        recursivelyPopChildren(obj)
 
     lines = produceInsertStatementsForObjects(tableName, typeMetas[tableName], objects)
-    writeInsertLines(migrationsBaseDir + '/' + str(migrationOrderNumber).zfill(math.floor(math.log(migrationTotal))) + '__' + tableName + '.sql', lines)
+
+    if len(trackedChildren) > 0:
+        lines.append('-- The following are related child elements for the given table. They are included here for ease of relationship tracking.')
+        lines += produceInsertStatementsForObjects(tableName, typeMetas[tableName], trackedChildren)
+    
+
+    writeInsertLines(migrationsBaseDir + '/' + str(migrationOrderNumber).zfill(math.floor(math.log(migrationTotal))) + '__' + tableName + ('AndRelatedChildren' if len(trackedChildren) > 0 else '') + '.sql', lines)
     print(tableName + " migration successfully generated.")
 
     migrationOrderNumber += 1
@@ -342,6 +401,88 @@ def regenerateDomainDiceRollSubTypeMigration():
     diceRollTypes = produceMigrationFileFromObjects("DomainDiceRollSubType", diceRollSubTypes)
 
 
+def regenerateDomainOperatorMigration():
+    
+    global operators
+
+    operators = [
+        {
+            "Title": "And",
+            "AbbreviatedTitle": "&",
+            "Type": "DomainOperator",
+        },
+        {
+            "Title": "Or",
+            "AbbreviatedTitle": "Or",
+            "Type": "DomainOperator",
+        },
+        {
+            "Title": "Not",
+            "AbbreviatedTitle": "Not",
+            "Type": "DomainOperator",
+        },
+        {
+            "Title": "Plus",
+            "AbbreviatedTitle": "+",
+            "Type": "DomainOperator",
+        },
+        {
+            "Title": "Minus",
+            "AbbreviatedTitle": "-",
+            "Type": "DomainOperator",
+        }
+    ]
+
+    operators = produceMigrationFileFromObjects("DomainOperator", operators)
+
+
+def regenerateDomainGameEventMigration():
+    
+    global gameEvents
+
+    gameEvents = [
+        {
+            "Title": "Deal Damage",
+
+            "Type": "DomainGameEvent",
+        },
+        {
+            "Title": "Receive Damage",
+            "Type": "DomainGameEvent",
+        },
+        #The point when initial damage is added, but before it is dealt
+        #to prevent bonus damage from counting as a separate instance of
+        #damage application (i.e. rage damage being added as a trigger on top of
+        #damage being "dealt", the application should include base and rage damage).
+        {
+            "Title": "Calculate Initial Damage",
+            "Type": "DomainGameEvent",
+        },
+        {
+            "Title": "End Turn",
+            "Type": "DomainGameEvent",
+        },
+        {
+            "Title": "Start Turn",
+            "Type": "DomainGameEvent",
+        },
+        {
+            "Title": "Saving Throw",
+            "Type": "DomainGameEvent"
+        },
+        {
+            "Title": "Cause Saving Throw (Enemy)",
+            "Type": "DomainGameEvent"
+        },
+        {
+            "Title": "Cause Saving Throw (Ally)",
+            "Type": "DomainGameEvent"
+        },
+    ]
+
+    gameEvents = produceMigrationFileFromObjects("DomainGameEvent", gameEvents)
+
+
 def regenerateBasicStatMigration():
     baseStatNames = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
 
@@ -392,6 +533,26 @@ def regenerateBasicStatMigration():
         },
         {
             "Title": "Reactions Used",
+            "AbbreviatedTitle": "Used",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Short Rests",
+            "AbbreviatedTitle": "Short Rests",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Short Rests Used",
+            "AbbreviatedTitle": "Used",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Long Rests",
+            "AbbreviatedTitle": "Reactions",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Long Rests Used",
             "AbbreviatedTitle": "Used",
             "IsBaseStat": 0,
         },
@@ -459,8 +620,23 @@ def regenerateBasicStatMigration():
             "IsBaseStat": 0,
         },
         {
+            "Title": "Rage Charges Used",
+            "AbbreviatedTitle": "Used",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Rage Damage",
+            "AbbreviatedTitle": "Rage Damage",
+            "IsBaseStat": 0,
+        },
+        {
             "Title": "Sorcery Points",
             "AbbreviatedTitle": "Sorcery Points",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Sorcery Points Used",
+            "AbbreviatedTitle": "Used",
             "IsBaseStat": 0,
         },
         {
@@ -469,8 +645,18 @@ def regenerateBasicStatMigration():
             "IsBaseStat": 0,
         },
         {
-            "Title": "Wildshape Charges",
-            "AbbreviatedTitle": "Wildshapes",
+            "Title": "Ki Points Used",
+            "AbbreviatedTitle": "Used",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Wild Shape Charges",
+            "AbbreviatedTitle": "Wild Shapes",
+            "IsBaseStat": 0,
+        },
+        {
+            "Title": "Wild Shape Charges Used",
+            "AbbreviatedTitle": "Used",
             "IsBaseStat": 0,
         },
         {
@@ -479,14 +665,53 @@ def regenerateBasicStatMigration():
             "IsBaseStat": 0,
         },
         {
+            "Title": "Superiority Die Used",
+            "AbbreviatedTitle": "Used",
+            "IsBaseStat": 0,
+        },
+        {
             "Title": "Divinity Charges",
             "AbbreviatedTitle": "Div. Charges",
             "IsBaseStat": 0,
-        }
+        },
+        {
+            "Title": "Divinity Charges Used",
+            "AbbreviatedTitle": "Used",
+            "IsBaseStat": 0,
+        },
     ])
 
-    entityStats = produceMigrationFileFromObjects("DomainEntityStat", [{"Title": "DomainEntityStat", **stat} for stat in entityStats])
+    entityStats = produceMigrationFileFromObjects("DomainEntityStat", [{"Type": "DomainEntityStat", **stat} for stat in entityStats])
 
+
+def regenerateEffectStatMigration():
+    global effectStats
+
+    effectStatNames = [
+        "Casting Time", 
+        "Turn Ends Until End",
+        "Turn Starts Until End",
+        "Minutes Until End", 
+        "Hours Until End", 
+        "Days Until End", 
+        "Target Number",
+        "Minimum Target Number",
+        "Maximum Target Number",
+        "Range",
+        "Minimum Level Requirement",
+        "Maximum Level Requirement",
+        "Modal Choice Maximum",
+        "Modal Choice Minimum"
+    ]
+
+    effectStats = [
+        {
+            "Title": title,
+            "Type": "DomainEntityStat"
+        } for title in effectStatNames]
+    
+    effectStats = produceMigrationFileFromObjects("DomainEffectStat", effectStats)
+    
 
 def regenerateSkillsMigration():
     global skills
@@ -582,10 +807,12 @@ def regenerateQuantifierVariants():
     global quantifierVariants
 
     variantTitles = [
-        "Triggered Effect",
-        "Static Effect",
+        "Evaluated Effect",
+        "Calculated Value",
         "Action",
+        "Cost",
         "Entity Property",
+        "Effect Property",
         "Modal Choice",
     ]
 
@@ -658,7 +885,7 @@ def regenerateCurrencyDenominations():
         }
     ]
 
-    currencyDenominations = produceMigrationFileFromObjects("DomainCurrencyDenomination", [{"Title": "DomainCurrencyDenomination", **currency} for currency in currencyDenominations])
+    currencyDenominations = produceMigrationFileFromObjects("DomainCurrencyDenomination", [{"Type": "DomainCurrencyDenomination", **currency} for currency in currencyDenominations])
 
     #Applying the same weight to all coins
     quantifiers.extend([
@@ -685,7 +912,7 @@ def regenerateActionsMigration():
         "Attack", "Grapple", "Shove", "Cast", "Dash", "Disengage", "Help", "Interact", "Use Item", "Equip", "Unequip", "Hide",
 
         #Non-Combat Actions
-        "Speak"
+        "Speak", "Short Rest", "Long Rest"
     ]
 
     actions = [{ "Title": title, "Type": "DomainAction" } for title in actionTitles]
@@ -2099,45 +2326,6 @@ def regenerateDomainSubClassMigration():
     subClasses = produceMigrationFileFromObjects("DomainSubClass", [{"Type": "DomainSubClass", **subClass} for subClass in subClasses])
 
 
-def regenerateDomainClassTraitAndAssociatedQuantifiersMigration():
-    
-    global classes
-    global subClasses
-    global classTraits
-    global conditions
-    global quantifiers
-
-    #region Barbarian 
-    
-    classTraits.extend([
-        {
-            "Title": "Rage",
-            "AbbreviatedTitle": "Rage",
-            "Description": "Imbue yourself with a primal power called Rage, a force that grants you extraordinary might and resilience.",
-            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian")
-        },
-        {
-            "Title": "Wild Shape",
-            "AbbreviatedTitle": "Wild Shape",
-            "Description": "Magically assume the shape of an animal, allowing you all the strength and flexibility of a new form.",
-            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Druid")
-        },
-    ])
-
-    #endregion
-
-    classTraits = produceMigrationFileFromObjects("DomainClassTrait", [{"Type": "DomainClassTrait", **trait} for trait in classTraits])
-
-    quantifiers.extend([
-        {
-            "Parent__DomainClassTrait": getForeignKeyIdForTitle(classTraits, "Rage"),
-            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Action"),
-            "AppliesToSource": 1, 
-            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged"),
-        }
-    ])
-
-
 def regenerateDomainClassLevelAdditionMigration():
     global classes
     global subClasses
@@ -2253,6 +2441,8 @@ def regenerateDomainConditionsMigration():
     global diceRollTypes
     global quantifiers
     global modifierMechanics
+    global effectStats
+    global gameEvents
 
     conditions = [
         {
@@ -2318,6 +2508,9 @@ def regenerateDomainConditionsMigration():
         {
             "Title": "Heard",
         },
+        {
+            "Title": "Concentrating"
+        }
     ]
 
     conditions = produceMigrationFileFromObjects("DomainCondition", [{"Type": "DomainCondition", **condition} for condition in conditions])
@@ -2721,10 +2914,246 @@ def regenerateDomainConditionsMigration():
             "Range": 5,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
-        }
+        },
         #endregion
 
+        #region Enraged
+        {
+            "Type": "Quantifier",
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+            "AppliesToSource": 1,
+            "GivesResistance": 1,
+            "Target__DomainDamageType": getForeignKeyIdForTitle(damageTypes, "Bludgeoning"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged"),
+        },
+        {
+            "Type": "Quantifier",
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+            "AppliesToSource": 1,
+            "GivesResistance": 1,
+            "Target__DomainDamageType": getForeignKeyIdForTitle(damageTypes, "Piercing"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged"),
+        },
+        {
+            "Type": "Quantifier",
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Entity Property"),
+            "AppliesToSource": 1,
+            "GivesResistance": 1,
+            "Target__DomainDamageType": getForeignKeyIdForTitle(damageTypes, "Slashing"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged"),
+        },
+        {
+            "Type": "Quantifier",
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Evaluated Effect"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged"),
+            "Children": [
+                {
+                    "Relationship": "Parent__Quantifier",
+                    "Value": {
+                        "Type": "EvaluationNode",
+                        "Operator__DomainOperator": getForeignKeyIdForTitle(operators, "And"),
+                        "Children": [
+                            {
+                                #If an attack is made
+                                "Relationship": "Parent__EvaluationNode",
+                                "Value": {
+                                    "Type": "Quantifier",
+                                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Evaluated Effect"),
+                                    "Trigger__DomainAction": getForeignKeyIdForTitle(actions, "Attack")
+                                },
+                                #And it uses/involves strength
+                                "Relationship": "Parent__EvaluationNode",
+                                "Value": {
+                                    "Type": "Quantifier",
+                                    #Applies to the most current event being an attack (previous element in grouped trigger evaluation)
+                                    "ApplyToCurrentEventContext": 1,
+                                    #In this case the source is the attack event instead of the source entity making the attack
+                                    "AppliesToSource": 1,
+                                    "Uses": 1,
+                                    "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
+                                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Evaluated Effect"),
+                                },
+                                #And damage is dealt
+                                "Relationship": "Parent__EvaluationNode",
+                                "Value": {
+                                    "Type": "Quantifier",
+                                    "Trigger__DomainAction": getForeignKeyIdForTitle(gameEvents, "Calculate Initial Damage"),
+                                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Evaluated Effect"),
+                                }
+                            }
+                        ]
+                    }
+                },
+                #Add bonus damage equal to the current rage damage amount
+                {
+                    "Relationship": "Parent__Quantifier",
+                    "Value": {
+                        "Type": "Quantifier",
+                        "ApplyToCurrentEventContext": 1,
+                        "DeltaTargetValue": 1,
+                        "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Rage Damage"),
+                        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Calculated Value"),
+                    }
+                }
+            ]
+        },
+        {
+            "Type": "Quantifier",
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+            "AppliesToSource": 1,
+            "GivesResistance": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Check"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        {
+            "Type": "Quantifier",
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+            "AppliesToSource": 1,
+            "GivesResistance": 1,
+            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(modifierMechanics, "Advantage"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Strength"),
+            "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Save"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        {
+            "Type": "Quantifier",
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+            "AppliesToSource": 1,
+            "PreventsReceving": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(diceRollTypes, "Concentrating"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        {
+            "Type": "Quantifier",
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+            "AppliesToSource": 1,
+            "PreventsApplying": 1,
+            "Target__DomainAction": getForeignKeyIdForTitle(actions, "Cast"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        #Initial max duration cap of 10 minutes (independent of turn duration reset procs)
+        {
+            "HardSetQuantity": 10,
+            "Target__DomainEffectStat": getForeignKeyIdForTitle(effectStats, "Minutes Until End"),
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        #Allow rage initially to last through the end of the next turn
+        {
+            "HardSetQuantity": 2,
+            "Target__DomainEffectStat": getForeignKeyIdForTitle(effectStats, "Turn Ends Until End"),
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        {
+            "HardSetQuantity": 2,
+            "Target__DomainEffectStat": getForeignKeyIdForTitle(effectStats, "Turn Ends Until End"),
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        {
+            "Trigger__DomainGameEvent": getForeignKeyIdForTitle(gameEvents, "Cause Saving Throw (Enemy)"),
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+            "HardSetQuantity": 2,
+            "Target__DomainEffectStat": getForeignKeyIdForTitle(effectStats, "Turn Ends Until End"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        {
+            "Trigger__DomainAction": getForeignKeyIdForTitle(actions, "Attack"),
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+            "HardSetQuantity": 2,
+            "Target__DomainEffectStat": getForeignKeyIdForTitle(effectStats, "Turn Ends Until End"),
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        {
+            "Gives": 1,
+            "AppliesToSource": 1,
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged"),
+            "Title": "Extend Rage",
+            "Children": [
+                {
+                    "Relationship": "Parent__Quantifier",
+                    "Value": {
+                        "Type": "Quantifier",
+                        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Cost"),
+                        "DeltaQuantity": 1,
+                        "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Bonus Actions Used")
+                    }
+                },
+                {
+                    "Relationship": "Parent__Quantifier",
+                    "Value": {
+                        "Type": "Quantifier",
+                        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+                        "HardSetQuantity": 2,
+                        "Target__DomainEffectStat": getForeignKeyIdForTitle(effectStats, "Turn Ends Until End"),
+                        "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+                    }
+                }
+            ]
+        }
         #TODO The exhaustion condition at some point when I've got more of a mind to figure out leveled quantitifiers for conditions and spells and such
+    ])
+
+
+def regenerateDomainClassTraitAndAssociatedQuantifiersMigration():
+    
+    global classes
+    global subClasses
+    global classTraits
+    global entityStats
+    global conditions
+    global operators
+    global quantifiers
+    global gameEvents
+
+    #region Barbarian 
+    
+    classTraits.extend([
+        {
+            "Title": "Rage",
+            "AbbreviatedTitle": "Rage",
+            "Description": "Imbue yourself with a primal power called Rage, a force that grants you extraordinary might and resilience.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Barbarian")
+        },
+        {
+            "Title": "Wild Shape",
+            "AbbreviatedTitle": "Wild Shape",
+            "Description": "Magically assume the shape of an animal, allowing you all the strength and flexibility of a new form.",
+            "Class__DomainClass": getForeignKeyIdForTitle(classes, "Druid")
+        },
+    ])
+
+    #endregion
+
+    classTraits = produceMigrationFileFromObjects("DomainClassTrait", [{"Type": "DomainClassTrait", **trait} for trait in classTraits])
+
+    quantifiers.extend([
+        #Allowing Rage entry as an action, or conditionally a bonus action
+        {
+            "Parent__DomainClassTrait": getForeignKeyIdForTitle(classTraits, "Rage"),
+            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Action"),
+            "AppliesToSource": 1,
+            "Target__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
+        },
+        #Regain full rage charges on long rest
+        {
+            "Parent__DomainClassTrait": getForeignKeyIdForTitle(classTraits, "Rage"),
+            "AppliesToSource": 1,
+            "HardSetValue": 0,
+            "Trigger__DomainAction": getForeignKeyIdForTitle(actions, "Long Rest"),
+            "Target__DomainCondition": getForeignKeyIdForTitle(entityStats, "Rage Charges Used")
+        },
+        #Regain one rage charge on short rest
+        {
+            "Parent__DomainClassTrait": getForeignKeyIdForTitle(classTraits, "Rage"),
+            "AppliesToSource": 1,
+            "DeltaQuantity": -1,
+            "Trigger__DomainAction": getForeignKeyIdForTitle(actions, "Short Rest"),
+            "Target__DomainEntityStat": getForeignKeyIdForTitle(entityStats, "Rage Charges Used")
+        }
     ])
 
     

@@ -22,6 +22,7 @@ type DomainDiceRollSubTypeDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -109,6 +110,7 @@ func DomainDiceRollSubTypeToDomainDiceRollSubTypeDTO(context *contextProviders.D
          
          IsActive: domainDiceRollSubType.IsActive,
          Title: domainDiceRollSubType.Title,
+         Type: domainDiceRollSubType.Type,
          UpdatedAt: domainDiceRollSubType.UpdatedAt,
       },
       Relationships: DomainDiceRollSubTypeDTORelationships{
@@ -132,6 +134,7 @@ func DomainDiceRollSubTypeDTOToDomainDiceRollSubType(domainDiceRollSubType *Doma
    
    tableTypeBuffer.IsActive = domainDiceRollSubType.Attributes.IsActive
    tableTypeBuffer.Title = domainDiceRollSubType.Attributes.Title
+   tableTypeBuffer.Type = domainDiceRollSubType.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainDiceRollSubType.Attributes.UpdatedAt
    
    if (domainDiceRollSubType.Relationships.ManyToOne.ResourceOwner__User != nil) {

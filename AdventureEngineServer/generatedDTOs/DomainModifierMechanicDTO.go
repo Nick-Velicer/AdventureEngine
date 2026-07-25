@@ -22,6 +22,7 @@ type DomainModifierMechanicDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -95,6 +96,7 @@ func DomainModifierMechanicToDomainModifierMechanicDTO(context *contextProviders
          
          IsActive: domainModifierMechanic.IsActive,
          Title: domainModifierMechanic.Title,
+         Type: domainModifierMechanic.Type,
          UpdatedAt: domainModifierMechanic.UpdatedAt,
       },
       Relationships: DomainModifierMechanicDTORelationships{
@@ -117,6 +119,7 @@ func DomainModifierMechanicDTOToDomainModifierMechanic(domainModifierMechanic *D
    
    tableTypeBuffer.IsActive = domainModifierMechanic.Attributes.IsActive
    tableTypeBuffer.Title = domainModifierMechanic.Attributes.Title
+   tableTypeBuffer.Type = domainModifierMechanic.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainModifierMechanic.Attributes.UpdatedAt
    
    if (domainModifierMechanic.Relationships.ManyToOne.ResourceOwner__User != nil) {

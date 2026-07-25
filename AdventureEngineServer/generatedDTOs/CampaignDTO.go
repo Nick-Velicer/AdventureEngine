@@ -23,6 +23,7 @@ type CampaignDTOAttributes struct {
    IsActive *bool
    Notes string
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -97,6 +98,7 @@ func CampaignToCampaignDTO(context *contextProviders.DTOContext, campaign *types
          IsActive: campaign.IsActive,
          Notes: campaign.Notes,
          Title: campaign.Title,
+         Type: campaign.Type,
          UpdatedAt: campaign.UpdatedAt,
       },
       Relationships: CampaignDTORelationships{
@@ -120,6 +122,7 @@ func CampaignDTOToCampaign(campaign *CampaignDTO) *types.Campaign {
    tableTypeBuffer.IsActive = campaign.Attributes.IsActive
    tableTypeBuffer.Notes = campaign.Attributes.Notes
    tableTypeBuffer.Title = campaign.Attributes.Title
+   tableTypeBuffer.Type = campaign.Attributes.Type
    tableTypeBuffer.UpdatedAt = campaign.Attributes.UpdatedAt
    
    if (campaign.Relationships.ManyToOne.ResourceOwner__User != nil) {

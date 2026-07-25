@@ -34,6 +34,9 @@ type DomainClassLevelAddition struct {
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 
+	// Type corresponds to the JSON schema field "Type".
+	Type *string `json:"Type" gorm:"column:Type" mapstructure:"Type"`
+
 	// UnavailableForMultiClass corresponds to the JSON schema field
 	// "UnavailableForMultiClass".
 	UnavailableForMultiClass bool `json:"UnavailableForMultiClass" gorm:"column:UnavailableForMultiClass" mapstructure:"UnavailableForMultiClass"`

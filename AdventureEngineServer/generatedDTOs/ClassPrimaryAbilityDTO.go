@@ -22,6 +22,7 @@ type ClassPrimaryAbilityDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -123,6 +124,7 @@ func ClassPrimaryAbilityToClassPrimaryAbilityDTO(context *contextProviders.DTOCo
          
          IsActive: classPrimaryAbility.IsActive,
          Title: classPrimaryAbility.Title,
+         Type: classPrimaryAbility.Type,
          UpdatedAt: classPrimaryAbility.UpdatedAt,
       },
       Relationships: ClassPrimaryAbilityDTORelationships{
@@ -147,6 +149,7 @@ func ClassPrimaryAbilityDTOToClassPrimaryAbility(classPrimaryAbility *ClassPrima
    
    tableTypeBuffer.IsActive = classPrimaryAbility.Attributes.IsActive
    tableTypeBuffer.Title = classPrimaryAbility.Attributes.Title
+   tableTypeBuffer.Type = classPrimaryAbility.Attributes.Type
    tableTypeBuffer.UpdatedAt = classPrimaryAbility.Attributes.UpdatedAt
    
    if (classPrimaryAbility.Relationships.ManyToOne.Class__DomainClass != nil) {

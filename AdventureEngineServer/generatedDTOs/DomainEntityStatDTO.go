@@ -23,6 +23,7 @@ type DomainEntityStatDTOAttributes struct {
    IsActive *bool
    IsBaseStat bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -97,6 +98,7 @@ func DomainEntityStatToDomainEntityStatDTO(context *contextProviders.DTOContext,
          IsActive: domainEntityStat.IsActive,
          IsBaseStat: domainEntityStat.IsBaseStat,
          Title: domainEntityStat.Title,
+         Type: domainEntityStat.Type,
          UpdatedAt: domainEntityStat.UpdatedAt,
       },
       Relationships: DomainEntityStatDTORelationships{
@@ -120,6 +122,7 @@ func DomainEntityStatDTOToDomainEntityStat(domainEntityStat *DomainEntityStatDTO
    tableTypeBuffer.IsActive = domainEntityStat.Attributes.IsActive
    tableTypeBuffer.IsBaseStat = domainEntityStat.Attributes.IsBaseStat
    tableTypeBuffer.Title = domainEntityStat.Attributes.Title
+   tableTypeBuffer.Type = domainEntityStat.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainEntityStat.Attributes.UpdatedAt
    
    if (domainEntityStat.Relationships.ManyToOne.ResourceOwner__User != nil) {

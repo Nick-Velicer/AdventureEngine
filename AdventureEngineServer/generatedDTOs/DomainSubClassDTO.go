@@ -22,6 +22,7 @@ type DomainSubClassDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -109,6 +110,7 @@ func DomainSubClassToDomainSubClassDTO(context *contextProviders.DTOContext, dom
          
          IsActive: domainSubClass.IsActive,
          Title: domainSubClass.Title,
+         Type: domainSubClass.Type,
          UpdatedAt: domainSubClass.UpdatedAt,
       },
       Relationships: DomainSubClassDTORelationships{
@@ -132,6 +134,7 @@ func DomainSubClassDTOToDomainSubClass(domainSubClass *DomainSubClassDTO) *types
    
    tableTypeBuffer.IsActive = domainSubClass.Attributes.IsActive
    tableTypeBuffer.Title = domainSubClass.Attributes.Title
+   tableTypeBuffer.Type = domainSubClass.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainSubClass.Attributes.UpdatedAt
    
    if (domainSubClass.Relationships.ManyToOne.Class__DomainClass != nil) {

@@ -25,6 +25,7 @@ type DomainSizeDTOAttributes struct {
    IsActive *bool
    SizeOrder float64
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -101,6 +102,7 @@ func DomainSizeToDomainSizeDTO(context *contextProviders.DTOContext, domainSize 
          IsActive: domainSize.IsActive,
          SizeOrder: domainSize.SizeOrder,
          Title: domainSize.Title,
+         Type: domainSize.Type,
          UpdatedAt: domainSize.UpdatedAt,
       },
       Relationships: DomainSizeDTORelationships{
@@ -126,6 +128,7 @@ func DomainSizeDTOToDomainSize(domainSize *DomainSizeDTO) *types.DomainSize {
    tableTypeBuffer.IsActive = domainSize.Attributes.IsActive
    tableTypeBuffer.SizeOrder = domainSize.Attributes.SizeOrder
    tableTypeBuffer.Title = domainSize.Attributes.Title
+   tableTypeBuffer.Type = domainSize.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainSize.Attributes.UpdatedAt
    
    if (domainSize.Relationships.ManyToOne.ResourceOwner__User != nil) {

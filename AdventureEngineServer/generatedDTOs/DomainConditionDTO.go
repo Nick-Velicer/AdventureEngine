@@ -22,6 +22,7 @@ type DomainConditionDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -112,6 +113,7 @@ func DomainConditionToDomainConditionDTO(context *contextProviders.DTOContext, d
          
          IsActive: domainCondition.IsActive,
          Title: domainCondition.Title,
+         Type: domainCondition.Type,
          UpdatedAt: domainCondition.UpdatedAt,
       },
       Relationships: DomainConditionDTORelationships{
@@ -135,6 +137,7 @@ func DomainConditionDTOToDomainCondition(domainCondition *DomainConditionDTO) *t
    
    tableTypeBuffer.IsActive = domainCondition.Attributes.IsActive
    tableTypeBuffer.Title = domainCondition.Attributes.Title
+   tableTypeBuffer.Type = domainCondition.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainCondition.Attributes.UpdatedAt
    
    if (domainCondition.Relationships.ManyToOne.ResourceOwner__User != nil) {

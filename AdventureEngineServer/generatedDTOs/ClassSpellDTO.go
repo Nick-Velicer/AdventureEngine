@@ -22,6 +22,7 @@ type ClassSpellDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -123,6 +124,7 @@ func ClassSpellToClassSpellDTO(context *contextProviders.DTOContext, classSpell 
          
          IsActive: classSpell.IsActive,
          Title: classSpell.Title,
+         Type: classSpell.Type,
          UpdatedAt: classSpell.UpdatedAt,
       },
       Relationships: ClassSpellDTORelationships{
@@ -147,6 +149,7 @@ func ClassSpellDTOToClassSpell(classSpell *ClassSpellDTO) *types.ClassSpell {
    
    tableTypeBuffer.IsActive = classSpell.Attributes.IsActive
    tableTypeBuffer.Title = classSpell.Attributes.Title
+   tableTypeBuffer.Type = classSpell.Attributes.Type
    tableTypeBuffer.UpdatedAt = classSpell.Attributes.UpdatedAt
    
    if (classSpell.Relationships.ManyToOne.Class__DomainClass != nil) {

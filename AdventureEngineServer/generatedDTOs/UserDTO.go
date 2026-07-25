@@ -23,6 +23,7 @@ type UserDTOAttributes struct {
    IsActive *bool
    Password *string
    Title *string
+   Type *string
    UpdatedAt *string
    Username *string
 }
@@ -115,6 +116,7 @@ func UserToUserDTO(context *contextProviders.DTOContext, user *types.User) (*Use
          IsActive: user.IsActive,
          Password: nil,
          Title: user.Title,
+         Type: user.Type,
          UpdatedAt: user.UpdatedAt,
          Username: user.Username,
       },
@@ -140,6 +142,7 @@ func UserDTOToUser(user *UserDTO) *types.User {
    tableTypeBuffer.IsActive = user.Attributes.IsActive
    tableTypeBuffer.Password = user.Attributes.Password
    tableTypeBuffer.Title = user.Attributes.Title
+   tableTypeBuffer.Type = user.Attributes.Type
    tableTypeBuffer.UpdatedAt = user.Attributes.UpdatedAt
    tableTypeBuffer.Username = user.Attributes.Username
    

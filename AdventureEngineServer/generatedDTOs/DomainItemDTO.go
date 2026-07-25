@@ -22,6 +22,7 @@ type DomainItemDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -109,6 +110,7 @@ func DomainItemToDomainItemDTO(context *contextProviders.DTOContext, domainItem 
          
          IsActive: domainItem.IsActive,
          Title: domainItem.Title,
+         Type: domainItem.Type,
          UpdatedAt: domainItem.UpdatedAt,
       },
       Relationships: DomainItemDTORelationships{
@@ -132,6 +134,7 @@ func DomainItemDTOToDomainItem(domainItem *DomainItemDTO) *types.DomainItem {
    
    tableTypeBuffer.IsActive = domainItem.Attributes.IsActive
    tableTypeBuffer.Title = domainItem.Attributes.Title
+   tableTypeBuffer.Type = domainItem.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainItem.Attributes.UpdatedAt
    
    if (domainItem.Relationships.ManyToOne.ItemGroup__DomainItemGroup != nil) {

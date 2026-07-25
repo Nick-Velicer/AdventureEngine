@@ -22,6 +22,7 @@ type CharacterDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -171,6 +172,7 @@ func CharacterToCharacterDTO(context *contextProviders.DTOContext, character *ty
          
          IsActive: character.IsActive,
          Title: character.Title,
+         Type: character.Type,
          UpdatedAt: character.UpdatedAt,
       },
       Relationships: CharacterDTORelationships{
@@ -198,6 +200,7 @@ func CharacterDTOToCharacter(character *CharacterDTO) *types.Character {
    
    tableTypeBuffer.IsActive = character.Attributes.IsActive
    tableTypeBuffer.Title = character.Attributes.Title
+   tableTypeBuffer.Type = character.Attributes.Type
    tableTypeBuffer.UpdatedAt = character.Attributes.UpdatedAt
    
    if (character.Relationships.ManyToOne.Campaign__Campaign != nil) {

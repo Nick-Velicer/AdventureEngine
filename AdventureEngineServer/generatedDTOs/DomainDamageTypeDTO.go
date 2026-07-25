@@ -22,6 +22,7 @@ type DomainDamageTypeDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -95,6 +96,7 @@ func DomainDamageTypeToDomainDamageTypeDTO(context *contextProviders.DTOContext,
          
          IsActive: domainDamageType.IsActive,
          Title: domainDamageType.Title,
+         Type: domainDamageType.Type,
          UpdatedAt: domainDamageType.UpdatedAt,
       },
       Relationships: DomainDamageTypeDTORelationships{
@@ -117,6 +119,7 @@ func DomainDamageTypeDTOToDomainDamageType(domainDamageType *DomainDamageTypeDTO
    
    tableTypeBuffer.IsActive = domainDamageType.Attributes.IsActive
    tableTypeBuffer.Title = domainDamageType.Attributes.Title
+   tableTypeBuffer.Type = domainDamageType.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainDamageType.Attributes.UpdatedAt
    
    if (domainDamageType.Relationships.ManyToOne.ResourceOwner__User != nil) {

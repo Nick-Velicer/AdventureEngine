@@ -22,6 +22,7 @@ type UserRoleInstanceDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -123,6 +124,7 @@ func UserRoleInstanceToUserRoleInstanceDTO(context *contextProviders.DTOContext,
          
          IsActive: userRoleInstance.IsActive,
          Title: userRoleInstance.Title,
+         Type: userRoleInstance.Type,
          UpdatedAt: userRoleInstance.UpdatedAt,
       },
       Relationships: UserRoleInstanceDTORelationships{
@@ -147,6 +149,7 @@ func UserRoleInstanceDTOToUserRoleInstance(userRoleInstance *UserRoleInstanceDTO
    
    tableTypeBuffer.IsActive = userRoleInstance.Attributes.IsActive
    tableTypeBuffer.Title = userRoleInstance.Attributes.Title
+   tableTypeBuffer.Type = userRoleInstance.Attributes.Type
    tableTypeBuffer.UpdatedAt = userRoleInstance.Attributes.UpdatedAt
    
    if (userRoleInstance.Relationships.ManyToOne.ResourceOwner__User != nil) {

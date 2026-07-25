@@ -23,6 +23,7 @@ type DomainClassLevelAdditionDTOAttributes struct {
    IsActive *bool
    Level float64
    Title *string
+   Type *string
    UnavailableForMultiClass bool
    UpdatedAt *string
 }
@@ -126,6 +127,7 @@ func DomainClassLevelAdditionToDomainClassLevelAdditionDTO(context *contextProvi
          IsActive: domainClassLevelAddition.IsActive,
          Level: domainClassLevelAddition.Level,
          Title: domainClassLevelAddition.Title,
+         Type: domainClassLevelAddition.Type,
          UnavailableForMultiClass: domainClassLevelAddition.UnavailableForMultiClass,
          UpdatedAt: domainClassLevelAddition.UpdatedAt,
       },
@@ -152,6 +154,7 @@ func DomainClassLevelAdditionDTOToDomainClassLevelAddition(domainClassLevelAddit
    tableTypeBuffer.IsActive = domainClassLevelAddition.Attributes.IsActive
    tableTypeBuffer.Level = domainClassLevelAddition.Attributes.Level
    tableTypeBuffer.Title = domainClassLevelAddition.Attributes.Title
+   tableTypeBuffer.Type = domainClassLevelAddition.Attributes.Type
    tableTypeBuffer.UnavailableForMultiClass = domainClassLevelAddition.Attributes.UnavailableForMultiClass
    tableTypeBuffer.UpdatedAt = domainClassLevelAddition.Attributes.UpdatedAt
    

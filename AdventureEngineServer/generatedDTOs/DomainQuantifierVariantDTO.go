@@ -22,6 +22,7 @@ type DomainQuantifierVariantDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -95,6 +96,7 @@ func DomainQuantifierVariantToDomainQuantifierVariantDTO(context *contextProvide
          
          IsActive: domainQuantifierVariant.IsActive,
          Title: domainQuantifierVariant.Title,
+         Type: domainQuantifierVariant.Type,
          UpdatedAt: domainQuantifierVariant.UpdatedAt,
       },
       Relationships: DomainQuantifierVariantDTORelationships{
@@ -117,6 +119,7 @@ func DomainQuantifierVariantDTOToDomainQuantifierVariant(domainQuantifierVariant
    
    tableTypeBuffer.IsActive = domainQuantifierVariant.Attributes.IsActive
    tableTypeBuffer.Title = domainQuantifierVariant.Attributes.Title
+   tableTypeBuffer.Type = domainQuantifierVariant.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainQuantifierVariant.Attributes.UpdatedAt
    
    if (domainQuantifierVariant.Relationships.ManyToOne.ResourceOwner__User != nil) {

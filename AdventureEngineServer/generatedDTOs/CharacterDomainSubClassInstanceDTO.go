@@ -23,6 +23,7 @@ type CharacterDomainSubClassInstanceDTOAttributes struct {
    IsActive *bool
    Level float64
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -125,6 +126,7 @@ func CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(context
          IsActive: characterDomainSubClassInstance.IsActive,
          Level: characterDomainSubClassInstance.Level,
          Title: characterDomainSubClassInstance.Title,
+         Type: characterDomainSubClassInstance.Type,
          UpdatedAt: characterDomainSubClassInstance.UpdatedAt,
       },
       Relationships: CharacterDomainSubClassInstanceDTORelationships{
@@ -150,6 +152,7 @@ func CharacterDomainSubClassInstanceDTOToCharacterDomainSubClassInstance(charact
    tableTypeBuffer.IsActive = characterDomainSubClassInstance.Attributes.IsActive
    tableTypeBuffer.Level = characterDomainSubClassInstance.Attributes.Level
    tableTypeBuffer.Title = characterDomainSubClassInstance.Attributes.Title
+   tableTypeBuffer.Type = characterDomainSubClassInstance.Attributes.Type
    tableTypeBuffer.UpdatedAt = characterDomainSubClassInstance.Attributes.UpdatedAt
    
    if (characterDomainSubClassInstance.Relationships.ManyToOne.Character__Character != nil) {

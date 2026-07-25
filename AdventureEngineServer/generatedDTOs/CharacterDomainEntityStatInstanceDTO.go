@@ -22,6 +22,7 @@ type CharacterDomainEntityStatInstanceDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
    Value float64
 }
@@ -124,6 +125,7 @@ func CharacterDomainEntityStatInstanceToCharacterDomainEntityStatInstanceDTO(con
          
          IsActive: characterDomainEntityStatInstance.IsActive,
          Title: characterDomainEntityStatInstance.Title,
+         Type: characterDomainEntityStatInstance.Type,
          UpdatedAt: characterDomainEntityStatInstance.UpdatedAt,
          Value: characterDomainEntityStatInstance.Value,
       },
@@ -149,6 +151,7 @@ func CharacterDomainEntityStatInstanceDTOToCharacterDomainEntityStatInstance(cha
    
    tableTypeBuffer.IsActive = characterDomainEntityStatInstance.Attributes.IsActive
    tableTypeBuffer.Title = characterDomainEntityStatInstance.Attributes.Title
+   tableTypeBuffer.Type = characterDomainEntityStatInstance.Attributes.Type
    tableTypeBuffer.UpdatedAt = characterDomainEntityStatInstance.Attributes.UpdatedAt
    tableTypeBuffer.Value = characterDomainEntityStatInstance.Attributes.Value
    

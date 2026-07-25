@@ -24,6 +24,7 @@ type DomainDiceDTOAttributes struct {
    Maximum float64
    Minimum float64
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -99,6 +100,7 @@ func DomainDiceToDomainDiceDTO(context *contextProviders.DTOContext, domainDice 
          Maximum: domainDice.Maximum,
          Minimum: domainDice.Minimum,
          Title: domainDice.Title,
+         Type: domainDice.Type,
          UpdatedAt: domainDice.UpdatedAt,
       },
       Relationships: DomainDiceDTORelationships{
@@ -123,6 +125,7 @@ func DomainDiceDTOToDomainDice(domainDice *DomainDiceDTO) *types.DomainDice {
    tableTypeBuffer.Maximum = domainDice.Attributes.Maximum
    tableTypeBuffer.Minimum = domainDice.Attributes.Minimum
    tableTypeBuffer.Title = domainDice.Attributes.Title
+   tableTypeBuffer.Type = domainDice.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainDice.Attributes.UpdatedAt
    
    if (domainDice.Relationships.ManyToOne.ResourceOwner__User != nil) {

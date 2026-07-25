@@ -22,6 +22,7 @@ type DomainSpeciesDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -109,6 +110,7 @@ func DomainSpeciesToDomainSpeciesDTO(context *contextProviders.DTOContext, domai
          
          IsActive: domainSpecies.IsActive,
          Title: domainSpecies.Title,
+         Type: domainSpecies.Type,
          UpdatedAt: domainSpecies.UpdatedAt,
       },
       Relationships: DomainSpeciesDTORelationships{
@@ -132,6 +134,7 @@ func DomainSpeciesDTOToDomainSpecies(domainSpecies *DomainSpeciesDTO) *types.Dom
    
    tableTypeBuffer.IsActive = domainSpecies.Attributes.IsActive
    tableTypeBuffer.Title = domainSpecies.Attributes.Title
+   tableTypeBuffer.Type = domainSpecies.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainSpecies.Attributes.UpdatedAt
    
    if (domainSpecies.Relationships.ManyToOne.CreatureType__DomainCreatureType != nil) {

@@ -13,8 +13,6 @@ import { DomainSpell } from "./DomainSpell";
 import { DomainStaticEffect } from "./DomainStaticEffect";
 import { DomainSubClass } from "./DomainSubClass";
 import { DomainWeapon } from "./DomainWeapon";
-import { EvaluatedConditional } from "./EvaluatedConditional";
-import { QuantifierCostSpecifier } from "./QuantifierCostSpecifier";
 import { DomainCurrencyDenomination } from "./DomainCurrencyDenomination";
 import { DomainWeaponCategory } from "./DomainWeaponCategory";
 import { DomainSkill } from "./DomainSkill";
@@ -25,25 +23,26 @@ import { DomainArmor } from "./DomainArmor";
 import { DomainClassLevelAddition } from "./DomainClassLevelAddition";
 import { DomainItem } from "./DomainItem";
 import { DomainItemGroup } from "./DomainItemGroup";
+import { EvaluationNode } from "./EvaluationNode";
+import { DomainGameEvent } from "./DomainGameEvent";
+import { DomainEffectStat } from "./DomainEffectStat";
 
 export type Quantifier = ExtendedSchemaObject<{
     Attributes: {
         //Whether or not this ends up overriding another quantifier with it's non-null values from some conditional mapping
         ShouldReplace?: boolean,
-        //Such a value/property now becomes this
+        //Such a value/property now becomes this, kept outside of the effect stats as we need this to modify targets numerically
         HardSetQuantity?: number,
         HardSetPercentage?: number,
         DeltaQuantity?: number,
         DeltaPercentage?: number,
-        RefreshOnShortRest?: boolean,
-        RefreshOnLongRest?: boolean,
-        UntilShortRest?: boolean,
-        UntilLongRest?: boolean,
-        QuantityRestoredOnShortRest?: number,
-        LevelMinimumRequirement?: number,
-        LevelMaximumRequirement?: number,
-        TargetMinimum?: number,
-        TargetMaximum?: number,
+        //Same as above, but if we should read from the target property on a character or domain instead of having a hard-coded number
+        HardSetTargetValue?: boolean,
+        DeltaTargetValue?: boolean,
+        //In case the quantifier should be checked against the most recent event/trigger's values
+        //instead of a specific entity, this can be made a domain table if there are 
+        //enough demonstrated separate evaluation contexts, but a flag is fine for now
+        ApplyToCurrentEventContext?: boolean,
         AppliesToSource?: boolean, 
         AppliesToTargets?: boolean,
         //If any other entities should have this effect when engaging with the specific entity context (e.g. all enemies have advantage on attack rolls against source/target)
@@ -52,22 +51,19 @@ export type Quantifier = ExtendedSchemaObject<{
         //If only the specific source/target should be counted for the quantifier calculation (e.g. a charmed entity has disabled attack roles against the source)
         AppliesAgainstSourceForTargetsOnly?: boolean,
         AppliesAgainstTargetsForSourceOnly?: boolean,
+        //If this is meta-information about the effect itself, like modification to casting time or time to end
+        AppliesToEffect?: boolean,
         AutomaticFailure?: boolean,
         AutomaticCritical?: boolean,
         PreventsReceiving?: boolean,
         PreventsApplying?: boolean,
         Gives?: boolean,
         Removes?: boolean,
+        //A flag mostly for evaluation, if a context should be checked for having a target quality involved
+        Uses?: boolean,
         RemovedOn?: boolean,
         GivesResistance?: boolean,
         IntoInventory?: boolean,
-        Range?: number,
-        UseTargetInstanceValue?: boolean,
-        TargetValueMaximum?: number,
-        TargetValueMinumum?: number,
-        TimeUntilResolution?: number,
-        //If populated, use child quantifiers that reference this one and use a maximum selection amount specified here
-        ModalChoiceMaximum?: number, 
     },
     Relationships: {
         ManyToOne: {
@@ -86,7 +82,7 @@ export type Quantifier = ExtendedSchemaObject<{
             Parent__DomainClassLevelAddition?: DomainClassLevelAddition,
             Parent__DomainItem?: DomainItem,
             Parent__DomainItemGroup?: DomainItemGroup,
-            //Mostly used for modal references
+            Parent__EvaluationNode?: EvaluationNode,
             Parent__Quantifier?: Quantifier,
 
             //Keys for other effects or targets that a quantifier may have (distinguished from what their source node is)
@@ -104,15 +100,18 @@ export type Quantifier = ExtendedSchemaObject<{
             Target__DomainSkill?: DomainSkill,
             Target__DomainLanguage?: DomainLanguage,
             Target__DomainModifierMechanic?: DomainModifierMechanic,
-
+            Target__DomainEffectStat?: DomainEffectStat,
+            //If there is no trigger set, assume it is to be evaluated statically
             Trigger__DomainAction?: DomainAction,
-
+            Trigger__DomainCondition?: DomainCondition,
+            Trigger__DomainGameEvent?: DomainGameEvent,
             Variant__DomainQuantifierVariant?: DomainQuantifierVariant,
         },
         OneToMany: {
-            //Costs paid for this quantifier (action, bonus action, movement, spell slot, etc.)
-            Costs__QuantifierCostSpecifier?: QuantifierCostSpecifier[],
-            Conditions__EvaluatedConditional?: EvaluatedConditional[],
+            //Any boolean or numeric expression entry points
+            EvaluationTree__EvaluationNode?: EvaluationNode[],
+            //Allow for grouping effects under a conditional or trigger
+            Children__Quantifier?: Quantifier[],
         }
     }
 }>

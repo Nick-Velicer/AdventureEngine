@@ -22,6 +22,7 @@ type DomainArmorCategoryDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -95,6 +96,7 @@ func DomainArmorCategoryToDomainArmorCategoryDTO(context *contextProviders.DTOCo
          
          IsActive: domainArmorCategory.IsActive,
          Title: domainArmorCategory.Title,
+         Type: domainArmorCategory.Type,
          UpdatedAt: domainArmorCategory.UpdatedAt,
       },
       Relationships: DomainArmorCategoryDTORelationships{
@@ -117,6 +119,7 @@ func DomainArmorCategoryDTOToDomainArmorCategory(domainArmorCategory *DomainArmo
    
    tableTypeBuffer.IsActive = domainArmorCategory.Attributes.IsActive
    tableTypeBuffer.Title = domainArmorCategory.Attributes.Title
+   tableTypeBuffer.Type = domainArmorCategory.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainArmorCategory.Attributes.UpdatedAt
    
    if (domainArmorCategory.Relationships.ManyToOne.ResourceOwner__User != nil) {

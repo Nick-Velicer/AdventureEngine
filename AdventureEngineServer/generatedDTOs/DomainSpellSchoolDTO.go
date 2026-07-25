@@ -22,6 +22,7 @@ type DomainSpellSchoolDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -95,6 +96,7 @@ func DomainSpellSchoolToDomainSpellSchoolDTO(context *contextProviders.DTOContex
          
          IsActive: domainSpellSchool.IsActive,
          Title: domainSpellSchool.Title,
+         Type: domainSpellSchool.Type,
          UpdatedAt: domainSpellSchool.UpdatedAt,
       },
       Relationships: DomainSpellSchoolDTORelationships{
@@ -117,6 +119,7 @@ func DomainSpellSchoolDTOToDomainSpellSchool(domainSpellSchool *DomainSpellSchoo
    
    tableTypeBuffer.IsActive = domainSpellSchool.Attributes.IsActive
    tableTypeBuffer.Title = domainSpellSchool.Attributes.Title
+   tableTypeBuffer.Type = domainSpellSchool.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainSpellSchool.Attributes.UpdatedAt
    
    if (domainSpellSchool.Relationships.ManyToOne.ResourceOwner__User != nil) {

@@ -22,6 +22,7 @@ type DomainToolCategoryDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -95,6 +96,7 @@ func DomainToolCategoryToDomainToolCategoryDTO(context *contextProviders.DTOCont
          
          IsActive: domainToolCategory.IsActive,
          Title: domainToolCategory.Title,
+         Type: domainToolCategory.Type,
          UpdatedAt: domainToolCategory.UpdatedAt,
       },
       Relationships: DomainToolCategoryDTORelationships{
@@ -117,6 +119,7 @@ func DomainToolCategoryDTOToDomainToolCategory(domainToolCategory *DomainToolCat
    
    tableTypeBuffer.IsActive = domainToolCategory.Attributes.IsActive
    tableTypeBuffer.Title = domainToolCategory.Attributes.Title
+   tableTypeBuffer.Type = domainToolCategory.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainToolCategory.Attributes.UpdatedAt
    
    if (domainToolCategory.Relationships.ManyToOne.ResourceOwner__User != nil) {

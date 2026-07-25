@@ -22,6 +22,7 @@ type DomainProficiencyOptionDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -179,6 +180,7 @@ func DomainProficiencyOptionToDomainProficiencyOptionDTO(context *contextProvide
          
          IsActive: domainProficiencyOption.IsActive,
          Title: domainProficiencyOption.Title,
+         Type: domainProficiencyOption.Type,
          UpdatedAt: domainProficiencyOption.UpdatedAt,
       },
       Relationships: DomainProficiencyOptionDTORelationships{
@@ -207,6 +209,7 @@ func DomainProficiencyOptionDTOToDomainProficiencyOption(domainProficiencyOption
    
    tableTypeBuffer.IsActive = domainProficiencyOption.Attributes.IsActive
    tableTypeBuffer.Title = domainProficiencyOption.Attributes.Title
+   tableTypeBuffer.Type = domainProficiencyOption.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainProficiencyOption.Attributes.UpdatedAt
    
    if (domainProficiencyOption.Relationships.ManyToOne.Option__DomainLanguage != nil) {

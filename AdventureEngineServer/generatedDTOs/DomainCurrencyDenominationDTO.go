@@ -24,6 +24,7 @@ type DomainCurrencyDenominationDTOAttributes struct {
    IsLowestDenomination bool
    MultipleOfLowestDenomination float64
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -99,6 +100,7 @@ func DomainCurrencyDenominationToDomainCurrencyDenominationDTO(context *contextP
          IsLowestDenomination: domainCurrencyDenomination.IsLowestDenomination,
          MultipleOfLowestDenomination: domainCurrencyDenomination.MultipleOfLowestDenomination,
          Title: domainCurrencyDenomination.Title,
+         Type: domainCurrencyDenomination.Type,
          UpdatedAt: domainCurrencyDenomination.UpdatedAt,
       },
       Relationships: DomainCurrencyDenominationDTORelationships{
@@ -123,6 +125,7 @@ func DomainCurrencyDenominationDTOToDomainCurrencyDenomination(domainCurrencyDen
    tableTypeBuffer.IsLowestDenomination = domainCurrencyDenomination.Attributes.IsLowestDenomination
    tableTypeBuffer.MultipleOfLowestDenomination = domainCurrencyDenomination.Attributes.MultipleOfLowestDenomination
    tableTypeBuffer.Title = domainCurrencyDenomination.Attributes.Title
+   tableTypeBuffer.Type = domainCurrencyDenomination.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainCurrencyDenomination.Attributes.UpdatedAt
    
    if (domainCurrencyDenomination.Relationships.ManyToOne.ResourceOwner__User != nil) {

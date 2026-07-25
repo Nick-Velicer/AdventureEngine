@@ -22,6 +22,7 @@ type DomainLanguageDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -95,6 +96,7 @@ func DomainLanguageToDomainLanguageDTO(context *contextProviders.DTOContext, dom
          
          IsActive: domainLanguage.IsActive,
          Title: domainLanguage.Title,
+         Type: domainLanguage.Type,
          UpdatedAt: domainLanguage.UpdatedAt,
       },
       Relationships: DomainLanguageDTORelationships{
@@ -117,6 +119,7 @@ func DomainLanguageDTOToDomainLanguage(domainLanguage *DomainLanguageDTO) *types
    
    tableTypeBuffer.IsActive = domainLanguage.Attributes.IsActive
    tableTypeBuffer.Title = domainLanguage.Attributes.Title
+   tableTypeBuffer.Type = domainLanguage.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainLanguage.Attributes.UpdatedAt
    
    if (domainLanguage.Relationships.ManyToOne.ResourceOwner__User != nil) {

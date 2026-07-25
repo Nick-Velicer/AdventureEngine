@@ -24,6 +24,9 @@ type DomainDiceRollType struct {
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 
+	// Type corresponds to the JSON schema field "Type".
+	Type *string `json:"Type" gorm:"column:Type" mapstructure:"Type"`
+
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
 

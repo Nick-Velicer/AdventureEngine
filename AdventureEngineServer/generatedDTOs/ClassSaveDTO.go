@@ -22,6 +22,7 @@ type ClassSaveDTOAttributes struct {
    
    IsActive *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -123,6 +124,7 @@ func ClassSaveToClassSaveDTO(context *contextProviders.DTOContext, classSave *ty
          
          IsActive: classSave.IsActive,
          Title: classSave.Title,
+         Type: classSave.Type,
          UpdatedAt: classSave.UpdatedAt,
       },
       Relationships: ClassSaveDTORelationships{
@@ -147,6 +149,7 @@ func ClassSaveDTOToClassSave(classSave *ClassSaveDTO) *types.ClassSave {
    
    tableTypeBuffer.IsActive = classSave.Attributes.IsActive
    tableTypeBuffer.Title = classSave.Attributes.Title
+   tableTypeBuffer.Type = classSave.Attributes.Type
    tableTypeBuffer.UpdatedAt = classSave.Attributes.UpdatedAt
    
    if (classSave.Relationships.ManyToOne.Class__DomainClass != nil) {

@@ -24,6 +24,7 @@ type CharacterDomainConditionInstanceDTOAttributes struct {
    Source string
    Target string
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -127,6 +128,7 @@ func CharacterDomainConditionInstanceToCharacterDomainConditionInstanceDTO(conte
          Source: characterDomainConditionInstance.Source,
          Target: characterDomainConditionInstance.Target,
          Title: characterDomainConditionInstance.Title,
+         Type: characterDomainConditionInstance.Type,
          UpdatedAt: characterDomainConditionInstance.UpdatedAt,
       },
       Relationships: CharacterDomainConditionInstanceDTORelationships{
@@ -153,6 +155,7 @@ func CharacterDomainConditionInstanceDTOToCharacterDomainConditionInstance(chara
    tableTypeBuffer.Source = characterDomainConditionInstance.Attributes.Source
    tableTypeBuffer.Target = characterDomainConditionInstance.Attributes.Target
    tableTypeBuffer.Title = characterDomainConditionInstance.Attributes.Title
+   tableTypeBuffer.Type = characterDomainConditionInstance.Attributes.Type
    tableTypeBuffer.UpdatedAt = characterDomainConditionInstance.Attributes.UpdatedAt
    
    if (characterDomainConditionInstance.Relationships.ManyToOne.Character__Character != nil) {

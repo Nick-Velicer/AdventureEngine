@@ -14,7 +14,6 @@ import * as DomainActionService from "../../services/generated/DomainActionServi
 import * as DomainAppRoleService from "../../services/generated/DomainAppRoleService";
 import * as DomainArmorService from "../../services/generated/DomainArmorService";
 import * as DomainArmorCategoryService from "../../services/generated/DomainArmorCategoryService";
-import * as DomainBooleanConditionService from "../../services/generated/DomainBooleanConditionService";
 import * as DomainClassService from "../../services/generated/DomainClassService";
 import * as DomainClassLevelAdditionService from "../../services/generated/DomainClassLevelAdditionService";
 import * as DomainClassResourceService from "../../services/generated/DomainClassResourceService";
@@ -26,11 +25,14 @@ import * as DomainDamageTypeService from "../../services/generated/DomainDamageT
 import * as DomainDiceService from "../../services/generated/DomainDiceService";
 import * as DomainDiceRollSubTypeService from "../../services/generated/DomainDiceRollSubTypeService";
 import * as DomainDiceRollTypeService from "../../services/generated/DomainDiceRollTypeService";
+import * as DomainEffectStatService from "../../services/generated/DomainEffectStatService";
 import * as DomainEntityStatService from "../../services/generated/DomainEntityStatService";
+import * as DomainGameEventService from "../../services/generated/DomainGameEventService";
 import * as DomainItemService from "../../services/generated/DomainItemService";
 import * as DomainItemGroupService from "../../services/generated/DomainItemGroupService";
 import * as DomainLanguageService from "../../services/generated/DomainLanguageService";
 import * as DomainModifierMechanicService from "../../services/generated/DomainModifierMechanicService";
+import * as DomainOperatorService from "../../services/generated/DomainOperatorService";
 import * as DomainProficiencyOptionService from "../../services/generated/DomainProficiencyOptionService";
 import * as DomainQuantifierVariantService from "../../services/generated/DomainQuantifierVariantService";
 import * as DomainSizeService from "../../services/generated/DomainSizeService";
@@ -45,10 +47,9 @@ import * as DomainToolCategoryService from "../../services/generated/DomainToolC
 import * as DomainWeaponService from "../../services/generated/DomainWeaponService";
 import * as DomainWeaponCategoryService from "../../services/generated/DomainWeaponCategoryService";
 import * as DomainWeaponDomainWeaponCategoryInstanceService from "../../services/generated/DomainWeaponDomainWeaponCategoryInstanceService";
-import * as EvaluatedConditionalService from "../../services/generated/EvaluatedConditionalService";
+import * as EvaluationNodeService from "../../services/generated/EvaluationNodeService";
 import * as ItemDomainItemGroupInstanceService from "../../services/generated/ItemDomainItemGroupInstanceService";
 import * as QuantifierService from "../../services/generated/QuantifierService";
-import * as QuantifierCostSpecifierService from "../../services/generated/QuantifierCostSpecifierService";
 import * as UserService from "../../services/generated/UserService";
 import * as UserRoleInstanceService from "../../services/generated/UserRoleInstanceService";
 
@@ -113,11 +114,6 @@ export const generatedInjectableServices = {
       getItemById: DomainArmorCategoryService.getDomainArmorCategorybyId,
       saveItem: DomainArmorCategoryService.saveDomainArmorCategory
    },
-   DomainBooleanCondition: {
-      getAllItems: DomainBooleanConditionService.getDomainBooleanConditions,
-      getItemById: DomainBooleanConditionService.getDomainBooleanConditionbyId,
-      saveItem: DomainBooleanConditionService.saveDomainBooleanCondition
-   },
    DomainClass: {
       getAllItems: DomainClassService.getDomainClasss,
       getItemById: DomainClassService.getDomainClassbyId,
@@ -173,10 +169,20 @@ export const generatedInjectableServices = {
       getItemById: DomainDiceRollTypeService.getDomainDiceRollTypebyId,
       saveItem: DomainDiceRollTypeService.saveDomainDiceRollType
    },
+   DomainEffectStat: {
+      getAllItems: DomainEffectStatService.getDomainEffectStats,
+      getItemById: DomainEffectStatService.getDomainEffectStatbyId,
+      saveItem: DomainEffectStatService.saveDomainEffectStat
+   },
    DomainEntityStat: {
       getAllItems: DomainEntityStatService.getDomainEntityStats,
       getItemById: DomainEntityStatService.getDomainEntityStatbyId,
       saveItem: DomainEntityStatService.saveDomainEntityStat
+   },
+   DomainGameEvent: {
+      getAllItems: DomainGameEventService.getDomainGameEvents,
+      getItemById: DomainGameEventService.getDomainGameEventbyId,
+      saveItem: DomainGameEventService.saveDomainGameEvent
    },
    DomainItem: {
       getAllItems: DomainItemService.getDomainItems,
@@ -197,6 +203,11 @@ export const generatedInjectableServices = {
       getAllItems: DomainModifierMechanicService.getDomainModifierMechanics,
       getItemById: DomainModifierMechanicService.getDomainModifierMechanicbyId,
       saveItem: DomainModifierMechanicService.saveDomainModifierMechanic
+   },
+   DomainOperator: {
+      getAllItems: DomainOperatorService.getDomainOperators,
+      getItemById: DomainOperatorService.getDomainOperatorbyId,
+      saveItem: DomainOperatorService.saveDomainOperator
    },
    DomainProficiencyOption: {
       getAllItems: DomainProficiencyOptionService.getDomainProficiencyOptions,
@@ -268,10 +279,10 @@ export const generatedInjectableServices = {
       getItemById: DomainWeaponDomainWeaponCategoryInstanceService.getDomainWeaponDomainWeaponCategoryInstancebyId,
       saveItem: DomainWeaponDomainWeaponCategoryInstanceService.saveDomainWeaponDomainWeaponCategoryInstance
    },
-   EvaluatedConditional: {
-      getAllItems: EvaluatedConditionalService.getEvaluatedConditionals,
-      getItemById: EvaluatedConditionalService.getEvaluatedConditionalbyId,
-      saveItem: EvaluatedConditionalService.saveEvaluatedConditional
+   EvaluationNode: {
+      getAllItems: EvaluationNodeService.getEvaluationNodes,
+      getItemById: EvaluationNodeService.getEvaluationNodebyId,
+      saveItem: EvaluationNodeService.saveEvaluationNode
    },
    ItemDomainItemGroupInstance: {
       getAllItems: ItemDomainItemGroupInstanceService.getItemDomainItemGroupInstances,
@@ -282,11 +293,6 @@ export const generatedInjectableServices = {
       getAllItems: QuantifierService.getQuantifiers,
       getItemById: QuantifierService.getQuantifierbyId,
       saveItem: QuantifierService.saveQuantifier
-   },
-   QuantifierCostSpecifier: {
-      getAllItems: QuantifierCostSpecifierService.getQuantifierCostSpecifiers,
-      getItemById: QuantifierCostSpecifierService.getQuantifierCostSpecifierbyId,
-      saveItem: QuantifierCostSpecifierService.saveQuantifierCostSpecifier
    },
    User: {
       getAllItems: UserService.getUsers,

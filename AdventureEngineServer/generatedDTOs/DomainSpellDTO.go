@@ -43,6 +43,7 @@ type DomainSpellDTOAttributes struct {
    RoundDuration *float64
    TargetsSelf *bool
    Title *string
+   Type *string
    UpdatedAt *string
 }
 
@@ -182,6 +183,7 @@ func DomainSpellToDomainSpellDTO(context *contextProviders.DTOContext, domainSpe
          RoundDuration: domainSpell.RoundDuration,
          TargetsSelf: domainSpell.TargetsSelf,
          Title: domainSpell.Title,
+         Type: domainSpell.Type,
          UpdatedAt: domainSpell.UpdatedAt,
       },
       Relationships: DomainSpellDTORelationships{
@@ -228,6 +230,7 @@ func DomainSpellDTOToDomainSpell(domainSpell *DomainSpellDTO) *types.DomainSpell
    tableTypeBuffer.RoundDuration = domainSpell.Attributes.RoundDuration
    tableTypeBuffer.TargetsSelf = domainSpell.Attributes.TargetsSelf
    tableTypeBuffer.Title = domainSpell.Attributes.Title
+   tableTypeBuffer.Type = domainSpell.Attributes.Type
    tableTypeBuffer.UpdatedAt = domainSpell.Attributes.UpdatedAt
    
    if (domainSpell.Relationships.ManyToOne.DamageScaling__DomainDice != nil) {
