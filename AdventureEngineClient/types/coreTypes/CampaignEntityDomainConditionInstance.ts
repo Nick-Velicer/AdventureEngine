@@ -1,10 +1,10 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
-import { Character } from "./Character";
+import { CampaignEntity } from "./CampaignEntity";
 import { DomainCondition } from "./DomainCondition";
 import { Quantifier } from "./Quantifier";
 
 //An instance of application of a condition to a character (by a potential owner of the effect)
-export type CharacterDomainConditionInstance = ExtendedSchemaObject<{
+export type CampaignEntityDomainConditionInstance = ExtendedSchemaObject<{
     Attributes: {
         //Could be more structured eventually, but will just be used for a title comparison for now
         Source: string,
@@ -12,7 +12,7 @@ export type CharacterDomainConditionInstance = ExtendedSchemaObject<{
     },
     Relationships: {
         ManyToOne: {
-            Character__Character?: Character,
+            CampaignEntity__CampaignEntity: CampaignEntity,
             Condition__DomainCondition?: DomainCondition
         },
         OneToMany: {}

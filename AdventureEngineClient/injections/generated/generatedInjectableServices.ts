@@ -3,10 +3,10 @@
 //Edits made here will not persist after regeneration.
 
 import * as CampaignService from "../../services/generated/CampaignService";
-import * as CharacterService from "../../services/generated/CharacterService";
-import * as CharacterDomainConditionInstanceService from "../../services/generated/CharacterDomainConditionInstanceService";
-import * as CharacterDomainEntityStatInstanceService from "../../services/generated/CharacterDomainEntityStatInstanceService";
-import * as CharacterDomainSubClassInstanceService from "../../services/generated/CharacterDomainSubClassInstanceService";
+import * as CampaignEntityService from "../../services/generated/CampaignEntityService";
+import * as CampaignEntityDomainConditionInstanceService from "../../services/generated/CampaignEntityDomainConditionInstanceService";
+import * as CampaignEntityDomainEntityStatInstanceService from "../../services/generated/CampaignEntityDomainEntityStatInstanceService";
+import * as CampaignEntityDomainSubClassInstanceService from "../../services/generated/CampaignEntityDomainSubClassInstanceService";
 import * as ClassPrimaryAbilityService from "../../services/generated/ClassPrimaryAbilityService";
 import * as ClassSaveService from "../../services/generated/ClassSaveService";
 import * as ClassSpellService from "../../services/generated/ClassSpellService";
@@ -48,6 +48,7 @@ import * as DomainWeaponService from "../../services/generated/DomainWeaponServi
 import * as DomainWeaponCategoryService from "../../services/generated/DomainWeaponCategoryService";
 import * as DomainWeaponDomainWeaponCategoryInstanceService from "../../services/generated/DomainWeaponDomainWeaponCategoryInstanceService";
 import * as EvaluationNodeService from "../../services/generated/EvaluationNodeService";
+import * as GameTransactionService from "../../services/generated/GameTransactionService";
 import * as ItemDomainItemGroupInstanceService from "../../services/generated/ItemDomainItemGroupInstanceService";
 import * as QuantifierService from "../../services/generated/QuantifierService";
 import * as UserService from "../../services/generated/UserService";
@@ -59,25 +60,25 @@ export const generatedInjectableServices = {
       getItemById: CampaignService.getCampaignbyId,
       saveItem: CampaignService.saveCampaign
    },
-   Character: {
-      getAllItems: CharacterService.getCharacters,
-      getItemById: CharacterService.getCharacterbyId,
-      saveItem: CharacterService.saveCharacter
+   CampaignEntity: {
+      getAllItems: CampaignEntityService.getCampaignEntitys,
+      getItemById: CampaignEntityService.getCampaignEntitybyId,
+      saveItem: CampaignEntityService.saveCampaignEntity
    },
-   CharacterDomainConditionInstance: {
-      getAllItems: CharacterDomainConditionInstanceService.getCharacterDomainConditionInstances,
-      getItemById: CharacterDomainConditionInstanceService.getCharacterDomainConditionInstancebyId,
-      saveItem: CharacterDomainConditionInstanceService.saveCharacterDomainConditionInstance
+   CampaignEntityDomainConditionInstance: {
+      getAllItems: CampaignEntityDomainConditionInstanceService.getCampaignEntityDomainConditionInstances,
+      getItemById: CampaignEntityDomainConditionInstanceService.getCampaignEntityDomainConditionInstancebyId,
+      saveItem: CampaignEntityDomainConditionInstanceService.saveCampaignEntityDomainConditionInstance
    },
-   CharacterDomainEntityStatInstance: {
-      getAllItems: CharacterDomainEntityStatInstanceService.getCharacterDomainEntityStatInstances,
-      getItemById: CharacterDomainEntityStatInstanceService.getCharacterDomainEntityStatInstancebyId,
-      saveItem: CharacterDomainEntityStatInstanceService.saveCharacterDomainEntityStatInstance
+   CampaignEntityDomainEntityStatInstance: {
+      getAllItems: CampaignEntityDomainEntityStatInstanceService.getCampaignEntityDomainEntityStatInstances,
+      getItemById: CampaignEntityDomainEntityStatInstanceService.getCampaignEntityDomainEntityStatInstancebyId,
+      saveItem: CampaignEntityDomainEntityStatInstanceService.saveCampaignEntityDomainEntityStatInstance
    },
-   CharacterDomainSubClassInstance: {
-      getAllItems: CharacterDomainSubClassInstanceService.getCharacterDomainSubClassInstances,
-      getItemById: CharacterDomainSubClassInstanceService.getCharacterDomainSubClassInstancebyId,
-      saveItem: CharacterDomainSubClassInstanceService.saveCharacterDomainSubClassInstance
+   CampaignEntityDomainSubClassInstance: {
+      getAllItems: CampaignEntityDomainSubClassInstanceService.getCampaignEntityDomainSubClassInstances,
+      getItemById: CampaignEntityDomainSubClassInstanceService.getCampaignEntityDomainSubClassInstancebyId,
+      saveItem: CampaignEntityDomainSubClassInstanceService.saveCampaignEntityDomainSubClassInstance
    },
    ClassPrimaryAbility: {
       getAllItems: ClassPrimaryAbilityService.getClassPrimaryAbilitys,
@@ -283,6 +284,11 @@ export const generatedInjectableServices = {
       getAllItems: EvaluationNodeService.getEvaluationNodes,
       getItemById: EvaluationNodeService.getEvaluationNodebyId,
       saveItem: EvaluationNodeService.saveEvaluationNode
+   },
+   GameTransaction: {
+      getAllItems: GameTransactionService.getGameTransactions,
+      getItemById: GameTransactionService.getGameTransactionbyId,
+      saveItem: GameTransactionService.saveGameTransaction
    },
    ItemDomainItemGroupInstance: {
       getAllItems: ItemDomainItemGroupInstanceService.getItemDomainItemGroupInstances,

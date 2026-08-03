@@ -15,7 +15,7 @@ const store = composedAppInjectionContexts.store();
         <div v-text="props.value.Attributes.Title" class="title"/>
         <div v-text="props.value.Attributes.Description ?? 'No description available.'" class="description"/>
         <div v-text="props.value.Relationships.ManyToOne.Species__DomainSpecies?.Attributes?.Title" class="description"/>
-        <div v-for="value in props.value.Relationships.OneToMany.SubClasses__CharacterDomainSubClassInstance" v-text="value.Attributes?.Level" class="description"/>
+        <div v-for="value in props.value.Relationships.OneToMany.SubClasses__CampaignEntityDomainSubClassInstance" v-text="value.Attributes?.Level" class="description"/>
         <RouterLink v-bind:to="'/CharacterManagement/' + props.value.Id">
             <Button variant="Primary">
                 Select

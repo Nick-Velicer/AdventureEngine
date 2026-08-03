@@ -1,7 +1,4 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
-import { Character } from "./Character";
-import { DomainEntityStat } from "./DomainEntityStat";
-import { DomainCondition } from "./DomainCondition";
 import { Quantifier } from "./Quantifier";
 import { DomainOperator } from "./DomainOperator";
 

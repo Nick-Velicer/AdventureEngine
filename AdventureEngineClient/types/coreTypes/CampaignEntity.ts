@@ -1,12 +1,12 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
 import { Campaign } from "./Campaign";
-import { CharacterDomainEntityStatInstance } from "./CharacterDomainEntityStatInstance";
-import { CharacterDomainSubClassInstance } from "./CharacterDomainSubClassInstance";
+import { CampaignEntityDomainEntityStatInstance } from "./CampaignEntityDomainEntityStatInstance";
+import { CampaignEntityDomainSubClassInstance } from "./CampaignEntityDomainSubClassInstance";
 import { DomainSize } from "./DomainSize";
 import { DomainSpecies } from "./DomainSpecies";
 import { DomainSubClass } from "./DomainSubClass";
 
-export type Character = ExtendedSchemaObject<{
+export type CampaignEntity = ExtendedSchemaObject<{
     Attributes: {
     },
     Relationships: {
@@ -16,8 +16,8 @@ export type Character = ExtendedSchemaObject<{
             Campaign__Campaign?: Campaign,
         },
         OneToMany: {
-            SubClasses__CharacterDomainSubClassInstance?: CharacterDomainSubClassInstance[],
-            Stats__CharacterDomainEntityStatInstance?: CharacterDomainEntityStatInstance[]
+            SubClasses__CampaignEntityDomainSubClassInstance?: CampaignEntityDomainSubClassInstance[],
+            Stats__CampaignEntityDomainEntityStatInstance?: CampaignEntityDomainEntityStatInstance[]
         }
     }
 }>

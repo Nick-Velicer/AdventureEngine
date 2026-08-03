@@ -52,7 +52,7 @@ type QuantifierDTOAttributes struct {
 }
 
 type QuantifierDTOManyToOneRelationships struct {
-   Parent__CharacterDomainSubClassInstance *CharacterDomainSubClassInstanceDTO
+   Parent__CampaignEntityDomainSubClassInstance *CampaignEntityDomainSubClassInstanceDTO
    Parent__DomainAction *DomainActionDTO
    Parent__DomainArmor *DomainArmorDTO
    Parent__DomainClass *DomainClassDTO
@@ -130,7 +130,7 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
       CurrentUser: nil,
    }
    
-   var includedParent__CharacterDomainSubClassInstance *types.CharacterDomainSubClassInstance
+   var includedParent__CampaignEntityDomainSubClassInstance *types.CampaignEntityDomainSubClassInstance
    var includedParent__DomainAction *types.DomainAction
    var includedParent__DomainArmor *types.DomainArmor
    var includedParent__DomainClass *types.DomainClass
@@ -168,7 +168,7 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
    var includedChildren__Quantifiers []types.Quantifier
    var includedEvaluationTree__EvaluationNodes []types.EvaluationNode
    
-   var Parent__CharacterDomainSubClassInstanceDTO *CharacterDomainSubClassInstanceDTO
+   var Parent__CampaignEntityDomainSubClassInstanceDTO *CampaignEntityDomainSubClassInstanceDTO
    var Parent__DomainActionDTO *DomainActionDTO
    var Parent__DomainArmorDTO *DomainArmorDTO
    var Parent__DomainClassDTO *DomainClassDTO
@@ -208,12 +208,12 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
    
    var err error
    
-   if (quantifier.Parent__CharacterDomainSubClassInstance != nil) {
-      includedParent__CharacterDomainSubClassInstance, err = services.GetCharacterDomainSubClassInstanceById(serviceContext, contextProviders.ProduceGetByIdArgs[types.CharacterDomainSubClassInstance](quantifier.Parent__CharacterDomainSubClassInstance))
+   if (quantifier.Parent__CampaignEntityDomainSubClassInstance != nil) {
+      includedParent__CampaignEntityDomainSubClassInstance, err = services.GetCampaignEntityDomainSubClassInstanceById(serviceContext, contextProviders.ProduceGetByIdArgs[types.CampaignEntityDomainSubClassInstance](quantifier.Parent__CampaignEntityDomainSubClassInstance))
       if err != nil {
          return nil, err
       }
-      Parent__CharacterDomainSubClassInstanceDTO, err = CharacterDomainSubClassInstanceToCharacterDomainSubClassInstanceDTO(&childDTOContext, includedParent__CharacterDomainSubClassInstance)
+      Parent__CampaignEntityDomainSubClassInstanceDTO, err = CampaignEntityDomainSubClassInstanceToCampaignEntityDomainSubClassInstanceDTO(&childDTOContext, includedParent__CampaignEntityDomainSubClassInstance)
       if err != nil {
          return nil, err
       }
@@ -661,7 +661,7 @@ func QuantifierToQuantifierDTO(context *contextProviders.DTOContext, quantifier 
       },
       Relationships: QuantifierDTORelationships{
          ManyToOne: QuantifierDTOManyToOneRelationships {
-            Parent__CharacterDomainSubClassInstance: Parent__CharacterDomainSubClassInstanceDTO,
+            Parent__CampaignEntityDomainSubClassInstance: Parent__CampaignEntityDomainSubClassInstanceDTO,
             Parent__DomainAction: Parent__DomainActionDTO,
             Parent__DomainArmor: Parent__DomainArmorDTO,
             Parent__DomainClass: Parent__DomainClassDTO,
@@ -743,8 +743,8 @@ func QuantifierDTOToQuantifier(quantifier *QuantifierDTO) *types.Quantifier {
    tableTypeBuffer.UpdatedAt = quantifier.Attributes.UpdatedAt
    tableTypeBuffer.Uses = quantifier.Attributes.Uses
    
-   if (quantifier.Relationships.ManyToOne.Parent__CharacterDomainSubClassInstance != nil) {
-      tableTypeBuffer.Parent__CharacterDomainSubClassInstance = quantifier.Relationships.ManyToOne.Parent__CharacterDomainSubClassInstance.Id
+   if (quantifier.Relationships.ManyToOne.Parent__CampaignEntityDomainSubClassInstance != nil) {
+      tableTypeBuffer.Parent__CampaignEntityDomainSubClassInstance = quantifier.Relationships.ManyToOne.Parent__CampaignEntityDomainSubClassInstance.Id
    }
 
    if (quantifier.Relationships.ManyToOne.Parent__DomainAction != nil) {

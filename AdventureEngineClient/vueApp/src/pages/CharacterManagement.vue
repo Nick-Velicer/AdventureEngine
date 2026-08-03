@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Character, CharacterDomainEntityStatInstance } from '../../../types/appTypes/appTypes.ts';
+import type { Character, CampaignEntityDomainEntityStatInstance } from '../../../types/appTypes/appTypes.ts';
 import CharacterStatDisplay from '../components/CharacterStatDisplay.vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts'
 import type { UseQueryReturn } from '@pinia/colada';
@@ -21,7 +21,7 @@ const characterQuery = composedAppInjectionContexts.queries.useGetCharacterByIdQ
 	<div v-else class="restrictedWidthPage">
 		<div class="characterTitle" v-text="characterQuery.data.value?.Attributes?.Title"/>
 		<div v-bind:style="{display: 'flex', gap: '2rem'}">
-			<div v-for="statInstance in characterQuery.data.value?.Relationships.OneToMany.Stats__CharacterDomainEntityStatInstance">
+			<div v-for="statInstance in characterQuery.data.value?.Relationships.OneToMany.Stats__CampaignEntityDomainEntityStatInstance">
 				<div v-text="statInstance.Relationships.ManyToOne.Stat__DomainEntityStat?.Attributes.AbbreviatedTitle"/>
 				<div v-text="statInstance.Attributes.Value"/>
 			</div>

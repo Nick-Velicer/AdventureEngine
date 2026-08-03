@@ -85,9 +85,9 @@ type Quantifier struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
-	// ParentCharacterDomainSubClassInstance corresponds to the JSON schema field
-	// "Parent__CharacterDomainSubClassInstance".
-	Parent__CharacterDomainSubClassInstance *int `json:"Parent__CharacterDomainSubClassInstance" gorm:"column:Parent__CharacterDomainSubClassInstance" mapstructure:"Parent__CharacterDomainSubClassInstance"`
+	// ParentCampaignEntityDomainSubClassInstance corresponds to the JSON schema field
+	// "Parent__CampaignEntityDomainSubClassInstance".
+	Parent__CampaignEntityDomainSubClassInstance *int `json:"Parent__CampaignEntityDomainSubClassInstance" gorm:"column:Parent__CampaignEntityDomainSubClassInstance" mapstructure:"Parent__CampaignEntityDomainSubClassInstance"`
 
 	// ParentDomainAction corresponds to the JSON schema field "Parent__DomainAction".
 	Parent__DomainAction *int `json:"Parent__DomainAction" gorm:"column:Parent__DomainAction" mapstructure:"Parent__DomainAction"`

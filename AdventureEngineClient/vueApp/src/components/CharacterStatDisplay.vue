@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { type CharacterDomainEntityStatInstance } from "../../../types/appTypes/appTypes"
+import { type CampaignEntityDomainEntityStatInstance } from "../../../types/appTypes/appTypes"
 import BasicStatIcon from "./BasicStatIcon.vue";
 
 type PropsType = {
-    statInstance: CharacterDomainEntityStatInstance
+    statInstance: CampaignEntityDomainEntityStatInstance
 }
 const props = defineProps<PropsType>();
 

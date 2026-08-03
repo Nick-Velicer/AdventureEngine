@@ -2,18 +2,18 @@
 import { NSwitch} from 'naive-ui';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts';
 import ThemeSelector from './ThemeSelector.vue';
-import type { Campaign, Character, CharacterDomainEntityStatInstance, CharacterDomainSubClassInstance, DomainEntityStat, DomainSubClass } from '../../../types/appTypes/appTypes';
+import type { Campaign, Character, CampaignEntityDomainEntityStatInstance, CampaignEntityDomainSubClassInstance, DomainEntityStat, DomainSubClass } from '../../../types/appTypes/appTypes';
 import Button from './Button.vue';
 
 const store = composedAppInjectionContexts.store();
 
 const getSubclassesQuery = composedAppInjectionContexts.queries.useGetDomainSubClasssQuery;
-const saveSubclassMappingsMutation = composedAppInjectionContexts.queries.useSaveCharacterDomainSubClassInstanceMutation;
+const saveSubclassMappingsMutation = composedAppInjectionContexts.queries.useSaveCampaignEntityDomainSubClassInstanceMutation;
 const getStatsQuery = composedAppInjectionContexts.queries.useGetDomainEntityStatsQuery;
 const saveCampaignMutation = composedAppInjectionContexts.queries.useSaveCampaignMutation;
 const getCharactersQuery = composedAppInjectionContexts.queries.useGetCharactersQuery;
 const saveCharacterMutation = composedAppInjectionContexts.queries.useSaveCharacterMutation;
-const saveCharacterStatsMutation = composedAppInjectionContexts.queries.useSaveCharacterDomainEntityStatInstanceMutation;
+const saveCharacterStatsMutation = composedAppInjectionContexts.queries.useSaveCampaignEntityDomainEntityStatInstanceMutation;
 
 
 
@@ -87,12 +87,12 @@ async function dispatchStatsSave(characters: Array<Character>) {
             },
             Relationships: {
                 ManyToOne: {
-                    Character__Character: character,
+                    Character__CampaignEntity: character,
                     Stat__DomainEntityStat: stat
                 },
                 OneToMany: {}
             }
-        } as CharacterDomainEntityStatInstance))).flat(Infinity),
+        } as CampaignEntityDomainEntityStatInstance))).flat(Infinity),
         () => dispatchSubclassMappingSave(characters)
     ).mutate;
 
@@ -114,12 +114,12 @@ async function dispatchSubclassMappingSave(characters: Character[]) {
             },
             Relationships: {
                 ManyToOne: {
-                    Character__Character: character,
+                    Character__CampaignEntity: character,
                     SubClass__DomainSubClass: subclass
                 },
                 OneToMany: {}
             }
-        } as CharacterDomainSubClassInstance))).flat(Infinity),
+        } as CampaignEntityDomainSubClassInstance))).flat(Infinity),
         (data: any) => console.log(data)
     ).mutate;
 

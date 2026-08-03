@@ -1,6 +1,4 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
-import { Character } from "./Character";
-import { DomainEntityStat } from "./DomainEntityStat";
 import { DomainClass } from "./DomainClass";
 import { DomainSubClass } from "./DomainSubClass";
   

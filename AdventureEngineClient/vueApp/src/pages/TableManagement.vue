@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AppTypes, type CharacterDomainEntityStatInstance } from '../../../types/appTypes/appTypes.ts';
+import { AppTypes, type CampaignEntityDomainEntityStatInstance } from '../../../types/appTypes/appTypes.ts';
 import { NDropdown} from 'naive-ui';
 import CharacterStatDisplay from '../components/CharacterStatDisplay.vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts.ts'

@@ -18,7 +18,7 @@ import { DomainWeaponCategory } from "./DomainWeaponCategory";
 import { DomainSkill } from "./DomainSkill";
 import { DomainLanguage } from "./DomainLanguage";
 import { DomainModifierMechanic } from "./DomainModifierMechanic";
-import { CharacterDomainSubClassInstance } from "./CharacterDomainSubClassInstance";
+import { CampaignEntityDomainSubClassInstance } from "./CampaignEntityDomainSubClassInstance";
 import { DomainArmor } from "./DomainArmor";
 import { DomainClassLevelAddition } from "./DomainClassLevelAddition";
 import { DomainItem } from "./DomainItem";
@@ -77,7 +77,7 @@ export type Quantifier = ExtendedSchemaObject<{
             Parent__DomainClass?: DomainClass,
             Parent__DomainWeapon?: DomainWeapon,
             Parent__DomainCurrencyDenomination?: DomainCurrencyDenomination,
-            Parent__CharacterDomainSubClassInstance?: CharacterDomainSubClassInstance,
+            Parent__CampaignEntityDomainSubClassInstance?: CampaignEntityDomainSubClassInstance,
             Parent__DomainArmor?: DomainArmor,
             Parent__DomainClassLevelAddition?: DomainClassLevelAddition,
             Parent__DomainItem?: DomainItem,

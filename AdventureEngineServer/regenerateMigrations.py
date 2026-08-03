@@ -141,14 +141,17 @@ def main():
 
 #region Migration Utilities
 
-def produceInsertStatementsForObjects(tableName: str, typeMeta: dict, objects: list):
+def produceInsertStatementsForObjects(objects: list):
     #expecting that objects is a list of flattened datatable types
 
     if (len(objects) < 1):
         return []
 
     def generateInsertStatement(obj: dict):
-        baseInsertStatement = 'INSERT INTO ' + tableName + '(\n\t'
+        if "Type" not in obj:
+            raise Exception("Cannot generate insert for untyped object: " + str(obj))
+        
+        baseInsertStatement = 'INSERT INTO ' + obj["Type"] + '(\n\t'
         columnOrder = list(obj.keys())
 
         baseInsertStatement += "".join([column + (',\n\t' if index != len(columnOrder)-1 else '\n') for index, column in enumerate(columnOrder)])
@@ -176,9 +179,7 @@ def produceInsertStatementsForObjects(tableName: str, typeMeta: dict, objects: l
 
         values = list(valuesBuffer.values())
 
-        baseInsertStatement += "".join([value + (",\n\t" if index != len(values)-1 else "\n") for index, value in enumerate(values)]) + ")"
-
-        baseInsertStatement += "\nON CONFLICT (Id) DO UPDATE SET\n\t" + "".join([(key + " = " + valuesBuffer[key] + (",\n\t" if index != len(columnOrder)-2 else "\n;\n")) if key != "IsActive" else "" for index, key in enumerate(columnOrder)])
+        baseInsertStatement += "".join([value + (",\n\t" if index != len(values)-1 else "\n") for index, value in enumerate(values)]) + ");\n"
 
         return baseInsertStatement
     
@@ -208,7 +209,7 @@ def produceMigrationFileFromObjects(tableName: str, objects: list[dict]):
 
     def produceIdSeededObjectTree(currentNode: dict):
         if "Type" not in currentNode:
-            raise RuntimeError("No type available to initialize object id.")
+            raise Exception("No type available to initialize object id for object " + str(currentNode))
         
         currentType = currentNode["Type"]
         
@@ -229,7 +230,7 @@ def produceMigrationFileFromObjects(tableName: str, objects: list[dict]):
         if "Children" in currentNode:
             for childMeta in currentNode["Children"]:
                 if ("Value" not in childMeta) or ("Relationship" not in childMeta):
-                    raise RuntimeError("Unexpected child meta shape for object: " + childMeta)
+                    raise Exception("Unexpected child meta shape for object: " + childMeta)
                 
                 produceIdSeededObjectTree(childMeta["Value"])
                 childMeta["Value"][childMeta["Relationship"]] = currentNode["Id"]
@@ -238,8 +239,13 @@ def produceMigrationFileFromObjects(tableName: str, objects: list[dict]):
     def recursivelyPopChildren(currentNode: dict):
         nonlocal trackedChildren
         if "Children" in currentNode:
-            trackedChildren += [{**child["Value"], child["Relationship"]: currentNode["Id"]} for child in currentNode["Children"]]
             recursivelyPopChildren(currentNode["Children"])
+            newTrackedChildren = [{**child["Value"], child["Relationship"]: currentNode["Id"]} for child in currentNode["Children"]]
+            for trackedChild in newTrackedChildren:
+                if "Children" in trackedChild:
+                    del trackedChild["Children"]
+                    
+            trackedChildren += newTrackedChildren
             del currentNode["Children"]
 
     global migrationOrderNumber
@@ -253,25 +259,25 @@ def produceMigrationFileFromObjects(tableName: str, objects: list[dict]):
     try:
         rootType = objects[0]["Type"]
     except:
-        raise RuntimeError("Could not initialize object type check for attempted " + tableName + " migration generation.")
+        raise Exception("Could not initialize object type check for attempted " + tableName + " migration generation.")
 
     if not all(obj["Type"] == rootType for obj in objects):
-        raise RuntimeError("All root object nodes must be of type " + rootType + " for attempted generation of " + tableName + " migration.")
+        raise Exception("All root object nodes must be of type " + rootType + " for attempted generation of " + tableName + " migration.")
  
     try:
         for obj in objects:
             produceIdSeededObjectTree(obj)
-    except RuntimeError as error:
+    except Exception as error:
         raise error
 
     for obj in objects:
         recursivelyPopChildren(obj)
 
-    lines = produceInsertStatementsForObjects(tableName, typeMetas[tableName], objects)
+    lines = produceInsertStatementsForObjects(objects)
 
     if len(trackedChildren) > 0:
         lines.append('-- The following are related child elements for the given table. They are included here for ease of relationship tracking.')
-        lines += produceInsertStatementsForObjects(tableName, typeMetas[tableName], trackedChildren)
+        lines += produceInsertStatementsForObjects(trackedChildren)
     
 
     writeInsertLines(migrationsBaseDir + '/' + str(migrationOrderNumber).zfill(math.floor(math.log(migrationTotal))) + '__' + tableName + ('AndRelatedChildren' if len(trackedChildren) > 0 else '') + '.sql', lines)
@@ -707,7 +713,7 @@ def regenerateEffectStatMigration():
     effectStats = [
         {
             "Title": title,
-            "Type": "DomainEntityStat"
+            "Type": "DomainEffectStat"
         } for title in effectStatNames]
     
     effectStats = produceMigrationFileFromObjects("DomainEffectStat", effectStats)
@@ -2598,10 +2604,6 @@ def regenerateDomainConditionsMigration():
             "Target__DomainAction": getForeignKeyIdForTitle(actions, "Move"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Grappled")
         },
-        {
-            "AppliesToSource": 1,
-            "Range": 5,
-        },
         #endregion
 
         #region Incapacitated
@@ -2686,8 +2688,18 @@ def regenerateDomainConditionsMigration():
             "AppliesAgainstTargets": 1,
             "AutomaticCritical": 1,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
-            "Range": 5,
-            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed")
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Paralyzed"),
+            "Children": [
+                {
+                    "Relationship": "Parent__Quantifier",
+                    "Value": {
+                        "Type": "Quantifier",
+                        "HardSetQuantity": 10,
+                        "Target__DomainEffectStat": getForeignKeyIdForTitle(effectStats, "Range"),
+                        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+                    }
+                }
+            ]
         },
         #endregion
 
@@ -2911,9 +2923,19 @@ def regenerateDomainConditionsMigration():
         {
             "AppliesAgainstTargets": 1,
             "AutomaticCritical": 1,
-            "Range": 5,
             "Target__DomainDiceRollType": getForeignKeyIdForTitle(diceRollTypes, "Attack"),
-            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious")
+            "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Unconscious"),
+            "Children": [
+                {
+                    "Relationship": "Parent__Quantifier",
+                    "Value": {
+                        "Type": "Quantifier",
+                        "HardSetQuantity": 10,
+                        "Target__DomainEffectStat": getForeignKeyIdForTitle(effectStats, "Range"),
+                        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
+                    }
+                }
+            ]
         },
         #endregion
 
@@ -3021,7 +3043,7 @@ def regenerateDomainConditionsMigration():
             "Type": "Quantifier",
             "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(quantifierVariants, "Effect Property"),
             "AppliesToSource": 1,
-            "PreventsReceving": 1,
+            "PreventsReceiving": 1,
             "Target__DomainCondition": getForeignKeyIdForTitle(diceRollTypes, "Concentrating"),
             "Parent__DomainCondition": getForeignKeyIdForTitle(conditions, "Enraged")
         },
@@ -3142,7 +3164,7 @@ def regenerateDomainClassTraitAndAssociatedQuantifiersMigration():
         {
             "Parent__DomainClassTrait": getForeignKeyIdForTitle(classTraits, "Rage"),
             "AppliesToSource": 1,
-            "HardSetValue": 0,
+            "HardSetQuantity": 0,
             "Trigger__DomainAction": getForeignKeyIdForTitle(actions, "Long Rest"),
             "Target__DomainCondition": getForeignKeyIdForTitle(entityStats, "Rage Charges Used")
         },
@@ -3431,7 +3453,7 @@ def regenerateSpellsAndClassSpellsMigrations():
                 "Spell__DomainSpell": getForeignKeyIdForTitle(spells, spellTitle)
             })
 
-    produceMigrationFileFromObjects("ClassSpell", [{"Type": "ClassSpell", **classSpell} for classSpell in spellSchools])
+    produceMigrationFileFromObjects("ClassSpell", [{"Type": "ClassSpell", **classSpell} for classSpell in convertedClassSpellMappings])
 
 
 def regenerateQuantifiersMigration():

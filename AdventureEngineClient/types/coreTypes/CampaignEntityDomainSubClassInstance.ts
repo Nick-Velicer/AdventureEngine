@@ -1,15 +1,15 @@
 import { ExtendedSchemaObject } from "../SchemaObject";
-import { Character } from "./Character";
+import { CampaignEntity } from "./CampaignEntity";
 import { DomainEntityStat } from "./DomainEntityStat";
 import { DomainSubClass } from "./DomainSubClass";
   
-export type CharacterDomainSubClassInstance = ExtendedSchemaObject<{
+export type CampaignEntityDomainSubClassInstance = ExtendedSchemaObject<{
     Attributes: {
         Level: number
     },
     Relationships: {
         ManyToOne: {
-            Character__Character: Character,
+            CampaignEntity__CampaignEntity: CampaignEntity,
             SubClass__DomainSubClass: DomainSubClass
         },
         OneToMany: {}

@@ -87,9 +87,9 @@ type QuantifierJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
-	// ParentCharacterDomainSubClassInstance corresponds to the JSON schema field
-	// "Parent__CharacterDomainSubClassInstance".
-	ParentCharacterDomainSubClassInstance *float64 `json:"Parent__CharacterDomainSubClassInstance,omitempty" yaml:"Parent__CharacterDomainSubClassInstance,omitempty" mapstructure:"Parent__CharacterDomainSubClassInstance,omitempty"`
+	// ParentCampaignEntityDomainSubClassInstance corresponds to the JSON schema field
+	// "Parent__CampaignEntityDomainSubClassInstance".
+	ParentCampaignEntityDomainSubClassInstance *float64 `json:"Parent__CampaignEntityDomainSubClassInstance,omitempty" yaml:"Parent__CampaignEntityDomainSubClassInstance,omitempty" mapstructure:"Parent__CampaignEntityDomainSubClassInstance,omitempty"`
 
 	// ParentDomainAction corresponds to the JSON schema field "Parent__DomainAction".
 	ParentDomainAction *float64 `json:"Parent__DomainAction,omitempty" yaml:"Parent__DomainAction,omitempty" mapstructure:"Parent__DomainAction,omitempty"`

@@ -3,10 +3,10 @@
 //Edits made here will not persist after regeneration.
 import { IsEqual } from "type-fest";import { SchemaObject } from "../SchemaObject";
 import { Campaign as Base__Campaign } from "../coreTypes/Campaign";
-import { Character as Base__Character } from "../coreTypes/Character";
-import { CharacterDomainConditionInstance as Base__CharacterDomainConditionInstance } from "../coreTypes/CharacterDomainConditionInstance";
-import { CharacterDomainEntityStatInstance as Base__CharacterDomainEntityStatInstance } from "../coreTypes/CharacterDomainEntityStatInstance";
-import { CharacterDomainSubClassInstance as Base__CharacterDomainSubClassInstance } from "../coreTypes/CharacterDomainSubClassInstance";
+import { CampaignEntity as Base__CampaignEntity } from "../coreTypes/CampaignEntity";
+import { CampaignEntityDomainConditionInstance as Base__CampaignEntityDomainConditionInstance } from "../coreTypes/CampaignEntityDomainConditionInstance";
+import { CampaignEntityDomainEntityStatInstance as Base__CampaignEntityDomainEntityStatInstance } from "../coreTypes/CampaignEntityDomainEntityStatInstance";
+import { CampaignEntityDomainSubClassInstance as Base__CampaignEntityDomainSubClassInstance } from "../coreTypes/CampaignEntityDomainSubClassInstance";
 import { ClassPrimaryAbility as Base__ClassPrimaryAbility } from "../coreTypes/ClassPrimaryAbility";
 import { ClassSave as Base__ClassSave } from "../coreTypes/ClassSave";
 import { ClassSpell as Base__ClassSpell } from "../coreTypes/ClassSpell";
@@ -48,6 +48,7 @@ import { DomainWeapon as Base__DomainWeapon } from "../coreTypes/DomainWeapon";
 import { DomainWeaponCategory as Base__DomainWeaponCategory } from "../coreTypes/DomainWeaponCategory";
 import { DomainWeaponDomainWeaponCategoryInstance as Base__DomainWeaponDomainWeaponCategoryInstance } from "../coreTypes/DomainWeaponDomainWeaponCategoryInstance";
 import { EvaluationNode as Base__EvaluationNode } from "../coreTypes/EvaluationNode";
+import { GameTransaction as Base__GameTransaction } from "../coreTypes/GameTransaction";
 import { ItemDomainItemGroupInstance as Base__ItemDomainItemGroupInstance } from "../coreTypes/ItemDomainItemGroupInstance";
 import { Quantifier as Base__Quantifier } from "../coreTypes/Quantifier";
 import { User as Base__User } from "../coreTypes/User";
@@ -55,10 +56,10 @@ import { UserRoleInstance as Base__UserRoleInstance } from "../coreTypes/UserRol
 
 const BaseAppTypes = {
 	Campaign: {} as Base__Campaign,
-	Character: {} as Base__Character,
-	CharacterDomainConditionInstance: {} as Base__CharacterDomainConditionInstance,
-	CharacterDomainEntityStatInstance: {} as Base__CharacterDomainEntityStatInstance,
-	CharacterDomainSubClassInstance: {} as Base__CharacterDomainSubClassInstance,
+	CampaignEntity: {} as Base__CampaignEntity,
+	CampaignEntityDomainConditionInstance: {} as Base__CampaignEntityDomainConditionInstance,
+	CampaignEntityDomainEntityStatInstance: {} as Base__CampaignEntityDomainEntityStatInstance,
+	CampaignEntityDomainSubClassInstance: {} as Base__CampaignEntityDomainSubClassInstance,
 	ClassPrimaryAbility: {} as Base__ClassPrimaryAbility,
 	ClassSave: {} as Base__ClassSave,
 	ClassSpell: {} as Base__ClassSpell,
@@ -100,6 +101,7 @@ const BaseAppTypes = {
 	DomainWeaponCategory: {} as Base__DomainWeaponCategory,
 	DomainWeaponDomainWeaponCategoryInstance: {} as Base__DomainWeaponDomainWeaponCategoryInstance,
 	EvaluationNode: {} as Base__EvaluationNode,
+	GameTransaction: {} as Base__GameTransaction,
 	ItemDomainItemGroupInstance: {} as Base__ItemDomainItemGroupInstance,
 	Quantifier: {} as Base__Quantifier,
 	User: {} as Base__User,
@@ -128,10 +130,10 @@ type RecursionGuardedSchemaObject<T extends SchemaObject, G extends (typeof Base
 	}
 
 export type Campaign = RecursionGuardedSchemaObject<Base__Campaign>;
-export type Character = RecursionGuardedSchemaObject<Base__Character>;
-export type CharacterDomainConditionInstance = RecursionGuardedSchemaObject<Base__CharacterDomainConditionInstance>;
-export type CharacterDomainEntityStatInstance = RecursionGuardedSchemaObject<Base__CharacterDomainEntityStatInstance>;
-export type CharacterDomainSubClassInstance = RecursionGuardedSchemaObject<Base__CharacterDomainSubClassInstance>;
+export type CampaignEntity = RecursionGuardedSchemaObject<Base__CampaignEntity>;
+export type CampaignEntityDomainConditionInstance = RecursionGuardedSchemaObject<Base__CampaignEntityDomainConditionInstance>;
+export type CampaignEntityDomainEntityStatInstance = RecursionGuardedSchemaObject<Base__CampaignEntityDomainEntityStatInstance>;
+export type CampaignEntityDomainSubClassInstance = RecursionGuardedSchemaObject<Base__CampaignEntityDomainSubClassInstance>;
 export type ClassPrimaryAbility = RecursionGuardedSchemaObject<Base__ClassPrimaryAbility>;
 export type ClassSave = RecursionGuardedSchemaObject<Base__ClassSave>;
 export type ClassSpell = RecursionGuardedSchemaObject<Base__ClassSpell>;
@@ -173,6 +175,7 @@ export type DomainWeapon = RecursionGuardedSchemaObject<Base__DomainWeapon>;
 export type DomainWeaponCategory = RecursionGuardedSchemaObject<Base__DomainWeaponCategory>;
 export type DomainWeaponDomainWeaponCategoryInstance = RecursionGuardedSchemaObject<Base__DomainWeaponDomainWeaponCategoryInstance>;
 export type EvaluationNode = RecursionGuardedSchemaObject<Base__EvaluationNode>;
+export type GameTransaction = RecursionGuardedSchemaObject<Base__GameTransaction>;
 export type ItemDomainItemGroupInstance = RecursionGuardedSchemaObject<Base__ItemDomainItemGroupInstance>;
 export type Quantifier = RecursionGuardedSchemaObject<Base__Quantifier>;
 export type User = RecursionGuardedSchemaObject<Base__User>;
@@ -180,10 +183,10 @@ export type UserRoleInstance = RecursionGuardedSchemaObject<Base__UserRoleInstan
 
 export const AppTypes = {
 	Campaign: {} as Campaign,
-	Character: {} as Character,
-	CharacterDomainConditionInstance: {} as CharacterDomainConditionInstance,
-	CharacterDomainEntityStatInstance: {} as CharacterDomainEntityStatInstance,
-	CharacterDomainSubClassInstance: {} as CharacterDomainSubClassInstance,
+	CampaignEntity: {} as CampaignEntity,
+	CampaignEntityDomainConditionInstance: {} as CampaignEntityDomainConditionInstance,
+	CampaignEntityDomainEntityStatInstance: {} as CampaignEntityDomainEntityStatInstance,
+	CampaignEntityDomainSubClassInstance: {} as CampaignEntityDomainSubClassInstance,
 	ClassPrimaryAbility: {} as ClassPrimaryAbility,
 	ClassSave: {} as ClassSave,
 	ClassSpell: {} as ClassSpell,
@@ -225,6 +228,7 @@ export const AppTypes = {
 	DomainWeaponCategory: {} as DomainWeaponCategory,
 	DomainWeaponDomainWeaponCategoryInstance: {} as DomainWeaponDomainWeaponCategoryInstance,
 	EvaluationNode: {} as EvaluationNode,
+	GameTransaction: {} as GameTransaction,
 	ItemDomainItemGroupInstance: {} as ItemDomainItemGroupInstance,
 	Quantifier: {} as Quantifier,
 	User: {} as User,
