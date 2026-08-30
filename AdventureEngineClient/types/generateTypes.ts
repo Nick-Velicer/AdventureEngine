@@ -53,6 +53,7 @@ type RecursionGuardedSchemaObject<T extends SchemaObject, G extends (typeof Base
 	:
 	{
 		Id: T["Id"],
+		Type: T["Type"],
 		Attributes: T["Attributes"],
 		Relationships: {
 			ManyToOne: {[key in keyof T["Relationships"]["ManyToOne"]]: RecursionGuardedSchemaObject<T["Relationships"]["ManyToOne"][key], G extends undefined? T : G | T>},

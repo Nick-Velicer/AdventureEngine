@@ -11,8 +11,8 @@ const getSubclassesQuery = composedAppInjectionContexts.queries.useGetDomainSubC
 const saveSubclassMappingsMutation = composedAppInjectionContexts.queries.useSaveCampaignEntityDomainSubClassInstanceMutation;
 const getStatsQuery = composedAppInjectionContexts.queries.useGetDomainEntityStatsQuery;
 const saveCampaignMutation = composedAppInjectionContexts.queries.useSaveCampaignMutation;
-const getCharactersQuery = composedAppInjectionContexts.queries.useGetCharactersQuery;
-const saveCharacterMutation = composedAppInjectionContexts.queries.useSaveCharacterMutation;
+const getCharactersQuery = composedAppInjectionContexts.queries.useGetCampaignEntitysQuery;
+const saveCharacterMutation = composedAppInjectionContexts.queries.useSaveCampaignEntityMutation;
 const saveCharacterStatsMutation = composedAppInjectionContexts.queries.useSaveCampaignEntityDomainEntityStatInstanceMutation;
 
 
@@ -87,7 +87,7 @@ async function dispatchStatsSave(characters: Array<Character>) {
             },
             Relationships: {
                 ManyToOne: {
-                    Character__CampaignEntity: character,
+                    CampaignEntity__CampaignEntity: character,
                     Stat__DomainEntityStat: stat
                 },
                 OneToMany: {}
@@ -114,7 +114,7 @@ async function dispatchSubclassMappingSave(characters: Character[]) {
             },
             Relationships: {
                 ManyToOne: {
-                    Character__CampaignEntity: character,
+                    CampaignEntity__CampaignEntity: character,
                     SubClass__DomainSubClass: subclass
                 },
                 OneToMany: {}

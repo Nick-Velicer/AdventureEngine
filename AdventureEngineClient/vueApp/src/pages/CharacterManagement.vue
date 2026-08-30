@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Character, CampaignEntityDomainEntityStatInstance } from '../../../types/appTypes/appTypes.ts';
+import type { CampaignEntityDomainEntityStatInstance, CampaignEntity } from '../../../types/appTypes/appTypes.ts';
 import CharacterStatDisplay from '../components/CharacterStatDisplay.vue';
 import { composedAppInjectionContexts } from '../../../injections/composedInjectionContexts'
 import type { UseQueryReturn } from '@pinia/colada';
@@ -10,7 +10,7 @@ import { useRoute } from 'vue-router';
 const state = composedAppInjectionContexts.store();
 const route = useRoute();
 
-const characterQuery = composedAppInjectionContexts.queries.useGetCharacterByIdQuery(parseInt(route.params.id as string)) as UseQueryReturn<Character>;
+const characterQuery = composedAppInjectionContexts.queries.useGetCampaignEntityByIdQuery(parseInt(route.params.id as string)) as UseQueryReturn<CampaignEntity>;
 
 </script>
 
@@ -20,6 +20,11 @@ const characterQuery = composedAppInjectionContexts.queries.useGetCharacterByIdQ
 	</p>
 	<div v-else class="restrictedWidthPage">
 		<div class="characterTitle" v-text="characterQuery.data.value?.Attributes?.Title"/>
+		<div v-bind:style="{display: 'flex', flexDirection: 'column', gap: '2rem'}">
+			<div v-for="SubClassInstance in characterQuery.data.value?.Relationships.OneToMany.SubClasses__CampaignEntityDomainSubClassInstance">
+				<div v-text="SubClassInstance.Relationships?.ManyToOne?.SubClass__DomainSubClass?.Attributes?.Title + ' ' + SubClassInstance.Relationships?.ManyToOne?.SubClass__DomainSubClass?.Relationships?.ManyToOne?.Class__DomainClass?.Attributes?.Title"/>
+			</div>
+		</div>
 		<div v-bind:style="{display: 'flex', gap: '2rem'}">
 			<div v-for="statInstance in characterQuery.data.value?.Relationships.OneToMany.Stats__CampaignEntityDomainEntityStatInstance">
 				<div v-text="statInstance.Relationships.ManyToOne.Stat__DomainEntityStat?.Attributes.AbbreviatedTitle"/>

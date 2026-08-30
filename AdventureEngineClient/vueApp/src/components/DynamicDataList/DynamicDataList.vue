@@ -14,7 +14,6 @@ type PropsType = {
 }
 
 const props = defineProps<PropsType>();
-
 const query = composedAppInjectionContexts.queries["useGet" + props.table + "sQuery" as keyof typeof composedAppInjectionContexts.queries]();
 
 </script>

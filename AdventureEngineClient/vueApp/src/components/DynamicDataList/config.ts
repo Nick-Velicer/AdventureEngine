@@ -13,5 +13,5 @@ export const typeTemplateMapping: Partial<{
     [key in keyof typeof AppTypes]: Component<ListTemplatePropsType<typeof AppTypes[key]>>
 }> = {
     "Campaign": CampaignListTemplate,
-    "Character": CharacterListTemplate
+    "CampaignEntity": CharacterListTemplate
 };
