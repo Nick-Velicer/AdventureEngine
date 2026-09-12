@@ -6,13 +6,9 @@ type QuantifierCostSpecifier struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
 
-	// CostDomainCurrencyDenomination corresponds to the JSON schema field
-	// "Cost__DomainCurrencyDenomination".
-	Cost__DomainCurrencyDenomination *int `json:"Cost__DomainCurrencyDenomination" gorm:"column:Cost__DomainCurrencyDenomination" mapstructure:"Cost__DomainCurrencyDenomination"`
-
-	// CostDomainEntityStat corresponds to the JSON schema field
-	// "Cost__DomainEntityStat".
-	Cost__DomainEntityStat *int `json:"Cost__DomainEntityStat" gorm:"column:Cost__DomainEntityStat" mapstructure:"Cost__DomainEntityStat"`
+	// CostDomainCharacterStat corresponds to the JSON schema field
+	// "Cost__DomainCharacterStat".
+	Cost__DomainCharacterStat *int `json:"Cost__DomainCharacterStat" gorm:"column:Cost__DomainCharacterStat" mapstructure:"Cost__DomainCharacterStat"`
 
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`

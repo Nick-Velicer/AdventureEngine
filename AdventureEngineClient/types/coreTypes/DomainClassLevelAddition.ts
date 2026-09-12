@@ -5,7 +5,7 @@ import { DomainSubClass } from "./DomainSubClass";
 export type DomainClassLevelAddition = ExtendedSchemaObject<{
     Attributes: {
         Level: number,
-        UnavailableForMultiClass: boolean,
+        MulticlassInaccessible: boolean,
     },
     Relationships: {
         ManyToOne: {

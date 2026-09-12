@@ -65,6 +65,9 @@ migrationOrderNumber = 1
 migrationTotal = 0
 
 
+#Tracking for what id to populate by type (needs to be outside of function context for multiple runs)
+idCounts = {}
+
 def main():
     #Since this is a development time tool, we can get away with depending on some of the
     #output from regenerateBackend.py, since it'd be a pain to have this go through the same
@@ -196,20 +199,14 @@ def writeInsertLines(fileName: str, lines: list):
 
 
 def produceMigrationFileFromObjects(tableName: str, objects: list[dict]):
-    #We do not reference the objects from the global instance for this even though that 
-    #is available for use for fk-dependent migrations, since not all migrations will end up 
-    #writing to a global context.
-
-    #tracking for what id to populate by type
-    idCounts = {
-        tableName: 1
-    }
+    global idCounts
 
     #tracking for child objects that need to be added
     #after their parent
     trackedChildren = []
 
     def produceIdSeededObjectTree(currentNode: dict):
+
         if "Type" not in currentNode:
             raise Exception("No type available to initialize object id for object " + str(currentNode))
         
@@ -232,7 +229,7 @@ def produceMigrationFileFromObjects(tableName: str, objects: list[dict]):
         if "Children" in currentNode:
             for childMeta in currentNode["Children"]:
                 if ("Value" not in childMeta) or ("Relationship" not in childMeta):
-                    raise Exception("Unexpected child meta shape for object: " + childMeta)
+                    raise Exception("Unexpected child meta shape for node: " + str(currentNode))
                 
                 produceIdSeededObjectTree(childMeta["Value"])
                 childMeta["Value"][childMeta["Relationship"]] = currentNode["Id"]
@@ -842,13 +839,21 @@ def regenerateQuantifierVariants():
     global domainQuantifierVariantList
 
     variantTitles = [
+        #The quantifier is modifying circumstances or providing new things based off of a dynamic conditional
         "Evaluated Effect",
+        #The quantifier represents a dynamically evaluated numeric value based off of target properties
         "Calculated Value",
+        #The quantifier encodes a usable game action
         "Action",
+        #The quantifier represents a resource barrier for something to occur
         "Cost",
+        #The quantifier impacts a game entity's metadata
         "Entity Property",
+        #The quantifier impacts an a game event's metadata
         "Effect Property",
-        "Modal Group",
+        #The children of the quantifier represent a modal group of choices, or a set of values that should 
+        #all be present at the same grouped level (non-evaluated to avoid notion of priority) 
+        "Group Parent"
     ]
 
     domainQuantifierVariantList = [
@@ -2373,146 +2378,206 @@ def regenerateDomainClassLevelAdditionMigration():
     classMeta = {
         "Barbarian": {
             1: {
-                "UntitledGroups": {
-                    "DomainSkill": {
-                        "MulticlassAccessible": False,
-                        "Select": 2,
-                        "Range": ["Animal Handling", "Athletics", "Intimidation", "Nature", "Perception", "Survival"]
-                    },
-                    "DomainWeaponCategory": {
-                        "MulticlassAccessible": False,
+                "Skill Proficiency": {
+                    "Target": "DomainSkill",
+                    "MulticlassInaccessible": 1,
+                    "Select": 2,
+                    "Range": ["Animal Handling", "Athletics", "Intimidation", "Nature", "Perception", "Survival"]
+                },
+                "Weapon Proficiency": [
+                    {
+                        "Target": "DomainWeaponCategory",
+                        "MulticlassInaccessible": 1,
                         "Range": ["Simple"]
                     },
-                    "DomainWeaponCategory": {
+                    {
+                        "Target": "DomainWeaponCategory",
                         "Range": ["Martial"]
-                    },
-                    "DomainArmorCategory": {
-                        "MulticlassAccessible": False,
+                    }
+                ],
+                "Armor Proficiency": [
+                    {
+                        "Target": "DomainWeaponCategory",
+                        "MulticlassInaccessible": 1,
                         "Range": ["Light Armor", "Medium Armor"]
                     },
-                    "DomainArmorCategory": {
+                    {
+                        "Target": "DomainWeaponCategory",
                         "Range": ["Shield"]
                     }
-                },
-                "TitledGroups": {
-                    "Starting Equipment": {
-                        "Select": 1,
-                        "MulticlassAccessible": False,
-                        "Range": [
+                ],
+                "Starting Equipment": {
+                    "Select": 1,
+                    "MulticlassInaccessible": 1,
+                    "Range": [
+                        [
                             {
-                                "DomainWeapon": {
-                                    "Quantity": 1,
-                                    "Title": "Greataxe"
-                                },
-                                "DomainWeapon": {
-                                    "Quantity": 4,
-                                    "Title": "Handaxe"
-                                },
-                                "DomainItemGroup": {
-                                    "Quantity": 1,
-                                    "Title": "Explorer's Pack"
-                                },
-                                "DomainCurrencyDenomination": {
-                                    "Quantity": 15,
-                                    "Title": "Gold Piece"
-                                }
+                                "Target": "DomainWeapon",
+                                "ToInventory": 1,
+                                "Range": ["Greataxe"]
                             },
                             {
-                                "DomainCurrencyDenomination": {
-                                    "Quantity": 75,
-                                    "Title": "Gold Piece"
-                                }
+                                "Target": "DomainWeapon",
+                                "ToInventory": 4,
+                                "Range": ["Handaxe"]
+                            },
+                            {
+                                "Target": "DomainItemGroup",
+                                "ToInventory": 1,
+                                "Range": ["Explorer's Pack"]
+                            },
+                            {
+                                "Target": "DomainCurrencyDenomination",
+                                "ToInventory": 15,
+                                "Range": ["Gold Piece"]
                             }
-                        ]
-                    }
+                        ],
+                        {
+                            "Target": "DomainCurrencyDenomination",
+                            "ToInventory": 75,
+                            "Range": ["Gold Piece"]
+                        }
+                    ]
                 }
             },
-            
         },
-        "Bard": {
-            "UntitledGroups": {},
-            "TitledGroups": {}
-        }
+        "Bard": {}
     }
+
+    def produceLevelAdditionMetaNodeRecursive(contextTitle, metaNode):
+
+        assembledQuantifier = {
+            "Type": "Quantifier",
+            "Children": []
+        }
+
+        targetModifierMechanic = "Proficiency" if "Proficiency" in contextTitle else "Resistance" if "Resistance" in contextTitle else None
+
+        if "ToInventory" in metaNode:
+            #Split out the specifier into the actual flag and quantity, since they're two separate quantifier distinctions
+            assembledQuantifier["IntoInventory"] = 1,
+            assembledQuantifier["DeltaQuantity"] = metaNode["ToInventory"]
+
+            if "Target" not in metaNode:
+                #check for this configuration here, but the range add section handles the actual target assignment
+                raise Exception("Cannot initialize inventory quantifier with no target value for node: " + str(metaNode))
+        
+        if "Range" in metaNode and len(metaNode["Range"]) > 0:
+            for rangeObj in metaNode["Range"]:
+                if isinstance(rangeObj, str):
+                    if (not (isinstance(rangeObj, str) and "Target" in metaNode)):
+                        raise Exception("Bad top-level target for string ranges for node: " + str(metaNode))
+
+                    targetRelationshipName = "Target__" + metaNode["Target"]
+                    
+                    assembledQuantifier["Variant__DomainQuantifierVariant"] = getForeignKeyIdForTitle(domainQuantifierVariantList, "Group Parent")
+                    assembledQuantifier["Children"] += [{
+                        "Relationship": "Parent__Quantifier",
+                        "Value": {
+                            "Type": "Quantifier",
+                            "Gives": 1,
+                            "AppliesToSource": 1,
+                            "Target__DomainModifierMechanic": getForeignKeyIdForTitle(domainModifierMechanicList, targetModifierMechanic) if targetModifierMechanic is not None else None,
+                            targetRelationshipName: getForeignKeyIdForTitle(getGlobalTableListFromTypeName(metaNode["Target"]), rangeObj),
+                            "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Entity Property"),
+                        }
+                    }]
+
+                elif isinstance(rangeObj, dict):
+                    if (not ((isinstance(rangeObj, dict) and ("Target" not in rangeObj or (isinstance(rangeObj["Range"], list) and "Target" not in rangeObj["Range"][0]))))):
+                        raise Exception("Bad target setup for dict range for node: " + str(metaNode))
+                    
+                    assembledQuantifier["Children"] += [{
+                        "Relationship": "Parent__Quantifier",
+                        "Value": produceLevelAdditionMetaNodeRecursive(contextTitle, rangeObj)
+                    }]
+
+                elif isinstance(rangeObj, list):
+                    assembledQuantifier["Variant__DomainQuantifierVariant"] = getForeignKeyIdForTitle(domainQuantifierVariantList, "Group Parent")
+                    assembledQuantifier["Children"] += [{
+                        "Relationship": "Parent__Quantifier",
+                        "Value": produceLevelAdditionMetaNodeRecursive(contextTitle, subObj)
+                    } for subObj in rangeObj]
+                    
+                else:
+                    raise Exception("Cannot initialize range with unhandled object type: " + str(rangeObj))
+    
+        #if the range provided should be interpreted as a list restriction
+        if "Select" in metaNode:
+            if "Range" not in metaNode:
+                raise Exception("Cannot initialize a select restriction with no range for meta: " + str(metaNode))
+
+            if metaNode["Select"] > len(metaNode["Range"]):
+                raise Exception("Selection restriction incompatible with range size for meta: " + str(metaNode))
+
+            #Children should always already exist here, we will never have a select without a range
+            assembledQuantifier["Children"] += [
+                {
+                    "Relationship": "Parent__Quantifier",
+                    "Value": {
+                        "Type": "Quantifier",
+                        "HardSetQuantity": metaNode["Select"],
+                        "Target__EffectStat": getForeignKeyIdForTitle(domainEffectStatList, "Modal Choice Maximum"),
+                        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Effect Property"),
+                    }
+                },
+                {
+                    "Relationship": "Parent__Quantifier",
+                    "Value": {
+                        "Type": "Quantifier",
+                        "HardSetQuantity": metaNode["Select"],
+                        "Target__EffectStat": getForeignKeyIdForTitle(domainEffectStatList, "Modal Choice Minimum"),
+                        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Effect Property"),
+                    }
+                }
+            ]
+
+        return assembledQuantifier
+    
 
     for classTitle, levelMeta in classMeta.items():
         for level in levelMeta.keys():
-            for metaTitle, groupMeta in levelMeta[level]["UntitledGroups"].items():
-                newLevelAddition = {}
-                newQuantifiers = []
 
-                quantifierTargetDomainRelationship = "Target__" + metaTitle
+            generatedQuantifiers = []
+            
+            for metaTitle, levelAdditionMeta in levelMeta[level].items():
 
-                #Making an assumption of proficiency with specified values for now,
-                #won't apply to later levels but works for now for initial testing.
-                #More specific relationships can be updated later in the meta definition.
-
-                #if the range provided should be interpreted as a list restriction
-                if "Select" in groupMeta:
-                    if groupMeta["Select"] < len(([] if "Range" not in groupMeta else groupMeta["Range"])):
-                        raise Exception("Selection restriction incompatible with given range for meta: " + str(groupMeta))
-
-                    newQuantifiers.append({
-                        "Type": "Quantifier",
-                        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Modal Group"),
-                        "Children": [
-                            *[{
-                                "Relationship": "Parent__Quantifier",
-                                "Value": {
-                                    "Type": "Quantifier",
-                                    "Gives": 1,
-                                    "AppliesToSource": 1,
-                                    "Target__DomainModifierMechanic": getForeignKeyIdForTitle(domainModifierMechanicList, "Proficiency"),
-                                    quantifierTargetDomainRelationship: getForeignKeyIdForTitle(getGlobalTableListFromTypeName(metaTitle), option),
-                                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Entity Property"),
-                                }
-                            } for option in groupMeta["Range"]],
-                            {
-                                "Relationship": "Parent__Quantifier",
-                                "Value": {
-                                    "Type": "Quantifier",
-                                    "HardSetQuantity": groupMeta["Select"],
-                                    "Target__EffectStat": getForeignKeyIdForTitle(domainEffectStatList, "Modal Choice Maximum"),
-                                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Effect Property"),
-                                }
-                            },
-                            {
-                                "Relationship": "Parent__Quantifier",
-                                "Value": {
-                                    "Type": "Quantifier",
-                                    "HardSetQuantity": groupMeta["Select"],
-                                    "Target__EffectStat": getForeignKeyIdForTitle(domainEffectStatList, "Modal Choice Minimum"),
-                                    "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Effect Property"),
-                                }
-                            }
-                        ] 
-                    })
-
-                #otherwise, gain all in the range specified
+                if isinstance(levelAdditionMeta, list):
+                    generatedQuantifiers += [produceLevelAdditionMetaNodeRecursive(metaTitle, subMeta) for subMeta in levelAdditionMeta]
                 else:
-                    newQuantifiers.extend([{
-                        "Type": "Quantifier",
-                        "Gives": 1,
-                        "AppliesToSource": 1,
-                        "Target__DomainModifierMechanic": getForeignKeyIdForTitle(domainModifierMechanicList, "Proficiency"),
-                        quantifierTargetDomainRelationship: getForeignKeyIdForTitle(getGlobalTableListFromTypeName(metaTitle), option),
-                        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Entity Property"),
-                    } for option in groupMeta["Range"]])
+                    generatedQuantifiers.append(produceLevelAdditionMetaNodeRecursive(metaTitle, levelAdditionMeta))
 
-            for metaTitle, groupMeta in levelMeta[level]["TitleGroup"].items():
-                #same thing as above, but with titled effects giving the associated item groups and such
-
-
+                domainClassLevelAdditionList.append({
+                    "Type": "DomainClassLevelAddition",
+                    "Title": metaTitle,
+                    "Level": 1,
+                    "MulticlassInaccessible": levelAdditionMeta["MulticlassInaccessible"] if "MulticlassInaccessible" in levelAdditionMeta else 0,
+                    "Class__DomainClass": getForeignKeyIdForTitle(domainClassList, classTitle),
+                    "Children": [{
+                        "Relationship": "Parent__DomainClassLevelAddition",
+                        "Value": childQuantifier,
+                    } for childQuantifier in generatedQuantifiers]
+                })
+            
+    
     #auto-calculating proficiency bonus additions based on level through 20
-    quantifierList.extend([{
-        "Type": "Quantifier",
-        "HardSetQuantity": 2 + math.floor((level - 1) / 4),
-        "Target__DomainEntityStat": getForeignKeyIdForTitle(domainEntityStatList, "Proficiency Bonus"),
-        "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Entity Property"),
+    domainClassLevelAdditionList.extend([{
+        "Type": "DomainClassLevelAddition",
+        "Title": "Proficiency Bonus",
+        "Level": level,
+        "Children": [{
+            "Relationship": "Parent__DomainClassLevelAddition",
+            "Value": {
+                "Type": "Quantifier",
+                "HardSetQuantity": 2 + math.floor((level - 1) / 4),
+                "Target__DomainEntityStat": getForeignKeyIdForTitle(domainEntityStatList, "Proficiency Bonus"),
+                "Variant__DomainQuantifierVariant": getForeignKeyIdForTitle(domainQuantifierVariantList, "Entity Property"),
+            }
+        }]
     } for level in range(1,20)])
 
 
-    domainClassList = produceMigrationFileFromObjects("DomainSubClass", domainSubClassList)
+    domainClassLevelAdditionList = produceMigrationFileFromObjects("DomainClassLevelAddition", domainClassLevelAdditionList)
 
 
 def regenerateDamageTypesMigration():
@@ -3524,7 +3589,7 @@ def regenerateSpellsAndClassSpellsMigrations():
         #ignoring higher level effect for now since that'll take some finagling
         "cast_higher": lambda obj, value: obj,
         "higher_levels": lambda obj, value: obj,
-        "domainClassList": addClassSpellMapping
+        "classes": addClassSpellMapping
     }
 
     #From https://github.com/TheDataRogue/dnd-5e-domainSpellList

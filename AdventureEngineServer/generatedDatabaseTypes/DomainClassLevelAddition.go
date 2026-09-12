@@ -24,6 +24,10 @@ type DomainClassLevelAddition struct {
 	// Level corresponds to the JSON schema field "Level".
 	Level float64 `json:"Level" gorm:"column:Level" mapstructure:"Level"`
 
+	// MulticlassInaccessible corresponds to the JSON schema field
+	// "MulticlassInaccessible".
+	MulticlassInaccessible bool `json:"MulticlassInaccessible" gorm:"column:MulticlassInaccessible" mapstructure:"MulticlassInaccessible"`
+
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
 
@@ -36,10 +40,6 @@ type DomainClassLevelAddition struct {
 
 	// Type corresponds to the JSON schema field "Type".
 	Type *string `json:"Type" gorm:"column:Type" mapstructure:"Type"`
-
-	// UnavailableForMultiClass corresponds to the JSON schema field
-	// "UnavailableForMultiClass".
-	UnavailableForMultiClass bool `json:"UnavailableForMultiClass" gorm:"column:UnavailableForMultiClass" mapstructure:"UnavailableForMultiClass"`
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`

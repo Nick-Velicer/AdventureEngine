@@ -24,6 +24,10 @@ type DomainClassLevelAdditionJson struct {
 	// Level corresponds to the JSON schema field "Level".
 	Level float64 `json:"Level" yaml:"Level" mapstructure:"Level"`
 
+	// MulticlassInaccessible corresponds to the JSON schema field
+	// "MulticlassInaccessible".
+	MulticlassInaccessible bool `json:"MulticlassInaccessible" yaml:"MulticlassInaccessible" mapstructure:"MulticlassInaccessible"`
+
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
 
@@ -36,10 +40,6 @@ type DomainClassLevelAdditionJson struct {
 
 	// Type corresponds to the JSON schema field "Type".
 	Type *string `json:"Type,omitempty" yaml:"Type,omitempty" mapstructure:"Type,omitempty"`
-
-	// UnavailableForMultiClass corresponds to the JSON schema field
-	// "UnavailableForMultiClass".
-	UnavailableForMultiClass bool `json:"UnavailableForMultiClass" yaml:"UnavailableForMultiClass" mapstructure:"UnavailableForMultiClass"`
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`

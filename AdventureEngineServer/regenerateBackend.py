@@ -138,7 +138,9 @@ def produceCreateTableStatement(tableName: str, typeMeta: dict):
         return 'CONSTRAINT fk_' + targetTable + ' FOREIGN KEY (' + columnName + ') REFERENCES ' + targetTable + '(Id)'
     
     def generateColumnSnippet(columnName: str, goType: str):
-        return columnName + ' ' + goToSqlTypeConversions[goType]
+        protectedNames = ["type", "character"]
+        
+        return (('"' + columnName + '"') if columnName.lower() in protectedNames else columnName) + ' ' + goToSqlTypeConversions[goType]
 
     createTableStatement = 'CREATE TABLE IF NOT EXISTS ' + tableName + '(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'
     

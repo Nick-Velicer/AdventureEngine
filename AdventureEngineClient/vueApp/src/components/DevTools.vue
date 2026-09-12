@@ -104,7 +104,7 @@ async function dispatchSubclassMappingSave(characters: Character[]) {
     
     const subclassesResponse = await getSubclasses();
 
-    const subclasses = (subclassesResponse.data as Array<DomainSubClass>);
+    const subclasses = (subclassesResponse.data as Array<DomainSubClass>).filter(subclass => subclass.Relationships.ManyToOne.Class__DomainClass?.Attributes.Title === "Barbarian");
     
     const saveSubclasses = saveSubclassMappingsMutation(
         characters.map((character, index) => subclasses.slice(index, index * 2).map((subclass, index) => ({
