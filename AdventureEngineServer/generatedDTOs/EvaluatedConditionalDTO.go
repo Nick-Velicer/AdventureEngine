@@ -29,7 +29,7 @@ type EvaluatedConditionalDTOAttributes struct {
 
 type EvaluatedConditionalDTOManyToOneRelationships struct {
    Base__Quantifier *QuantifierDTO
-   IsTrue__DomainCondition *DomainConditionDTO
+   IsTrue__DomainBooleanCondition *DomainBooleanConditionDTO
    Modifier__Quantifier *QuantifierDTO
    ResourceOwner__User *UserDTO
 }
@@ -74,12 +74,12 @@ func EvaluatedConditionalToEvaluatedConditionalDTO(context *contextProviders.DTO
    }
    
    var includedBase__Quantifier *types.Quantifier
-   var includedIsTrue__DomainCondition *types.DomainCondition
+   var includedIsTrue__DomainBooleanCondition *types.DomainBooleanCondition
    var includedModifier__Quantifier *types.Quantifier
    var includedResourceOwner__User *types.User
    
    var Base__QuantifierDTO *QuantifierDTO
-   var IsTrue__DomainConditionDTO *DomainConditionDTO
+   var IsTrue__DomainBooleanConditionDTO *DomainBooleanConditionDTO
    var Modifier__QuantifierDTO *QuantifierDTO
    var ResourceOwner__UserDTO *UserDTO
    
@@ -96,12 +96,12 @@ func EvaluatedConditionalToEvaluatedConditionalDTO(context *contextProviders.DTO
       }
    }
 
-   if (evaluatedConditional.IsTrue__DomainCondition != nil) {
-      includedIsTrue__DomainCondition, err = services.GetDomainConditionById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCondition](evaluatedConditional.IsTrue__DomainCondition))
+   if (evaluatedConditional.IsTrue__DomainBooleanCondition != nil) {
+      includedIsTrue__DomainBooleanCondition, err = services.GetDomainBooleanConditionById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainBooleanCondition](evaluatedConditional.IsTrue__DomainBooleanCondition))
       if err != nil {
          return nil, err
       }
-      IsTrue__DomainConditionDTO, err = DomainConditionToDomainConditionDTO(&childDTOContext, includedIsTrue__DomainCondition)
+      IsTrue__DomainBooleanConditionDTO, err = DomainBooleanConditionToDomainBooleanConditionDTO(&childDTOContext, includedIsTrue__DomainBooleanCondition)
       if err != nil {
          return nil, err
       }
@@ -146,7 +146,7 @@ func EvaluatedConditionalToEvaluatedConditionalDTO(context *contextProviders.DTO
       Relationships: EvaluatedConditionalDTORelationships{
          ManyToOne: EvaluatedConditionalDTOManyToOneRelationships {
             Base__Quantifier: Base__QuantifierDTO,
-            IsTrue__DomainCondition: IsTrue__DomainConditionDTO,
+            IsTrue__DomainBooleanCondition: IsTrue__DomainBooleanConditionDTO,
             Modifier__Quantifier: Modifier__QuantifierDTO,
             ResourceOwner__User: ResourceOwner__UserDTO,
          },
@@ -174,8 +174,8 @@ func EvaluatedConditionalDTOToEvaluatedConditional(evaluatedConditional *Evaluat
       tableTypeBuffer.Base__Quantifier = evaluatedConditional.Relationships.ManyToOne.Base__Quantifier.Id
    }
 
-   if (evaluatedConditional.Relationships.ManyToOne.IsTrue__DomainCondition != nil) {
-      tableTypeBuffer.IsTrue__DomainCondition = evaluatedConditional.Relationships.ManyToOne.IsTrue__DomainCondition.Id
+   if (evaluatedConditional.Relationships.ManyToOne.IsTrue__DomainBooleanCondition != nil) {
+      tableTypeBuffer.IsTrue__DomainBooleanCondition = evaluatedConditional.Relationships.ManyToOne.IsTrue__DomainBooleanCondition.Id
    }
 
    if (evaluatedConditional.Relationships.ManyToOne.Modifier__Quantifier != nil) {

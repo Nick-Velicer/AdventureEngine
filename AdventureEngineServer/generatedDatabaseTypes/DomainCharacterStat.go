@@ -2,12 +2,9 @@
 
 package generatedDatabaseTypes
 
-type EvaluatedConditional struct {
+type DomainCharacterStat struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
-
-	// BaseQuantifier corresponds to the JSON schema field "Base__Quantifier".
-	Base__Quantifier *int `json:"Base__Quantifier" gorm:"column:Base__Quantifier" mapstructure:"Base__Quantifier"`
 
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
@@ -21,12 +18,8 @@ type EvaluatedConditional struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
-	// IsTrueDomainBooleanCondition corresponds to the JSON schema field
-	// "IsTrue__DomainBooleanCondition".
-	IsTrue__DomainBooleanCondition *int `json:"IsTrue__DomainBooleanCondition" gorm:"column:IsTrue__DomainBooleanCondition" mapstructure:"IsTrue__DomainBooleanCondition"`
-
-	// ModifierQuantifier corresponds to the JSON schema field "Modifier__Quantifier".
-	Modifier__Quantifier *int `json:"Modifier__Quantifier" gorm:"column:Modifier__Quantifier" mapstructure:"Modifier__Quantifier"`
+	// IsBaseStat corresponds to the JSON schema field "IsBaseStat".
+	IsBaseStat bool `json:"IsBaseStat" gorm:"column:IsBaseStat" mapstructure:"IsBaseStat"`
 
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
@@ -36,10 +29,4 @@ type EvaluatedConditional struct {
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
-
-	// EvaluatedOnEvent corresponds to the JSON schema field "evaluatedOnEvent".
-	EvaluatedOnEvent *bool `json:"evaluatedOnEvent" gorm:"column:evaluatedOnEvent" mapstructure:"evaluatedOnEvent"`
-
-	// EvaluatedStatically corresponds to the JSON schema field "evaluatedStatically".
-	EvaluatedStatically *bool `json:"evaluatedStatically" gorm:"column:evaluatedStatically" mapstructure:"evaluatedStatically"`
 }

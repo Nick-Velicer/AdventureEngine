@@ -28,7 +28,8 @@ type QuantifierCostSpecifierDTOAttributes struct {
 }
 
 type QuantifierCostSpecifierDTOManyToOneRelationships struct {
-   Cost__DomainCharacterStat *DomainCharacterStatDTO
+   Cost__DomainCurrencyDenomination *DomainCurrencyDenominationDTO
+   Cost__DomainEntityStat *DomainEntityStatDTO
    Quantifier__Quantifier *QuantifierDTO
    ResourceOwner__User *UserDTO
 }
@@ -72,22 +73,35 @@ func QuantifierCostSpecifierToQuantifierCostSpecifierDTO(context *contextProvide
       CurrentUser: nil,
    }
    
-   var includedCost__DomainCharacterStat *types.DomainCharacterStat
+   var includedCost__DomainCurrencyDenomination *types.DomainCurrencyDenomination
+   var includedCost__DomainEntityStat *types.DomainEntityStat
    var includedQuantifier__Quantifier *types.Quantifier
    var includedResourceOwner__User *types.User
    
-   var Cost__DomainCharacterStatDTO *DomainCharacterStatDTO
+   var Cost__DomainCurrencyDenominationDTO *DomainCurrencyDenominationDTO
+   var Cost__DomainEntityStatDTO *DomainEntityStatDTO
    var Quantifier__QuantifierDTO *QuantifierDTO
    var ResourceOwner__UserDTO *UserDTO
    
    var err error
    
-   if (quantifierCostSpecifier.Cost__DomainCharacterStat != nil) {
-      includedCost__DomainCharacterStat, err = services.GetDomainCharacterStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCharacterStat](quantifierCostSpecifier.Cost__DomainCharacterStat))
+   if (quantifierCostSpecifier.Cost__DomainCurrencyDenomination != nil) {
+      includedCost__DomainCurrencyDenomination, err = services.GetDomainCurrencyDenominationById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainCurrencyDenomination](quantifierCostSpecifier.Cost__DomainCurrencyDenomination))
       if err != nil {
          return nil, err
       }
-      Cost__DomainCharacterStatDTO, err = DomainCharacterStatToDomainCharacterStatDTO(&childDTOContext, includedCost__DomainCharacterStat)
+      Cost__DomainCurrencyDenominationDTO, err = DomainCurrencyDenominationToDomainCurrencyDenominationDTO(&childDTOContext, includedCost__DomainCurrencyDenomination)
+      if err != nil {
+         return nil, err
+      }
+   }
+
+   if (quantifierCostSpecifier.Cost__DomainEntityStat != nil) {
+      includedCost__DomainEntityStat, err = services.GetDomainEntityStatById(serviceContext, contextProviders.ProduceGetByIdArgs[types.DomainEntityStat](quantifierCostSpecifier.Cost__DomainEntityStat))
+      if err != nil {
+         return nil, err
+      }
+      Cost__DomainEntityStatDTO, err = DomainEntityStatToDomainEntityStatDTO(&childDTOContext, includedCost__DomainEntityStat)
       if err != nil {
          return nil, err
       }
@@ -131,7 +145,8 @@ func QuantifierCostSpecifierToQuantifierCostSpecifierDTO(context *contextProvide
       },
       Relationships: QuantifierCostSpecifierDTORelationships{
          ManyToOne: QuantifierCostSpecifierDTOManyToOneRelationships {
-            Cost__DomainCharacterStat: Cost__DomainCharacterStatDTO,
+            Cost__DomainCurrencyDenomination: Cost__DomainCurrencyDenominationDTO,
+            Cost__DomainEntityStat: Cost__DomainEntityStatDTO,
             Quantifier__Quantifier: Quantifier__QuantifierDTO,
             ResourceOwner__User: ResourceOwner__UserDTO,
          },
@@ -155,8 +170,12 @@ func QuantifierCostSpecifierDTOToQuantifierCostSpecifier(quantifierCostSpecifier
    tableTypeBuffer.Title = quantifierCostSpecifier.Attributes.Title
    tableTypeBuffer.UpdatedAt = quantifierCostSpecifier.Attributes.UpdatedAt
    
-   if (quantifierCostSpecifier.Relationships.ManyToOne.Cost__DomainCharacterStat != nil) {
-      tableTypeBuffer.Cost__DomainCharacterStat = quantifierCostSpecifier.Relationships.ManyToOne.Cost__DomainCharacterStat.Id
+   if (quantifierCostSpecifier.Relationships.ManyToOne.Cost__DomainCurrencyDenomination != nil) {
+      tableTypeBuffer.Cost__DomainCurrencyDenomination = quantifierCostSpecifier.Relationships.ManyToOne.Cost__DomainCurrencyDenomination.Id
+   }
+
+   if (quantifierCostSpecifier.Relationships.ManyToOne.Cost__DomainEntityStat != nil) {
+      tableTypeBuffer.Cost__DomainEntityStat = quantifierCostSpecifier.Relationships.ManyToOne.Cost__DomainEntityStat.Id
    }
 
    if (quantifierCostSpecifier.Relationships.ManyToOne.Quantifier__Quantifier != nil) {

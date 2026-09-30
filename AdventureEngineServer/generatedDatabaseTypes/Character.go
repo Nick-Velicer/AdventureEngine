@@ -2,15 +2,19 @@
 
 package generatedDatabaseTypes
 
-type EvaluatedConditional struct {
+type Character struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle" gorm:"column:AbbreviatedTitle" mapstructure:"AbbreviatedTitle"`
 
-	// BaseQuantifier corresponds to the JSON schema field "Base__Quantifier".
-	Base__Quantifier *int `json:"Base__Quantifier" gorm:"column:Base__Quantifier" mapstructure:"Base__Quantifier"`
+	// CampaignCampaign corresponds to the JSON schema field "Campaign__Campaign".
+	Campaign__Campaign *int `json:"Campaign__Campaign" gorm:"column:Campaign__Campaign" mapstructure:"Campaign__Campaign"`
 
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt" gorm:"column:CreatedAt" mapstructure:"CreatedAt"`
+
+	// CurrentSizeDomainSize corresponds to the JSON schema field
+	// "CurrentSize__DomainSize".
+	CurrentSize__DomainSize *int `json:"CurrentSize__DomainSize" gorm:"column:CurrentSize__DomainSize" mapstructure:"CurrentSize__DomainSize"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description" gorm:"column:Description" mapstructure:"Description"`
@@ -21,25 +25,25 @@ type EvaluatedConditional struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive" gorm:"column:IsActive" mapstructure:"IsActive"`
 
-	// IsTrueDomainBooleanCondition corresponds to the JSON schema field
-	// "IsTrue__DomainBooleanCondition".
-	IsTrue__DomainBooleanCondition *int `json:"IsTrue__DomainBooleanCondition" gorm:"column:IsTrue__DomainBooleanCondition" mapstructure:"IsTrue__DomainBooleanCondition"`
-
-	// ModifierQuantifier corresponds to the JSON schema field "Modifier__Quantifier".
-	Modifier__Quantifier *int `json:"Modifier__Quantifier" gorm:"column:Modifier__Quantifier" mapstructure:"Modifier__Quantifier"`
-
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwner__User *int `json:"ResourceOwner__User" gorm:"column:ResourceOwner__User" mapstructure:"ResourceOwner__User"`
+
+	// SpeciesDomainSpecies corresponds to the JSON schema field
+	// "Species__DomainSpecies".
+	Species__DomainSpecies *int `json:"Species__DomainSpecies" gorm:"column:Species__DomainSpecies" mapstructure:"Species__DomainSpecies"`
+
+	// StatsCharacterDomainEntityStatInstance corresponds to the JSON schema field
+	// "Stats__CharacterDomainEntityStatInstance".
+
+	// SubClassesCharacterDomainSubClassInstance corresponds to the JSON schema field
+	// "SubClasses__CharacterDomainSubClassInstance".
 
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title" gorm:"column:Title" mapstructure:"Title"`
 
+	// Type corresponds to the JSON schema field "Type".
+	Type *string `json:"Type" gorm:"column:Type" mapstructure:"Type"`
+
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt" gorm:"column:UpdatedAt" mapstructure:"UpdatedAt"`
-
-	// EvaluatedOnEvent corresponds to the JSON schema field "evaluatedOnEvent".
-	EvaluatedOnEvent *bool `json:"evaluatedOnEvent" gorm:"column:evaluatedOnEvent" mapstructure:"evaluatedOnEvent"`
-
-	// EvaluatedStatically corresponds to the JSON schema field "evaluatedStatically".
-	EvaluatedStatically *bool `json:"evaluatedStatically" gorm:"column:evaluatedStatically" mapstructure:"evaluatedStatically"`
 }

@@ -21,9 +21,9 @@ type EvaluatedConditionalJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
-	// IsTrueDomainCondition corresponds to the JSON schema field
-	// "IsTrue__DomainCondition".
-	IsTrueDomainCondition *float64 `json:"IsTrue__DomainCondition,omitempty" yaml:"IsTrue__DomainCondition,omitempty" mapstructure:"IsTrue__DomainCondition,omitempty"`
+	// IsTrueDomainBooleanCondition corresponds to the JSON schema field
+	// "IsTrue__DomainBooleanCondition".
+	IsTrueDomainBooleanCondition *float64 `json:"IsTrue__DomainBooleanCondition,omitempty" yaml:"IsTrue__DomainBooleanCondition,omitempty" mapstructure:"IsTrue__DomainBooleanCondition,omitempty"`
 
 	// ModifierQuantifier corresponds to the JSON schema field "Modifier__Quantifier".
 	ModifierQuantifier *float64 `json:"Modifier__Quantifier,omitempty" yaml:"Modifier__Quantifier,omitempty" mapstructure:"Modifier__Quantifier,omitempty"`

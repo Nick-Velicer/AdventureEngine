@@ -2,26 +2,19 @@
 
 package goTypeBase
 
-type QuantifierCostSpecifierJson struct {
+type CharacterDomainConditionInstanceJson struct {
 	// AbbreviatedTitle corresponds to the JSON schema field "AbbreviatedTitle".
 	AbbreviatedTitle *string `json:"AbbreviatedTitle,omitempty" yaml:"AbbreviatedTitle,omitempty" mapstructure:"AbbreviatedTitle,omitempty"`
 
-	// CostDomainCurrencyDenomination corresponds to the JSON schema field
-	// "Cost__DomainCurrencyDenomination".
-	CostDomainCurrencyDenomination *float64 `json:"Cost__DomainCurrencyDenomination,omitempty" yaml:"Cost__DomainCurrencyDenomination,omitempty" mapstructure:"Cost__DomainCurrencyDenomination,omitempty"`
+	// CharacterCharacter corresponds to the JSON schema field "Character__Character".
+	CharacterCharacter *float64 `json:"Character__Character,omitempty" yaml:"Character__Character,omitempty" mapstructure:"Character__Character,omitempty"`
 
-	// CostDomainEntityStat corresponds to the JSON schema field
-	// "Cost__DomainEntityStat".
-	CostDomainEntityStat *float64 `json:"Cost__DomainEntityStat,omitempty" yaml:"Cost__DomainEntityStat,omitempty" mapstructure:"Cost__DomainEntityStat,omitempty"`
+	// ConditionDomainCondition corresponds to the JSON schema field
+	// "Condition__DomainCondition".
+	ConditionDomainCondition *float64 `json:"Condition__DomainCondition,omitempty" yaml:"Condition__DomainCondition,omitempty" mapstructure:"Condition__DomainCondition,omitempty"`
 
 	// CreatedAt corresponds to the JSON schema field "CreatedAt".
 	CreatedAt *string `json:"CreatedAt,omitempty" yaml:"CreatedAt,omitempty" mapstructure:"CreatedAt,omitempty"`
-
-	// DeltaPercentage corresponds to the JSON schema field "DeltaPercentage".
-	DeltaPercentage *float64 `json:"DeltaPercentage,omitempty" yaml:"DeltaPercentage,omitempty" mapstructure:"DeltaPercentage,omitempty"`
-
-	// DeltaQuantity corresponds to the JSON schema field "DeltaQuantity".
-	DeltaQuantity *float64 `json:"DeltaQuantity,omitempty" yaml:"DeltaQuantity,omitempty" mapstructure:"DeltaQuantity,omitempty"`
 
 	// Description corresponds to the JSON schema field "Description".
 	Description *string `json:"Description,omitempty" yaml:"Description,omitempty" mapstructure:"Description,omitempty"`
@@ -32,15 +25,20 @@ type QuantifierCostSpecifierJson struct {
 	// IsActive corresponds to the JSON schema field "IsActive".
 	IsActive *bool `json:"IsActive,omitempty" yaml:"IsActive,omitempty" mapstructure:"IsActive,omitempty"`
 
-	// QuantifierQuantifier corresponds to the JSON schema field
-	// "Quantifier__Quantifier".
-	QuantifierQuantifier *float64 `json:"Quantifier__Quantifier,omitempty" yaml:"Quantifier__Quantifier,omitempty" mapstructure:"Quantifier__Quantifier,omitempty"`
-
 	// ResourceOwnerUser corresponds to the JSON schema field "ResourceOwner__User".
 	ResourceOwnerUser *float64 `json:"ResourceOwner__User,omitempty" yaml:"ResourceOwner__User,omitempty" mapstructure:"ResourceOwner__User,omitempty"`
 
+	// Source corresponds to the JSON schema field "Source".
+	Source string `json:"Source" yaml:"Source" mapstructure:"Source"`
+
+	// Target corresponds to the JSON schema field "Target".
+	Target string `json:"Target" yaml:"Target" mapstructure:"Target"`
+
 	// Title corresponds to the JSON schema field "Title".
 	Title *string `json:"Title,omitempty" yaml:"Title,omitempty" mapstructure:"Title,omitempty"`
+
+	// Type corresponds to the JSON schema field "Type".
+	Type *string `json:"Type,omitempty" yaml:"Type,omitempty" mapstructure:"Type,omitempty"`
 
 	// UpdatedAt corresponds to the JSON schema field "UpdatedAt".
 	UpdatedAt *string `json:"UpdatedAt,omitempty" yaml:"UpdatedAt,omitempty" mapstructure:"UpdatedAt,omitempty"`
